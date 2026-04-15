@@ -235,6 +235,283 @@
             text-align: center;
         }
     }
+
+    /* Section Header Styles */
+    .tag-dot {
+        width: 8px;
+        height: 8px;
+        background-color: #e85d26;
+        border-radius: 50%;
+    }
+    .section-tag-pill {
+        color: #00898e;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        background: #e6f4f4;
+        padding: 4px 12px;
+        border-radius: 20px;
+    }
+    .section-title {
+        font-size: 34px;
+        font-weight: 800;
+        color: #1a2332;
+    }
+    .text-teal { color: #00898e; }
+    .section-desc { color: #64748b; font-size: 14px; }
+
+    /* All Services Button */
+    .circle-arrow {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 35px;
+        height: 35px;
+        background: #f1f5f9;
+        border-radius: 50%;
+        color: #64748b;
+        transition: 0.3s;
+    }
+    .all-link:hover .circle-arrow {
+        background: #004051;
+        color: #fff;
+    }
+
+    /* Service Card Styles (Same to Same Image) */
+    .service-card {
+        background: #fff;
+        border: none;
+        border-radius: 16px;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .service-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important;
+    }
+    .card-img-wrapper {
+        height: 220px;
+        overflow: hidden;
+    }
+    .card-img-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .card-cat {
+        font-size: 11px;
+        font-weight: 700;
+        color: #00898e;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+    .card-title {
+        color: #1a2332;
+        line-height: 1.4;
+        min-height: 50px;
+    }
+    .card-text {
+        font-size: 13.5px;
+        line-height: 1.6;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    .read-more-btn {
+        color: #00898e;
+        font-weight: 700;
+        font-size: 13px;
+        text-decoration: none;
+        transition: 0.2s;
+    }
+    .read-more-btn:hover {
+        color: #1a2332;
+        text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+        .section-title { font-size: 28px; }
+    }
+
+    /* Header Styles */
+    .tag-dot { width: 8px; height: 8px; background-color: #e85d26; border-radius: 50%; }
+    .project-tag-pill {
+        color: #00898e; font-size: 11px; font-weight: 700; letter-spacing: 1px;
+        background: #e6f4f4; padding: 4px 12px; border-radius: 20px;
+    }
+    .section-title { font-size: 34px; font-weight: 800; color: #1a2332; }
+    .text-teal { color: #00898e; }
+    .section-desc { color: #64748b; font-size: 14px; }
+
+    /* All Projects Link */
+    .circle-arrow {
+        display: inline-flex; align-items: center; justify-content: center;
+        width: 30px; height: 30px; background: #f1f5f9; border-radius: 50%;
+        color: #64748b; transition: 0.3s; font-size: 14px;
+    }
+    .all-link:hover .circle-arrow { background: #004051; color: #fff; }
+
+    /* Project Card Design (Same to Same) */
+    .project-card {
+        position: relative;
+        border-radius: 16px;
+        overflow: hidden;
+        height: 320px; /* কার্ডের একটি নির্দিষ্ট উচ্চতা */
+    }
+    .project-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: 0.5s;
+    }
+    .project-card:hover img {
+        transform: scale(1.1); /* হোভার করলে ছবি জুম হবে */
+    }
+
+    /* Overlay - ছবির নিচের কালো শ্যাডো ইফেক্ট */
+    .proj-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0, 45, 58, 0.9) 10%, rgba(0,0,0,0) 60%);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 25px 20px;
+        color: #fff;
+    }
+
+    /* Badge Design (Left orange bar style) */
+    .proj-badge-box {
+        background: #e85d26;
+        color: #fff;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 4px 12px;
+        border-radius: 0 4px 4px 0;
+        display: inline-block;
+        width: fit-content;
+        margin-left: -20px; /* ওভারলে প্যাডিং অ্যাডজাস্ট করতে */
+        margin-bottom: 12px;
+    }
+
+    .proj-title {
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 1.4;
+        margin-bottom: 8px;
+    }
+
+    .proj-sub {
+        font-size: 12px;
+        opacity: 0.8;
+        margin-bottom: 0;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 576px) {
+        .project-card { height: 280px; }
+        .section-title { font-size: 28px; }
+    }
+
+    /* PARTNERS SLIDER */
+    .partners-section {
+        background: #fff;
+    }
+    .partners-title {
+        color: #64748b;
+        font-size: 12px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-bottom: 1.5rem;
+    }
+    .partner-slider {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        padding: 0 1rem;
+    }
+    .partner-logos-wrapper {
+        flex: 1;
+        max-width: 920px;
+        margin: 0 auto;
+        overflow: hidden;
+        display: flex;
+        width: 100%;
+        padding: 0.25rem 0;
+    }
+    .partner-logos {
+        display: flex;
+        align-items: center;
+        gap: 3rem;
+        min-width: max-content;
+        animation: partner-marquee 24s linear infinite;
+    }
+    .partner-logos:hover {
+        animation-play-state: paused;
+    }
+    .partner-logos img {
+        height: 50px;
+        max-width: 120px;
+        object-fit: contain;
+        filter: grayscale(100%);
+        opacity: .75;
+        transition: filter .3s ease, opacity .3s ease, transform .3s ease;
+    }
+    .partner-logos img:hover {
+        filter: grayscale(0);
+        opacity: 1;
+        transform: translateY(-2px);
+    }
+    @keyframes partner-marquee {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+    }
+    .partners-arrow {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        border: 1px solid rgba(0,0,0,.08);
+        background: #fff;
+        color: #004051;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        cursor: pointer;
+        transition: background .2s ease, transform .2s ease;
+    }
+    .partners-arrow:hover {
+        background: #f8f9fa;
+        transform: translateX(1px);
+    }
+    .partners-prev {
+        margin-left: -1rem;
+    }
+    .partners-next {
+        margin-right: -1rem;
+    }
+    @media (max-width: 991px) {
+        .partner-logos {
+            justify-content: center;
+        }
+    }
+    @media (max-width: 767px) {
+        .partners-arrow {
+            display: none !important;
+        }
+    }
+    @media (max-width: 576px) {
+        .partner-logos {
+            gap: 1.25rem;
+        }
+        .partner-logos img {
+            height: 48px;
+            max-width: 100px;
+        }
+    }
+
 </style>
 @endpush
 
@@ -358,9 +635,9 @@
 </section>
 
 {{-- ==============================
-     SERVICES
+      SERVICES SECTION
 ============================== --}}
-<section class="services-section py-5">
+<section class="services-section py-5 bg-light-subtle">
     <div class="container" style="max-width:1200px;">
 
         {{-- HEADER --}}
@@ -372,85 +649,92 @@
 
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-3">
                 <div style="max-width:540px;">
-                    <h2 class="section-title mb-2">Our <span>Core Services</span></h2>
+                    <h2 class="section-title mb-2">Our <span class="text-teal">Core Services</span></h2>
                     <p class="section-desc mb-0">
                         Deep expertise across six domains — helping institutions modernise,
                         improve transparency, and deliver lasting outcomes.
                     </p>
                 </div>
-                <a href="#" class="all-link">
-                    All Services
-                    <span class="circle-arrow">→</span>
+                <a href="#" class="all-link text-decoration-none">
+                    <span class="fw-bold text-dark me-2">All Services</span>
+                    <span class="circle-arrow">&rarr;</span>
                 </a>
             </div>
         </div>
 
         {{-- GRID --}}
         <div class="row g-4">
-
             @php
             $services = [
                 ['img' => 'Trade and Customs.png', 'tag' => 'TRADE FACILITATION & CUSTOMS', 'title' => 'Strengthening Cross-Border Trade & Customs Systems', 'desc' => 'Supports implementing trade facilitation commitments, promoting trade harmonization, simplifying process ...'],
+
                 ['img' => 'Lab Accreditation.png', 'tag' => 'Policy Advocacy', 'title' => 'Evidence-Based Policy Reform & Advocacy', 'desc' => 'We deliver evidence-based policy advocacy and recommendations to help governments design actionable, impactful reforms —'],
+
                 ['img' => 'Technology Solutions.png', 'tag' => 'Research & Assessments', 'title' => 'In-Depth Trade, Economic & Development Research', 'desc' => 'We conduct rigorous research, assessments, and evaluations on trade, economics, and development issues to drive informed decision-making.'],
+
                 ['img' => 'Governance.png', 'tag' => 'Capacity Building', 'title' => 'Need-Based Training for Public & Private Sector', 'desc' => 'We build the capacity of public and private sector stakeholders through targeted, need-based training on trade, markets.'],
+
                 ['img' => 'Infrastructure Design.png', 'tag' => 'Project Management', 'title' => 'End-to-End Project Design, Management & Implementation', 'desc' => 'We design, manage, and implement tailor-made projects that address trade, economic, and market access challenges ...'],
+
                 ['img' => 'Technology Solutions.png', 'tag' => 'Technology Solutions', 'title' => 'Technology-Driven Trade Systems & Digital Platforms', 'desc' => 'We design and deploy technology-driven trade systems — including LIMS, certification platforms, single windows, and custom ...'],
+
                 ['img' => 'Governance (2).png', 'tag' => 'Laboratory Services', 'title' => 'Lab Accreditation, QMS & Testing Capacity Development', 'desc' => 'We support public and private laboratories to establish quality management systems ...'],
+
                 ['img' => 'Infrastructure Design (1).png', 'tag' => 'Trade Information Systems', 'title' => 'Online Portals, Databases & Transparency Platforms', 'desc' => 'We enhance transparency in export–import by developing online portals, trade information databases, notification systems.'],
+
                 ['img' => 'Capacity Building (2).png', 'tag' => 'Cold Chain & Logistics', 'title' => 'Temperature-Controlled Logistics & Supply Chain Systems', 'desc' => 'We design and strengthen cold chain and logistics systems — from temperature-controlled storage to last-mile delivery —'],
             ];
             @endphp
 
             @foreach($services as $service)
             <div class="col-12 col-sm-6 col-lg-4">
-                <div class="service-card">
-                    <img src="{{ asset('images/' . $service['img']) }}" alt="{{ $service['tag'] }}">
-                    <div class="card-inner">
-                        <span class="card-cat">{{ $service['tag'] }}</span>
-                        <h3>{{ $service['title'] }}</h3>
-                        <p>{{ $service['desc'] }}</p>
-                        <a href="#">Read More →</a>
+                <div class="service-card h-100 shadow-sm">
+                    <div class="card-img-wrapper">
+                        <img src="/assets/img/{{ $service['img'] }}" class="card-img-top" alt="{{ $service['tag'] }}">
+                    </div>
+                    <div class="card-body p-4">
+                        <span class="card-cat mb-2 d-inline-block">{{ $service['tag'] }}</span>
+                        <h3 class="card-title h5 fw-bold mb-3">{{ $service['title'] }}</h3>
+                        <p class="card-text text-muted mb-4">{{ $service['desc'] }}</p>
+                        <a href="#" class="read-more-btn">Read More &rarr;</a>
                     </div>
                 </div>
             </div>
             @endforeach
-
         </div>
     </div>
 </section>
 
 {{-- ==============================
-     PROJECTS
+      PROJECTS SECTION
 ============================== --}}
-<section class="projects-section py-5">
+<section class="projects-section py-5 bg-white">
     <div class="container" style="max-width:1200px;">
 
         {{-- HEADER --}}
         <div class="mb-5">
             <div class="d-flex align-items-center gap-2 mb-3">
                 <span class="tag-dot"></span>
-                <span class="project-tag">WORK THAT CREATES IMPACT</span>
+                <span class="project-tag-pill">WORK THAT CREATES IMPACT</span>
             </div>
 
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-3">
                 <div style="max-width:520px;">
-                    <h2 class="mb-0">Our <span>Projects</span></h2>
-                    <p class="sub-text mb-0">
+                    <h2 class="section-title mb-2">Our <span class="text-teal">Projects</span></h2>
+                    <p class="section-desc mb-0">
                         From laboratory accreditation to digital infrastructure — built to
                         deliver measurable, lasting results.
                     </p>
                 </div>
-                <a href="#" class="all-link">
-                    All Projects
-                    <span class="circle-arrow">→</span>
+                <a href="#" class="all-link text-decoration-none">
+                    <span class="fw-bold text-dark me-1" style="font-size: 13px;">All Projects</span>
+                    <span class="circle-arrow">&rarr;</span>
                 </a>
             </div>
         </div>
 
         {{-- GRID --}}
         <div class="row g-4">
-
             @php
             $projects = [
                 ['img' => 'Lab Project.png', 'badge' => 'LAB ACCREDITATION', 'title' => 'ISO/IEC 17025:2017 Accreditation Support to PRTC, CVASU', 'sub' => 'Chattogram Veterinary & Animal Sciences University'],
@@ -460,18 +744,17 @@
             @endphp
 
             @foreach($projects as $project)
-            <div class="col-12 col-md-4">
-                <div class="project-card">
-                    <img src="{{ asset('images/' . $project['img']) }}" alt="{{ $project['title'] }}">
+            <div class="col-12 col-sm-6 col-lg-4">
+                <div class="project-card shadow-sm">
+                    <img src="/assets/img/{{ $project['img'] }}" alt="{{ $project['title'] }}" class="img-fluid">
                     <div class="proj-overlay">
-                        <span class="proj-badge">{{ $project['badge'] }}</span>
-                        <h3>{{ $project['title'] }}</h3>
-                        <p>{{ $project['sub'] }}</p>
+                        <div class="proj-badge-box">{{ $project['badge'] }}</div>
+                        <h3 class="proj-title">{{ $project['title'] }}</h3>
+                        <p class="proj-sub">{{ $project['sub'] }}</p>
                     </div>
                 </div>
             </div>
             @endforeach
-
         </div>
     </div>
 </section>
@@ -482,21 +765,25 @@
 <section class="partners-section py-5">
     <div class="container" style="max-width:1200px;">
 
-        <p class="partners-title mb-4">TRUSTED BY LEADING INSTITUTIONS</p>
+            <p class="partners-title mb-4 text-center">TRUSTED BY LEADING INSTITUTIONS</p>
 
-        <div class="d-flex align-items-center gap-3">
-            <button class="partners-arrow d-none d-md-flex">‹</button>
-
-            <div class="partner-logos">
-                <img src="{{ asset('images/bafisa.png') }}" alt="BAFISA">
-                <img src="{{ asset('images/lir 2.png') }}" alt="LIR">
-                <img src="{{ asset('images/bijem.png') }}" alt="BIJEM">
-                <img src="{{ asset('images/sanem 2.png') }}" alt="SANEM">
-                <img src="{{ asset('images/build.png') }}" alt="BUILD">
-                <img src="{{ asset('images/b-advancy.png') }}" alt="B-Advancy">
+        <div class="partner-slider position-relative">
+            <div class="partner-logos-wrapper">
+                <div class="partner-logos d-flex align-items-center gap-4">
+                    <img src="assets/img/bafisa.png" alt="BAFISA">
+                    <img src="assets/img/lir 2.png" alt="LIR">
+                    <img src="assets/img/bijem.png" alt="BIJEM">
+                    <img src="assets/img/sanem 2.png" alt="SANEM">
+                    <img src="assets/img/build.png" alt="BUILD">
+                    <img src="assets/img/b-advancy.png" alt="B-Advancy">
+                    <img src="assets/img/bafisa.png" alt="BAFISA">
+                    <img src="assets/img/lir 2.png" alt="LIR">
+                    <img src="assets/img/bijem.png" alt="BIJEM">
+                    <img src="assets/img/sanem 2.png" alt="SANEM">
+                    <img src="assets/img/build.png" alt="BUILD">
+                    <img src="assets/img/b-advancy.png" alt="B-Advancy">
+                </div>
             </div>
-
-            <button class="partners-arrow d-none d-md-flex">›</button>
         </div>
 
     </div>
@@ -526,6 +813,8 @@
     // Click indicators
     indicators.forEach((ind, i) => ind.addEventListener('click', () => goTo(i)));
 })();
+
+
 </script>
 @endpush
 

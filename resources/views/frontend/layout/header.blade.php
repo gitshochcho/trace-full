@@ -21,7 +21,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm py-3" style="height: 74px; opacity: 1;">
     <div class="container-fluid px-lg-5 d-flex justify-content-between" style="max-width: 1072px; margin: 0 auto;">
-        <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+        <a class="navbar-brand d-flex align-items-center gap-2" href="/">
             <x-logo />
         </a>
 
@@ -36,7 +36,7 @@
                     <a class="nav-link text-dark px-0" href="#">About Us</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-dark px-0" href="#">Services</a>
+                    <a class="nav-link text-dark px-0" href="/services">Services</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-dark px-0" href="#">Projects</a>

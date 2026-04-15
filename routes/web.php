@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'home'])->name('home');
 
+
+Route::get('/services', [App\Http\Controllers\HomeController::class, 'services'])->name('services');
+
 Route::get('login', [App\Http\Controllers\HomeController::class, 'login'])->name('login');
 Route::post('validate/login', [App\Http\Controllers\HomeController::class, 'validateLogin'])->name('loginCheck');
 Route::get('/register', [App\Http\Controllers\HomeController::class, 'registration'])->name('registration');
