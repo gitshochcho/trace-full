@@ -28,6 +28,11 @@ class HomeController extends Controller
         return view('frontend.pages.home');
     }
 
+    public function about(Request $request)
+    {
+        return view ('frontend.pages.about');
+    }
+
     public function dashboard(Request $request)
     {
 
