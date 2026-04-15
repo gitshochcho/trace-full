@@ -3,438 +3,529 @@
 @push('custome-css')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.css" integrity="sha256-4MX+61mt9NVvvuPjUWdUdyfZfxSB1/Rf9WtqRHgG5S0=" crossorigin="anonymous"><!-- jsvectormap -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/css/jsvectormap.min.css" integrity="sha256-+uGLJmmTKOqBr+2E6KDYs/NRsHxSkONXFHUL0fy2O/4=" crossorigin="anonymous">
+
+<style>
+/* =========================================
+   GLOBAL
+========================================= */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* =========================================
+   HERO
+========================================= */
+.hero {
+    width: 100%;
+    height: 100vh;
+    min-height: 500px;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.75) 100%);
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* SLIDER */
+.slides { position: absolute; inset: 0; z-index: 0; }
+
+.slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    z-index: 0;
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.slide.active {
+    opacity: 1;
+    z-index: 1;
+    transform: scale(1);
+}
+
+.slide img {
+    width: 100%;
+    height: 100vh;
+    min-height: 500px;
+    object-fit: cover;
+    object-position: center;
+}
+
+.hero-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    max-width: 1072px;
+    padding: 0 20px;
+    z-index: 10;
+    text-align: center;
+}
+
+.hero-tag-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+.hero-tag-box .tag-line { width: 40px; height: 2px; background: #F47735; display: inline-block; }
+.hero-tag { color: #F47735; font-size: 12px; letter-spacing: 2px; }
+
+.hero-content h1 { font-size: 64px; line-height: 1.15; color: white; margin-bottom: 20px; }
+.hero-content h1 span { color: #22c1c3; }
+
+.hero-content .hero-desc {
+    max-width: 750px;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #e2e8f0;
+    margin: 0 auto 25px;
+}
+
+.hero-btns { display: flex; gap: 15px; justify-content: center; margin-bottom: 25px; }
+
+.btn-hero-primary {
+    background: #F47735;
+    color: white;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: .3s;
+    text-decoration: none;
+}
+.btn-hero-primary:hover { background: #d9622a; color: white; }
+
+.btn-hero-secondary {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.5);
+    color: white;
+    padding: 12px 22px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: .3s;
+    text-decoration: none;
+}
+.btn-hero-secondary:hover { background: rgba(255,255,255,0.1); color: white; }
+
+.slider-line { display: flex; gap: 10px; justify-content: center; margin-top: 10px; }
+.slider-line .ind { width: 28px; height: 2px; background: rgba(255,255,255,0.5); display: inline-block; cursor: pointer; transition: .3s; }
+.slider-line .ind.active { width: 55px; background: #F47735; }
+
+@media (max-width: 576px) {
+    .hero { height: 360px; min-height: 360px; }
+    .slide img { height: 360px; object-fit: cover; object-position: center top; }
+    .hero::after { background: linear-gradient(180deg, rgba(0,0,0,.10) 0%, rgba(0,0,0,.20) 50%, rgba(0,0,0,.45) 100%); }
+    .hero-content { top: 52%; }
+    .hero-content h1 { font-size: 24px; line-height: 1.3; }
+    .hero-tag { font-size: 10px; letter-spacing: 1px; }
+    .hero-tag-box .tag-line { width: 20px; }
+    .hero-desc, .hero-btns, .slider-line { display: none !important; }
+}
+
+@media (max-width: 992px) {
+    .hero-content h1 { font-size: 42px; }
+    .hero-desc { font-size: 14px; }
+}
+
+    /* Tag with Orange Line */
+    .about-tag {
+        color: #e85d26;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        position: relative;
+        padding-left: 35px;
+    }
+    .about-tag::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        width: 25px;
+        height: 2px;
+        background-color: #e85d26;
+        transform: translateY(-50%);
+    }
+
+    /* Titles and Typography */
+    .about-title {
+        font-size: 40px;
+        font-weight: 800;
+        color: #1a2332;
+        line-height: 1.2;
+    }
+    .text-teal {
+        color: #00898e;
+    }
+    .about-desc {
+        color: #64748b;
+        font-size: 15px;
+        line-height: 1.6;
+    }
+
+    /* List Styling */
+    .about-item {
+        border-bottom: 1px solid #f1f5f9;
+        padding-bottom: 20px;
+    }
+    .about-item:last-child {
+        border-bottom: none;
+    }
+    .about-num {
+        color: #e85d26;
+        font-weight: 700;
+        font-size: 14px;
+        margin-top: 4px;
+    }
+    .item-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: #1a2332;
+        margin-bottom: 6px;
+    }
+    .item-text {
+        font-size: 14px;
+        color: #64748b;
+        margin-bottom: 0;
+    }
+
+    /* Learn Button */
+    .learn-btn {
+        color: #1a2332;
+        font-weight: 700;
+        font-size: 14px;
+        transition: 0.3s;
+    }
+    .learn-btn:hover {
+        color: #e85d26;
+        transform: translateX(5px);
+    }
+
+    /* Image Badge */
+    .about-badge {
+        position: absolute;
+        bottom: 30px;
+        left: -20px;
+        background-color: #004051; /* ছবির গাঢ় টিয়াল কালার */
+        color: #fff;
+        padding: 15px 25px;
+        border-radius: 12px;
+        text-align: center;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 991px) {
+        .about-title { font-size: 32px; }
+        .about-badge {
+            left: 20px;
+            bottom: 20px;
+        }
+        .about-img-wrap {
+            text-align: center;
+        }
+    }
+</style>
 @endpush
 
 @section('content')
-    <!-- Home -->
-    <section class="home py-5 d-flex align-items-center" id="header">
-        <div class="container text-light py-5"  data-aos="fade-right"> 
-            <h1 class="headline">Best <span class="home_text">Broadband</span><br>Internet Plans For You</h1>
-            <p class="para para-light py-3">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Natus tempore accusamus quis magnam doloremque itaque ad modi, pariatur iste labore similique officiis impedit aspernatur aperiam facere architecto. Eligendi, repellendus inventore!</p>
-            <div class="d-flex align-items-center">
-                <p class="p-2"><i class="fas fa-laptop-house fa-lg"></i></p>
-                <p>Lorem ipsum dolor sit amet.</p>  
-            </div>
-            <div class="d-flex align-items-center">
-                <p class="p-2"><i class="fas fa-wifi fa-lg"></i></p>
-                <p>Lorem ipsum dolor sit amet.</p>  
-            </div>
-            <div class="my-3">
-                <a class="btn" href="#plans">View Plans</a>
-            </div>
-        </div> <!-- end of container -->
-    </section> <!-- end of home -->
+<section class="hero">
+    {{-- SLIDES --}}
+    <div class="slides">
+        <div class="slide active"><img src="/assets/img/image 11.png" alt="Hero 1"></div>
+        <div class="slide"><img src="/assets/img/Trade and Customs.png" alt="Hero 2"></div>
+        <div class="slide"><img src="/assets/img/image 54.png" alt="Hero 3"></div>
+        <div class="slide"><img src="/assets/img/image 55.png" alt="Hero 4"></div>
+    </div>
 
+    {{-- CONTENT --}}
+    <div class="hero-content">
 
-    <!-- Information -->
-    <section class="information">
-        <div class="container-fluid">  
-            <div class="row text-light">
-                <div class="col-lg-4 text-center p-5" data-aos="zoom-in">
-                    <i class="fas fa-tachometer-alt fa-3x p-2"></i>
-                    <h4 class="py-3">Download 1 GBPS</h4>
-                    <p class="para-light">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magnam odit consequatur doloribus natus in suscipit!</p>
+        {{-- TAG --}}
+        <div class="hero-tag-box">
+            <span class="tag-line"></span>
+            <span class="hero-tag">INTERNATIONAL DEVELOPMENT CONSULTING</span>
+            <span class="tag-line"></span>
+        </div>
+
+        {{-- TITLE --}}
+        <h1>
+            Empowering Change through <br>
+            <span>Insightful</span> Consulting
+        </h1>
+
+        {{-- DESC --}}
+        <p class="hero-desc">
+            Trace Consulting partners with governments, regulatory agencies, and development organizations to reform systems,
+            build capacity, and deliver technology that lasts.
+        </p>
+
+        {{-- BUTTONS --}}
+        <div class="hero-btns">
+            <a href="#" class="btn-hero-primary">Explore Services <span>→</span></a>
+            <a href="#" class="btn-hero-secondary">View Our Work</a>
+        </div>
+
+        {{-- SLIDER INDICATOR --}}
+        <div class="slider-line">
+            <span class="ind active"></span>
+            <span class="ind"></span>
+            <span class="ind"></span>
+            <span class="ind"></span>
+        </div>
+
+    </div>
+
+</section>
+
+{{-- ==============================
+      ABOUT SECTION
+============================== --}}
+<section class="about-section py-5 my-lg-4">
+    <div class="container" style="max-width:1140px;">
+        <div class="row align-items-center gy-5">
+
+            {{-- LEFT CONTENT --}}
+            <div class="col-12 col-lg-6 pe-lg-5">
+                <div class="about-tag-wrapper mb-3">
+                    <span class="about-tag">ABOUT TRACE</span>
                 </div>
-                <div class="col-lg-4 text-center p-5"  data-aos="zoom-in">
-                    <i class="fas fa-clock fa-3x p-2"></i>
-                    <h4 class="py-3">99% Internet Uptime</h4>
-                    <p class="para-light">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magnam odit consequatur doloribus natus in suscipit!</p>
-                </div>
-                <div class="col-lg-4 text-center p-5 text-dark"  data-aos="zoom-in"> 
-                    <i class="fas fa-headset fa-3x p-2"></i>
-                    <h4 class="py-3">24/7 Support </h4>
-                    <p class="para-light">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magnam odit consequatur doloribus natus in suscipit!</p>
-                </div>
-            </div>
-        </div> <!-- end of container -->
-    </section> <!-- end of information -->
-    
 
-    <!-- About -->
-    <section class="about d-flex align-items-center text-light py-5" id="about">
-        <div class="container" >
-            <div class="row d-flex align-items-center">
-                <div class="col-lg-7" data-aos="fade-right">
-                    <p>ABOUT US</p>
-                    <h1>We are top internet <br> service company</h1>
-                    <p class="py-2 para-light">Lorem ipsum dolor sit amet consectetur adipisicing elit. Non sed accusantium aut dolores inventore architecto modi cupiditate eligendi corporis, illum illo culpa. Reiciendis, molestias. Illum voluptatum quisquam ad veritatis dolorem.</p>
-                    <p class="py-2 para-light">Lorem ipsum dolor sit amet consectetur adipisicing elit. Non sed accusantium aut dolores inventore architecto modi cupiditate eligendi corporis, illum illo culpa. Reiciendis, molestias. Illum voluptatum quisquam ad veritatis dolorem.</p>
+                <h2 class="about-title mb-4">
+                    Transforming Challenges <br>
+                    into <span class="text-teal">Opportunities</span>
+                </h2>
 
-                    <div class="my-3">
-                        <a class="btn" href="#your-link">Learn More</a>
+                <p class="about-desc mb-5">
+                    TRACE focuses on international trade, policy reform, and development, working with governments,
+                    business groups, and the private sector to strengthen market systems.
+                </p>
+
+                {{-- LIST ITEMS --}}
+                <div class="about-list">
+                    <div class="about-item d-flex gap-3 mb-4">
+                        <span class="about-num">01</span>
+                        <div class="about-content">
+                            <h4 class="item-title">Multi-Sector Expertise & Global Reach</h4>
+                            <p class="item-text">Deep knowledge across industries, backed by an objective perspective and access to global networks.</p>
+                        </div>
+                    </div>
+
+                    <div class="about-item d-flex gap-3 mb-4">
+                        <span class="about-num">02</span>
+                        <div class="about-content">
+                            <h4 class="item-title">Proven Methodologies, Policy to Practice</h4>
+                            <p class="item-text">Rigorous, scalable approaches that translate evidence into implementable reforms.</p>
+                        </div>
+                    </div>
+
+                    <div class="about-item d-flex gap-3 mb-4">
+                        <span class="about-num">03</span>
+                        <div class="about-content">
+                            <h4 class="item-title">Change Management & Creative Innovation</h4>
+                            <p class="item-text">Combining structured change management with innovative, context-driven solutions.</p>
+                        </div>
                     </div>
                 </div>
-                <div class="col-lg-5 text-center py-4 py-sm-0" data-aos="fade-down"> 
-                    <img class="img-fluid" src="./assets/images/about.jpg" alt="about" >
-                </div>
-            </div> <!-- end of row -->
-        </div> <!-- end of container -->
-    </section> <!-- end of about -->
 
-
-    <!-- Services -->
-    <section class="services d-flex align-items-center py-5" id="services">
-        <div class="container text-light">
-            <div class="text-center pb-4" >
-                <p>OUR SERVICES</p> 
-                <h2 class="py-2">Explore unlimited possibilities</h2>
-                <p class="para-light">Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae asperiores, quia accusantium sunt corporis optio recusandae? Nostrum libero pariatur cumque, ipsa dolores voluptatibus voluptate alias sit fuga. Itaque, ea quo.</p>
+                <a href="#" class="learn-btn mt-3 d-inline-block text-decoration-none">Learn About Us &rarr;</a>
             </div>
-            <div class="row gy-4 py-2" data-aos="zoom-in">
-                <div class="col-lg-4">
-                    <div class="card bg-transparent">
-                        <i class="fas fa-home fa-2x"></i>
-                        <h4 class="py-2">HOME BROADBAND</h4>
-                        <p class="para-light">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magnam odit consequatur doloribus natus in suscipit!</p>
+
+            {{-- RIGHT IMAGE --}}
+            <div class="col-12 col-lg-6">
+                <div class="about-img-wrap position-relative">
+                    <img src="/assets/img/bg.png" alt="About Trace" class="img-fluid rounded-4 shadow-sm">
+                    
+                    <div class="about-badge shadow-lg">
+                        <h3 class="m-0 fw-bold">8+</h3>
+                        <p class="m-0 small opacity-75">Years of expertise</p>
                     </div>
                 </div>
-                <div class="col-lg-4">
-                    <div class="card bg-transparent">
-                        <i class="fas fa-wifi fa-2x"></i>
-                        <h4 class="py-2"> HOME WIFI</h4>
-                        <p class="para-light">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magnam odit consequatur doloribus natus in suscipit!</p>
-                    </div>                    
-                </div>
-                <div class="col-lg-4">
-                    <div class="card bg-transparent">
-                        <i class="fas fa-phone fa-2x"></i>
-                        <h4 class="py-2">HOME BROADBAND</h4>
-                        <p class="para-light">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magnam odit consequatur doloribus natus in suscipit!</p>
-                    </div>                    
-                </div>
-                <div class="col-lg-4">
-                    <div class="card bg-transparent">
-                        <i class="fas fa-mobile fa-2x"></i>
-                        <h4 class="py-2">MOBILE CONNECTION</h4>
-                        <p class="para-light">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magnam odit consequatur doloribus natus in suscipit!</p>
-                    </div>                    
-                </div>
-                <div class="col-lg-4">
-                    <div class="card bg-transparent">
-                        <i class="fas fa-home fa-2x"></i>
-                        <h4 class="py-2">SECURITY</h4>
-                        <p class="para-light">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magnam odit consequatur doloribus natus in suscipit!</p>
-                    </div>                    
-                </div>
-                <div class="col-lg-4">
-                    <div class="card bg-transparent">
-                        <i class="fas fa-tv fa-2x"></i>
-                        <h4 class="py-2">TV SETUP BOX</h4>
-                        <p class="para-light">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magnam odit consequatur doloribus natus in suscipit!</p>
-                    </div>                    
-                </div>
-            </div> <!-- end of row -->
-        </div> <!-- end of container -->
-    </section> <!-- end of services -->
-
-
-    <!-- Plans -->
-    <section class="plans d-flex align-items-center py-5" id="plans">
-        <div class="container text-light" >
-            <div class="text-center pb-4">
-                <p>OUR PLANS</p>
-                <h2 class="py-2">Explore unlimited possibilities</h2>
-                <p class="para-light">Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae asperiores, quia accusantium sunt corporis optio recusandae? Nostrum libero pariatur cumque, ipsa dolores voluptatibus voluptate alias sit fuga. Itaque, ea quo.</p>
             </div>
-            <div class="row gy-4" data-aos="zoom-in">
-                <div class="col-lg-4">
-                    <div class="card bg-transparent px-4">
-                        <h4 class="py-2">BASIC BUNDLE</h4>
-                        <p class="py-3">Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-                        <div class="block d-flex align-items-center">
-                            <p class="pe-2"><i class="far fa-check-circle fa-1x"></i></p>
-                            <p>Lorem ipsum dolor sit amet.</p>
-                        </div>
-                        <div class="block d-flex align-items-center">
-                            <p class="pe-2"><i class="far fa-check-circle fa-1x"></i></p>
-                            <p>Lorem ipsum dolor sit amet.</p>
-                        </div>
-                        <div class="block d-flex align-items-center">
-                            <p class="pe-2"><i class="far fa-check-circle fa-1x"></i></p>
-                            <p>Lorem ipsum dolor sit amet.</p>
-                        </div>
-                        <div class="block d-flex align-items-center">
-                            <p class="pe-2"><i class="far fa-check-circle fa-1x"></i></p>
-                            <p>Lorem ipsum dolor sit amet.</p>
-                        </div>
-                        <h4 class="py-3">$24/Month</h4>
-                        <div class="my-3">
-                            <a class="btn" href="#your-link" >View Plans</a>
-                        </div>
-                    </div>  
+
+        </div>
+    </div>
+</section>
+
+{{-- ==============================
+     SERVICES
+============================== --}}
+<section class="services-section py-5">
+    <div class="container" style="max-width:1200px;">
+
+        {{-- HEADER --}}
+        <div class="mb-5">
+            <div class="d-flex align-items-center gap-2 mb-3">
+                <span class="tag-dot"></span>
+                <span class="section-tag-pill">WHAT WE DO</span>
+            </div>
+
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-3">
+                <div style="max-width:540px;">
+                    <h2 class="section-title mb-2">Our <span>Core Services</span></h2>
+                    <p class="section-desc mb-0">
+                        Deep expertise across six domains — helping institutions modernise,
+                        improve transparency, and deliver lasting outcomes.
+                    </p>
                 </div>
+                <a href="#" class="all-link">
+                    All Services
+                    <span class="circle-arrow">→</span>
+                </a>
+            </div>
+        </div>
 
-                <div class="col-lg-4">
-                    <div class="card bg-transparent px-4">
-                        <h4 class="py-2">BUSINESS BUNDLE</h4>
-                        <p class="py-3">Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-                        <div class="block d-flex align-items-center">
-                            <p class="pe-2"><i class="far fa-check-circle fa-1x"></i></p>
-                            <p>Lorem ipsum dolor sit amet.</p>
-                        </div>
-                        <div class="block d-flex align-items-center">
-                            <p class="pe-2"><i class="far fa-check-circle fa-1x"></i></p>
-                            <p>Lorem ipsum dolor sit amet.</p>
-                        </div>
-                        <div class="block d-flex align-items-center">
-                            <p class="pe-2"><i class="far fa-check-circle fa-1x"></i></p>
-                            <p>Lorem ipsum dolor sit amet.</p>
-                        </div>
-                        <div class="block d-flex align-items-center">
-                            <p class="pe-2"><i class="far fa-check-circle fa-1x"></i></p>
-                            <p>Lorem ipsum dolor sit amet.</p>
-                        </div>
-                        <h4 class="py-3">$99/Month</h4>
-                        <div class="my-3">
-                            <a class="btn" href="#your-link" >View Plans</a>
-                        </div>
-                    </div>  
-                </div>
+        {{-- GRID --}}
+        <div class="row g-4">
 
-                <div class="col-lg-4">
-                    <div class="card bg-transparent px-4" >
-                        <h4 class="py-2">PREMIUM BUNDLE</h4>
-                        <p class="py-3">Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-                        <div class="block d-flex align-items-center">
-                            <p class="pe-2"><i class="far fa-check-circle fa-1x"></i></p>
-                            <p>Lorem ipsum dolor sit amet.</p>
-                        </div>
-                        <div class="block d-flex align-items-center">
-                            <p class="pe-2"><i class="far fa-check-circle fa-1x"></i></p>
-                            <p>Lorem ipsum dolor sit amet.</p>
-                        </div>
-                        <div class="block d-flex align-items-center">
-                            <p class="pe-2"><i class="far fa-check-circle fa-1x"></i></p>
-                            <p>Lorem ipsum dolor sit amet.</p>
-                        </div>
-                        <div class="block d-flex align-items-center">
-                            <p class="pe-2"><i class="far fa-check-circle fa-1x"></i></p>
-                            <p>Lorem ipsum dolor sit amet.</p>
-                        </div>
-                        <h4 class="py-3">$199/Month</h4>
-                        <div class="my-3">
-                            <a class="btn" href="#your-link" >View Plans</a>                    
-                        </div>
-                    </div>  
-                </div>
-            </div> <!-- end of row -->
-        </div> <!-- end of container -->
-    </section> <!-- end of plans -->
+            @php
+            $services = [
+                ['img' => 'Trade and Customs.png', 'tag' => 'TRADE FACILITATION & CUSTOMS', 'title' => 'Strengthening Cross-Border Trade & Customs Systems', 'desc' => 'Supports implementing trade facilitation commitments, promoting trade harmonization, simplifying process ...'],
+                ['img' => 'Lab Accreditation.png', 'tag' => 'Policy Advocacy', 'title' => 'Evidence-Based Policy Reform & Advocacy', 'desc' => 'We deliver evidence-based policy advocacy and recommendations to help governments design actionable, impactful reforms —'],
+                ['img' => 'Technology Solutions.png', 'tag' => 'Research & Assessments', 'title' => 'In-Depth Trade, Economic & Development Research', 'desc' => 'We conduct rigorous research, assessments, and evaluations on trade, economics, and development issues to drive informed decision-making.'],
+                ['img' => 'Governance.png', 'tag' => 'Capacity Building', 'title' => 'Need-Based Training for Public & Private Sector', 'desc' => 'We build the capacity of public and private sector stakeholders through targeted, need-based training on trade, markets.'],
+                ['img' => 'Infrastructure Design.png', 'tag' => 'Project Management', 'title' => 'End-to-End Project Design, Management & Implementation', 'desc' => 'We design, manage, and implement tailor-made projects that address trade, economic, and market access challenges ...'],
+                ['img' => 'Technology Solutions.png', 'tag' => 'Technology Solutions', 'title' => 'Technology-Driven Trade Systems & Digital Platforms', 'desc' => 'We design and deploy technology-driven trade systems — including LIMS, certification platforms, single windows, and custom ...'],
+                ['img' => 'Governance (2).png', 'tag' => 'Laboratory Services', 'title' => 'Lab Accreditation, QMS & Testing Capacity Development', 'desc' => 'We support public and private laboratories to establish quality management systems ...'],
+                ['img' => 'Infrastructure Design (1).png', 'tag' => 'Trade Information Systems', 'title' => 'Online Portals, Databases & Transparency Platforms', 'desc' => 'We enhance transparency in export–import by developing online portals, trade information databases, notification systems.'],
+                ['img' => 'Capacity Building (2).png', 'tag' => 'Cold Chain & Logistics', 'title' => 'Temperature-Controlled Logistics & Supply Chain Systems', 'desc' => 'We design and strengthen cold chain and logistics systems — from temperature-controlled storage to last-mile delivery —'],
+            ];
+            @endphp
 
-
-    <!-- Work -->
-    <section class="work d-flex align-items-center py-5" >
-        <div class="container-fluid text-light">
-            <div class="row">
-                <div class="col-lg-6 d-flex align-items-center" data-aos="fade-right">
-                    <img class="img-fluid" src="./assets/images/work.jpg" alt="work">        
-                </div>
-                <div class="col-lg-5 d-flex align-items-center px-4 py-3" data-aos="">
-                    <div class="row">
-                        <div class="text-center text-lg-start py-4 pt-lg-0">
-                            <p>OUR WORK</p>
-                            <h2 class="py-2">Explore unlimited possibilities</h2>
-                            <p class="para-light">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dignissimos dicta mollitia totam explicabo obcaecati quia laudantium repudiandae.</p>
-                        </div>
-                        <div class="container" data-aos="fade-up">
-                            <div class="row g-5">
-                                <div class="col-6 text-start" >
-                                    <i class="fas fa-briefcase fa-2x text-start"></i>
-                                    <h2 class="purecounter" data-purecounter-start="0" data-purecounter-end="1258" data-purecounter-duration="3">1</h2>
-                                    <p>PROJECTS COMPLETED</p>
-                                </div>
-                                <div class="col-6" >
-                                    <i class="fas fa-award fa-2x"></i>
-                                    <h2 class="purecounter" data-purecounter-start="0" data-purecounter-end="150" data-purecounter-duration="3">1</h2>
-                                    <p>AWARDS</p>
-                                </div>
-                                <div class="col-6">
-                                    <i class="fas fa-users fa-2x"></i>
-                                    <h2 class="purecounter" data-purecounter-start="0" data-purecounter-end="1255" data-purecounter-duration="3">1</h2>
-                                    <p>CUSTOMER ACTIVE</p>
-                                </div>
-                                <div class="col-6">
-                                    <i class="fas fa-clock fa-2x"></i>
-                                    <h2 class="purecounter" data-purecounter-start="0" data-purecounter-end="1157" data-purecounter-duration="3">1</h2>
-                                    <p>GOOD REVIEWS</p>
-                                </div>
-                            </div>
-                        </div> <!-- end of container -->
-                    </div> <!-- end of row -->
-                </div> <!-- end of col-lg-5 -->
-            </div> <!-- end of row -->
-        </div> <!-- end of container -->
-    </section> <!-- end of work -->
-
-
-    <!-- Testimonials -->
-    <div class="slider-1 testimonial text-light d-flex align-items-center">
-        <div class="container">
-            <div class="row">
-                <div class="text-center w-lg-75 m-auto pb-4">
-                    <p>TESTIMONIALS</p>
-                    <h2 class="py-2">What Our Clients Says</h2>
-                    <p class="para-light">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Adipisci esse facilis vel, neque ipsa mollitia impedit, commodi ab illo dignissimos, voluptatum quae amet sed tenetur dolores reprehenderit laudantium quo sint.</p>
-                </div>
-            </div> <!-- end of row -->
-            <div class="row p-2" data-aos="zoom-in">
-                <div class="col-lg-12">
-
-                    <!-- Card Slider -->
-                    <div class="slider-container">
-                        <div class="swiper-container card-slider">
-                            <div class="swiper-wrapper">
-                                
-                                <!-- Slide -->
-                                <div class="swiper-slide">
-                                    <div class="testimonial-card p-4">
-                                        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Laboriosam commodi officia laborum qui iste quidem!</p>
-                                    
-                                        <div class="d-flex pt-4">
-                                            <div>
-                                                <img class="avatar" src="./assets/images/testimonial-1.jpg" alt="testimonial">
-                                            </div>
-                                            <div class="ms-3 pt-2">
-                                                <h6>Marlene Visconte</h6>
-                                                <p>General Manager - Scouter</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div> <!-- end of swiper-slide -->
-                                <!-- end of slide -->
-        
-                                <!-- Slide -->
-                                <div class="swiper-slide">
-                                    <div class="testimonial-card p-4">
-                                        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Laboriosam commodi officia laborum qui iste quidem!</p>
-                                        <div class="d-flex pt-4">
-                                            <div>
-                                                <img class="avatar" src="./assets/images/testimonial-2.jpg" alt="testimonial">
-                                            </div>
-                                            <div class="ms-3 pt-2">
-                                                <h6>John Spiker</h6>
-                                                <p>Team Leader - Vanquish</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div> <!-- end of swiper-slide -->
-                                <!-- end of slide -->
-        
-                                <!-- Slide -->
-                                <div class="swiper-slide">
-                                    <div class="testimonial-card p-4">
-                                        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Laboriosam commodi officia laborum qui iste quidem!</p>
-                                        <div class="d-flex pt-4">
-                                            <div>
-                                                <img class="avatar" src="./assets/images/testimonial-3.jpg" alt="testimonial">
-                                            </div>
-                                            <div class="ms-3 pt-2">
-                                                <h6>Stella Virtuoso</h6>
-                                                <p>Design Chief - Upscale</p>
-                                            </div>
-                                        </div>
-                                    </div>      
-                                </div> <!-- end of swiper-slide -->
-                                <!-- end of slide -->
-        
-                                <!-- Slide -->
-                                <div class="swiper-slide">
-                                    <div class="testimonial-card p-4">
-                                        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Laboriosam commodi officia laborum qui iste quidem!</p>
-                                        <div class="d-flex pt-4">
-                                            <div>
-                                                <img class="avatar" src="./assets/images/testimonial-4.jpg" alt="testimonial">
-                                            </div>
-                                            <div class="ms-3 pt-2">
-                                                <p>Mike tim</p>
-                                                <p>Investor - TechGroww</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div> <!-- end of swiper-slide -->
-                                <!-- end of slide -->
-
-                            </div> <!-- end of swiper-wrapper -->
-        
-                            <!-- Add Arrows -->
-                            <div class="swiper-button-next"></div>
-                            <div class="swiper-button-prev"></div>
-                            <!-- end of add arrows -->
-        
-                        </div> <!-- end of swiper-container -->
-                    </div> <!-- end of slider-container -->
-                    <!-- end of card slider -->
-
-                </div> <!-- end of col -->
-            </div> <!-- end of row -->
-        </div> <!-- end of container -->
-    </div> <!-- end of testimonials -->
-
-
-    <!-- Newsletter -->
-    <section class="newsletter text-light py-5">
-        <div class="container">
-            <div class="row" >
-                <div class="col-lg-6 text-center text-lg-start" data-aos="fade-right">
-                    <h4 class="py-1">Subscribe to our Newsletter</h4>
-                    <p class="para-light">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Dolor deleniti nobis amet accusamus debitis facilis quibusdam officia laborum nesciunt. Nihil.</p>
-                </div>
-                <div class="col-lg-6 d-flex align-items-center" data-aos="fade-down">
-                    <div class="input-group my-3">
-                        <input type="text" class="form-control p-2" placeholder="Enter your email address" aria-label="Recipient's email">
-                        <button class="btn-secondary text-light" type="button">Subscribe</button>
+            @foreach($services as $service)
+            <div class="col-12 col-sm-6 col-lg-4">
+                <div class="service-card">
+                    <img src="{{ asset('images/' . $service['img']) }}" alt="{{ $service['tag'] }}">
+                    <div class="card-inner">
+                        <span class="card-cat">{{ $service['tag'] }}</span>
+                        <h3>{{ $service['title'] }}</h3>
+                        <p>{{ $service['desc'] }}</p>
+                        <a href="#">Read More →</a>
                     </div>
                 </div>
-            </div> <!-- end of row -->
-        </div> <!-- end of container -->
-    </section> <!-- end of newsletter -->
+            </div>
+            @endforeach
 
+        </div>
+    </div>
+</section>
 
-    <!-- Contact -->
-    <section class="contact d-flex align-items-center py-5" id="contact">
-        <div class="container-fluid text-light">
-            <div class="row">
-                <div class="col-lg-6 d-flex justify-content-center justify-content-lg-end align-items-center px-lg-5" data-aos="fade-right">
-                    <div style="width:90%">
-                        <div class="text-center text-lg-start py-4 pt-lg-0">
-                            <p>CONTACT</p>
-                            <h2 class="py-2">Send your query</h2>
-                            <p class="para-light">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dignissimos dicta mollitia totam explicabo obcaecati quia laudantium repudiandae.</p>
-                        </div>
-                        <div>
-                            <div class="row" >
-                                <div class="col-lg-6">
-                                    <div class="form-group py-2">
-                                        <input type="text" class="form-control form-control-input" id="exampleFormControlInput1" placeholder="Enter name">
-                                    </div>                                
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group py-2">
-                                        <input type="email" class="form-control form-control-input" id="exampleFormControlInput2" placeholder="Enter phone number">
-                                    </div>                                 
-                                </div>
-                            </div>
-                            <div class="form-group py-1">
-                                <input type="email" class="form-control form-control-input" id="exampleFormControlInput3" placeholder="Enter email">
-                            </div>  
-                            <div class="form-group py-2">
-                                <textarea class="form-control form-control-input" id="exampleFormControlTextarea1" rows="6" placeholder="Message"></textarea>
-                            </div>                            
-                        </div>
-                        <div class="my-3">
-                            <a class="btn form-control-submit-button" href="#your-link">Submit</a>
-                        </div>
-                    </div> <!-- end of div -->
-                </div> <!-- end of col -->
-                <div class="col-lg-6 d-flex align-items-center" data-aos="fade-down">
-                    <img class="img-fluid d-none d-lg-block" src="./assets/images/contact.jpg" alt="contact">        
-                </div> <!-- end of col -->
-            </div> <!-- end of row -->
-        </div> <!-- end of container -->
-    </section> 
+{{-- ==============================
+     PROJECTS
+============================== --}}
+<section class="projects-section py-5">
+    <div class="container" style="max-width:1200px;">
+
+        {{-- HEADER --}}
+        <div class="mb-5">
+            <div class="d-flex align-items-center gap-2 mb-3">
+                <span class="tag-dot"></span>
+                <span class="project-tag">WORK THAT CREATES IMPACT</span>
+            </div>
+
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-3">
+                <div style="max-width:520px;">
+                    <h2 class="mb-0">Our <span>Projects</span></h2>
+                    <p class="sub-text mb-0">
+                        From laboratory accreditation to digital infrastructure — built to
+                        deliver measurable, lasting results.
+                    </p>
+                </div>
+                <a href="#" class="all-link">
+                    All Projects
+                    <span class="circle-arrow">→</span>
+                </a>
+            </div>
+        </div>
+
+        {{-- GRID --}}
+        <div class="row g-4">
+
+            @php
+            $projects = [
+                ['img' => 'Lab Project.png', 'badge' => 'LAB ACCREDITATION', 'title' => 'ISO/IEC 17025:2017 Accreditation Support to PRTC, CVASU', 'sub' => 'Chattogram Veterinary & Animal Sciences University'],
+                ['img' => 'Infrastructure Project.png', 'badge' => 'INFRASTRUCTURE DESIGN', 'title' => 'Seven-Storey Advanced Customs Laboratory Layout Design', 'sub' => 'Customs Authority, Chattogram'],
+                ['img' => 'BAFISA Project.png', 'badge' => 'DIGITAL SOLUTIONS', 'title' => 'HS Code Import Database & BAFISA Website Upgrade', 'sub' => 'Bangladesh Freight Forwarders & Shipping'],
+            ];
+            @endphp
+
+            @foreach($projects as $project)
+            <div class="col-12 col-md-4">
+                <div class="project-card">
+                    <img src="{{ asset('images/' . $project['img']) }}" alt="{{ $project['title'] }}">
+                    <div class="proj-overlay">
+                        <span class="proj-badge">{{ $project['badge'] }}</span>
+                        <h3>{{ $project['title'] }}</h3>
+                        <p>{{ $project['sub'] }}</p>
+                    </div>
+                </div>
+            </div>
+            @endforeach
+
+        </div>
+    </div>
+</section>
+
+{{-- ==============================
+     PARTNERS
+============================== --}}
+<section class="partners-section py-5">
+    <div class="container" style="max-width:1200px;">
+
+        <p class="partners-title mb-4">TRUSTED BY LEADING INSTITUTIONS</p>
+
+        <div class="d-flex align-items-center gap-3">
+            <button class="partners-arrow d-none d-md-flex">‹</button>
+
+            <div class="partner-logos">
+                <img src="{{ asset('images/bafisa.png') }}" alt="BAFISA">
+                <img src="{{ asset('images/lir 2.png') }}" alt="LIR">
+                <img src="{{ asset('images/bijem.png') }}" alt="BIJEM">
+                <img src="{{ asset('images/sanem 2.png') }}" alt="SANEM">
+                <img src="{{ asset('images/build.png') }}" alt="BUILD">
+                <img src="{{ asset('images/b-advancy.png') }}" alt="B-Advancy">
+            </div>
+
+            <button class="partners-arrow d-none d-md-flex">›</button>
+        </div>
+
+    </div>
+</section>
 
 @endsection
 
 @push('custome-js')
+<script>
+// ====== HERO SLIDER ======
+(function () {
+    const slides = document.querySelectorAll('.slide');
+    const indicators = document.querySelectorAll('.slider-line .ind');
+    let current = 0;
 
+    function goTo(n) {
+        slides[current].classList.remove('active');
+        indicators[current]?.classList.remove('active');
+        current = (n + slides.length) % slides.length;
+        slides[current].classList.add('active');
+        indicators[current]?.classList.add('active');
+    }
+
+    // Auto-advance every 4s
+    setInterval(() => goTo(current + 1), 4000);
+
+    // Click indicators
+    indicators.forEach((ind, i) => ind.addEventListener('click', () => goTo(i)));
+})();
+</script>
 @endpush
+

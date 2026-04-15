@@ -1,147 +1,144 @@
-    <!-- Location -->
-    <section class="location text-light py-5">
-        <div class="container" data-aos="zoom-in">
-            <div class="row">
-                <div class="col-lg-3 d-flex align-items-center">
-                    <div class="p-2"><i class="far fa-map fa-3x"></i></div>
-                    <div class="ms-2">
-                        <h6>ADDRESS</h6>
-                        <p>Teuku Umar ST. 1919</p>
-                    </div>
-                </div>
-                <div class="col-lg-3 d-flex align-items-center" >
-                    <div class="p-2"><i class="fas fa-mobile-alt fa-3x"></i></div>
-                    <div class="ms-2">
-                        <h6>CALL FOR QUERY</h6>
-                        <p>(800) 265  216 2020</p>
-                    </div>
-                </div>
-                <div class="col-lg-3 d-flex align-items-center" >
-                    <div class="p-2"><i class="far fa-envelope fa-3x"></i></div>
-                    <div class="ms-2">
-                        <h6>SEND US MESSAGE</h6>
-                        <p>infodemofile@example.com</p>
-                    </div>
-                </div>
-                <div class="col-lg-3 d-flex align-items-center" >
-                    <div class="p-2"><i class="far fa-clock fa-3x"></i></div>
-                    <div class="ms-2">
-                        <h6>OPENING HOURS</h6>
-                        <p>09:00 AM - 18:00 PM</p>
-                    </div>
-                </div>
-            </div> <!-- end of row -->
-        </div> <!-- end of container -->
-    </section> <!-- end of location -->
-  <!-- Footer -->
-  <section class="footer text-light">
-    <div class="container">
-        <div class="row" data-aos="fade-right">
-            <div class="col-lg-3 py-4 py-md-5">
-                <div class="d-flex align-items-center">
-                    <h4 class="">Mirko</h4>
-                </div>
-                <p class="py-3 para-light">Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus animi repudiandae explicabo esse maxime, impedit rem voluptatibus amet error quas.</p>
-                <div class="d-flex">
-                    <div class="me-3">
-                        <a href="#your-link">
-                            <i class="fab fa-facebook-f fa-2x py-2"></i>
-                        </a>
-                    </div>
-                    <div class="me-3">
-                        <a href="#your-link">
-                            <i class="fab fa-twitter fa-2x py-2"></i>
-                        </a>
-                    </div>
-                    <div class="me-3">
-                        <a href="#your-link">
-                            <i class="fab fa-instagram fa-2x py-2"></i>
-                        </a>
-                    </div>
-                </div>
-            </div> <!-- end of col -->
+<footer style="background: #000D14; color: white;">
 
-            <div class="col-lg-3 py-4 py-md-5">
-                <div>
-                    <h4 class="py-2">Quick Links</h4>
-                    <div class="d-flex align-items-center py-2">
-                        <i class="fas fa-caret-right"></i>
-                        <a href="#about"><p class="ms-3">About</p></a>
-                    </div>
-                    <div class="d-flex align-items-center py-2">
-                        <i class="fas fa-caret-right"></i>
-                        <a href="#"><p class="ms-3">Services</p></a>
-                    </div>
-                    <div class="d-flex align-items-center py-2">
-                        <i class="fas fa-caret-right"></i>
-                        <a href="#"><p class="ms-3">Plans</p></a>
-                    </div>
-                    <div class="d-flex align-items-center py-2">
-                        <i class="fas fa-caret-right"></i>
-                        <a href="#"><p class="ms-3">Contact</p></a>
+    <div class="container-fluid px-lg-5 py-5 border-bottom border-white border-opacity-10" style="max-width: 1072px; margin: 0 auto;">
+        <div class="row g-4 g-lg-5">
+
+            {{-- LEFT: Logo + About + Socials --}}
+            <div class="col-12 col-md-6 col-lg-4">
+
+                {{-- Brand --}}
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <img src="/assets/img/image 12.png" alt="Trace Logo"
+                         style="width: 38px; height: 38px; object-fit: contain;">
+                    <div>
+                        <h3 class="mb-0 fw-bold" style="font-size: 20px; letter-spacing: 1px;">TRACE</h3>
+                        <span style="font-size: 11px; color: #8fa6ad;">Insight. Strategy. Impact</span>
                     </div>
                 </div>
-            </div> <!-- end of col -->
 
-            <div class="col-lg-3 py-4 py-md-5">
-                <div>
-                    <h4 class="py-2">Useful Links</h4>
-                    <div class="d-flex align-items-center py-2">
-                        <i class="fas fa-caret-right"></i>
-                        <a href="privacy.html"><p class="ms-3">Privacy</p></a>
-                        
-                    </div>
-                    <div class="d-flex align-items-center py-2">
-                        <i class="fas fa-caret-right"></i>
-                        <a href="terms.html"><p class="ms-3">Terms</p></a>
-                    </div>
-                    <div class="d-flex align-items-center py-2">
-                        <i class="fas fa-caret-right"></i>
-                        <a href="#your-link"><p class="ms-3">Disclaimer</p></a>
-                    </div>
-                    <div class="d-flex align-items-center py-2">
-                        <i class="fas fa-caret-right"></i>
-                        <a href="#your-link"><p class="ms-3">FAQ</p></a>
-                    </div>
+                {{-- Description --}}
+                <p style="font-size: 13px; color: #8fa6ad; line-height: 1.7; max-width: 260px;">
+                    Trace Consulting Limited provides strategic advisory, technical assistance,
+                    and digital solutions to governments and development organisations across South Asia.
+                </p>
+
+                {{-- Socials --}}
+                <div class="d-flex gap-3 mt-3">
+                    <i class="fab fa-facebook-f footer-social"></i>
+                    <i class="fab fa-twitter footer-social"></i>
+                    <i class="fab fa-instagram footer-social"></i>
+                    <i class="fab fa-linkedin-in footer-social"></i>
                 </div>
-            </div> <!-- end of col -->
+            </div>
 
-            <div class="col-lg-3 py-4 py-md-5">
-                <div class="d-flex align-items-center">
-                    <h4>Newsletter</h4>
+            {{-- COMPANY --}}
+            <div class="col-6 col-md-3 col-lg-2">
+                <h4 class="footer-heading">COMPANY</h4>
+                <ul class="list-unstyled">
+                    <li class="footer-link">About Us</li>
+                    <li class="footer-link">Our Team</li>
+                    <li class="footer-link">Careers</li>
+                    <li class="footer-link">Contact</li>
+                </ul>
+            </div>
+
+            {{-- WORK --}}
+            <div class="col-6 col-md-3 col-lg-2">
+                <h4 class="footer-heading">WORK</h4>
+                <ul class="list-unstyled">
+                    <li class="footer-link">Services</li>
+                    <li class="footer-link">Projects</li>
+                    <li class="footer-link">Insights</li>
+                    <li class="footer-link">Partners</li>
+                </ul>
+            </div>
+
+            {{-- CONTACT --}}
+            <div class="col-12 col-md-6 col-lg-4">
+                <h4 class="footer-heading">CONTACT</h4>
+
+                <div class="d-flex align-items-start gap-2 mb-3">
+                    <img src="/assets/img/telephone.png" alt="Phone"
+                         style="width: 16px; height: 16px; object-fit: contain; filter: brightness(0) invert(1); margin-top: 2px;">
+                    <span style="font-size: 13px; color: #8fa6ad;">+880 1715-056952</span>
                 </div>
-                <p class="py-3 para-light">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laboriosam, ab.</p>
-                <div class="d-flex align-items-center">
-                    <div class="input-group mb-3">
-                        <input type="text" class="form-control p-2" placeholder="Enter Email" aria-label="Recipient's email">
-                        <button class="btn-secondary text-light"><i class="fas fa-envelope fa-lg"></i></button>       
-                    </div>
+
+                <div class="d-flex align-items-start gap-2 mb-3">
+                    <img src="/assets/img/mail.png" alt="Email"
+                         style="width: 16px; height: 16px; object-fit: contain; filter: brightness(0) invert(1); margin-top: 2px;">
+                    <span style="font-size: 13px; color: #8fa6ad;">contact@traceconsultingltd.com</span>
                 </div>
-            </div> <!-- end of col -->
-        </div> <!-- end of row -->
-    </div> <!-- end of container -->
-</section> <!-- end of footer -->
 
+                <div class="d-flex align-items-start gap-2">
+                    <img src="/assets/img/location.png" alt="Location"
+                         style="width: 16px; height: 16px; object-fit: contain; filter: brightness(0) invert(1); margin-top: 2px;">
+                    <span style="font-size: 13px; color: #8fa6ad;">
+                        Level 2, Plot 285, Road 19/C,<br>
+                        New DOHS, Mohakhali, Dhaka-1206
+                    </span>
+                </div>
+            </div>
 
-<!-- Bottom -->
-<div class="bottom py-2 text-light" >
-    <div class="container d-flex justify-content-between">
-        <div>
-            <p>Copyright © Your name</p><br>
-            <p>Distributed by: <a href="https://themewagon.com/">Themewagon</a></p>
         </div>
-        <div>
-            <i class="fab fa-cc-visa fa-lg p-1"></i>
-            <i class="fab fa-cc-mastercard fa-lg p-1"></i>
-            <i class="fab fa-cc-paypal fa-lg p-1"></i>
-            <i class="fab fa-cc-amazon-pay fa-lg p-1"></i>
+    </div>
+
+    {{-- Bottom Bar --}}
+    <div class="container-fluid px-lg-5 py-3" style="max-width: 1072px; margin: 0 auto;">
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2">
+            <p class="mb-0" style="font-size: 12px; color: #8fa6ad;">
+                © 2025 Trace Consulting Limited. All rights reserved.
+            </p>
+            <div class="d-flex gap-3">
+                <span class="footer-bottom-link">Privacy Policy</span>
+                <span class="footer-bottom-link">Terms of Use</span>
+            </div>
         </div>
-    </div> <!-- end of container -->
-</div> <!-- end of bottom -->
+    </div>
 
+</footer>
 
-<!-- Back To Top Button -->
-<button onclick="topFunction()" id="myBtn">
-    <img src="assets/images/up-arrow.png" alt="alternative">
-</button>
-<!-- end of back to top button -->
+{{-- Footer Styles --}}
+<style>
+    .footer-heading {
+        font-size: 13px;
+        letter-spacing: 1px;
+        margin-bottom: 18px;
+        color: #F47735;
+    }
+
+    .footer-link {
+        font-size: 13px;
+        color: #8fa6ad;
+        margin-bottom: 10px;
+        cursor: pointer;
+        transition: color .3s;
+    }
+
+    .footer-link:hover {
+        color: #F47735;
+    }
+
+    .footer-social {
+        font-size: 14px;
+        color: white;
+        opacity: 0.8;
+        cursor: pointer;
+        transition: color .3s, opacity .3s;
+    }
+
+    .footer-social:hover {
+        color: #F47735;
+        opacity: 1;
+    }
+
+    .footer-bottom-link {
+        font-size: 12px;
+        color: #8fa6ad;
+        cursor: pointer;
+        transition: color .3s;
+    }
+
+    .footer-bottom-link:hover {
+        color: #F47735;
+    }
+</style>
