@@ -33,6 +33,10 @@ class HomeController extends Controller
 
         return view('frontend.pages.services');
     }
+        public function about(Request $request)
+    {
+        return view ('frontend.pages.about');
+    }
 
     public function dashboard(Request $request)
     {
