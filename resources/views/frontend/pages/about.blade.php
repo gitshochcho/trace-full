@@ -58,7 +58,7 @@
 .about-hero-content h1 {
     font-family: "Sora", sans-serif;
     font-weight: 800;
-    font-size: clamp(32px, 5vw, 58px); /* Responsive Font */
+    font-size: clamp(32px, 5vw, 58px); 
     line-height: 1.15;
     color: #ffffff;
 }
@@ -136,7 +136,7 @@
 /* Responsive Fix for Left Margin */
 @media (min-width: 1200px) {
     .hero-container-offset {
-        margin-left: 15%; /* আপনার দেওয়া 424px এর কাছাকাছি ফিল দিবে */
+        margin-left: 15%; 
     }
 }
 
@@ -241,18 +241,18 @@
 
 /* Main Wrapper Box (Width: 1080px) */
 .framework-main-container {
-    width: 1080px; /* আপনার দেওয়া মাপ অনুযায়ী */
+    width: 1080px; 
     margin: 0 auto;
     display: block;
 }
 
 /* Right Side Content Box (Width: 708px) */
 .framework-right-box {
-    width: 708px; /* আপনার দেওয়া মাপ অনুযায়ী */
+    width: 708px; 
     min-height: 524px;
     background: #ffffff;
     border: 1px solid #E5E9ED;
-    border-radius: 16px; /* আপনার দেওয়া মাপ অনুযায়ী */
+    border-radius: 16px; 
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -263,7 +263,7 @@
 .framework-main-container .row {
     margin: 0;
     display: flex;
-    flex-wrap: nowrap; /* একই লাইনে রাখার জন্য */
+    flex-wrap: nowrap; 
 }
 
 /* Left Content Styles */
@@ -336,7 +336,7 @@
 /* Responsive */
 @media (max-width: 1100px) {
     .framework-main-container {
-        width: 95%; /* ছোট স্ক্রিনে এডজাস্ট হবে */
+        width: 95%; 
     }
     .framework-right-box {
         width: 100%;
@@ -383,16 +383,16 @@
 .feature-card {
     background: #fff;
     padding: 40px 30px;
-    border-radius: 16px; /* ইমেজের মতো রাউন্ডেড কর্নার */
+    border-radius: 16px; 
     border: 1px solid #f1f5f9;
     transition: all 0.3s ease;
 }
 
-/* আইকন বক্সের স্টাইল (Light Teal Background) */
+
 .icon-wrapper {
     width: 55px;
     height: 55px;
-    background-color: #e6f7f8; /* হালকা টিল ব্যাকগ্রাউন্ড */
+    background-color: #e6f7f8; 
     border-radius: 12px;
     display: flex;
     align-items: center;
@@ -401,7 +401,7 @@
 
 .icon-wrapper i {
     font-size: 24px;
-    color: #01888C; /* গাঢ় টিল আইকন কালার */
+    color: #01888C; 
 }
 
 .feature-card h5 {
@@ -433,7 +433,7 @@
 }
 
 .projects-main-container {
-    max-width: 1080px; /* আপনার গ্রিডের মূল উইডথ */
+    max-width: 1080px; 
     margin: 0 auto;
 }
 
@@ -572,7 +572,7 @@
 }
 
 .insights-container {
-    width: 1072px; /* আপনার দেওয়া মাপ */
+    width: 1072px;
     margin: 0 auto;
 }
 
@@ -627,7 +627,7 @@
 /* Grid Layout */
 .insights-grid {
     display: grid;
-    grid-template-columns: 516px 256px 256px; /* কার্ডের সুনির্দিষ্ট মাপ */
+    grid-template-columns: 516px 256px 256px; 
     grid-template-rows: repeat(2, auto);
     column-gap: 20px;
     row-gap: 20px;
@@ -726,7 +726,7 @@
     width: 100%;
     max-width: 1920px;
     background: #ffffff;
-    padding: 100px 0; /* আপনার মাপ অনুযায়ী */
+    padding: 100px 0; 
     border-top: 1px solid #E5E9ED;
     margin: 0 auto;
 }
@@ -734,7 +734,7 @@
 .partners-container {
     width: 1200px;
     max-width: 1200px;
-    padding: 0 60px; /* ফলে ভেতরের কন্টেন্ট ১০৮০পিএক্স হবে */
+    padding: 0 60px;
     margin: 0 auto;
 }
 
@@ -772,7 +772,7 @@
     margin-bottom: 0;
 }
 
-/* Logo Grid (ইমেজের মতো বর্ডার স্টাইল) */
+
 .logo-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -1284,7 +1284,7 @@ connected, coherent whole."
 
         <div class="partners-content-box">
             <div class="logo-grid">
-                @php $logos = ['bafisa.png', 'lir-2.png', 'bijem.png', 'build.png']; @endphp
+                @php $logos = ['bafisa.png', 'lir 2.png', 'bijem.png', 'build.png']; @endphp
                 @foreach($logos as $logo)
                 <div class="partner-logo-wrapper">
                     <img src="{{ asset('assets/img/'.$logo) }}" alt="Partner Logo">
