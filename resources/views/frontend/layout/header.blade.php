@@ -33,7 +33,7 @@
         <div class="collapse navbar-collapse bg-white" id="navbarContent">
             <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-lg-4" style="font-size: 13px; font-weight: 600; letter-spacing: 0.3px;">
                 <li class="nav-item">
-                    <a class="nav-link text-dark px-0" href="#">About Us</a>
+                    <a class="nav-link text-dark px-0" href="/about">About Us</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-dark px-0" href="/services">Services</a>
@@ -45,7 +45,7 @@
                     <a class="nav-link text-dark px-0" href="#">Our Team</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-dark px-0" href="#">Insights</a>
+                    <a class="nav-link text-dark px-0" href="/insights">Insights</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-dark px-0" href="#">Careers</a>

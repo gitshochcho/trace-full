@@ -33,6 +33,17 @@ class HomeController extends Controller
 
         return view('frontend.pages.services');
     }
+
+      public function serviceDetails(Request $request, $id)
+    {
+        return view('frontend.pages.service-details',compact('id'));
+    }
+
+    public function insights(Request $request)
+    {
+        return view('frontend.pages.insights');
+    }
+
         public function about(Request $request)
     {
         return view ('frontend.pages.about');

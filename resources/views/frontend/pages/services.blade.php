@@ -236,6 +236,8 @@
 /* =========================================
    RESPONSIVE
 ========================================= */
+.page-align-container { max-width: 1072px; margin: 0 auto; }
+
 @media (max-width: 992px) {
     .services-hero .services-title { font-size: 36px; }
     .cta-section .cta-title { font-size: 28px; }
@@ -267,7 +269,7 @@
      HERO
 ============================== --}}
 <section class="services-hero">
-    <div class="container" style="max-width: 1200px;">
+    <div class="container-fluid px-lg-5 page-align-container">
 
         <div class="label-wrapper">
             <span class="orange-line"></span>
@@ -291,7 +293,7 @@
      SERVICE CARDS
 ============================== --}}
 <section class="services-cards-section">
-    <div class="container" style="max-width: 1200px;">
+    <div class="container-fluid px-lg-5 page-align-container">
 
         @php
         $services = [
@@ -383,7 +385,7 @@
                             <span class="dot"></span>
                             {{ $service['products'] }}
                         </span>
-                        <a href="#">View Service →</a>
+                        <a href="{{ route('serviceDetails', ['id' => $loop->index + 1]) }}">View Service →</a>
                     </div>
 
                 </div>
@@ -398,7 +400,7 @@
      CTA
 ============================== --}}
 <section class="cta-section">
-    <div class="container" style="max-width: 1200px;">
+    <div class="container-fluid px-lg-5 page-align-container">
         <div class="row align-items-center gy-4">
 
             {{-- LEFT --}}
