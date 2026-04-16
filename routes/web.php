@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [App\Http\Controllers\HomeController::class, 'home'])->name('home');
 Route::get('/about', [App\Http\Controllers\HomeController::class, 'about'])->name('about');
 Route::get('/team', [App\Http\Controllers\HomeController::class, 'team'])->name('team');
+Route::get('/teamdetails', [App\Http\Controllers\HomeController::class, 'teamdetails'])->name('teamdetails');
 
 Route::get('login', [App\Http\Controllers\HomeController::class, 'login'])->name('login');
 Route::post('validate/login', [App\Http\Controllers\HomeController::class, 'validateLogin'])->name('loginCheck');
