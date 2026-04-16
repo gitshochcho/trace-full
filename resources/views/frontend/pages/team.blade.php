@@ -491,7 +491,7 @@
 <nav class="service-breadcrumb">
     <div class="custom-container">
         <div class="breadcrumb-links">
-            <a href="#">Home</a>
+            <a href="\">Home</a>
             <span class="sep">›</span>
             <span class="active">Our Team</span>
         </div>
@@ -560,7 +560,7 @@
                                 <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
                                 <a href="#"><i class="fa-regular fa-envelope"></i></a>
                             </div>
-                            <button class="btn-profile">View Full Profile →</button>
+                            <a href="/teamdetails" class="btn-profile">View Full Profile →</a>
                         </div>
                     </div>
                 </div>
