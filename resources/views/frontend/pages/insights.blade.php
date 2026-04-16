@@ -1,11 +1,17 @@
 @extends('frontend.layout.app')
 
 
-
-
-
-
 @section('content')
+
+<nav class="service-breadcrumb">
+    <div class="container-fluid px-lg-5 page-align-container">
+        <div class="breadcrumb-links">
+            <a href="\">Home</a>
+            <span class="sep">›</span>
+            <span class="active">Insights</span>
+        </div>
+    </div>
+</nav>
 {{-- ==============================
       INSIGHT HERO SECTION
 ============================== --}}
@@ -46,12 +52,12 @@
         <div class="row align-items-center">
             <div class="col-lg-8">
                 <div class="filters d-flex flex-wrap gap-2 gap-md-4">
-                    <a href="#" class="filter-link active">All <span class="ms-1 opacity-50">18</span></a>
-                    <a href="#" class="filter-link">Videos <span class="ms-1 opacity-50">1</span></a>
-                    <a href="#" class="filter-link">Op-Ed / Press <span class="ms-1 opacity-50">3</span></a>
-                    <a href="#" class="filter-link">Articles <span class="ms-1 opacity-50">4</span></a>
-                    <a href="#" class="filter-link">Publications <span class="ms-1 opacity-50">4</span></a>
-                    <a href="#" class="filter-link">Brochures <span class="ms-1 opacity-50">2</span></a>
+                    <a href="#" class="filter-link active" data-filter="ALL">All <span class="ms-1 opacity-50">18</span></a>
+                    <a href="#" class="filter-link" data-filter="VIDEO">Videos <span class="ms-1 opacity-50">1</span></a>
+                    <a href="#" class="filter-link" data-filter="OP-ED / PRESS">Op-Ed / Press <span class="ms-1 opacity-50">3</span></a>
+                    <a href="#" class="filter-link" data-filter="ARTICLE">Articles <span class="ms-1 opacity-50">4</span></a>
+                    <a href="#" class="filter-link" data-filter="PUBLICATION">Publications <span class="ms-1 opacity-50">4</span></a>
+                    <a href="#" class="filter-link" data-filter="BROCHURE">Brochures <span class="ms-1 opacity-50">2</span></a>
                 </div>
             </div>
             <div class="col-lg-4 mt-3 mt-lg-0">
@@ -75,7 +81,7 @@
 <section class="insights-list py-5 bg-white">
     <div class="container-fluid px-lg-5 page-align-container">
         <div class="results-info d-flex align-items-center gap-3 mb-5">
-            <span class="small text-muted text-nowrap">Showing <b>18</b> insights</span>
+            <span class="small text-muted text-nowrap">Showing <b id="results-count">18</b> insights</span>
             <div class="w-100 bg-light" style="height: 1px;"></div>
         </div>
 
@@ -89,11 +95,15 @@
                 ['tag' => 'PUBLICATION', 'cat' => 'RESEARCH & ASSESSMENT', 'title' => 'Export Performance Management: A Framework for South Asian Governments', 'btn' => 'Read', 'badge_bg' => '#00898e', 'img' => 'Export Performance Management_ A Framework for South Asian Governments.png'],
                 ['tag' => 'PUBLICATION', 'cat' => 'TECHNOLOGY SOLUTIONS', 'title' => 'Digital Trade Infrastructure in Bangladesh: A Readiness Assessment', 'btn' => 'Read', 'badge_bg' => '#00898e', 'img' => 'Digital Trade Infrastructure in Bangladesh_ A Readiness Assessment.png'],
                 ['tag' => 'PUBLICATION', 'cat' => 'POLICY ADVOCACY', 'title' => "Reforming Bangladesh's Export Licensing Framework: Policy Brief 2024", 'btn' => 'Read', 'badge_bg' => '#00898e', 'img' => "Reforming Bangladesh's Export Licensing Framework_ Policy Brief 2024.png"],
+                ['tag' => 'ARTICLE', 'cat' => 'RESEARCH & ASSESSMENT', 'title' => 'Strengthening Cross-Border Trade: A Diagnostic of Non-Tariff Barriers in South Asia', 'btn' => 'Read', 'badge_bg' => '#00898e', 'img' => 'TRACE Trade Facilitation Services — 2025 Capability Overview.png'],
+                ['tag' => 'OP-ED / PRESS', 'cat' => 'TRADE FACILITATION', 'title' => "Op-Ed: Why Bangladesh's Export Growth Depends on Trade Facilitation Reform", 'btn' => 'Read', 'badge_bg' => '#00898e', 'img' => "Export Performance Management_ A Framework for South Asian Governments.png"],
+                ['tag' => 'OP-ED / PRESS', 'cat' => 'POLICY ADVOCACY', 'title' => "Op-Ed: Reforming Export Licensing in Bangladesh to Unlock Growth", 'btn' => 'Read', 'badge_bg' => '#00898e', 'img' => "TRACE Laboratory Accreditation Services — Brochure 2024.png"],
+                ['tag' => 'OP-ED / PRESS', 'cat' => 'TECHNOLOGY SOLUTIONS', 'title' => "Op-Ed: The Role of Digital Solutions in Modernizing Trade in South Asia", 'btn' => 'Read', 'badge_bg' => '#00898e', 'img' => "Reforming Bangladesh's Export Licensing Framework_ Policy Brief 2024.png"],
             ];
             @endphp
 
             @foreach($items as $index => $item)
-            <div class="col-12 col-md-6 col-lg-4">
+            <div class="col-12 col-md-6 col-lg-4 insight-item" data-tag="{{ strtoupper($item['tag']) }}">
                 <div class="insight-card h-100 border-0 shadow-sm rounded-5 overflow-hidden bg-white">
                     <div class="card-img-position relative" style="height: 220px; overflow: hidden; position: relative;">
                         <img src="{{ asset('assets/img/' . $item['img']) }}" class="w-100 h-100 object-fit-cover" alt="{{ $item['title'] }}">
@@ -120,7 +130,7 @@
         </div>
 
         <div class="text-center mt-5">
-            <button class="btn border px-5 py-2 rounded-pill fw-bold" style="font-size: 13px; background: #fff; color: #01354B; border: 2px solid #01354B; box-shadow: 0 10px 20px rgba(0, 132, 67, 0.18);">
+            <button id="load-more-btn" class="btn border px-5 py-2 rounded-pill fw-bold" style="font-size: 13px; background: #fff; color: #01354B; border: 2px solid #01354B; box-shadow: 0 10px 20px rgba(0, 132, 67, 0.18); display: none;">
                 <i class="fas fa-chevron-down me-2 small"></i> Load More
             </button>
         </div>
@@ -153,8 +163,121 @@
 
 @endsection
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const filterLinks = document.querySelectorAll('.filter-link');
+        const insightItems = document.querySelectorAll('.insight-item');
+        const resultCount = document.getElementById('results-count');
+        const loadMoreBtn = document.getElementById('load-more-btn');
+        let activeFilter = 'ALL';
+        let hasExpanded = false;
+
+        function updateResultsCount(count) {
+            if (resultCount) {
+                resultCount.textContent = count;
+            }
+        }
+
+        function updateFilterLinkCounts() {
+            const counts = { ALL: insightItems.length };
+
+            insightItems.forEach(function (item) {
+                const itemTag = item.dataset.tag ? item.dataset.tag.toUpperCase() : '';
+                if (!counts[itemTag]) {
+                    counts[itemTag] = 0;
+                }
+                counts[itemTag] += 1;
+            });
+
+            filterLinks.forEach(function (link) {
+                const filterValue = link.dataset.filter || 'ALL';
+                const span = link.querySelector('span');
+                if (span) {
+                    span.textContent = counts[filterValue] || 0;
+                }
+            });
+        }
+
+        function updateLoadMoreVisibility(visibleCount) {
+            if (!loadMoreBtn) return;
+            loadMoreBtn.style.display = visibleCount > 6 ? 'inline-block' : 'none';
+        }
+
+        function applyFilter(filterValue) {
+            activeFilter = filterValue.toUpperCase();
+            hasExpanded = false;
+            let visibleCount = 0;
+
+            insightItems.forEach(function (item) {
+                const itemTag = item.dataset.tag ? item.dataset.tag.toUpperCase() : '';
+                const matches = activeFilter === 'ALL' || itemTag.includes(activeFilter);
+                item.dataset.visible = matches ? '1' : '0';
+                if (matches) {
+                    visibleCount += 1;
+                }
+            });
+
+            let shown = 0;
+            insightItems.forEach(function (item) {
+                if (item.dataset.visible === '1') {
+                    shown += 1;
+                    item.style.display = shown <= 6 ? '' : 'none';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            updateResultsCount(visibleCount);
+            updateLoadMoreVisibility(visibleCount);
+        }
+
+        function expandItems() {
+            hasExpanded = true;
+            insightItems.forEach(function (item) {
+                if (item.dataset.visible === '1') {
+                    item.style.display = '';
+                }
+            });
+            if (loadMoreBtn) {
+                loadMoreBtn.style.display = 'none';
+            }
+        }
+
+        filterLinks.forEach(function (link) {
+            link.addEventListener('click', function (event) {
+                event.preventDefault();
+                filterLinks.forEach(function (otherLink) { otherLink.classList.remove('active'); });
+                this.classList.add('active');
+                applyFilter(this.dataset.filter || 'ALL');
+            });
+        });
+
+        if (loadMoreBtn) {
+            loadMoreBtn.addEventListener('click', function () {
+                expandItems();
+            });
+        }
+
+        updateFilterLinkCounts();
+
+        const activeLink = document.querySelector('.filter-link.active');
+        if (activeLink) {
+            applyFilter(activeLink.dataset.filter || 'ALL');
+        }
+    });
+</script>
+
 @push('custome-css')
 <style>
+    .service-breadcrumb {
+    background: #F8F9FB;
+    border-bottom: 1px solid #E5E9ED;
+    padding: 12px 0;
+}
+.breadcrumb-links { font-size: 13px; color: #94A3B8; }
+.breadcrumb-links a { color: #64748B; text-decoration: none; }
+.breadcrumb-links .sep { margin: 0 8px; }
+.breadcrumb-links .active { color: #01354B; font-weight: 600; }
     /* Custom Styles for Same to Same Look */
     .filter-link {
         text-decoration: none;

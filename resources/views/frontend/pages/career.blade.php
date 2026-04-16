@@ -3,6 +3,15 @@
 @push('custome-css')
 
 <style>
+    .service-breadcrumb {
+    background: #F8F9FB;
+    border-bottom: 1px solid #E5E9ED;
+    padding: 12px 0;
+}
+.breadcrumb-links { font-size: 13px; color: #94A3B8; }
+.breadcrumb-links a { color: #64748B; text-decoration: none; }
+.breadcrumb-links .sep { margin: 0 8px; }
+.breadcrumb-links .active { color: #01354B; font-weight: 600; }
     /* TRACE Careers Custom Styles */
     :root {
         --dark-navy: #002d3a;
@@ -188,6 +197,16 @@
 @endpush
 
 @section('content')
+<nav class="service-breadcrumb">
+    <div class="container-fluid px-lg-5 page-align-container">
+        <div class="breadcrumb-links">
+            <a href="\">Home</a>
+            <span class="sep">›</span>
+            <span class="active">Careers</span>
+        </div>
+    </div>
+</nav>
+
 <div class="careers-wrapper">
     <section class="hero-career">
         <div class="container-fluid px-lg-5 page-align-container">

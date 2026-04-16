@@ -549,7 +549,7 @@
 
         {{-- BUTTONS --}}
         <div class="hero-btns">
-            <a href="#" class="btn-hero-primary">Explore Services <span>→</span></a>
+            <a href="/services" class="btn-hero-primary">Explore Services <span>→</span></a>
             <a href="#" class="btn-hero-secondary">View Our Work</a>
         </div>
 
@@ -615,7 +615,7 @@
                     </div>
                 </div>
 
-                <a href="#" class="learn-btn mt-3 d-inline-block text-decoration-none">Learn About Us &rarr;</a>
+                <a href="/about" class="learn-btn mt-3 d-inline-block text-decoration-none">Learn About Us &rarr;</a>
             </div>
 
             {{-- RIGHT IMAGE --}}
@@ -655,7 +655,7 @@
                         improve transparency, and deliver lasting outcomes.
                     </p>
                 </div>
-                <a href="#" class="all-link text-decoration-none">
+                <a href="/services" class="all-link text-decoration-none">
                     <span class="fw-bold text-dark me-2">All Services</span>
                     <span class="circle-arrow">&rarr;</span>
                 </a>

@@ -968,9 +968,9 @@
                 </div>
 
                <div class="d-flex gap-3 mt-4">
-    <a href="#" class="btn btn-orange">Work With Us &rarr;</a>
+    <a href="/contact" class="btn btn-orange">Work With Us &rarr;</a>
     
-    <a href="#" class="btn btn-outline-dark-custom">Our Services</a>
+    <a href="/services" class="btn btn-outline-dark-custom">Our Services</a>
 </div>
             </div>
 
@@ -1237,7 +1237,7 @@ connected, coherent whole."
                 <p class="insights-desc">Thought leadership, research publications, and knowledge resources from our team.</p>
             </div>
             <div class="header-right">
-                <a href="#" class="all-insights-btn">All Insights &rarr;</a>
+                <a href="/insights" class="all-insights-btn">All Insights &rarr;</a>
             </div>
         </div>
 
