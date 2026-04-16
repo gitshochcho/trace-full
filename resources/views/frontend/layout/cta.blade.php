@@ -1,10 +1,10 @@
 <section class="cta-section">
-    <div class="custom-container">
+    <div class="container custom-cta-container"> {{-- ১০৭২পিএক্স কন্টেইনার --}}
         <div class="cta-content-wrapper">
             <div class="row align-items-center gy-4">
                 
                 <div class="col-lg-8">
-                    <div class="cta-tag">
+                    <div class="cta-tag text-uppercase">
                         <span class="line"></span>
                         WORK WITH US
                     </div>
@@ -17,7 +17,7 @@
                     </p>
                 </div>
 
-                <div class="col-lg-4 text-lg-end">
+                <div class="col-lg-4 text-center text-lg-end">
                     <button class="cta-btn">
                         Get in Touch →
                     </button>
@@ -30,16 +30,24 @@
 
 {{-- CTA Styles --}}
 <style>
+/* ================= CONTAINER FIX ================= */
+.custom-cta-container {
+    max-width: 1072px !important;
+    margin: 0 auto;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
 /* ================= CTA SECTION ================= */
 .cta-section {
     width: 100%;
-    background: #01354B; /* ছবির গাঢ় নীল রঙ */
+    background: #01354B; 
     padding: 100px 0;
     position: relative;
-    overflow: hidden; /* বৃত্তটি বাইরে যেন না যায় */
+    overflow: hidden; 
 }
 
-/* ডানদিকের সেই হালকা বৃত্তাকার শেপ */
+/* Background Circle Decoration */
 .cta-section::after {
     content: "";
     position: absolute;
@@ -52,7 +60,6 @@
     pointer-events: none;
 }
 
-/* কন্টেইনার এবং এলাইনমেন্ট */
 .cta-content-wrapper {
     position: relative;
     z-index: 2;
@@ -65,7 +72,7 @@
     gap: 10px;
     font-size: 12px;
     letter-spacing: 1px;
-    color: #4DC0C4; /* ছবির আকাশী রঙ */
+    color: #4DC0C4; 
     font-weight: 600;
     margin-bottom: 15px;
 }
@@ -73,7 +80,7 @@
 .cta-tag .line {
     width: 25px;
     height: 2px;
-    background: #F47735; /* সেই কমলা দাগ */
+    background: #F47735; 
 }
 
 /* Title and Description */
@@ -133,5 +140,4 @@
         text-align: center !important;
     }
 }
-
 </style>
