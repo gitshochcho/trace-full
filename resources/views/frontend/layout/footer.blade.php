@@ -35,10 +35,10 @@
             <div class="col-6 col-md-3 col-lg-2">
                 <h4 class="footer-heading">COMPANY</h4>
                 <ul class="list-unstyled">
-                    <li class="footer-link">About Us</li>
-                    <li class="footer-link">Our Team</li>
-                    <li class="footer-link">Careers</li>
-                    <li class="footer-link">Contact</li>
+                    <li class="footer-link"><a href="/about" >About Us</a></li>
+                    <li class="footer-link"><a href="/team" >Our Team</a></li>
+                    <li class="footer-link"><a href="/careers" >Careers</a></li>
+                    <li class="footer-link"><a href="/contact" >Contact</a></li>
                 </ul>
             </div>
 
@@ -46,10 +46,10 @@
             <div class="col-6 col-md-3 col-lg-2">
                 <h4 class="footer-heading">WORK</h4>
                 <ul class="list-unstyled">
-                    <li class="footer-link">Services</li>
-                    <li class="footer-link">Projects</li>
-                    <li class="footer-link">Insights</li>
-                    <li class="footer-link">Partners</li>
+                    <li class="footer-link"><a href="/services" >Services</a></li>
+                    <li class="footer-link"><a href="#" >Projects</a></li>
+                    <li class="footer-link"><a href="/insights" >Insights</a></li>
+                    <li class="footer-link"><a href="#" >Partners</a></li>
                 </ul>
             </div>
 

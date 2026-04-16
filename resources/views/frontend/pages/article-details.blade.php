@@ -13,7 +13,7 @@
 }
 
 .article-hero-inner {
-    max-width: 1200px;
+    max-width: 1072px;
     margin: 0 auto;
     padding: 0 24px;
 }
@@ -109,7 +109,7 @@
    ARTICLE LAYOUT
 ========================================= */
 .article-layout {
-    max-width: 1200px;
+    max-width: 1072px;
     margin: 0 auto;
     padding: 48px 24px 80px;
     display: grid;
@@ -520,7 +520,7 @@
 }
 
 .cta-inner {
-    max-width: 1200px;
+    max-width: 1072px;
     margin: 0 auto;
     padding: 0 24px;
     display: grid;
@@ -821,7 +821,7 @@
 
 </div>{{-- end article-layout --}}
 
-{{-- ==============================
+<!-- {{-- ==============================
      CTA
 ============================== --}}
 <section class="article-cta">
@@ -841,7 +841,9 @@
             <a href="#" class="cta-btn">Get in Touch →</a>
         </div>
     </div>
-</section>
+</section> -->
+
+@include('frontend.layout.cta')
 
 @endsection
 

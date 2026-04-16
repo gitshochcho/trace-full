@@ -43,12 +43,14 @@
     position: relative;
     z-index: 2;
     height: 100%;
-    max-width: 1200px;
+    max-width: 1072px;
     margin: 0 auto;
     padding: 0 24px;
     display: flex;
     align-items: center;
 }
+
+.page-align-container { max-width: 1072px; margin: 0 auto; }
 
 .hero-content {
     max-width: 520px;
@@ -452,7 +454,7 @@
      DETAILS SECTION
 ============================== --}}
 <section class="service-details-section">
-    <div class="container" style="max-width: 1200px;">
+    <div class="container-fluid px-lg-5 page-align-container">
         <div class="row g-4 g-lg-5">
 
             {{-- ===== LEFT COLUMN ===== --}}
@@ -586,7 +588,7 @@
     </div>
 </section>
 
-{{-- ==============================
+<!-- {{-- ==============================
      CTA
 ============================== --}}
 <section class="cta-section">
@@ -614,6 +616,7 @@
 
         </div>
     </div>
-</section>
+</section> -->
+@include('frontend.layout.cta')
 
 @endsection

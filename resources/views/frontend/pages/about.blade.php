@@ -870,7 +870,7 @@
 @section('content')
 
 <section class="about-hero">
-    <img src="{{ asset('assets/img/Trade and Customs.png') }}" alt="Hero" class="img-fluid rounded-4 shadow-sm">
+    <img src="{{ asset('assets/img/ship.jpeg') }}" alt="Hero" class="img-fluid rounded-4 shadow-sm">
     <div class="container-fluid about-hero-content">
         <div class="custom-container"> 
             <div class="row">

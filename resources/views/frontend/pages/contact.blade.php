@@ -52,28 +52,36 @@
         border-radius: 16px;
         padding: 40px;
         box-shadow: 0 20px 50px rgba(0,0,0,0.1);
-        margin-top: -120px;
+        margin-top: -170px;
         position: relative;
         z-index: 10;
-        border-top: 5px solid var(--trace-cyan);
+        border: 1px solid #ffffff;
+        
+    }
+    .contact-form-header {
+        background: var(--dark-navy);
+        border-radius: 16px 16px 0 0;
+        padding: 26px 30px 8px;
+        margin: -40px -40px 10px;
+        color: #ffffff;
     }
     .form-label-top {
-        font-size: 11px;
+        font-size: 10px;
         font-weight: 700;
-        color: var(--trace-cyan);
+        color: #4DC0C4;
         letter-spacing: 1px;
         margin-bottom: 10px;
     }
     .form-title {
-        font-size: 28px;
+        font-size: 20px;
         font-weight: 800;
-        color: var(--dark-navy);
+        color: #ffffff;
         margin-bottom: 5px;
     }
     .form-subtitle {
-        font-size: 14px;
-        color: var(--text-muted);
-        margin-bottom: 30px;
+        font-size: 13px;
+        color: rgba(255,255,255,0.8);
+        margin-bottom: 20px;
     }
     .contact-form label {
         font-size: 13px;
@@ -107,6 +115,9 @@
         color: #94a3b8;
         text-align: center;
         margin-top: 15px;
+    }
+    .form-privacy a {
+        color: var(--dark-navy);
     }
 
     /* Info Sections */
@@ -206,7 +217,7 @@
         border: 1px solid #e2e8f0;
         color: var(--dark-navy);
         font-weight: 700;
-        font-size: 14px;
+        font-size: 13px;
         text-decoration: none;
         transition: 0.3s;
         margin-bottom: 12px;
@@ -214,11 +225,13 @@
     .social-pill:hover { background: #f1f5f9; }
     .social-pill i { font-size: 16px; }
 
+    .page-align-container { max-width: 1072px; margin: 0 auto; }
+
     @media (max-width: 991px) {
         .contact-hero { padding: 60px 0 100px 0; text-align: center; }
         .contact-hero-desc { margin: 0 auto; }
         .contact-hero-title { font-size: 38px; }
-        .contact-form-card { margin-top: -60px; }
+        .contact-form-card { margin-top: -70px; }
         .info-row { flex-direction: column; text-align: center; }
         .info-icon-wrap { margin-right: 0; margin-bottom: 15px; }
         .info-action-btn { margin-left: 0; margin-top: 15px; width: 100%; }
@@ -229,7 +242,7 @@
 @section('content')
 <div class="contact-wrapper">
     <section class="contact-hero">
-        <div class="container">
+        <div class="container-fluid px-lg-5 page-align-container">
             <div class="row">
                 <div class="col-lg-6">
                     <div class="hero-label">Reach Out</div>
@@ -240,7 +253,7 @@
         </div>
     </section>
 
-    <div class="container pb-5">
+    <div class="container-fluid px-lg-5 page-align-container pb-5">
         <div class="row">
             <div class="col-lg-7 py-lg-5 order-2 order-lg-1">
                 
@@ -255,7 +268,7 @@
                                 <p class="info-primary">+880 1715-056952</p>
                                 <p class="info-secondary">Head Office — Dhaka</p>
                             </div>
-                            <a href="tel:+8801715056952" class="info-action-btn">Call Now</a>
+                            <a href="tel:+8801715056952" class="info-action-btn"><i class="fas fa-phone-alt me-2"></i>Call Now</a>
                         </div>
                         <div class="info-row">
                             <div class="info-icon-wrap"><i class="fas fa-mobile-alt"></i></div>
@@ -263,7 +276,7 @@
                                 <p class="info-primary">+880 1961 435 277</p>
                                 <p class="info-secondary">Mobile — MD & CEO</p>
                             </div>
-                            <a href="tel:+8801961435277" class="info-action-btn">Call Now</a>
+                            <a href="tel:+8801961435277" class="info-action-btn"><i class="fas fa-phone-alt me-2"></i>Call Now</a>
                         </div>
                     </div>
 
@@ -275,7 +288,7 @@
                                 <p class="info-primary">contact@traceconsultingltd.com</p>
                                 <p class="info-secondary">General Enquiries</p>
                             </div>
-                            <a href="mailto:contact@traceconsultingltd.com" class="info-action-btn">Send Email</a>
+                            <a href="mailto:contact@traceconsultingltd.com" class="info-action-btn"><i class="fas fa-envelope me-2"></i>Send Email</a>
                         </div>
                     </div>
 
@@ -287,7 +300,7 @@
                                 <p class="info-primary">hr@traceconsultingltd.com</p>
                                 <p class="info-secondary">Job Applications & HR</p>
                             </div>
-                            <a href="mailto:hr@traceconsultingltd.com" class="info-action-btn">Send Email</a>
+                            <a href="mailto:hr@traceconsultingltd.com" class="info-action-btn"><i class="fas fa-envelope me-2"></i>Send Email</a>
                         </div>
                     </div>
                 </div>
@@ -310,16 +323,6 @@
                     </div>
                 </div>
 
-                <div class="mb-5">
-                    <h2 class="info-heading"><span class="accent-bar"></span> Follow Us</h2>
-                    <div class="d-flex flex-wrap gap-3">
-                        <a href="#" class="social-pill"><i class="fab fa-linkedin-in text-primary"></i> LinkedIn</a>
-                        <a href="#" class="social-pill"><i class="fab fa-twitter text-info"></i> Twitter</a>
-                        <a href="#" class="social-pill"><i class="fab fa-facebook-f text-primary"></i> Facebook</a>
-                        <a href="#" class="social-pill"><i class="fab fa-youtube text-danger"></i> Youtube</a>
-                    </div>
-                </div>
-
                 <div>
                     <h2 class="info-heading"><span class="accent-bar"></span> Find Us</h2>
                     <div class="rounded-4 overflow-hidden border">
@@ -331,9 +334,11 @@
 
             <div class="col-lg-5 order-1 order-lg-2">
                 <div class="contact-form-card">
-                    <p class="form-label-top">SEND A MESSAGE</p>
-                    <h3 class="form-title">Get a Consultation</h3>
-                    <p class="form-subtitle">We'll respond within one business day.</p>
+                    <div class="contact-form-header">
+                        <p class="form-label-top">SEND A MESSAGE</p>
+                        <h3 class="form-title">Get a Consultation</h3>
+                        <p class="form-subtitle">We'll respond within one business day.</p>
+                    </div>
 
                     <form action="#" class="contact-form">
                         <div class="row">
@@ -379,9 +384,19 @@
                         </button>
 
                         <p class="form-privacy">
-                            By submitting this form you agree to our <a href="#" class="text-decoration-none color-">Privacy Policy</a>. We never share your data.
+                            By submitting this form you agree to our <a href="#" class="text-decoration-none">Privacy Policy</a>. We never share your data.
                         </p>
                     </form>
+                </div>
+
+                <div class="mb-5 mt-4">
+                    <h2 class="info-heading"><span class="accent-bar"></span> Follow Us</h2>
+                    <div class="d-flex flex-wrap gap-3">
+                        <a href="#" class="social-pill"><i class="fab fa-linkedin-in text-primary"></i> LinkedIn</a>
+                        <a href="#" class="social-pill"><i class="fab fa-twitter text-info"></i> Twitter</a>
+                        <a href="#" class="social-pill"><i class="fab fa-facebook-f text-primary"></i> Facebook</a>
+                        <a href="#" class="social-pill"><i class="fab fa-youtube text-danger"></i> Youtube</a>
+                    </div>
                 </div>
             </div>
         </div>

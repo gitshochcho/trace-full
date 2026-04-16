@@ -520,9 +520,9 @@
     {{-- SLIDES --}}
     <div class="slides">
         <div class="slide active"><img src="/assets/img/image 11.png" alt="Hero 1"></div>
-        <div class="slide"><img src="/assets/img/Trade and Customs.png" alt="Hero 2"></div>
-        <div class="slide"><img src="/assets/img/image 54.png" alt="Hero 3"></div>
-        <div class="slide"><img src="/assets/img/image 55.png" alt="Hero 4"></div>
+        <div class="slide"><img src="/assets/img/ship.jpeg" alt="Hero 2"></div>
+        <div class="slide"><img src="/assets/img/hero3.jpeg" alt="Hero 3"></div>
+        <div class="slide"><img src="/assets/img/hero4.jpeg" alt="Hero 4"></div>
     </div>
 
     {{-- CONTENT --}}

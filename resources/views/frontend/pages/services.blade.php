@@ -395,7 +395,7 @@
 
     </div>
 </section>
-
+<!-- 
 {{-- ==============================
      CTA
 ============================== --}}
@@ -428,6 +428,8 @@
 
         </div>
     </div>
-</section>
+</section> -->
+
+@include('frontend.layout.cta')
 
 @endsection
