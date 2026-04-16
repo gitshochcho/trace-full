@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'home'])->name('home');
 Route::get('/about', [App\Http\Controllers\HomeController::class, 'about'])->name('about');
-
+Route::get('/team', [App\Http\Controllers\HomeController::class, 'team'])->name('team');
 
 
 Route::get('/services', [App\Http\Controllers\HomeController::class, 'services'])->name('services');
