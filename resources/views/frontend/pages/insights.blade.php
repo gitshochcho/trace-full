@@ -92,7 +92,7 @@
             ];
             @endphp
 
-            @foreach($items as $item)
+            @foreach($items as $index => $item)
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="insight-card h-100 border-0 shadow-sm rounded-5 overflow-hidden bg-white">
                     <div class="card-img-position relative" style="height: 220px; overflow: hidden; position: relative;">
@@ -106,7 +106,12 @@
                         
                         <div class="d-flex justify-content-between align-items-center pt-3 border-top mt-auto">
                             <span class="text-muted" style="font-size: 12px;"><i class="far fa-calendar-alt me-1"></i> Jan 2025 · 18 min</span>
-                            <a href="#" class="fw-bold text-decoration-none text-teal" style="font-size: 12px; color: #00898e;">{{ $item['btn'] }} →</a>
+                            @php
+                                $link = $item['btn'] === 'Read'
+                                    ? route('articleDetails', ['id' => $index + 1])
+                                    : '#';
+                            @endphp
+                            <a href="{{ $link }}" class="fw-bold text-decoration-none text-teal" style="font-size: 12px; color: #00898e;">{{ $item['btn'] }} →</a>
                         </div>
                     </div>
                 </div>

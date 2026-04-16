@@ -14,7 +14,9 @@ Route::get('/team', [App\Http\Controllers\HomeController::class, 'team'])->name(
 Route::get('/services', [App\Http\Controllers\HomeController::class, 'services'])->name('services');
 Route::get('/service-details/{id}', [App\Http\Controllers\HomeController::class, 'serviceDetails'])->name('serviceDetails');
 Route::get('/insights', [App\Http\Controllers\HomeController::class, 'insights'])->name('insights');
-
+Route::get('/article-details/{id}', [App\Http\Controllers\HomeController::class, 'articleDetails'])->name('articleDetails');
+Route::get('/career', [App\Http\Controllers\HomeController::class, 'career'])->name('career');
+Route::get('/contact', [App\Http\Controllers\HomeController::class, 'contact'])->name('contact');
 Route::get('login', [App\Http\Controllers\HomeController::class, 'login'])->name('login');
 Route::post('validate/login', [App\Http\Controllers\HomeController::class, 'validateLogin'])->name('loginCheck');
 Route::get('/register', [App\Http\Controllers\HomeController::class, 'registration'])->name('registration');

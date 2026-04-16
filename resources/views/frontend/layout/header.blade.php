@@ -33,27 +33,27 @@
         <div class="collapse navbar-collapse bg-white" id="navbarContent">
             <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-lg-4" style="font-size: 13px; font-weight: 600; letter-spacing: 0.3px;">
                 <li class="nav-item">
-                    <a class="nav-link text-dark px-0" href="/about">About Us</a>
+                    <a class="nav-link text-dark px-0 {{ request()->is('about') ? 'active' : '' }}" href="/about">About Us</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-dark px-0" href="/services">Services</a>
+                    <a class="nav-link text-dark px-0 {{ request()->is('services') ? 'active' : '' }}" href="/services">Services</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-dark px-0" href="#">Projects</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-dark px-0" href="#">Our Team</a>
+                    <a class="nav-link text-dark px-0 {{ request()->is('team') ? 'active' : '' }}" href="/team">Our Team</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-dark px-0" href="/insights">Insights</a>
+                    <a class="nav-link text-dark px-0 {{ request()->is('insights') ? 'active' : '' }}" href="/insights">Insights</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-dark px-0" href="#">Careers</a>
+                    <a class="nav-link text-dark px-0 {{ request()->is('career') ? 'active' : '' }}" href="/career">Careers</a>
                 </li>
             </ul>
             
             <div class="d-grid d-lg-block mt-3 mt-lg-0">
-                <a href="#" class="btn rounded-pill py-2 px-4" 
+                <a href="/contact" class="btn rounded-pill py-2 px-4" 
                    style="background: #002D3A; color: #fff; font-size: 12px; font-weight: 700; text-decoration: none; box-shadow: none; border: none;">
                     Contact Us &rarr;
                 </a>
@@ -67,10 +67,26 @@
     .nav-link {
         color: #1a2332 !important;
         transition: color 0.3s ease;
+        position: relative;
     }
     
     .nav-link:hover {
         color: #004051 !important; /* টপবারের কালারের সাথে মিলিয়ে হোভার */
+    }
+
+    .nav-link.active {
+        color: #004051 !important;
+    }
+
+    .nav-link.active::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -6px;
+        height: 3px;
+        border-radius: 2px;
+        background: #e85d26;
     }
 
     /* মোবাইল ভিউর জন্য কিছু কাস্টম ফিক্স */

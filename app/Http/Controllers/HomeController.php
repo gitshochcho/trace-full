@@ -44,6 +44,22 @@ class HomeController extends Controller
         return view('frontend.pages.insights');
     }
 
+        public function articleDetails(Request $request, $id)
+    {
+        return view('frontend.pages.article-details',compact('id'));
+    }
+
+    public function career(Request $request)
+    {
+        return view('frontend.pages.career');
+    }
+
+    public function contact(Request $request)
+    {
+        return view('frontend.pages.contact');
+    }
+
+
         public function about(Request $request)
     {
         return view ('frontend.pages.about');
