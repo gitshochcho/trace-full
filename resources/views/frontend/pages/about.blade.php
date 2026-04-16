@@ -116,21 +116,67 @@
     border-radius: 20px;
 }
 
-.btn-primary-custom {
-    background: var(--primary-orange);
-    color: white;
-    border-radius: 100px;
-    padding: 12px 30px;
-    border: none;
-    transition: 0.3s;
+/* --- Updated Custom Button Styles with 3D Shadow --- */
+
+/* ১. Work With Us (Solid Orange Button with 3D Effect) */
+.btn-orange {
+    background-color: #F47735 !important; 
+    color: #FFFFFF !important;          
+    border: none !important; /* বর্ডার রিমোভ করে শ্যাডো সেট করা হয়েছে */
+    border-radius: 50px !important;     
+    padding: 12px 30px !important;       
+    font-size: 16px !important;
+    font-weight: 600 !important;        
+    text-decoration: none !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px; 
+    transition: all 0.2s ease;
+   
+    position: relative;
+    top: 0;
 }
 
-.btn-outline-custom {
-    background: transparent;
-    border: 1px solid #cbd5e1;
-    border-radius: 100px;
-    padding: 12px 30px;
-    transition: 0.3s;
+/* ১. Work With Us (Solid Orange Button) */
+.btn-orange {
+    background-color: #F47735 !important;
+    color: #FFFFFF !important;
+    border: 1px solid #F47735 !important; /* বর্ডার সামান্য চিকন করা হয়েছে */
+    border-radius: 50px !important;
+    padding: 10px 28px !important; /* ইমেজের সাথে সামঞ্জস্যপূর্ণ প্যাডিং */
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: none !important; /* এই লাইনটি নিচের গ্রিন অংশ রিমোভ করবে */
+    transition: all 0.3s ease;
+}
+
+.btn-orange:hover {
+    background-color: #d9632a !important;
+    border-color: #d9632a !important;
+    box-shadow: 0 4px 12px rgba(244, 119, 53, 0.2) !important; /* হালকা গ্লো এফেক্ট */
+}
+
+/* ২. Our Services (Outline Button) */
+.btn-outline-dark-custom {
+    background-color: transparent !important;
+    color: #0F172A !important;
+    border: 1px solid #D1D5DB !important; /* হালকা গ্রে বর্ডার */
+    border-radius: 50px !important;
+    padding: 10px 28px !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+    box-shadow: none !important; /* এই লাইনটিও গ্রিন অংশ রিমোভ করবে */
+    transition: all 0.3s ease;
+}
+
+.btn-outline-dark-custom:hover {
+    background-color: #F8FAFC !important;
+    border-color: #94A3B8 !important;
 }
 
 /* Responsive Fix for Left Margin */
@@ -921,10 +967,11 @@
                     </div>
                 </div>
 
-                <div class="d-flex gap-3 mt-4">
-                    <a href="#" class="btn btn-primary-custom">Work With Us &rarr;</a>
-                    <a href="#" class="btn btn-outline-custom text-dark text-decoration-none">Our Services</a>
-                </div>
+               <div class="d-flex gap-3 mt-4">
+    <a href="#" class="btn btn-orange">Work With Us &rarr;</a>
+    
+    <a href="#" class="btn btn-outline-dark-custom">Our Services</a>
+</div>
             </div>
 
             <div class="col-lg-6 about-right text-end">

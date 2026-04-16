@@ -47,8 +47,8 @@
 
 /* ================= UPDATED IMAGE BOX ================= */
 .team-image-box {
-    width: 340px;  /* Your specific width */
-    height: 440px; /* Your specific height */
+    width: 340px;  
+    height: 440px; 
     border-radius: 16px;
     overflow: hidden;
     position: relative;
@@ -59,7 +59,7 @@
 .team-image-box img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Ensures image fills the 340x440 box nicely */
+    object-fit: cover; 
     display: block;
 }
 
@@ -85,14 +85,14 @@
     margin-bottom: 15px;
 }
 
-/* Push content slightly right on large screens */
+
 @media (min-width: 992px) {
     .ps-lg-5 {
-        padding-left: 60px !important; /* adjust this to move content even more right */
+        padding-left: 60px !important; 
     }
 }
 
-/* Other Styles (Same as before but keeping it consistent) */
+
 .team-tag .line {
     width: 20px;
     height: 2px;
@@ -133,28 +133,43 @@
     border-radius: 8px;
     text-decoration: none;
     font-size: 14px;
-    transition: 0.3s;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    box-shadow: none !important; 
 }
 
 .btn-social {
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     color: #fff;
+    background: transparent;
 }
 
 .btn-social:hover {
-    background: #01979B;
-    border-color: #01979B;
+    background: #F47735 !important;
+    border-color: #F47735 !important;
+    color: #fff !important;
+    transform: translateY(-2px);
 }
+
 
 .btn-email {
     background: #01979B;
     color: #fff;
+    border: 1px solid #01979B;
+}
+
+.btn-email:hover {
+    background: #F47735 !important;
+    border-color: #F47735 !important;
+    color: #fff !important;
+    transform: translateY(-2px);
 }
 
 /* Responsive adjustments */
 @media (max-width: 991px) {
     .team-image-box {
-        width: 300px; /* scaling down slightly for tablet */
+        width: 300px; 
         height: 388px;
     }
     .profile-name {
@@ -235,7 +250,7 @@
 }
 
 .expertise-card:hover .icon-box-small svg {
-    transform: scale(1.1); /* হোভার করলে আইকন একটু বড় হবে */
+    transform: scale(1.1);
 }
 
 .card-text h6 {
@@ -276,21 +291,36 @@
 }
 
 .btn-orange {
-    background: #F47735;
-    border: none;
-    color: white;
-    padding: 12px;
-    border-radius: 10px;
-    font-weight: 600;
-    font-size: 14px;
+    background: #F47735 !important;
+    border: none !important;
+    color: white !important;
+    padding: 12px !important;
+    border-radius: 50px !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none !important;
+    
+   
+    box-shadow: none !important; 
+    outline: none !important;
+    transition: all 0.3s ease;
 }
 
 .btn-orange:hover {
-    background: #d9632a;
-    color: white;
+    background: #d9632a !important;
+    color: white !important;
+    box-shadow: none !important; 
+    transform: translateY(-2px); 
 }
 
-/* Other Team Members Sidebar */
+.btn-orange:focus, .btn-orange:active {
+    box-shadow: none !important;
+    outline: none !important;
+}
+
 .other-team-card {
     border: 1px solid #E5E9ED;
     border-radius: 20px;
