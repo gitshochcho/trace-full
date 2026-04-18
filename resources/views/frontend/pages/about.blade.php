@@ -141,36 +141,36 @@
 .btn-orange {
     background-color: #F47735 !important;
     color: #FFFFFF !important;
-    border: 1px solid #F47735 !important; /* বর্ডার সামান্য চিকন করা হয়েছে */
+    border: 1px solid #F47735 !important; 
     border-radius: 50px !important;
-    padding: 10px 28px !important; /* ইমেজের সাথে সামঞ্জস্যপূর্ণ প্যাডিং */
+    padding: 10px 28px !important;
     font-size: 16px !important;
     font-weight: 600 !important;
     text-decoration: none !important;
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    box-shadow: none !important; /* এই লাইনটি নিচের গ্রিন অংশ রিমোভ করবে */
+    box-shadow: none !important; 
     transition: all 0.3s ease;
 }
 
 .btn-orange:hover {
     background-color: #d9632a !important;
     border-color: #d9632a !important;
-    box-shadow: 0 4px 12px rgba(244, 119, 53, 0.2) !important; /* হালকা গ্লো এফেক্ট */
+    box-shadow: 0 4px 12px rgba(244, 119, 53, 0.2) !important; 
 }
 
 /* ২. Our Services (Outline Button) */
 .btn-outline-dark-custom {
     background-color: transparent !important;
     color: #0F172A !important;
-    border: 1px solid #D1D5DB !important; /* হালকা গ্রে বর্ডার */
+    border: 1px solid #D1D5DB !important; 
     border-radius: 50px !important;
     padding: 10px 28px !important;
     font-size: 16px !important;
     font-weight: 600 !important;
     text-decoration: none !important;
-    box-shadow: none !important; /* এই লাইনটিও গ্রিন অংশ রিমোভ করবে */
+    box-shadow: none !important; 
     transition: all 0.3s ease;
 }
 
@@ -916,7 +916,7 @@
 @section('content')
 
 <section class="about-hero">
-    <img src="{{ asset('assets/img/ship.jpeg') }}" alt="Hero" class="img-fluid rounded-4 shadow-sm">
+    <img src="{{ asset('assets/img/Trade and Customs.png') }}" alt="Hero" class="img-fluid rounded-4 shadow-sm">
     <div class="container-fluid about-hero-content">
         <div class="custom-container"> 
             <div class="row">
