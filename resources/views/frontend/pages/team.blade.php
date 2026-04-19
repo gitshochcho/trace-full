@@ -151,12 +151,11 @@
     .hero-title { font-size: 32px; }
 }
 
-
-.custom-container {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 0 60px; 
-}
+    .custom-container {
+        max-width: 1072px;
+        margin: 0 auto;
+        padding: 0 15px;
+    }
 
 .team-section {
     background-color: #F8F9FB;
@@ -194,128 +193,142 @@
 }
 
 /* Card Styling */
-.team-card {
-    background: #FFFFFF;
-    border: 1px solid #E5E9ED;
-    border-radius: 24px;
-    overflow: hidden;
-    transition: all 0.3s ease;
-}
 
-.team-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0px 20px 40px rgba(1, 53, 75, 0.1);
-}
+    .team-card {
+        background: #fff;
+        border-radius: 24px;
+        overflow: hidden;
+        border: 1px solid #f0f0f0;
+        transition: all 0.3s ease;
+    }
 
-.team-img-box {
-    position: relative;
-    height: 250px;
-    overflow: hidden;
-}
+    
+    .team-img-box {
+        position: relative;
+        height: 280px; 
+        overflow: hidden;
+    }
 
-.team-img-box img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
+    .team-img-box img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
 
-/* Social Hover Icons */
-.team-social {
-    position: absolute;
-    bottom: 15px;
-    left: 15px;
-    display: flex;
-    gap: 8px;
-    opacity: 0;
-    transform: translateY(10px);
-    transition: 0.3s ease;
-}
+   
+    .team-img-box::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(1, 53, 75, 0) 40%, rgba(1, 53, 75, 0.85) 100%);
+        opacity: 0; 
+        transition: opacity 0.3s ease;
+    }
 
-.team-card:hover .team-social {
-    opacity: 1;
-    transform: translateY(0);
-}
+    .team-card:hover .team-img-box::after {
+        opacity: 1; 
+    }
 
-.team-social a {
-    width: 32px;
-    height: 32px;
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #01354B;
-    text-decoration: none;
-    font-size: 14px;
-}
+    .team-card:hover .team-img-box img {
+        transform: scale(1.05);
+    }
 
-/* Content Area */
-.team-content {
-    padding: 24px;
-}
+   
+    .team-social {
+        position: absolute;
+        bottom: 20px;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        z-index: 10;
+        opacity: 0;
+        transform: translateY(20px); 
+        transition: all 0.4s ease;
+    }
 
-.team-content .name {
-    font-size: 18px;
-    font-weight: 700;
-    color: #01354B;
-    margin-bottom: 4px;
-}
+    .team-card:hover .team-social {
+        opacity: 1;
+        transform: translateY(0);
+    }
 
-.team-content .role {
-    font-size: 14px;
-    font-weight: 700;
-    color: #01888C;
-    margin-bottom: 2px;
-}
+    .team-social a {
+        width: 36px;
+        height: 36px;
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(5px);
+        color: #fff;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        transition: 0.3s;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
 
-.team-content .sub {
-    font-size: 12px;
-    color: #94A3B8;
-    display: block;
-}
+    .team-social a:hover {
+        background: #fff;
+        color: #01354b;
+    }
 
-.divider {
-    height: 1px;
-    background: #E5E9ED;
-    margin: 16px 0;
-}
+   
+    .team-content {
+        padding: 24px;
+    }
 
-.team-content .bio {
-    font-size: 14px;
-    color: #64748B;
-    line-height: 1.6;
-    height: 65px; 
-    overflow: hidden;
-}
+    .team-content .name {
+        font-size: 18px;
+        font-weight: 700;
+        color: #1a2332;
+        margin-bottom: 4px;
+    }
 
-.tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-bottom: 10px;
-}
+    .team-content .role {
+        font-size: 14px;
+        font-weight: 700;
+        color: #00898e;
+        margin-bottom: 2px;
+    }
 
-.tags span {
-    background: #F1F5F9;
-    color: #475569;
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-size: 11px;
-    font-weight: 600;
-}
+    .team-content .sub {
+        font-size: 12px;
+        color: #94a3b8;
+        display: block;
+        margin-bottom: 12px;
+    }
 
-.profile-link {
-    color: #01888C;
-    font-weight: 700;
-    font-size: 14px;
-    text-decoration: none;
-    transition: 0.2s;
-}
+    .team-content .divider {
+        height: 1px;
+        background: #f1f5f9;
+        margin-bottom: 15px;
+    }
 
-.profile-link:hover {
-    color: #01354B;
-    padding-left: 5px;
-}
+    .team-content .bio {
+        font-size: 13px;
+        color: #64748b;
+        line-height: 1.6;
+        margin-bottom: 20px;
+        min-height: 60px;
+    }
+
+    
+    .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .tags span {
+        background: #f1f5f9;
+        color: #64748b;
+        font-size: 11px;
+        font-weight: 600;
+        padding: 4px 12px;
+        border-radius: 20px;
+    }
 
 /* Responsive */
 @media (max-width: 1199px) {
@@ -676,13 +689,13 @@ databases, trade transparency…',
 
 @foreach($team as $member)
     <div class="col-xl-3 col-lg-4 col-md-6">
-        <div class="team-card h-100">
+        <div class="team-card h-100 shadow-sm">
             <div class="team-img-box">
                 <img src="{{ asset($member['img']) }}" alt="{{ $member['name'] }}">
                 
                 <div class="team-social">
-                    <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
-                    <a href="#"><i class="fa-regular fa-envelope"></i></a>
+                    <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" title="Email"><i class="far fa-envelope"></i></a>
                 </div>
             </div>
             

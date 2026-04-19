@@ -138,7 +138,14 @@
     .hero-desc { font-size: 14px; }
 }
 
+.container {
+    max-width: 1072px !important; /* সব সেকশনের জন্য কার্যকর */
+    margin: 0 auto;
+    padding-left: 15px;
+    padding-right: 15px;
+}
     /* Tag with Orange Line */
+    
     .about-tag {
         color: #e85d26;
         font-size: 13px;
@@ -217,7 +224,7 @@
         position: absolute;
         bottom: 30px;
         left: -20px;
-        background-color: #004051; /* ছবির গাঢ় টিয়াল কালার */
+        background-color: #004051; 
         color: #fff;
         padding: 15px 25px;
         border-radius: 12px;
@@ -277,63 +284,117 @@
         color: #fff;
     }
 
-    /* Service Card Styles (Same to Same Image) */
     .service-card {
         background: #fff;
         border: none;
         border-radius: 16px;
         overflow: hidden;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        position: relative;
     }
+
     .service-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important;
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.12) !important;
     }
+
     .card-img-wrapper {
         height: 220px;
         overflow: hidden;
     }
+
     .card-img-wrapper img {
         width: 100%;
         height: 100%;
         object-fit: cover;
+        transition: transform 0.5s ease;
     }
+
+    .service-card:hover .card-img-wrapper img {
+        transform: scale(1.08); 
+    }
+
+   
     .card-cat {
         font-size: 11px;
         font-weight: 700;
-        color: #00898e;
-        letter-spacing: 0.5px;
+        color: #6c757d; 
+        letter-spacing: 0.8px;
         text-transform: uppercase;
+        transition: color 0.3s ease;
     }
+
+    .service-card:hover .card-cat {
+        color: #00898e; 
+    }
+
     .card-title {
         color: #1a2332;
         line-height: 1.4;
         min-height: 50px;
     }
+
+    
+    .animated-line {
+        height: 2px;
+        width: 100%;
+        background: #e9ecef; 
+        position: relative;
+        overflow: hidden;
+    }
+
+    .animated-line::after {
+        content: '';
+        position: absolute;
+        left: -100%; 
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: #00898e; 
+        transition: left 0.5s ease;
+    }
+
+    .service-card:hover .animated-line::after {
+        left: 0; 
+    }
+
     .card-text {
-        font-size: 13.5px;
+        font-size: 14px;
         line-height: 1.6;
         display: -webkit-box;
         -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
         overflow: hidden;
     }
+
+   
     .read-more-btn {
-        color: #00898e;
+        color: #1a2332; 
         font-weight: 700;
-        font-size: 13px;
+        font-size: 14px;
         text-decoration: none;
-        transition: 0.2s;
+        display: inline-block;
+        transition: all 0.3s ease;
     }
-    .read-more-btn:hover {
-        color: #1a2332;
-        text-decoration: underline;
+
+    .service-card:hover .read-more-btn {
+        color: #00898e; 
+        transform: translateX(5px); 
     }
+    .row {
+    --bs-gutter-x: 1.5rem; 
+}
 
     @media (max-width: 768px) {
         .section-title { font-size: 28px; }
+        .card-img-wrapper { height: 180px; }
     }
 
+    .projects-section .container,
+.services-section .container,
+.about-section .container {
+    max-width: 1072px !important;
+}
     /* Header Styles */
     .tag-dot { width: 8px; height: 8px; background-color: #e85d26; border-radius: 50%; }
     .project-tag-pill {
@@ -352,12 +413,12 @@
     }
     .all-link:hover .circle-arrow { background: #004051; color: #fff; }
 
-    /* Project Card Design (Same to Same) */
+    
     .project-card {
         position: relative;
         border-radius: 16px;
         overflow: hidden;
-        height: 320px; /* কার্ডের একটি নির্দিষ্ট উচ্চতা */
+        height: 320px; 
     }
     .project-card img {
         width: 100%;
@@ -366,10 +427,10 @@
         transition: 0.5s;
     }
     .project-card:hover img {
-        transform: scale(1.1); /* হোভার করলে ছবি জুম হবে */
+        transform: scale(1.1); 
     }
 
-    /* Overlay - ছবির নিচের কালো শ্যাডো ইফেক্ট */
+    
     .proj-overlay {
         position: absolute;
         inset: 0;
@@ -388,10 +449,10 @@
         font-size: 10px;
         font-weight: 700;
         padding: 4px 12px;
-        border-radius: 0 4px 4px 0;
+        border-radius: 100px;
         display: inline-block;
         width: fit-content;
-        margin-left: -20px; /* ওভারলে প্যাডিং অ্যাডজাস্ট করতে */
+        margin-left: 0px; 
         margin-bottom: 12px;
     }
 
@@ -568,8 +629,10 @@
 {{-- ==============================
       ABOUT SECTION
 ============================== --}}
+
+
 <section class="about-section py-5 my-lg-4">
-    <div class="container" style="max-width:1140px;">
+    <div class="container" style="max-width: 1072px; margin: 0 auto; padding: 0 15px;">
         <div class="row align-items-center gy-5">
 
             {{-- LEFT CONTENT --}}
@@ -638,7 +701,7 @@
       SERVICES SECTION
 ============================== --}}
 <section class="services-section py-5 bg-light-subtle">
-    <div class="container" style="max-width:1200px;">
+    <div class="container" style="max-width: 1072px; margin: 0 auto; padding: 0 15px;">
 
         {{-- HEADER --}}
         <div class="mb-5">
@@ -686,21 +749,24 @@
             ];
             @endphp
 
-            @foreach($services as $service)
-            <div class="col-12 col-sm-6 col-lg-4">
-                <div class="service-card h-100 shadow-sm">
-                    <div class="card-img-wrapper">
-                        <img src="/assets/img/{{ $service['img'] }}" class="card-img-top" alt="{{ $service['tag'] }}">
-                    </div>
-                    <div class="card-body p-4">
-                        <span class="card-cat mb-2 d-inline-block">{{ $service['tag'] }}</span>
-                        <h3 class="card-title h5 fw-bold mb-3">{{ $service['title'] }}</h3>
-                        <p class="card-text text-muted mb-4">{{ $service['desc'] }}</p>
-                        <a href="#" class="read-more-btn">Read More &rarr;</a>
-                    </div>
-                </div>
-            </div>
-            @endforeach
+@foreach($services as $service)
+<div class="col-12 col-sm-6 col-lg-4">
+    <div class="service-card h-100 shadow-sm">
+        <div class="card-img-wrapper">
+            <img src="/assets/img/{{ $service['img'] }}" class="card-img-top" alt="{{ $service['tag'] }}">
+        </div>
+        <div class="card-body p-4">
+            <span class="card-cat mb-2 d-inline-block">{{ $service['tag'] }}</span>
+            <h3 class="card-title h5 fw-bold mb-2">{{ $service['title'] }}</h3>
+            
+            <div class="animated-line mb-3"></div>
+            
+            <p class="card-text text-muted mb-4">{{ $service['desc'] }}</p>
+            <a href="#" class="read-more-btn">Read More &rsaquo;</a>
+        </div>
+    </div>
+</div>
+@endforeach
         </div>
     </div>
 </section>
@@ -709,7 +775,7 @@
       PROJECTS SECTION
 ============================== --}}
 <section class="projects-section py-5 bg-white">
-    <div class="container" style="max-width:1200px;">
+    <div class="container" style="max-width: 1072px; margin: 0 auto; padding: 0 15px;">
 
         {{-- HEADER --}}
         <div class="mb-5">
