@@ -34,12 +34,22 @@
         position: relative;
     }
     .hero-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
         font-size: 12px;
         font-weight: 700;
         letter-spacing: 1.5px;
         color: var(--trace-orange);
         margin-bottom: 20px;
         text-transform: uppercase;
+    }
+    .hero-label::before {
+        content: "";
+        display: inline-block;
+        width: 30px;
+        height: 2px;
+        background: var(--trace-orange);
     }
     .contact-hero-title {
         font-size: 56px;

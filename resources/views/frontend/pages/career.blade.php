@@ -35,12 +35,21 @@
         padding: 80px 0;
     }
     .hero-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
         font-size: 12px;
         font-weight: 700;
         letter-spacing: 1.5px;
         color: var(--trace-orange);
         margin-bottom: 15px;
-        display: block;
+    }
+    .hero-label::before {
+        content: "";
+        display: inline-block;
+        width: 30px;
+        height: 2px;
+        background: var(--trace-orange);
     }
     .hero-career h1 {
         font-size: 48px;

@@ -7,12 +7,12 @@
             <div class="col-12 col-md-6 col-lg-4">
 
                 {{-- Brand --}}
-                <div class="d-flex align-items-center gap-2 mb-3">
+                <div class="footer-brand mb-3">
                     <img src="/assets/img/image 12.png" alt="Trace Logo"
                          style="width: 38px; height: 38px; object-fit: contain;">
-                    <div>
-                        <h3 class="mb-0 fw-bold" style="font-size: 20px; letter-spacing: 1px;">TRACE</h3>
-                        <span style="font-size: 11px; color: #8fa6ad;">Insight. Strategy. Impact</span>
+                    <div class="d-flex flex-column">
+                        <h3 class="mb-0 fw-bold footer-brand-title">TRACE</h3>
+                        <span class="footer-brand-tagline">Insight. Strategy. Impact</span>
                     </div>
                 </div>
 
@@ -140,5 +140,23 @@
 
     .footer-bottom-link:hover {
         color: #F47735;
+    }
+
+    .footer-brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .footer-brand-title {
+        font-size: 20px;
+        letter-spacing: 1px;
+        color: #ffffff;
+        margin-bottom: 2px;
+    }
+
+    .footer-brand-tagline {
+        font-size: 11px;
+        color: #8fa6ad;
     }
 </style>
