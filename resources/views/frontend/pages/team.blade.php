@@ -99,7 +99,7 @@
     border: 1px solid #E5E9ED;
     border-radius: 24px; 
     overflow: hidden;
-    box-shadow: 0px 8px 40px 0px rgba(1, 53, 75, 0.13); /* আপনার দেওয়া শ্যাডো */
+    box-shadow: 0px 8px 40px 0px rgba(1, 53, 75, 0.13); 
 }
 
 .leader-img-box { height: 100%; min-height: 500px; position: relative; }
@@ -195,12 +195,15 @@
 /* Card Styling */
 
     .team-card {
-        background: #fff;
-        border-radius: 24px;
-        overflow: hidden;
-        border: 1px solid #f0f0f0;
-        transition: all 0.3s ease;
-    }
+    min-height: 480px; /* একটি মিনিমাম হাইট সেট করে দিন জেনো কার্ড দেখতে সুন্দর লাগে */
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid #E5E9ED;
+}
+
 
     
     .team-img-box {
@@ -275,9 +278,12 @@
     }
 
    
-    .team-content {
-        padding: 24px;
-    }
+   
+/* মাঝখানের কন্টেন্ট যা ফাঁকা জায়গা পূরণ করবে */
+.team-content {
+    padding: 20px;
+    flex-grow: 1; /* কন্টেন্ট কম হলেও এটি জায়গা দখল করে রাখবে এবং নিচের বক্সকে নিচে ঠেলে দিবে */
+}
 
     .team-content .name {
         font-size: 18px;
@@ -314,6 +320,30 @@
         min-height: 60px;
     }
 
+
+
+/* View Profile বক্স যা কার্ডের নিচে ফিক্সড থাকবে */
+.view-profile-box {
+    width: 100%;
+    height: 40px; /* আপনার পছন্দমতো হাইট */
+    display: flex;
+    align-items: center;
+    padding-left: 21px;
+    border-top: 1px solid #E5E9ED; /* আপনার রিকোয়ারমেন্ট অনুযায়ী টপ বর্ডার */
+    background: #ffffff;
+    margin-top: auto; /* এটিই মূলত বক্সটিকে একদম নিচে ফিক্সড করে রাখে */
+}
+
+.view-profile {
+    font-size: 13px;
+    font-weight: 600;
+    color: #008080;
+    text-decoration: none;
+}
+
+.view-profile:hover {
+    color: #01354B;
+}
     
     .tags {
         display: flex;
@@ -689,29 +719,31 @@ databases, trade transparency…',
 
 @foreach($team as $member)
     <div class="col-xl-3 col-lg-4 col-md-6">
-        <div class="team-card h-100 shadow-sm">
-            <div class="team-img-box">
-                <img src="{{ asset($member['img']) }}" alt="{{ $member['name'] }}">
-                
-                <div class="team-social">
-                    <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                    <a href="#" title="Email"><i class="far fa-envelope"></i></a>
-                </div>
-            </div>
-            
-            <div class="team-content">
-                <h4 class="name">{{ $member['name'] }}</h4>
-                <h5 class="role">{{ $member['role'] }}</h5>
-                <span class="sub">{{ $member['sub'] }}</span>
-                <div class="divider"></div>
-                <p class="bio">{{ $member['desc'] }}</p>
-                <div class="tags">
-                    @foreach($member['tags'] as $tag)
-                        <span>{{ $tag }}</span>
-                    @endforeach
-                </div>
-            </div>
+       <div class="team-card h-100 shadow-sm d-flex flex-column">
+    <div class="team-img-box">
+        <img src="{{ asset($member['img']) }}" alt="{{ $member['name'] }}">
+    </div>
+    <div class="fixed-divider"></div>
+    <div class="team-content flex-grow-1">
+        <h4 class="name">{{ $member['name'] }}</h4>
+        <h5 class="role">{{ $member['role'] }}</h5>
+        <span class="sub">{{ $member['sub'] }}</span>
+        
+        <p class="bio">{{ $member['desc'] }}</p>
+        
+        <div class="tags">
+            @foreach($member['tags'] as $tag)
+                <span>{{ $tag }}</span>
+            @endforeach
         </div>
+    </div>
+
+    <div class="view-profile-box mt-auto">
+        <a href="#" class="view-profile">
+            View Profile <i class="fas fa-arrow-right ms-1"></i>
+        </a>
+    </div>
+</div>
     </div>
 @endforeach
         </div>
