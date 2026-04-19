@@ -739,7 +739,7 @@ databases, trade transparency…',
     </div>
 
     <div class="view-profile-box mt-auto">
-        <a href="#" class="view-profile">
+        <a href="/teamdetails" class="view-profile">
             View Profile <i class="fas fa-arrow-right ms-1"></i>
         </a>
     </div>
