@@ -39,7 +39,7 @@
                     <a class="nav-link text-dark px-0 {{ request()->is('services') ? 'active' : '' }}" href="/services">Services</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-dark px-0" href="#">Projects</a>
+                    <a class="nav-link text-dark px-0 {{ request()->is('projects') ? 'active' : '' }}" href="/projects">Projects</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-dark px-0 {{ request()->is('team') ? 'active' : '' }}" href="/team">Our Team</a>

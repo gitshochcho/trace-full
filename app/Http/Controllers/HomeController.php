@@ -39,6 +39,16 @@ class HomeController extends Controller
         return view('frontend.pages.service-details',compact('id'));
     }
 
+      public function projects(Request $request)
+    {
+
+        return view('frontend.pages.projects');
+    }
+     public function projectdetails(Request $request)
+    {
+        return view ('frontend.pages.projectdetails');
+    }
+
     public function insights(Request $request)
     {
         return view('frontend.pages.insights');
@@ -88,8 +98,6 @@ class HomeController extends Controller
         return view('auth.login',compact('datas','genders'));
 
     }
-
-
 
 
     public function registration()
