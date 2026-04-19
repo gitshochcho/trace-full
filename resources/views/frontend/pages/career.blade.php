@@ -1,7 +1,9 @@
 @extends('frontend.layout.app')
 
 @push('custome-css')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
 <style>
     .service-breadcrumb {
     background: #F8F9FB;
@@ -193,6 +195,41 @@
         .hero-career h1 { font-size: 32px; }
         .careers-sidebar { margin-bottom: 50px; }
     }
+
+    /* Modal Improvements */
+.modal-content {
+    background-color: #ffffff;
+}
+#applicationForm .form-control:focus {
+    background-color: #fff !important;
+    box-shadow: 0 0 0 4px rgba(0, 191, 197, 0.1);
+    border-color: var(--trace-cyan);
+}
+.border-dashed {
+    transition: 0.3s;
+}
+.border-dashed:hover {
+    border-color: var(--trace-cyan) !important;
+    background-color: #f1f5f9 !important;
+}
+#phone {
+    padding-left: 52px !important; 
+}
+
+#applicationForm input:not(#phone) {
+    padding-left: 15px !important; 
+}
+
+.iti { width: 100% !important; }
+.iti__flat-list { max-height: 200px; }
+#applicationForm .form-control:focus {
+    background-color: #fff !important;
+    box-shadow: 0 0 0 4px rgba(0, 191, 197, 0.1);
+    border-color: var(--trace-cyan);
+}
+.form-control.form-control-lg {
+    padding-left: 50px !important; 
+}
 </style>
 @endpush
 
@@ -348,9 +385,61 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="applyModal" tabindex="-1" aria-labelledby="applyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+            <div class="modal-header border-0 pb-0">
+                <div class="ps-2 pt-3">
+                    <h4 class="modal-title fw-bold" id="applyModalLabel" style="color: var(--dark-navy);">Submit Your Application</h4>
+                    <p class="text-muted small mb-0">Applying for: <span id="job-title-display" class="fw-bold text-info"></span></p>
+                </div>
+                <button type="button" class="btn-close me-2 mt-2" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="applicationForm" action="#" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="job_title" id="job_title_input">
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-secondary">Full Name</label>
+                        <input type="text" class="form-control form-control-lg border-0 bg-light" placeholder="e.g. John Doe" required style="font-size: 15px;">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label small fw-bold text-secondary">Email Address</label>
+                            <input type="email" class="form-control form-control-lg border-0 bg-light" placeholder="name@email.com" required style="font-size: 15px;">
+                        </div>
+                        
+                    <div class="col-md-6 mb-3">
+    <label class="form-label small fw-bold text-secondary">Phone Number</label>
+    <div>
+        <input type="tel" id="phone" name="phone" class="form-control form-control-lg border-0 bg-light w-100" required style="font-size: 15px;">
+    </div>
+</div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label small fw-bold text-secondary">Upload CV (PDF only)</label>
+                        <div class="upload-area p-3 bg-light rounded text-center border-dashed" style="border: 2px dashed #cbd5e1;">
+                            <input type="file" name="cv" id="cvUpload" class="form-control border-0 bg-transparent" accept=".pdf" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-cv py-3 shadow-sm border-0">Send Application <i class="fas fa-paper-plane ms-2"></i></button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 </div>
 
 @push('custome-js')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const filters = document.querySelectorAll('.filter-item');
@@ -371,6 +460,60 @@
                 });
             });
         });
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // --- Filter logic ---
+        const filters = document.querySelectorAll('.filter-item');
+        const jobCards = document.querySelectorAll('.job-card[data-type]');
+
+        filters.forEach(filter => {
+            filter.addEventListener('click', function () {
+                const filterKey = this.dataset.filter;
+                filters.forEach(item => item.classList.toggle('active', item === this));
+                jobCards.forEach(card => {
+                    card.style.display = (filterKey === 'all' || card.dataset.type === filterKey) ? '' : 'none';
+                });
+            });
+        });
+
+        // --- Apply Modal logic ---
+        const applyModal = new bootstrap.Modal(document.getElementById('applyModal'));
+        const applyButtons = document.querySelectorAll('.btn-apply');
+
+        applyButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Find the job title from the specific card
+                const card = this.closest('.job-card');
+                const title = card.querySelector('.job-title').innerText;
+
+                // Update modal info
+                document.getElementById('job-title-display').innerText = title;
+                document.getElementById('job_title_input').value = title;
+
+                // Open Modal
+                applyModal.show();
+            });
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+      
+        const phoneInputField = document.querySelector("#phone");
+        const phoneInput = window.intlTelInput(phoneInputField, {
+            initialCountry: "bd",
+            preferredCountries: ["bd", "us", "gb", "in"], 
+            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+        });
+
+        
+        const form = document.querySelector("#applicationForm");
+        form.addEventListener("submit", function(e) {
+            const fullNumber = phoneInput.getNumber();
+           
+            console.log("Full Number with Code: " + fullNumber);
+        });
+
     });
 </script>
 @endpush
