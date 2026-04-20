@@ -128,9 +128,12 @@
 .project-card {
     background: #fff;
     border: 1px solid #E5E9ED;
-    border-radius: 12px;
+    border-radius: 16px; /* Image er moto ektu beshi round */
     overflow: hidden;
     transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 .project-card:hover {
@@ -176,6 +179,9 @@
 
 .project-content {
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Eta empty space consume kore footer ke niche thakbe */
 }
 
 .client-name {
@@ -193,11 +199,22 @@
     margin-bottom: 12px;
     line-height: 1.4;
 }
+.project-footer {
+    width: 100%; /* Apnar dewa width (approx) container onusare auto nibe */
+    min-height: 31px;
+    padding-top: 14px;
+    margin-top: 20px; /* Magic: footer ke ekbare niche niye jabe */
+    border-top: 1px solid #E5E9ED; /* Border-top visible kora */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
 .project-bio {
     font-size: 14px;
     line-height: 1.6;
     margin-bottom: 15px;
+    flex-grow: 1; /* Content choto holeo footer niche thakbe */
 }
 
 .project-tags span {
@@ -211,28 +228,28 @@
     margin-bottom: 5px;
 }
 
-.divider {
-    height: 1px;
-    background: #E5E9ED;
-    margin: 15px 0;
-}
+
 
 .view-link {
     font-weight: 700;
     font-size: 13px;
-    color: #01354B;
+    color: #00898e; /* Photo er teal color er moto */
     text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
 .view-link:hover {
     color: #4CC3C3;
 }
 
-.card-footer-custom {
-    border-top: 1px solid #F1F4F7;
-    padding-top: 15px;
-    margin-top: 10px;
+.status {
+    font-size: 13px;
+    color: #adb5bd; /* Photo er moto light gray */
 }
+
+
 </style>
 @endpush
 
@@ -397,8 +414,7 @@
                         <span>{{ $tag }}</span>
                     @endforeach
                 </div>
-                
-                <div class="divider"></div>
+            
                 
                 <div class="project-footer d-flex justify-content-between align-items-center">
                     <span class="status text-muted">{{ $project['year'] }} • {{ $project['status'] }}</span>

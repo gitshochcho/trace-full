@@ -224,6 +224,17 @@
     gap: 20px;
     display: flex;
     flex-direction: column;
+    
+    /* Sticky logic এখানে যোগ করা হয়েছে */
+    position: sticky;
+    top: 20px; /* স্ক্রিন এর উপর থেকে ২০ পিক্সেল নিচে আটকে থাকবে */
+    align-self: flex-start; /* এটি ছাড়া স্টিকি কাজ নাও করতে পারে */
+    z-index: 100;
+}
+
+/* কন্টেইনার যাতে সাইডবার মুভ করার জায়গা পায় */
+.col-lg-4 {
+    position: relative;
 }
 
 /* 1. Project Facts Card */

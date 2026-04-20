@@ -320,7 +320,52 @@
         min-height: 60px;
     }
 
+/* ইমেজ বক্সের ভেতর আইকন রাখার পজিশন */
+.team-img-box {
+    position: relative;
+    overflow: hidden;
+}
 
+/* সোশ্যাল ওভারলে কন্টেইনার */
+.team-social-overlay {
+    position: absolute;
+    bottom: 25px; /* নিচ থেকে কতটুকু উপরে থাকবে */
+    left: 50%;
+    transform: translateX(-50%) translateY(20px); /* শুরুতে একটু নিচে থাকবে */
+    display: flex;
+    gap: 12px;
+    opacity: 0; /* শুরুতে দেখা যাবে না */
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    z-index: 5;
+}
+
+/* আইকনগুলোর স্টাইল (বক্স শেপ এবং ব্লার ইফেক্ট) */
+.social-icon {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.2); /* হালকা সাদাটে ভাব */
+    backdrop-filter: blur(8px); /* গ্লাস ইফেক্ট */
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    border-radius: 8px; /* ছবি অনুযায়ী অল্প রাউন্ড */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.social-icon:hover {
+    background: #ffffff;
+    color: #00898e; /* হোভার করলে টিল কালার */
+}
+
+/* যখন কার্ড হোভার হবে তখন আইকন দেখাবে */
+.team-card:hover .team-social-overlay {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0); /* স্লাইড হয়ে উপরে আসবে */
+}
 
 /* View Profile বক্স যা কার্ডের নিচে ফিক্সড থাকবে */
 .view-profile-box {
@@ -718,32 +763,46 @@ databases, trade transparency…',
             @endphp
 
 @foreach($team as $member)
-    <div class="col-xl-3 col-lg-4 col-md-6">
-       <div class="team-card h-100 shadow-sm d-flex flex-column">
-    <div class="team-img-box">
-        <img src="{{ asset($member['img']) }}" alt="{{ $member['name'] }}">
-    </div>
-    <div class="fixed-divider"></div>
-    <div class="team-content flex-grow-1">
-        <h4 class="name">{{ $member['name'] }}</h4>
-        <h5 class="role">{{ $member['role'] }}</h5>
-        <span class="sub">{{ $member['sub'] }}</span>
-        
-        <p class="bio">{{ $member['desc'] }}</p>
-        
-        <div class="tags">
-            @foreach($member['tags'] as $tag)
-                <span>{{ $tag }}</span>
-            @endforeach
-        </div>
-    </div>
+    <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+        <div class="team-card h-100 shadow-sm d-flex flex-column">
+            
+            {{-- ইমেজ বক্স এবং সোশ্যাল ওভারলে --}}
+            <div class="team-img-box">
+                <img src="{{ asset($member['img']) }}" alt="{{ $member['name'] }}">
+                
+                {{-- এই অংশটুকু নতুন যোগ করা হয়েছে --}}
+                <div class="team-social-overlay">
+                    <a href="{{ $member['linkedin'] ?? '#' }}" class="social-icon" target="_blank">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="mailto:{{ $member['email'] ?? '' }}" class="social-icon">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                </div>
+            </div>
 
-    <div class="view-profile-box mt-auto">
-        <a href="/teamdetails" class="view-profile">
-            View Profile <i class="fas fa-arrow-right ms-1"></i>
-        </a>
-    </div>
-</div>
+            <div class="fixed-divider"></div>
+            
+            <div class="team-content flex-grow-1">
+                <h4 class="name">{{ $member['name'] }}</h4>
+                <h5 class="role">{{ $member['role'] }}</h5>
+                <span class="sub text-muted">{{ $member['sub'] }}</span>
+                
+                <p class="bio">{{ $member['desc'] }}</p>
+                
+                <div class="tags">
+                    @foreach($member['tags'] as $tag)
+                        <span>{{ $tag }}</span>
+                    @endforeach
+                </div>
+            </div>
+
+            <div class="view-profile-box mt-auto">
+                <a href="#" class="view-profile">
+                    View Profile <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
     </div>
 @endforeach
         </div>

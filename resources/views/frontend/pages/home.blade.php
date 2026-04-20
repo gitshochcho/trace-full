@@ -284,105 +284,118 @@
         color: #fff;
     }
 
-    .service-card {
-        background: #fff;
-        border: none;
-        border-radius: 16px;
-        overflow: hidden;
-        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-        position: relative;
-    }
+   .service-card {
+    background: #fff;
+    border: none;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    position: relative;
+    /* Extra logic to make cards equal height */
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
 
-    .service-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.12) !important;
-    }
+.service-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.12) !important;
+}
 
-    .card-img-wrapper {
-        height: 220px;
-        overflow: hidden;
-    }
+.card-img-wrapper {
+    height: 220px;
+    overflow: hidden;
+}
 
-    .card-img-wrapper img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.5s ease;
-    }
+.card-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
 
-    .service-card:hover .card-img-wrapper img {
-        transform: scale(1.08); 
-    }
+.service-card:hover .card-img-wrapper img {
+    transform: scale(1.08); 
+}
 
-   
-    .card-cat {
-        font-size: 11px;
-        font-weight: 700;
-        color: #6c757d; 
-        letter-spacing: 0.8px;
-        text-transform: uppercase;
-        transition: color 0.3s ease;
-    }
+/* Updated Card Body */
+.card-body {
+    padding: 1.5rem; /* p-4 bootstrap standard */
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Eta empty space consume korbe */
+}
 
-    .service-card:hover .card-cat {
-        color: #00898e; 
-    }
+.card-cat {
+    font-size: 11px;
+    font-weight: 700;
+    color: #6c757d; 
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    transition: color 0.3s ease;
+}
 
-    .card-title {
-        color: #1a2332;
-        line-height: 1.4;
-        min-height: 50px;
-    }
+.service-card:hover .card-cat {
+    color: #00898e; 
+}
 
-    
-    .animated-line {
-        height: 2px;
-        width: 100%;
-        background: #e9ecef; 
-        position: relative;
-        overflow: hidden;
-    }
+.card-title {
+    color: #1a2332;
+    line-height: 1.4;
+    min-height: 50px;
+}
 
-    .animated-line::after {
-        content: '';
-        position: absolute;
-        left: -100%; 
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background: #00898e; 
-        transition: left 0.5s ease;
-    }
+.animated-line {
+    height: 2px;
+    width: 100%;
+    background: #e9ecef; 
+    position: relative;
+    overflow: hidden;
+}
 
-    .service-card:hover .animated-line::after {
-        left: 0; 
-    }
+.animated-line::after {
+    content: '';
+    position: absolute;
+    left: -100%; 
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: #00898e; 
+    transition: left 0.5s ease;
+}
 
-    .card-text {
-        font-size: 14px;
-        line-height: 1.6;
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
+.service-card:hover .animated-line::after {
+    left: 0; 
+}
 
-   
-    .read-more-btn {
-        color: #1a2332; 
-        font-weight: 700;
-        font-size: 14px;
-        text-decoration: none;
-        display: inline-block;
-        transition: all 0.3s ease;
-    }
+/* Updated Card Text */
+.card-text {
+    font-size: 14px;
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    /* Pushes everything below it to the bottom */
+    flex-grow: 1; 
+    margin-bottom: 1.5rem !important; 
+}
 
-    .service-card:hover .read-more-btn {
-        color: #00898e; 
-        transform: translateX(5px); 
-    }
-    .row {
-    --bs-gutter-x: 1.5rem; 
+.read-more-btn {
+    color: #1a2332; 
+    font-weight: 700;
+    font-size: 14px;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+    /* Fixed alignment */
+    margin-top: auto; 
+    width: fit-content;
+}
+
+.service-card:hover .read-more-btn {
+    color: #00898e; 
+    transform: translateX(5px); 
 }
 
     @media (max-width: 768px) {
