@@ -1,8 +1,8 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\SettingsController;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
@@ -29,6 +29,11 @@ Route::prefix('admin')->group(function () {
             Route::get('dashboard', 'dashboard')->name('admin.dashboard');
             Route::get('logout', 'logout')->name('admin.logout');
 
+        });
+
+        Route::controller(SettingsController::class)->group(function () {
+            Route::get('settings', 'edit')->name('admin.settings.edit');
+            Route::post('settings', 'update')->name('admin.settings.update');
         });
 
     });

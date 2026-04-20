@@ -1,10 +1,11 @@
 <?php
+use App\Models\Setting;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Propaganistas\LaravelPhone\PhoneNumber;
 use Propaganistas\LaravelPhone\Rules\Phone;
 use Carbon\Carbon;
-use App\Jobs\SendSmsJob;
 
 
 if (! function_exists('validationError')) {
@@ -50,7 +51,7 @@ if (! function_exists('validationError')) {
 }
 
 if (! function_exists('validationMobileNumber')) {
-    function validationMobileNumber($mobileNumber,$iso)
+    function validationMobileNumber($mobileNumber,$iso = 'BD')
     {
         $phone = new PhoneNumber($mobileNumber, $iso);
        $generatedPhone =  $phone->formatForMobileDialingInCountry($iso);
@@ -76,7 +77,7 @@ if (! function_exists('validationMobileNumber')) {
                         $user->save();
                         $user->increment('otp_count');
                         $phoneNumber = validationMobileNumber($user->phone);
-                        SendSmsJob::dispatch($phoneNumber, $code);
+                        sendSms($phoneNumber, $code);
                         return true;
 
 
@@ -101,7 +102,7 @@ if (! function_exists('validationMobileNumber')) {
             $user->otp_count = 1;
             $user->save();
             $phoneNumber = validationMobileNumber($user->phone);
-            SendSmsJob::dispatch($phoneNumber, $code);
+            sendSms($phoneNumber, $code);
             return true;
         }
     }
@@ -116,3 +117,46 @@ if (! function_exists('validationMobileNumber')) {
         return true;
     }
    }
+
+if (! function_exists('siteSettings')) {
+    function siteSettings()
+    {
+        return Cache::remember('site_settings', now()->addHour(), function () {
+            return Setting::query()->first();
+        });
+    }
+}
+
+if (! function_exists('siteSetting')) {
+    function siteSetting($key = null, $default = null)
+    {
+        $settings = siteSettings();
+
+        if (! $settings) {
+            return $key === null ? null : $default;
+        }
+
+        if ($key === null) {
+            return $settings;
+        }
+
+        $value = data_get($settings, $key);
+
+        if ($value === null || $value === '') {
+            return $default;
+        }
+
+        return $value;
+    }
+}
+
+if (! function_exists('siteSettingImage')) {
+    function siteSettingImage($path = null, $default = null)
+    {
+        if (! $path) {
+            return $default;
+        }
+
+        return asset('storage/' . ltrim($path, '/'));
+    }
+}
