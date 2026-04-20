@@ -332,69 +332,24 @@
     color: #94a3b8;
 }
 
-/* =========================================
-   CTA SECTION
-========================================= */
-.cta-section {
-    background: #01354B;
-    padding: 72px 0;
-}
 
-.cta-section .orange-dash {
-    display: inline-block;
-    width: 24px;
-    height: 2px;
-    background: #F47735;
-    vertical-align: middle;
-    margin-right: 10px;
-}
-
-.cta-label {
-    font-size: 11px;
-    letter-spacing: 2.5px;
-    color: #F47735;
-    font-weight: 600;
-}
-
-.cta-section .cta-title {
-    font-size: 36px;
-    font-weight: 700;
-    color: #ffffff;
-    line-height: 1.3;
-    margin-bottom: 16px;
-}
-
-.cta-section .cta-title .teal-text { color: #22c1c3; }
-
-.cta-section .cta-desc {
-    font-size: 14px;
-    color: #94a3b8;
-    line-height: 1.7;
-    max-width: 480px;
-    margin: 0;
-}
-
-.btn-touch {
-    display: inline-block;
-    background: #F47735;
-    color: #ffffff;
-    font-size: 14px;
-    font-weight: 600;
-    padding: 14px 28px;
-    border-radius: 6px;
-    text-decoration: none;
-    transition: background .3s;
-    white-space: nowrap;
-}
-
-.btn-touch:hover {
-    background: #d9622a;
-    color: #fff;
-}
 
 /* =========================================
    RESPONSIVE
 ========================================= */
+
+@media (min-width: 992px) {
+    .col-lg-4 {
+        position: relative;
+    }
+
+    /* Sideer wrapper jeta scroll korle atkay thakbe */
+    .sidebar-sticky-wrapper {
+        position: sticky;
+        top: 20px; /* Matha theke koto niche thakbe */
+        align-self: start; /* Flex container er bhetore height adjust korbe */
+    }
+}
 @media (max-width: 992px) {
     .service-hero { height: 260px; }
     .hero-content h1 { font-size: 36px; }
@@ -540,18 +495,19 @@
             </div>{{-- end left --}}
 
             {{-- ===== RIGHT SIDEBAR ===== --}}
-            <div class="col-12 col-lg-4">
+<div class="col-12 col-lg-4">
+    <div class="sidebar-sticky-wrapper">
 
-                {{-- NEED THIS SERVICE --}}
-                <div class="sidebar-cta">
-                    <h4>Need this service?</h4>
-                    <p>Get in touch and our team will walk you through our solutions.</p>
-                    <a href="#" class="btn-expert">Talk to Our Experts</a>
-                </div>
+        {{-- NEED THIS SERVICE --}}
+        <div class="sidebar-cta">
+            <h4>Need this service?</h4>
+            <p>Get in touch and our team will walk you through our solutions.</p>
+            <a href="#" class="btn-expert">Talk to Our Experts</a>
+        </div>
 
-                {{-- OTHER SERVICES --}}
-                <div class="sidebar-box">
-                    <h4>Other Services</h4>
+        {{-- OTHER SERVICES --}}
+        <div class="sidebar-box">
+            <h4>Other Services</h4>
 
                     @php
                     $otherServices = [
@@ -588,35 +544,6 @@
     </div>
 </section>
 
-<!-- {{-- ==============================
-     CTA
-============================== --}}
-<section class="cta-section">
-    <div class="container" style="max-width: 1200px;">
-        <div class="row align-items-center gy-4">
-
-            <div class="col-12 col-lg-8">
-                <div class="mb-3">
-                    <span class="orange-dash"></span>
-                    <span class="cta-label">WORK WITH US</span>
-                </div>
-                <h2 class="cta-title">
-                    Have a project in mind? <br>
-                    Let's build something <span class="teal-text">that lasts.</span>
-                </h2>
-                <p class="cta-desc">
-                    Whether reforming a regulatory system, building technical capacity, or modernising
-                    digital infrastructure — we'd like to hear from you.
-                </p>
-            </div>
-
-            <div class="col-12 col-lg-4 d-flex justify-content-lg-end">
-                <a href="#" class="btn-touch">Get in Touch &rarr;</a>
-            </div>
-
-        </div>
-    </div>
-</section> -->
 @include('frontend.layout.cta')
 
 @endsection

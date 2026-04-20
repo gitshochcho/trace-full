@@ -63,6 +63,10 @@ class HomeController extends Controller
     {
         return view('frontend.pages.career');
     }
+    public function careerdetalis(Request $request)
+    {
+        return view('frontend.pages.careerdetalis');
+    }
 
     public function contact(Request $request)
     {
