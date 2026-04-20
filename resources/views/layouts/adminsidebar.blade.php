@@ -40,7 +40,7 @@
                             </a> </li>
                     </ul>
                 </li>
-                <li class="nav-item"> <a href="#" class="nav-link"> <i class="nav-icon bi bi-pencil-square"></i>
+                <!-- <li class="nav-item"> <a href="#" class="nav-link"> <i class="nav-icon bi bi-pencil-square"></i>
                         <p>
                             Forms
                             <i class="nav-arrow bi bi-chevron-right"></i>
@@ -57,10 +57,10 @@
 
 
                 <li class="nav-header">DOCUMENTATIONS</li>
-                <li class="nav-item"> <a href="../docs/introduction.html" class="nav-link"> <i
-                            class="nav-icon bi bi-download"></i>
+                <li class="nav-item"> <a href="../docs/introduction.html" class="nav-link"> <i -->
+                            <!-- class="nav-icon bi bi-download"></i>
                         <p>Installation</p>
-                    </a> </li>
+                    </a> </li> -->
 
             </ul> <!--end::Sidebar Menu-->
         </nav>

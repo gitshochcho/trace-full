@@ -270,7 +270,7 @@
                             <span class="tag tag-fulltime">FULL-TIME</span>
                             <span class="tag tag-location">DHAKA</span>
                         </div>
-                        <a href="/jobs/trade-facilitation-consultant" class="btn-apply d-none d-md-flex">Go For Apply <i class="fas fa-arrow-right ms-2"></i></a>
+                        <a href="/careerdetails" class="btn-apply d-none d-md-flex">Go For Apply <i class="fas fa-arrow-right ms-2"></i></a>
                     </div>
                     <h3 class="job-title">Trade Facilitation Consultant</h3>
                     <div class="job-dept">Trade & Policy Division</div>
@@ -280,7 +280,7 @@
                         <div class="meta-item"><i class="far fa-calendar"></i> Posted April 2025</div>
                          <div class="meta-item"><i class="far fa-clock"></i> 4+ years experience</div>
                     </div>
-                    <a href="/jobs/trade-facilitation-consultant" class="btn-apply w-100 mt-4 d-md-none text-center justify-content-center">Go For Apply <i class="fas fa-arrow-right ms-2"></i></a>
+                    <a href="/careerdetails" class="btn-apply w-100 mt-4 d-md-none text-center justify-content-center">Go For Apply <i class="fas fa-arrow-right ms-2"></i></a>
                 </div>
 
                 <div class="job-card" data-type="contract">
@@ -289,7 +289,7 @@
                             <span class="tag tag-contract">CONTRACT</span>
                             <span class="tag tag-hybrid">HYBRID</span>
                         </div>
-                        <a href="/jobs/fullstack-developer" class="btn-apply d-none d-md-flex">Go For Apply <i class="fas fa-arrow-right ms-2"></i></a>
+                        <a href="/careerdetails" class="btn-apply d-none d-md-flex">Go For Apply <i class="fas fa-arrow-right ms-2"></i></a>
                     </div>
                     <h3 class="job-title">Full-Stack Developer — Trade Systems</h3>
                     <div class="job-dept">Technology Solutions</div>
@@ -299,7 +299,7 @@
                         <div class="meta-item"><i class="far fa-calendar"></i> Posted March 2025</div>
                          <div class="meta-item"><i class="far fa-clock"></i> 2–4 years experience</div>
                     </div>
-                    <a href="/jobs/fullstack-developer" class="btn-apply w-100 mt-4 d-md-none text-center justify-content-center">Apply Now <i class="fas fa-arrow-right ms-2"></i></a>
+                    <a href="/careerdetails" class="btn-apply w-100 mt-4 d-md-none text-center justify-content-center">Apply Now <i class="fas fa-arrow-right ms-2"></i></a>
                 </div>
 
                                 <div class="job-card" data-type="contract">
@@ -308,7 +308,7 @@
                             <span class="tag tag-contract">FULL-TIME</span>
                             <span class="tag tag-hybrid">DHAKA</span>
                         </div>
-                        <a href="/jobs/fullstack-developer" class="btn-apply d-none d-md-flex">Go For Apply <i class="fas fa-arrow-right ms-2"></i></a>
+                        <a href="/careerdetails" class="btn-apply d-none d-md-flex">Go For Apply <i class="fas fa-arrow-right ms-2"></i></a>
                     </div>
                     <h3 class="job-title">Research & Assessments Analyst</h3>
                     <div class="job-dept">Research & Evaluation</div>
@@ -319,7 +319,7 @@ chain analyses for government and donor clients. Strong quantitative and qualita
                         <div class="meta-item"><i class="far fa-calendar"></i> Posted March 2025</div>
                         <div class="meta-item"><i class="far fa-clock"></i> 2–4 years experience</div>
                     </div>
-                    <a href="/jobs/fullstack-developer" class="btn-apply w-100 mt-4 d-md-none text-center justify-content-center">Apply Now <i class="fas fa-arrow-right ms-2"></i></a>
+                    <a href="/careerdetails" class="btn-apply w-100 mt-4 d-md-none text-center justify-content-center">Apply Now <i class="fas fa-arrow-right ms-2"></i></a>
                 </div>
 
                                 <div class="job-card" data-type="contract">
@@ -328,7 +328,7 @@ chain analyses for government and donor clients. Strong quantitative and qualita
                             <span class="tag tag-contract">CONTRACT</span>
                             <span class="tag tag-hybrid">DHAKA</span>
                         </div>
-                        <a href="/jobs/fullstack-developer" class="btn-apply d-none d-md-flex">Go For Apply <i class="fas fa-arrow-right ms-2"></i></a>
+                        <a href="/careerdetails" class="btn-apply d-none d-md-flex">Go For Apply <i class="fas fa-arrow-right ms-2"></i></a>
                     </div>
                     <h3 class="job-title">Laboratory Quality & Accreditation Specialist</h3>
                     <div class="job-dept">Laboratory Services</div>
@@ -339,7 +339,7 @@ public and private lab clients through QMS development, gap analysis, and assess
                         <div class="meta-item"><i class="far fa-calendar"></i> Posted Feb 2025</div>
                          <div class="meta-item"><i class="far fa-clock"></i> 5+ years experience</div>
                     </div>
-                    <a href="/jobs/fullstack-developer" class="btn-apply w-100 mt-4 d-md-none text-center justify-content-center">Apply Now <i class="fas fa-arrow-right ms-2"></i></a>
+                    <a href="/careerdetails" class="btn-apply w-100 mt-4 d-md-none text-center justify-content-center">Apply Now <i class="fas fa-arrow-right ms-2"></i></a>
                 </div>
 
                                 <div class="job-card" data-type="contract">
@@ -348,7 +348,7 @@ public and private lab clients through QMS development, gap analysis, and assess
                             <span class="tag tag-contract">FULL-TIME</span>
                             <span class="tag tag-hybrid">DHAKA</span>
                         </div>
-                        <a href="/jobs/fullstack-developer" class="btn-apply d-none d-md-flex">Go For Apply <i class="fas fa-arrow-right ms-2"></i></a>
+                        <a href="/careerdetails" class="btn-apply d-none d-md-flex">Go For Apply <i class="fas fa-arrow-right ms-2"></i></a>
                     </div>
                     <h3 class="job-title">Junior Project Coordinator</h3>
                     <div class="job-dept">Project Management Office</div>
@@ -359,7 +359,7 @@ simultaneous engagements. Ideal for someone early in their development consultin
                         <div class="meta-item"><i class="far fa-calendar"></i> Posted Feb 2025</div>
                          <div class="meta-item"><i class="far fa-clock"></i> 0–2 years experience</div>
                     </div>
-                    <a href="/jobs/fullstack-developer" class="btn-apply w-100 mt-4 d-md-none text-center justify-content-center">Apply Now <i class="fas fa-arrow-right ms-2"></i></a>
+                    <a href="/careerdetails" class="btn-apply w-100 mt-4 d-md-none text-center justify-content-center">Apply Now <i class="fas fa-arrow-right ms-2"></i></a>
                 </div>
 
             </div>
