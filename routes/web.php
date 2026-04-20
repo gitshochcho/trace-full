@@ -20,7 +20,7 @@ Route::get('/service-details/{id}', [App\Http\Controllers\HomeController::class,
 Route::get('/insights', [App\Http\Controllers\HomeController::class, 'insights'])->name('insights');
 Route::get('/article-details/{id}', [App\Http\Controllers\HomeController::class, 'articleDetails'])->name('articleDetails');
 Route::get('/career', [App\Http\Controllers\HomeController::class, 'career'])->name('career');
-Route::get('/careerdetalis', [App\Http\Controllers\HomeController::class, 'careerdetalis'])->name('careerdetalis');
+Route::get('/careerdetails', [App\Http\Controllers\HomeController::class, 'careerdetails'])->name('careerdetails');
 Route::get('/contact', [App\Http\Controllers\HomeController::class, 'contact'])->name('contact');
 Route::get('login', [App\Http\Controllers\HomeController::class, 'login'])->name('login');
 Route::post('validate/login', [App\Http\Controllers\HomeController::class, 'validateLogin'])->name('loginCheck');
