@@ -346,7 +346,7 @@
     /* Sideer wrapper jeta scroll korle atkay thakbe */
     .sidebar-sticky-wrapper {
         position: sticky;
-        top: 20px; /* Matha theke koto niche thakbe */
+        top: 90px; /* Matha theke koto niche thakbe */
         align-self: start; /* Flex container er bhetore height adjust korbe */
     }
 }
@@ -386,7 +386,7 @@
 <section class="service-hero">
 
     <div class="hero-bg">
-        <img src="{{ asset('images/Trade and Customs.png') }}" alt="Trade Facilitation">
+        <img src="{{ asset('assets/img/Trade and Customs.png') }}" alt="Trade Facilitation">
     </div>
 
     <div class="hero-overlay"></div>
