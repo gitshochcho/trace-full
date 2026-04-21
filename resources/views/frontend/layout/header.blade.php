@@ -2,17 +2,20 @@
     <div class="container-fluid px-5" style="max-width: 1072px; margin: 0 auto;">
         <div class="d-flex justify-content-between align-items-center py-2">
             <div class="topbar-left">
-                <span style="font-size: 11px; opacity: 1;">✉ support@trace.com</span>
+                <span style="font-size: 11px; opacity: 1;">✉ {{ $siteSettings?->footer_contact_email ?: 'support@trace.com' }}</span>
             </div>
             <div class="topbar-right d-flex align-items-center gap-3">
                 <a href="#" class="text-decoration-none" style="font-size: 11px; color: #fff; opacity: 1;">Company news</a>
                 <a href="#" class="text-decoration-none" style="font-size: 11px; color: #fff; opacity: 1;">Faq</a>
                 <span class="text-white" style="opacity: 0.5;">|</span>
                 <div class="social-icons d-flex gap-3">
-                    <a href="#" style="color: #fff; font-size: 13px; opacity: 1;"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" style="color: #fff; font-size: 13px; opacity: 1;"><i class="fab fa-twitter"></i></a>
-                    <a href="#" style="color: #fff; font-size: 13px; opacity: 1;"><i class="fab fa-instagram"></i></a>
-                    <a href="#" style="color: #fff; font-size: 13px; opacity: 1;"><i class="fab fa-linkedin-in"></i></a>
+                    @foreach(($siteSettings?->socialLinksWithIcons() ?? []) as $socialLink)
+                        <a href="{{ $socialLink['link'] ?? '#' }}" target="_blank" rel="noreferrer" style="color: #fff; font-size: 13px; opacity: 1;" aria-label="{{ $socialLink['title'] ?? 'social link' }}">
+                            @if(! empty($socialLink['icon_url']))
+                                <img src="{{ $socialLink['icon_url'] }}" alt="{{ $socialLink['title'] ?? 'Social icon' }}" style="width: 14px; height: 14px; object-fit: contain;">
+                            @endif
+                        </a>
+                    @endforeach
                 </div>
             </div>
         </div>

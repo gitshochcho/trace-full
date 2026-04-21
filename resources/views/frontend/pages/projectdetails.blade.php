@@ -7,129 +7,75 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 <style>
-
-.custom-container-inner {
-    max-width: 1072px; 
-    margin: 0 auto; 
+.custom-container-inner,
+.custom-container {
+    max-width: 1072px;
+    margin: 0 auto;
     width: 100%;
-    padding: 0 15px; 
+    padding: 0 15px;
 }
 
-/* Breadcrumb Styles */
 .breadcrumb-container {
     background: #F8F9FB;
-    height: 43px; 
+    min-height: 43px;
     display: flex;
     align-items: center;
     border-bottom: 1px solid #E5E9ED;
-    width: 100%;
 }
 
-.breadcrumb-links { 
-    font-size: 13px; 
-    color: #64748B; 
-    text-align: left; 
-}
+.breadcrumb-links { font-size: 13px; color: #64748B; }
+.breadcrumb-links a { color: #64748B; text-decoration: none; }
+.breadcrumb-links .sep { margin: 0 10px; color: #CBD5E1; }
+.breadcrumb-links .active { color: #01354B; font-weight: 600; }
 
-.breadcrumb-links a { 
-    color: #64748B; 
-    text-decoration: none; 
-    transition: 0.3s;
-}
-
-.breadcrumb-links a:hover {
-    color: #01354B;
-}
-
-.breadcrumb-links .sep { 
-    margin: 0 10px; 
-    color: #CBD5E1; 
-}
-
-.breadcrumb-links .active { 
-    color: #01354B; 
-    font-weight: 600; 
-}
-
-@media (max-width: 1072px) {
-    .custom-container-inner {
-        padding: 0 20px;
-    }
-}
-
-
-/* Hero Section Styles */
 .hero-details-section {
     position: relative;
     background-color: #01354B;
     background-size: cover;
     background-position: center;
-    padding: 80px 0 60px 0;
-    color: white;
+    padding: 80px 0 60px;
+    color: #fff;
     min-height: 520px;
 }
 
-/* Dark Image Overlay */
 .hero-overlay {
     position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
+    inset: 0;
+    background: rgba(1, 53, 75, 0.55);
     z-index: 1;
 }
 
-.z-index-2 { z-index: 2; }
-
-/* Back Link */
-.back-link {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.7);
-    transition: 0.3s;
-}
+.z-index-2 { position: relative; z-index: 2; }
+.back-link { font-size: 14px; color: rgba(255,255,255,0.75); }
 .back-link:hover { color: #4CC3C3; }
 
-/* Badges */
 .badge-custom {
     font-size: 11px;
     font-weight: 700;
     padding: 6px 12px;
     border-radius: 4px;
-    letter-spacing: 0.5px;
-}
-.badge-teal { background: #008080; color: white; }
-.badge-outline-green { 
-    background: rgba(76, 195, 195, 0.1); 
-    border: 1px solid #4CC3C3; 
-    color: #4CC3C3; 
+    letter-spacing: .5px;
 }
 
-/* Headings */
-.sub-heading { font-size: 32px; font-weight: 700; color: white; }
-.main-heading { font-size: 56px; font-weight: 700; line-height: 1.1; margin-top: -5px; }
+.badge-teal { background: #008080; color: #fff; }
+.badge-outline-green {
+    background: rgba(76,195,195,.1);
+    border: 1px solid #4CC3C3;
+    color: #4CC3C3;
+}
 
-/* Footer Meta */
-.project-meta-footer { border-top: 1px solid rgba(255,255,255,0.1); }
+.sub-heading { font-size: 32px; font-weight: 700; color: #fff; }
+.main-heading { font-size: 56px; font-weight: 700; line-height: 1.1; }
+
+.project-meta-footer { border-top: 1px solid rgba(255,255,255,.15); }
 .meta-item {
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.8);
+    color: rgba(255,255,255,.86);
     display: flex;
     align-items: center;
     gap: 8px;
 }
-.meta-item i { color: rgba(255,255,255,0.4); }
 
-/* Responsive */
-@media (max-width: 991px) {
-    .main-heading { font-size: 36px; }
-    .hero-details-section { padding-top: 60px; }
-}
-
-/* Container Fix (1072px base) */
-.custom-container {
-    max-width: 1072px;
-    margin: 0 auto;
-    padding: 0 15px;
-}
-
-/* Titles with Accent Line */
 .section-title-accent {
     font-size: 20px;
     font-weight: 700;
@@ -137,6 +83,7 @@
     position: relative;
     padding-left: 15px;
 }
+
 .section-title-accent::before {
     content: '';
     position: absolute;
@@ -144,142 +91,91 @@
     top: 4px;
     width: 3px;
     height: 20px;
-    background-color: #F47735; /* Orange accent from image */
+    background: #F47735;
 }
 
-/* Gallery Container Fix */
-.project-gallery-wrapper {
-    width: 676px;
-    height: 372.31px;
-    display: flex;
-    gap: 12px; /* column-gap: 12px */
-    margin-bottom: 3rem;
-}
+.project-gallery-wrapper { display: flex; gap: 12px; }
+.col-gallery-main { width: 442px; max-width: 100%; }
+.col-gallery-side { width: 221px; max-width: 100%; }
+.gap-custom { gap: 12px; }
 
-/* Main Image Container (Column 1) */
-.col-gallery-main {
-    width: 442.66px;
-    height: 372.31px;
-}
-
-.gallery-img-main {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-     border-radius: 16px 0px 0px 16px; 
-}
-
-
-.col-gallery-side {
-    width: 221.33px;
-    height: 372.31px;
-}
-
-.gap-custom {
-    gap: 12px; 
-}
-
+.gallery-img-main,
 .gallery-img-side {
-    width: 221.33px;
-    height: 180.16px; 
+    width: 100%;
     object-fit: cover;
-    border-radius: 0px 16px 16px 0px; 
+    border-radius: 12px;
 }
 
-@media (max-width: 768px) {
-    .project-gallery-wrapper {
-        width: 100%;
-        height: auto;
-        flex-direction: column;
-    }
-    .col-gallery-main, .col-gallery-side, .gallery-img-side {
-        width: 100%;
-        height: auto;
-    }
-}
+.gallery-img-main { height: 372px; }
+.gallery-img-side { height: 180px; }
 
-/* Overview and Outcomes Text */
-.overview-content p, .outcomes-list li {
+.overview-content p,
+.outcomes-list li {
     font-size: 15px;
     line-height: 1.6;
     color: #4B5563;
 }
+
 .outcomes-list li {
     margin-bottom: 15px;
     display: flex;
     align-items: flex-start;
 }
-.outcomes-list i {
-    color: #4CC3C3; /* Teal color for icons */
-    margin-top: 4px;
-}
-/* Responsive Fixes */
-@media (max-width: 991px) {
-    .facts-card { margin-top: 40px; }
-    .sticky-top { position: relative !important; top: 0 !important; }
-}
 
-/* Sidebar Container */
+.outcomes-list i { color: #4CC3C3; margin-top: 4px; }
+
 .project-sidebar {
     gap: 20px;
     display: flex;
     flex-direction: column;
-    
-    /* Sticky logic এখানে যোগ করা হয়েছে */
     position: sticky;
-    top: 20px; /* স্ক্রিন এর উপর থেকে ২০ পিক্সেল নিচে আটকে থাকবে */
-    align-self: flex-start; /* এটি ছাড়া স্টিকি কাজ নাও করতে পারে */
-    z-index: 100;
+    top: 20px;
+    align-self: flex-start;
 }
 
-/* কন্টেইনার যাতে সাইডবার মুভ করার জায়গা পায় */
-.col-lg-4 {
-    position: relative;
-}
-
-/* 1. Project Facts Card */
 .facts-card {
     border: 1px solid #E5E9ED;
     border-radius: 12px;
     overflow: hidden;
-    background: white;
+    background: #fff;
     width: 340px;
+    max-width: 100%;
 }
-.facts-header {
-    background: #01354B;
-    padding: 16px 20px;
-}
-.extra-small { font-size: 11px; }
 
+.facts-header { background: #01354B; padding: 16px 20px; }
+.extra-small { font-size: 11px; }
 .facts-body { padding: 8px 20px 20px; }
+
 .fact-row {
     display: flex;
     justify-content: space-between;
+    gap: 8px;
     padding: 12px 0;
     border-bottom: 1px solid #F1F4F7;
     font-size: 13px;
 }
+
 .fact-row .label { color: #64748B; }
-.fact-row .value { color: #01354B; font-weight: 600; }
+.fact-row .value { color: #01354B; font-weight: 600; text-align: right; }
 
 .status-badge {
     color: #10B981;
     font-weight: 600;
     font-size: 13px;
-    float: right;
 }
+
 .status-badge .dot {
-    height: 8px; width: 8px;
+    height: 8px;
+    width: 8px;
     background: #10B981;
     border-radius: 50%;
     display: inline-block;
     margin-right: 5px;
 }
 
-/* 2. CTA Sidebar Dark (Gradient) */
 .cta-sidebar-dark {
     width: 340px;
-    height: 191.5px; /* আপনার দেওয়া হাইট */
+    max-width: 100%;
     border-radius: 16px;
     background: linear-gradient(133.37deg, #01354B 0%, #014D6A 100%);
     display: flex;
@@ -289,14 +185,12 @@
     padding: 20px;
 }
 
-.cta-sidebar-dark h5 { font-size: 16px; line-height: 1.4; }
-
-/* Orange Button */
 .btn-expert-orange {
     width: 243px;
+    max-width: 100%;
     height: 41px;
-    background: #F55F1A; /* আপনার দেওয়া কালার */
-    color: white;
+    background: #F55F1A;
+    color: #fff;
     border-radius: 100px;
     display: flex;
     align-items: center;
@@ -304,171 +198,136 @@
     text-decoration: none;
     font-size: 14px;
     font-weight: 600;
-    transition: 0.3s;
-}
-.btn-expert-orange:hover {
-    background: #d44d15;
-    color: white;
-    transform: translateY(-2px);
+    transition: .3s;
 }
 
-/* Mobile Responsive */
-@media (max-width: 380px) {
-    .project-sidebar, .cta-sidebar-dark {
-        width: 100%;
-    }
-    .btn-expert-orange {
-        width: 90%;
-    }
-}
+.btn-expert-orange:hover { background: #d44d15; color: #fff; }
 
-/* Section Background & Padding */
 .more-projects-section {
     width: 100%;
     background: #F8F9FB;
     border-top: 1px solid #E5E9ED;
-    padding: 72px 0; /* আপনার দেওয়া প্যাডিং টপ ও বটম */
+    padding: 72px 0;
 }
 
-/* Content Box Fix (1200px Max with 60px padding) */
 .custom-container-content {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 60px; /* আপনার রিকোয়ারমেন্ট অনুযায়ী */
+    padding: 0 60px;
 }
 
-/* Header Styles */
-.section-title {
-    font-size: 24px;
-    font-weight: 700;
-    color: #01354B;
-}
+.section-title { font-size: 24px; font-weight: 700; color: #01354B; }
+.view-all-link { font-size: 14px; font-weight: 600; color: #008080; }
 
-.view-all-link {
-    font-size: 14px;
-    font-weight: 600;
-    color: #008080; /* Teal color from image */
-    transition: 0.3s;
-}
-.view-all-link:hover {
-    color: #01354B;
-}
-
-/* Mini Card Styles */
 .project-mini-card {
-    background: #FFFFFF;
+    background: #fff;
     border-radius: 12px;
     overflow: hidden;
     height: 100%;
     border: 1px solid #E5E9ED;
-    transition: transform 0.3s ease;
 }
 
-.project-mini-card:hover {
-    transform: translateY(-5px);
-}
+.card-img-wrapper { height: 180px; overflow: hidden; }
+.card-img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+.card-content { padding: 20px; }
+.client-name { font-size: 11px; font-weight: 700; color: #008080; display: block; margin-bottom: 8px; }
+.project-mini-title { font-size: 15px; font-weight: 700; color: #01354B; line-height: 1.4; margin-bottom: 12px; }
+.project-mini-meta { font-size: 12px; color: #64748B; margin-bottom: 0; }
 
-.card-img-wrapper {
-    height: 180px;
-    overflow: hidden;
-}
-.card-img-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.card-content {
-    padding: 20px;
-}
-
-.client-name {
-    font-size: 11px;
-    font-weight: 700;
-    color: #008080;
-    letter-spacing: 0.5px;
-    display: block;
-    margin-bottom: 8px;
-}
-
-.project-mini-title {
-    font-size: 15px;
-    font-weight: 700;
-    color: #01354B;
-    line-height: 1.4;
-    margin-bottom: 12px;
-}
-
-.project-mini-meta {
-    font-size: 12px;
-    color: #64748B;
-    margin-bottom: 0;
-}
-
-/* Responsive Fixes */
-@media (max-width: 1199px) {
-    .custom-container-content {
-        padding: 0 30px;
-    }
+@media (max-width: 991px) {
+    .main-heading { font-size: 36px; }
+    .hero-details-section { padding-top: 60px; }
+    .project-sidebar { position: static; }
 }
 
 @media (max-width: 768px) {
-    .more-projects-section {
-        padding: 40px 0;
-    }
-    .section-title { font-size: 20px; }
+    .custom-container-content { padding: 0 20px; }
+    .project-gallery-wrapper { flex-direction: column; width: 100% !important; }
+    .col-gallery-main, .col-gallery-side { width: 100%; }
+    .gallery-img-main, .gallery-img-side { height: auto; }
+    .more-projects-section { padding: 40px 0; }
 }
 </style>
 @endpush
 
 
 @section('content')
+@php
+    $heroImage = $project->imageUrl() ?: asset('assets/img/projecthero.png');
+    $heroBadge = $project->services->first()?->service_name ?: ($project->project_standard ?: 'PROJECT');
+    $galleryImages = $project->galleryImageUrls();
+    $galleryMain = $galleryImages[0]['url'] ?? $heroImage;
+    $gallerySideOne = $galleryImages[1]['url'] ?? $galleryMain;
+    $gallerySideTwo = $galleryImages[2]['url'] ?? $gallerySideOne;
+    $locationSummary = $project->locations->first()?->location;
+    $locationSummary = $locationSummary ? strip_tags($locationSummary) : 'Location available inside the project brief';
+    $serviceNames = $project->services->pluck('service_name')->filter()->values();
+
+    $locationSectionContent = contentBlock('project-location-section');
+    $phaseSectionContent = contentBlock('project-phase-section');
+    $outcomeSectionContent = contentBlock('project-outcome-section');
+
+    $locationHeading = $locationSectionContent?->heading ?: 'Project Locations';
+    $locationDescription = $locationSectionContent?->description;
+    $phaseHeading = $phaseSectionContent?->heading ?: 'Project Phases';
+    $phaseDescription = $phaseSectionContent?->description;
+    $outcomeHeading = $outcomeSectionContent?->heading ?: 'Key Outcomes';
+    $outcomeDescription = $outcomeSectionContent?->description;
+
+    $projectWorkWithUsControl = contentBlock('projects-work-with-us');
+    $showWorkWithUs = ! in_array(
+        strtolower(trim((string) ($projectWorkWithUsControl?->type ?? 'show'))),
+        ['hide', '0', 'false', 'off'],
+        true
+    );
+@endphp
+
 <nav class="breadcrumb-container">
     <div class="custom-container-inner">
         <div class="breadcrumb-links">
-            <a href="/">Home</a>
+            <a href="{{ route('home') }}">Home</a>
             <span class="sep">›</span>
             <a href="/projects">Projects</a>
             <span class="sep">›</span>
-            <span class="active">ISO/IEC 17025 Accreditation — PRTC, CVASU</span>
+            <span class="active">{{ $project->project_title }}</span>
         </div>
     </div>
 </nav>
 
-<section class="hero-details-section" style="background-image: url('{{ asset('assets/img/projecthero.png') }}');">
+<section class="hero-details-section" style="background-image: url('{{ $heroImage }}');">
     <div class="hero-overlay"></div>
     
     <div class="custom-container-inner position-relative z-index-2">
-        <a href="/projects" class="back-link mb-5 d-inline-block text-decoration-none">
+        <a href="{{ route('projects') }}" class="back-link mb-5 d-inline-block text-decoration-none">
             <i class="fas fa-arrow-left me-2"></i> Back to All Projects
         </a>
 
         <div class="d-flex gap-2 mb-4">
-            <span class="badge-custom badge-teal">LABORATORY SERVICES</span>
-            <span class="badge-custom badge-outline-green"><i class="fas fa-check me-1"></i> COMPLETED</span>
+            <span class="badge-custom badge-teal">{{ $heroBadge }}</span>
+            <span class="badge-custom badge-outline-green"><i class="fas fa-check me-1"></i> {{ $project->project_status }}</span>
         </div>
 
         <div class="project-title-wrapper">
-            <h2 class="sub-heading mb-0">ISO/IEC 17025:2017</h2>
-            <h1 class="main-heading">Accreditation Consultancy <br> Support to PRTC, CVASU</h1>
+            <h2 class="sub-heading mb-0">{{ $project->project_standard ?: 'Project Brief' }}</h2>
+            <h1 class="main-heading">{{ $project->project_title }}</h1>
         </div>
 
         <div class="client-meta mb-5">
-            <p class="mb-0 text-white-50">Client: <span class="text-white fw-medium">Plant Research & Training Centre (PRTC), Chittagong Veterinary and Animal Sciences University</span></p>
+            <p class="mb-0 text-white-50">Client: <span class="text-white fw-medium">{{ abbreviateClientName($project->client) ?: 'N/A' }}</span></p>
         </div>
 
         <div class="project-meta-footer d-flex flex-wrap gap-4 pt-4 border-top border-white-5">
             <div class="meta-item">
-                <i class="far fa-calendar-alt"></i> 2024 – 2025
+                <i class="far fa-calendar-alt"></i> {{ $project->durationLabel() ?: 'TBA' }}
             </div>
             <div class="meta-item">
-                <i class="fas fa-map-marker-alt"></i> Chattogram, Bangladesh
+                <i class="fas fa-map-marker-alt"></i> {{ $locationSummary }}
             </div>
             <div class="meta-item">
-                <i class="fas fa-briefcase"></i> PRTC / CVASU
+                <i class="fas fa-briefcase"></i> {{ $serviceNames->isNotEmpty() ? $serviceNames->take(2)->join(' / ') : 'Project Services' }}
             </div>
             <div class="meta-item">
-                <i class="fas fa-layer-group"></i> 5 Deliverable Phases
+                <i class="fas fa-layer-group"></i> {{ $project->phaseDetails->count() }} Deliverable Phases
             </div>
         </div>
     </div>
@@ -480,45 +339,91 @@
             <div class="col-lg-8">
                 <div class="overview-content mb-5">
                     <h3 class="section-title-accent">Project Overview</h3>
-                    <p class="mt-4">
-                        TRACE was engaged to provide comprehensive ISO/IEC 17025:2017 accreditation consultancy support to the Plant Research and Training Centre (PRTC) at Chittagong Veterinary and Animal Sciences University (CVASU) — one of Bangladesh's leading veterinary and agricultural sciences institutions.
-                    </p>
-                    <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus quis nisi sit amet elit dictum tempor. Nunc vulputate ultrices efficitur. Quisque eu est non turpis suscipit ullamcorper. Mauris vel vulputate lectus, quis aliquam velit. Mauris dictum nulla sed tortor pharetra lacinia. Maecenas consectetur turpis ac sollicitudin fringilla.
-                    </p>
-                    <p>
-                        Nulla id metus ac arcu condimentum hendrerit sit amet id est. Aliquam et turpis porttitor, pellentesque arcu quis, faucibus nulla. Vestibulum varius quis lacus nec cursus. Nunc tincidunt aliquet tellus auctor lobortis. Pellentesque viverra sed diam nec lobortis. Etiam ullamcorper.
-                    </p>
+                    <p class="mt-4">{{ stripPTags($project->overview) ?: 'No project overview has been added yet.' }}</p>
                 </div>
 
-<div class="row g-3 mb-5 project-gallery-wrapper" style="width: 676px;">
-    <div class="col-gallery-main">
-        <img src="{{ asset('assets/img/Governance.png') }}" 
-             class="img-fluid gallery-img-main" 
-             alt="Team Discussion">
-    </div>
-    
-    <div class="col-gallery-side">
-        <div class="d-flex flex-column gap-custom">
-            <img src="{{ asset('assets/img/Lab Project.png') }}" 
-                 class="img-fluid gallery-img-side" 
-                 alt="Lab Work">
-            <img src="{{ asset('assets/img/Lab training.png') }}" 
-                 class="img-fluid gallery-img-side" 
-                 alt="Cells View">
-        </div>
-    </div>
-</div>
+                {{-- <div class="mb-5">
+                    <h3 class="section-title-accent">{{ $locationHeading }}</h3>
+                    @if(!empty($locationDescription))
+                        <p class="mt-3">{{ strip_tags($locationDescription) }}</p>
+                    @endif
+                    <div class="row g-3 mt-4">
+                        @forelse($project->locations as $location)
+                            <div class="col-md-6">
+                                <div class="border rounded-3 bg-white p-4 h-100 shadow-sm">
+                                    {!! nl2br(e(strip_tags($location->location))) !!}
+                                </div>
+                            </div>
+                        @empty
+                            <div class="col-12">
+                                <div class="border rounded-3 bg-white p-4 text-muted">
+                                    No project locations have been added yet.
+                                </div>
+                            </div>
+                        @endforelse
+                    </div>
+                </div> --}}
+
+                <div class="row g-3 mb-5 project-gallery-wrapper" style="width: 676px;">
+                    <div class="col-gallery-main">
+                        <img src="{{ $galleryMain }}"
+                             class="img-fluid gallery-img-main"
+                             alt="{{ $project->project_title }}">
+                    </div>
+
+                    <div class="col-gallery-side">
+                        <div class="d-flex flex-column gap-custom">
+                            <img src="{{ $gallerySideOne }}"
+                                 class="img-fluid gallery-img-side"
+                                 alt="{{ $project->project_title }}">
+                            <img src="{{ $gallerySideTwo }}"
+                                 class="img-fluid gallery-img-side"
+                                 alt="{{ $project->project_title }}">
+                        </div>
+                    </div>
+                </div>
+
+                {{-- <div class="mb-5">
+                    <h3 class="section-title-accent">{{ $phaseHeading }}</h3>
+                    @if(!empty($phaseDescription))
+                        <p class="mt-3">{{ strip_tags($phaseDescription) }}</p>
+                    @endif
+                    <div class="d-grid gap-3 mt-4">
+                        @forelse($project->phaseDetails as $phase)
+                            <div class="border rounded-3 bg-white p-4 shadow-sm">
+                                <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+                                    <div class="flex-grow-1">
+                                        <div>{!! nl2br(e(strip_tags($phase->phase_description))) !!}</div>
+                                    </div>
+                                    @if($phase->attachmentUrl())
+                                        <a href="{{ $phase->attachmentUrl() }}" target="_blank" class="view-link text-nowrap">
+                                            PDF Attachment <i class="fas fa-file-pdf"></i>
+                                        </a>
+                                    @endif
+                                </div>
+                            </div>
+                        @empty
+                            <div class="border rounded-3 bg-white p-4 text-muted">
+                                No phase details have been added yet.
+                            </div>
+                        @endforelse
+                    </div>
+                </div> --}}
 
                 <div class="outcomes-content">
-                    <h3 class="section-title-accent">Key Outcomes</h3>
+                    <h3 class="section-title-accent">{{ $outcomeHeading }}</h3>
+                    @if(!empty($outcomeDescription))
+                        <p class="mt-3">{{ strip_tags($outcomeDescription) }}</p>
+                    @endif
                     <ul class="outcomes-list list-unstyled mt-4">
-                        <li><i class="fas fa-check-circle me-2"></i> Nam a ultricies neque. Integer id mi et arcu consectetur sagittis. Vivamus placerat nunc non diam pellentesque pharetra.</li>
-                        <li><i class="fas fa-check-circle me-2"></i> Phasellus tempus id mauris ac consequat. Ut placerat, massa eget convallis varius, dolor quam lacinia risus, in euismod nunc dolor eget ligula.</li>
-                        <li><i class="fas fa-check-circle me-2"></i> Nulla eros nisl, blandit sollicitudin eleifend nec, facilisis quis metus. Suspendisse volutpat nunc justo, sit amet consectetur nunc tincidunt ac.</li>
-                        <li><i class="fas fa-check-circle me-2"></i> Nam a ultricies neque. Integer id mi et arcu consectetur sagittis. Vivamus placerat nunc.</li>
-                        <li><i class="fas fa-check-circle me-2"></i> Phasellus tempus id mauris ac consequat. Ut placerat, massa eget convallis varius, dolor quam lacinia risus.</li>
-                        <li><i class="fas fa-check-circle me-2"></i> Phasellus tempus id mauris ac consequat. Ut placerat, massa eget convallis varius, dolor quam lacinia risus, in euismod nunc dolor eget ligula.</li>
+                        @forelse($project->outcomes as $outcome)
+                            <li>
+                                <i class="{{ $outcome->icon ?: 'fas fa-check-circle' }} me-2"></i>
+                                <span>{!! nl2br(e(strip_tags($outcome->text))) !!}</span>
+                            </li>
+                        @empty
+                            <li><i class="fas fa-check-circle me-2"></i> No outcomes have been added yet.</li>
+                        @endforelse
                     </ul>
                 </div>
             </div>
@@ -526,37 +431,43 @@
     <div class="facts-card mb-4 shadow-sm">
         <div class="facts-header">
             <h6 class="mb-1 fw-bold text-white">Project Facts</h6>
-            <p class="mb-0 extra-small text-white-50">ISO/IEC 17025 — PRTC, CVASU</p>
+            <p class="mb-0 extra-small text-white-50">{{ $project->project_standard ?: 'Project Overview' }} — {{ abbreviateClientName($project->client) ?: 'TRACE' }}</p>
         </div>
         <div class="facts-body">
             <div class="fact-row">
                 <span class="label">Client</span>
-                <span class="value text-end">PRTC, CVASU</span>
+                <span class="value text-end">{{ abbreviateClientName($project->client) ?: 'N/A' }}</span>
             </div>
+            @if($project->project_standard)
+            <div class="fact-row">
+                <span class="label">Project Code</span>
+                <span class="value text-end" style="font-family: monospace; font-size: 12px;">{{ $project->project_standard }}</span>
+            </div>
+            @endif
             <div class="fact-row">
                 <span class="label">Sector</span>
-                <span class="value text-end">Laboratory Services</span>
+                <span class="value text-end">{{ $heroBadge }}</span>
             </div>
             <div class="fact-row">
                 <span class="label">Standard</span>
-                <span class="value text-end">ISO/IEC 17025:2017</span>
+                <span class="value text-end">{{ $project->project_standard ?: 'N/A' }}</span>
             </div>
             <div class="fact-row">
                 <span class="label">Location</span>
-                <span class="value text-end">Chattogram, Bangladesh</span>
+                <span class="value text-end">{{ \Illuminate\Support\Str::limit($locationSummary, 45) }}</span>
             </div>
             <div class="fact-row">
                 <span class="label">Duration</span>
-                <span class="value text-end">2024 – 2025</span>
+                <span class="value text-end">{{ $project->durationLabel() ?: 'TBA' }}</span>
             </div>
             <div class="fact-row border-0">
                 <span class="label">Phases</span>
-                <span class="value text-end">5 Deliverable Phases</span>
+                <span class="value text-end">{{ $project->phaseDetails->count() }} Deliverable Phases</span>
             </div>
             <div class="status-row pt-3 mt-2 border-top">
                 <span class="label text-muted">Status</span>
                 <span class="status-badge">
-                    <span class="dot"></span> Completed
+                    <span class="dot"></span> {{ $project->project_status }}
                 </span>
             </div>
         </div>
@@ -583,50 +494,39 @@
         </div>
 
         <div class="row g-4">
-            @php
-                // উদাহরণস্বরূপ ডাটা অ্যারে (এটি আপনার কন্ট্রোলার থেকে আসতে পারে)
-                $moreProjects = [
-                    [
-                        'client' => 'MINISTRY OF COMMERCE',
-                        'title' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-                        'sector' => 'Trade Facilitation',
-                        'year' => '2022–2023',
-                        'image' => 'Trace team.png'
-                    ],
-                    [
-                        'client' => 'BAFISA',
-                        'title' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-                        'sector' => 'Technology',
-                        'year' => '2023–2024',
-                        'image' => 'Time Release Study_ Chattogram Port — Baseline Report 2024.png'
-                    ],
-                    [
-                        'client' => 'DCCI / PRIVATE SECTOR',
-                        'title' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-                        'sector' => 'Trade Facilitation',
-                        'year' => '2023',
-                        'image' => 'Trade and Customs.png'
-                    ]
-                ];
-            @endphp
-
-            @foreach($moreProjects as $item)
-            <div class="col-lg-4 col-md-6">
-                <div class="project-mini-card">
-                    <div class="card-img-wrapper">
-                        <img src="{{ asset('assets/img/' . $item['image']) }}" alt="Project Image" class="img-fluid">
-                    </div>
-                    <div class="card-content">
-                        <span class="client-name text-uppercase">{{ $item['client'] }}</span>
-                        <h4 class="project-mini-title">{{ $item['title'] }}</h4>
-                        <p class="project-mini-meta">{{ $item['sector'] }} · {{ $item['year'] }}</p>
+            @forelse($relatedProjects as $item)
+                @php
+                    $itemImage = $item->imageUrl() ?: asset('assets/img/Trade and Customs.png');
+                    $itemSector = $item->services->first()?->service_name ?: $item->project_standard ?: 'Project';
+                    $itemYear = $item->start_date?->format('Y');
+                    $itemYearEnd = $item->end_date?->format('Y');
+                    $itemYearLabel = $itemYear && $itemYearEnd ? $itemYear . '–' . $itemYearEnd : ($itemYear ?: $itemYearEnd ?: '');
+                @endphp
+                <div class="col-lg-4 col-md-6">
+                    <div class="project-mini-card">
+                        <div class="card-img-wrapper">
+                            <img src="{{ $itemImage }}" alt="{{ $item->project_title }}" class="img-fluid">
+                        </div>
+                        <div class="card-content">
+                            <span class="client-name text-uppercase">{{ abbreviateClientName($item->client) ?: 'TRACE' }}</span>
+                            <h4 class="project-mini-title">{{ $item->project_title }}</h4>
+                            <p class="project-mini-meta">{{ $itemSector }} · {{ $itemYearLabel ?: $item->project_status }}</p>
+                            <a href="{{ route('projectdetails', $item) }}" class="view-link mt-2 d-inline-flex">View Project <i class="fas fa-arrow-right ms-1"></i></a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            @endforeach
+            @empty
+                <div class="col-12">
+                    <div class="border rounded-3 bg-white p-4 text-muted">
+                        No related projects found.
+                    </div>
+                </div>
+            @endforelse
         </div>
     </div>
 </section>
 
+@if($showWorkWithUs)
 @include('frontend.layout.cta')
+@endif
 @endsection

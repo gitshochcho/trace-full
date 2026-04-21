@@ -1,4 +1,15 @@
 <section class="cta-section">
+    @php
+        use Illuminate\Support\Str;
+
+        $ctaContent = contentBlock('work-with-us');
+        $ctaTag = $ctaContent?->section ?: 'WORK WITH US';
+        $ctaTitle = $ctaContent?->heading ?: 'Have a project in mind?';
+        $ctaTitleSpan = $ctaContent?->design_word ?: 'that lasts.';
+        $ctaDescription = $ctaContent?->description ?: "Whether reforming a regulatory system, building technical capacity, or modernising digital infrastructure — we'd like to hear from you.";
+        $ctaButtonLabel = $ctaContent?->sub_heading ?: 'Get in Touch';
+    @endphp
+
     <div class="container custom-cta-container"> {{-- ১০৭২পিএক্স কন্টেইনার --}}
         <div class="cta-content-wrapper">
             <div class="row align-items-center gy-4">
@@ -6,20 +17,29 @@
                 <div class="col-lg-8">
                     <div class="cta-tag text-uppercase">
                         <span class="line"></span>
-                        WORK WITH US
+                        {{ $ctaTag }}
                     </div>
                     <h2 class="cta-title">
-                        Have a project in mind? <br>
-                        Let’s build something <span>that lasts.</span>
+                        @if(!empty($ctaTitleSpan) && Str::contains($ctaTitle, $ctaTitleSpan))
+                            {{ trim(Str::before($ctaTitle, $ctaTitleSpan)) }}
+                            <br>
+                            <span>{{ $ctaTitleSpan }}</span>{{ Str::after($ctaTitle, $ctaTitleSpan) }}
+                        @else
+                            {{ $ctaTitle }}
+                            @if(!empty($ctaTitleSpan))
+                                <br>
+                                <span>{{ $ctaTitleSpan }}</span>
+                            @endif
+                        @endif
                     </h2>
                     <p class="cta-desc">
-                        Whether reforming a regulatory system, building technical capacity, or modernising digital infrastructure — we'd like to hear from you.
+                        {!! $ctaDescription !!}
                     </p>
                 </div>
 
                 <div class="col-lg-4 text-center text-lg-end">
                     <button class="cta-btn">
-                        Get in Touch →
+                        {{ $ctaButtonLabel }} →
                     </button>
                 </div>
 
@@ -97,10 +117,33 @@
 }
 
 .cta-desc {
-    color: #cbd5e1;
+    color: #cbd5e1;  
     font-size: 16px;
     line-height: 1.6;
     max-width: 650px;
+}
+
+.cta-desc p {
+    color: #cbd5e1;
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 14px;
+}
+
+.cta-desc p:last-child {
+    margin-bottom: 0;
+}
+
+.cta-desc ul,
+.cta-desc ol {
+    margin: 0 0 14px 24px;
+    color: #cbd5e1;
+}
+
+.cta-desc li {
+    margin-bottom: 8px;
+    line-height: 1.6;
+    color: #cbd5e1;
 }
 
 /* Button style */
