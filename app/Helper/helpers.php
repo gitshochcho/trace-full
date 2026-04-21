@@ -3,6 +3,8 @@ use App\Models\Setting;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use App\Models\Content;
+use Illuminate\Support\Str;
 use Propaganistas\LaravelPhone\PhoneNumber;
 use Propaganistas\LaravelPhone\Rules\Phone;
 use Carbon\Carbon;
@@ -158,5 +160,102 @@ if (! function_exists('siteSettingImage')) {
         }
 
         return asset('storage/' . ltrim($path, '/'));
+    }
+}
+
+if (! function_exists('contentBlock')) {
+    function contentBlock(string $slug): ?Content
+    {
+        $normalizedSlug = Str::slug($slug);
+        $cacheKey = "content_block_{$normalizedSlug}";
+
+        $cached = Cache::get($cacheKey);
+        if ($cached instanceof Content) {
+            return $cached;
+        }
+
+        $slugVariants = array_values(array_unique([
+            $slug,
+            $normalizedSlug,
+            str_replace('-', ' ', $normalizedSlug),
+            str_replace(' ', '-', trim($slug)),
+            str_replace('_', '-', trim($slug)),
+        ]));
+
+        $content = Content::query()
+            ->with('media')
+            ->whereIn('slug', $slugVariants)
+            ->orWhereIn('section', [
+                strtoupper(str_replace('-', ' ', $normalizedSlug)),
+                strtoupper(trim($slug)),
+            ])
+            ->latest('id')
+            ->first();
+
+        if ($content) {
+            Cache::put($cacheKey, $content, now()->addHour());
+        }
+
+        return $content;
+    }
+}
+
+if (! function_exists('stripPTags')) {
+    /**
+     * Strip <p> tags from HTML content while preserving other formatting
+     * Useful for cleaning CKEditor output when we want plain text with basic formatting
+     *
+     * @param string|null $content
+     * @return string|null
+     */
+    function stripPTags(?string $content): ?string
+    {
+        if (empty($content)) {
+            return $content;
+        }
+
+        // Remove opening <p> and closing </p> tags but keep content inside
+        $content = preg_replace("/<p[^>]*>/", "", $content);
+        $content = preg_replace("/<\\/p>/", "", $content);
+
+        // Clean up extra whitespace but preserve line breaks from other elements
+        $content = trim($content);
+
+        return $content;
+    }
+}
+
+if (! function_exists('abbreviateClientName')) {
+    /**
+     * Abbreviate client name: >3 words → acronym; ≤3 words → as-is
+     * Example: "Plant Research & Training Centre" (4 words) → "PRTC"
+     * Example: "ABC Corp" (2 words) → "ABC Corp"
+     *
+     * @param string|null $clientName
+     * @return string|null
+     */
+    function abbreviateClientName(?string $clientName): ?string
+    {
+        if (empty($clientName)) {
+            return $clientName;
+        }
+
+        $clientName = trim($clientName);
+        $words = preg_split('/\s+/', $clientName);
+
+        // If 3 words or fewer, show as-is
+        if (count($words) <= 3) {
+            return $clientName;
+        }
+
+        // If more than 3 words, take first letter of each word
+        $acronym = '';
+        foreach ($words as $word) {
+            if (!empty($word)) {
+                $acronym .= strtoupper($word[0]);
+            }
+        }
+
+        return $acronym;
     }
 }

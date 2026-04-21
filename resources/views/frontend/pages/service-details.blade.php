@@ -68,12 +68,27 @@
     color: #22c1c3;
 }
 
-.hero-content p {
+.hero-content p,
+.hero-content div p,
+.hero-content-text,
+.hero-content-text p {
     font-size: 14px;
     color: #cbd5e1;
     line-height: 1.7;
     margin-bottom: 20px;
     max-width: 440px;
+}
+
+.hero-content-text ul,
+.hero-content-text ol {
+    margin: 0 0 20px 20px;
+    padding-left: 0;
+    color: #cbd5e1;
+}
+
+.hero-content-text li {
+    margin-bottom: 8px;
+    color: #cbd5e1;
 }
 
 .hero-line {
@@ -117,6 +132,40 @@
 }
 
 .service-box p:last-child { margin-bottom: 0; }
+
+/* CKEditor Content Styling */
+.service-box .editor-content p {
+    font-size: 14px;
+    color: #64748b;
+    line-height: 1.75;
+    margin-bottom: 14px;
+}
+
+.service-box .editor-content p:last-child {
+    margin-bottom: 0;
+}
+
+.service-box .editor-content ul,
+.service-box .editor-content ol {
+    margin-left: 24px;
+    margin-bottom: 14px;
+    color: #64748b;
+}
+
+.service-box .editor-content li {
+    margin-bottom: 8px;
+    line-height: 1.75;
+    color: #64748b;
+}
+
+.service-box .editor-content strong {
+    font-weight: 700;
+    color: #334155;
+}
+
+.service-box .editor-content em {
+    font-style: italic;
+}
 
 /* ---- SERVICES INCLUDE ---- */
 .include-list {
@@ -379,6 +428,44 @@
 @endpush
 
 @section('content')
+@php
+    use Illuminate\Support\Str;
+
+    $serviceContent = $service->content;
+    $heroImage = $service->imageUrl() ?: ($serviceContent?->imageUrl() ?: asset('assets/img/Trade and Customs.png'));
+    $heroTitle = $serviceContent?->heading ?: $service->service_name;
+    $heroDesignWord = $serviceContent?->design_word ?: 'Facilitation';
+    $heroDescription = $serviceContent?->description ?: 'TRACE supports governments, trade bodies, and private stakeholders to modernize, simplify, and automate cross-border trade procedures in line with global best practices and WTO TFA commitments.';
+
+    // Overview: use service's own overview field first, then fallback to content description
+    $overviewText = $service->overview ?: ($serviceContent?->description ?: $heroDescription);
+    $overviewPlainText = trim(strip_tags((string) $overviewText));
+
+    $includeItems = $service->details->isNotEmpty()
+        ? $service->details
+        : collect([
+            (object) ['text' => 'Mapping and streamlining border processes', 'iconUrl' => null],
+            (object) ['text' => 'Introducing digital solutions for licensing and clearance', 'iconUrl' => null],
+            (object) ['text' => 'Promoting exports following international requirements', 'iconUrl' => null],
+            (object) ['text' => 'Reviewing legislative frameworks to identify bottlenecks', 'iconUrl' => null],
+            (object) ['text' => 'Supporting private sector trade facilitation services', 'iconUrl' => null],
+            (object) ['text' => 'Facilitating stakeholder consultations', 'iconUrl' => null],
+            (object) ['text' => 'Advising business chambers and associations', 'iconUrl' => null],
+        ]);
+
+    $solutionItems = $service->solutions->isNotEmpty()
+        ? $service->solutions
+        : collect([
+            ['heading' => 'Online Pre-Arrival Processing System', 'sub_heading' => 'DIGITAL PLATFORM'],
+            ['heading' => 'Automated Risk Management System', 'sub_heading' => 'TECHNOLOGY'],
+            ['heading' => 'Authorized Economic Operator Facilities', 'sub_heading' => 'CERTIFICATION'],
+            ['heading' => 'Conducting Time Release Study (TRS)', 'sub_heading' => 'ASSESSMENT'],
+            ['heading' => 'Developing Trade Transparency Portal', 'sub_heading' => 'DIGITAL PLATFORM'],
+            ['heading' => 'Online Export Performance Management System', 'sub_heading' => 'TECHNOLOGY'],
+        ]);
+
+    $sidebarServices = $otherServices;
+@endphp
 
 {{-- ==============================
      HERO
@@ -386,19 +473,22 @@
 <section class="service-hero">
 
     <div class="hero-bg">
-        <img src="{{ asset('images/Trade and Customs.png') }}" alt="Trade Facilitation">
+        <img src="{{ $heroImage }}" alt="{{ $heroTitle }}">
     </div>
 
     <div class="hero-overlay"></div>
 
     <div class="hero-container">
         <div class="hero-content">
-            <h1>Trade <span>Facilitation</span></h1>
-            <p>
-                TRACE supports governments, trade bodies, and private stakeholders
-                to modernize, simplify, and automate cross-border trade procedures in
-                line with global best practices and WTO TFA commitments.
-            </p>
+            <h1>
+                {{ Str::before($heroTitle, $heroDesignWord) }}
+                @if(Str::contains($heroTitle, $heroDesignWord))
+                    <span>{{ $heroDesignWord }}</span>{{ Str::after($heroTitle, $heroDesignWord) }}
+                @else
+                    <span>{{ $heroDesignWord }}</span>
+                @endif
+            </h1>
+            <div class="hero-content-text">{!! $heroDescription !!}</div>
             <div class="hero-line"></div>
         </div>
     </div>
@@ -418,17 +508,7 @@
                 {{-- OVERVIEW --}}
                 <div class="service-box">
                     <h3>Overview</h3>
-                    <p>
-                        TRACE supports governments, trade bodies, and private stakeholders to modernize,
-                        simplify, and automate cross-border trade procedures in line with global best practices
-                        and WTO Trade Facilitation Agreement (TFA) commitments. Our approach integrates
-                        policy reform, digital transformation, and institutional strengthening.
-                    </p>
-                    <p>
-                        By combining strategic policy insight with cutting-edge technical innovation, TRACE
-                        bridges the gap between reform design and implementation, turning commitments into
-                        real-world improvements at ports, borders, and trade agencies.
-                    </p>
+                    <div class="editor-content">{!! nl2br(e($overviewPlainText)) !!}</div>
                 </div>
 
                 {{-- SERVICES INCLUDE --}}
@@ -436,26 +516,18 @@
                     <h3>Our Services Include</h3>
 
                     <div class="include-list">
-                        @php
-                        $includes = [
-                            'Mapping and streamlining border processes',
-                            'Introducing digital solutions for licensing and clearance',
-                            'Promoting exports following international requirements',
-                            'Reviewing legislative frameworks to identify bottlenecks',
-                            'Supporting private sector trade facilitation services',
-                            'Facilitating stakeholder consultations',
-                            'Advising business chambers and associations',
-                        ];
-                        @endphp
-
-                        @foreach($includes as $item)
+                        @foreach($includeItems as $item)
                         <div class="include-item">
                             <span class="check-icon">
-                                <svg viewBox="0 0 12 12">
-                                    <polyline points="2,6 5,9 10,3"/>
-                                </svg>
+                                @if(is_object($item) && method_exists($item, 'iconUrl') && $item->iconUrl())
+                                    <img src="{{ $item->iconUrl() }}" alt="icon" style="width: 12px; height: 12px; object-fit: contain;">
+                                @else
+                                    <svg viewBox="0 0 12 12">
+                                        <polyline points="2,6 5,9 10,3"/>
+                                    </svg>
+                                @endif
                             </span>
-                            {{ $item }}
+                            {{ is_object($item) ? strip_tags((string) $item->text) : strip_tags((string) $item) }}
                         </div>
                         @endforeach
                     </div>
@@ -465,27 +537,16 @@
                 <div class="service-box">
                     <h3>Products & Solutions</h3>
                     <p class="product-sub">
-                        Specific digital tools and deliverables TRACE designs and deploys under this service area.
+                        {{ $serviceContent?->sub_heading ?: 'Specific digital tools and deliverables TRACE designs and deploys under this service area.' }}
                     </p>
 
-                    @php
-                    $products = [
-                        ['num' => 'Product 01', 'title' => 'Online Pre-Arrival Processing System',         'tag' => 'DIGITAL PLATFORM'],
-                        ['num' => 'Product 02', 'title' => 'Automated Risk Management System',             'tag' => 'TECHNOLOGY'],
-                        ['num' => 'Product 03', 'title' => 'Authorized Economic Operator Facilities',      'tag' => 'CERTIFICATION'],
-                        ['num' => 'Product 04', 'title' => 'Conducting Time Release Study (TRS)',          'tag' => 'ASSESSMENT'],
-                        ['num' => 'Product 05', 'title' => 'Developing Trade Transparency Portal',         'tag' => 'DIGITAL PLATFORM'],
-                        ['num' => 'Product 06', 'title' => 'Online Export Performance Management System',  'tag' => 'TECHNOLOGY'],
-                    ];
-                    @endphp
-
                     <div class="row g-3">
-                        @foreach($products as $product)
+                        @foreach($solutionItems as $index => $product)
                         <div class="col-12 col-sm-6">
                             <div class="product-card">
-                                <span class="prod-num">{{ $product['num'] }}</span>
-                                <h4>{{ $product['title'] }}</h4>
-                                <span class="prod-tag">{{ $product['tag'] }}</span>
+                                <span class="prod-num">Product {{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</span>
+                                <h4>{{ is_object($product) ? $product->heading : $product['heading'] }}</h4>
+                                <span class="prod-tag">{{ is_object($product) ? ($product->sub_heading ?? 'PRODUCT') : ($product['sub_heading'] ?? 'PRODUCT') }}</span>
                             </div>
                         </div>
                         @endforeach
@@ -509,32 +570,16 @@
         <div class="sidebar-box">
             <h4>Other Services</h4>
 
-                    @php
-                    $otherServices = [
-                        ['label' => 'Policy Advocacy',                          'icon' => 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z'],
-                        ['label' => 'Research & Innovation',                    'icon' => 'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z'],
-                        ['label' => 'Training & Capacity Building',             'icon' => 'M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z'],
-                        ['label' => 'Technical Assistance & Project Management','icon' => 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z'],
-                        ['label' => 'Tech Solutions',                           'icon' => 'M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18'],
-                        ['label' => 'Laboratory Services',                      'icon' => 'M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z'],
-                        ['label' => 'Temperature Controlled Logistics (TCL) Solution', 'icon' => 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4'],
-                        ['label' => 'Trade Transparency',                       'icon' => 'M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064'],
-                    ];
-                    @endphp
-
-                    @foreach($otherServices as $svc)
-                    <a href="#" class="other-item">
+                    @forelse($sidebarServices as $svc)
+                    <a href="{{ route('serviceDetails', ['id' => $svc->id]) }}" class="other-item">
                         <span class="item-left">
-                            <span class="item-icon">
-                                <svg viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="{{ $svc['icon'] }}"/>
-                                </svg>
-                            </span>
-                            {{ $svc['label'] }}
+                            <span>{{ $svc->service_name }}</span>
                         </span>
                         <span class="arrow-right">›</span>
                     </a>
-                    @endforeach
+                    @empty
+                    <p class="mb-0 text-muted">No services found.</p>
+                    @endforelse
 
                 </div>{{-- end sidebar-box --}}
 

@@ -64,6 +64,31 @@
     margin: 0;
 }
 
+/* CKEditor content in services hero */
+.services-hero .editor-content,
+.services-hero .editor-content p {
+    font-size: 15px;
+    color: #94a3b8;
+    line-height: 1.7;
+    margin: 0 0 14px 0;
+}
+
+.services-hero .editor-content p:last-child {
+    margin-bottom: 0;
+}
+
+.services-hero .editor-content ul,
+.services-hero .editor-content ol {
+    margin: 0 0 14px 20px;
+    color: #94a3b8;
+}
+
+.services-hero .editor-content li {
+    margin-bottom: 6px;
+    line-height: 1.7;
+    color: #94a3b8;
+}
+
 /* =========================================
    CARDS SECTION
 ========================================= */
@@ -274,49 +299,16 @@
 @endpush
 
 @section('content')
+@php
+    use Illuminate\Support\Str;
 
-<nav class="service-breadcrumb">
-    <div class="container-fluid px-lg-5 page-align-container">
-        <div class="breadcrumb-links">
-            <a href="\">Home</a>
-            <span class="sep">›</span>
-            <span class="active">Services</span>
-        </div>
-    </div>
-</nav>
+    $servicesHeroTag = $servicesHero?->section ?: 'WHAT WE DO';
+    $servicesHeroTitle = $servicesHero?->heading ?: 'Our Services';
+    $servicesHeroTitleWord = $servicesHero?->design_word ?: 'Services';
+    $servicesHeroDescription = $servicesHero?->description ?: 'TRACE provides consultancy, research, and advocacy services that help government agencies and businesses reform policies, advance trade facilitation, expand market access, and strengthen laboratory and cold chain systems.';
 
-{{-- ==============================
-     HERO
-============================== --}}
-<section class="services-hero">
-    <div class="container-fluid px-lg-5 page-align-container">
-
-        <div class="label-wrapper">
-            <span class="orange-line"></span>
-            <span class="top-label">WHAT WE DO</span>
-        </div>
-
-        <h2 class="services-title">
-            Our <span class="teal-text">Services</span>
-        </h2>
-
-        <p class="services-description">
-            TRACE provides consultancy, research, and advocacy services that help government
-            agencies and businesses reform policies, advance trade facilitation, expand
-            market access, and strengthen laboratory and cold chain systems.
-        </p>
-
-    </div>
-</section>
-
-{{-- ==============================
-     SERVICE CARDS
-============================== --}}
-<section class="services-cards-section">
-    <div class="container-fluid px-lg-5 page-align-container">
-
-        @php
-        $services = [
+    if (empty($serviceCards)) {
+        $serviceCards = collect([
             [
                 'img'      => 'Trade and Customs.png',
                 'tag'      => 'TRADE FACILITATION & CUSTOMS',
@@ -380,16 +372,60 @@
                 'desc'     => 'Designing and strengthening cold chain and logistics systems to help agricultural, pharmaceutical, and perishable goods sectors meet quality and compliance standards.',
                 'products' => '4 Products',
             ],
-        ];
-        @endphp
+        ]);
+    }
+@endphp
+
+<nav class="service-breadcrumb">
+    <div class="container-fluid px-lg-5 page-align-container">
+        <div class="breadcrumb-links">
+            <a href="\">Home</a>
+            <span class="sep">›</span>
+            <span class="active">Services</span>
+        </div>
+    </div>
+</nav>
+
+{{-- ==============================
+     HERO
+============================== --}}
+<section class="services-hero">
+    <div class="container-fluid px-lg-5 page-align-container">
+
+        <div class="label-wrapper">
+            <span class="orange-line"></span>
+            <span class="top-label">{{ $servicesHeroTag }}</span>
+        </div>
+
+        <h2 class="services-title">
+            {{ Str::before($servicesHeroTitle, $servicesHeroTitleWord) }}
+            @if(Str::contains($servicesHeroTitle, $servicesHeroTitleWord))
+                <span class="teal-text">{{ $servicesHeroTitleWord }}</span>{{ Str::after($servicesHeroTitle, $servicesHeroTitleWord) }}
+            @else
+                <span class="teal-text">Services</span>
+            @endif
+        </h2>
+
+        <div class="editor-content">
+            {!! $servicesHeroDescription !!}
+        </div>
+
+    </div>
+</section>
+
+{{-- ==============================
+     SERVICE CARDS
+============================== --}}
+<section class="services-cards-section">
+    <div class="container-fluid px-lg-5 page-align-container">
 
         <div class="row g-4">
-            @foreach($services as $service)
+            @foreach($serviceCards as $service)
             <div class="col-12 col-sm-6 col-lg-4">
                 <div class="service-card">
 
                     <img
-                        src="/assets/img/{{ $service['img'] }}"
+                        src="{{ $service['img'] }}"
                         alt="{{ $service['tag'] }}"
                         class="card-img">
 
