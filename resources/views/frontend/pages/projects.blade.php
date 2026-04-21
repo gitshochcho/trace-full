@@ -199,6 +199,13 @@
     margin-bottom: 12px;
     line-height: 1.4;
 }
+.project-standard{
+    font-size: 18px;
+    font-weight: 700;
+    color: #01354B;
+    /* margin-bottom: 12px; */
+    line-height: 1.4;
+}
 .project-footer {
     width: 100%; /* Apnar dewa width (approx) container onusare auto nibe */
     min-height: 31px;
@@ -255,10 +262,19 @@
 
 
 @section('content')
+@php
+    $projectsHero = $projectsHero ?? contentBlock('projects-page');
+    $heroSection = $projectsHero?->section ?: 'Our Projects';
+    $heroHeading = $projectsHero?->heading ?: 'Work that';
+    $heroHighlight = $projectsHero?->design_word ?: 'changes systems.';
+    $heroDescription = $projectsHero?->description ?: 'TRACE has delivered trade facilitation reform, laboratory accreditation, digital systems, and policy advisory projects across South Asia — for governments, development banks, and regulatory bodies.';
+    $projectCount = is_countable($projects ?? null) ? count($projects) : 0;
+@endphp
+
 <nav class="projects-breadcrumb">
     <div class="container-custom">
         <div class="breadcrumb-links">
-            <a href="\">Home</a>
+            <a href="{{ route('home') }}">Home</a>
             <span class="sep">›</span>
             <span class="active">Our Projects</span>
         </div>
@@ -270,13 +286,13 @@
         <div class="hero-content">
             <div class="d-flex align-items-center mb-2">
                 <div class="accent-line"></div>
-                <p class="text-uppercase small-tracking mb-0">Our Projects</p>
+                <p class="text-uppercase small-tracking mb-0">{{ $heroSection }}</p>
             </div>
-            
-            <h1 class="hero-title fw-bold">Work that <br><span class="text-teal">changes systems.</span></h1>
-            
+
+            <h1 class="hero-title fw-bold">{{ $heroHeading }} <br><span class="text-teal">{{ $heroHighlight }}</span></h1>
+
             <p class="hero-description mt-4">
-                TRACE has delivered trade facilitation reform, laboratory accreditation, digital systems, and policy advisory projects across South Asia — for governments, development banks, and regulatory bodies.
+                {{ $heroDescription }}
             </p>
         </div>
     </div>
@@ -286,145 +302,72 @@
     <div class="container-custom d-flex justify-content-between align-items-center h-100">
         <ul class="nav filter-tabs">
             <li class="nav-item">
-                <a class="nav-link active" href="#">All Projects <span class="badge">8</span></a>
+                <a class="nav-link {{ empty($selectedService) ? 'active' : '' }}" href="{{ route('projects') }}">All Projects <span class="badge">{{ $projectCount }}</span></a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Laboratory Services <span class="badge">2</span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Trade Facilitation <span class="badge">2</span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Technology <span class="badge">2</span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Policy & Research <span class="badge">2</span></a>
-            </li>
+            @foreach($services as $service)
+                <li class="nav-item">
+                    <a class="nav-link {{ (int) $selectedService === (int) $service->id ? 'active' : '' }}" href="{{ route('projects', ['service' => $service->id]) }}">
+                        {{ $service->service_name }} <span class="badge">{{ $service->projects_count }}</span>
+                    </a>
+                </li>
+            @endforeach
         </ul>
         <div class="project-count text-muted small">
-            Showing <strong>8</strong> projects
+            Showing <strong>{{ $projectCount }}</strong> projects
         </div>
     </div>
 </section>
 
 <section class="project-grid-section py-5">
     <div class="container-custom">
-<div class="row g-4">
-    @php
-        $projects = [
-            [
-                'title' => 'ISO/IEC 17025:2017 Accreditation Support to PRTC, CVASU',
-                'category' => 'TECHNOLOGY SOLUTIONS',
-                'year' => '2023-2024',
-                'client' => 'PRTC, CVASU',
-                'desc' => 'Mauris vel vulputate lectus, quis aliquam velit. Mauris dictum nulla sed tortor pharetra lacinia. Morbi augue est, finibus ut consequat.',
-                'img' => 'assets/img/Time Release Study_ Chattogram Port — Baseline Report 2024.png', // আপনার ফোল্ডার পাথ অনুযায়ী
-                'status' => 'Completed',
-                'tags' => ['HS Code Database', 'Web Development', 'Member Portal']
-            ],
-            [
-                'title' => 'Seven-Story Advanced Customs Laboratory — Schematic Design',
-                'category' => 'LABORATORY SERVICES',
-                'year' => '2024',
-                'client' => 'CHATTOGRAM CUSTOMS AUTHORITY',
-                'desc' => 'Expert design and infrastructure planning for advanced customs lab systems to ensure international standards.',
-                'img' => 'assets/img/Op-Ed.png',
-                'status' => 'Completed',
-                'tags' => ['Lab Design', 'Schematic Layout', 'Customs']
-            ],
-            [
-                'title' => 'HS Code Import Database & BAFISA Website Upgrade',
-                'category' => 'TRADE FACILITATION',
-                'year' => '2022-2023',
-                'client' => 'FREIGHT FORWARDING ASSOCIATION',
-                'desc' => 'Upgrading digital trade databases and transparency portals for better trade management.',
-                'img' => 'assets/img/Trace team.png',
-                'status' => 'Completed',
-                'tags' => ['WTO TFA', 'NTFC', 'Trade Policy']
-            ],
-            [
-                'title' => 'Customs Automation and Risk Management System Support',
-                'category' => 'TECHNOLOGY SOLUTIONS',
-                'year' => '2023',
-                'client' => 'NATIONAL BOARD OF REVENUE',
-                'desc' => 'Supporting digital infrastructure for risk-based customs inspections and automation.',
-                'img' => 'assets/img/BAFISA Project.png',
-                'status' => 'Completed',
-                'tags' => ['Risk Management', 'NBR', 'Customs']
-            ],
-            [
-                'title' => 'Needs Assessment and Time Release Study for Trade',
-                'category' => 'POLICY & RESEARCH',
-                'year' => '2022',
-                'client' => 'WORLD BANK / IFC',
-                'desc' => 'Comprehensive study on trade bottlenecks and time-bound cargo release improvements.',
-                'img' => 'assets/img/Digital Trade Infrastructure in Bangladesh_ A Readiness Assessment.png',
-                'status' => 'Completed',
-                'tags' => ['Needs Assessment', 'TRS', 'World Bank']
-            ],
-            [
-                'title' => 'Authorized Economic Operator (AEO) Framework Support',
-                'category' => 'TRADE FACILITATION',
-                'year' => '2023',
-                'client' => 'DCCI / PRIVATE SECTOR',
-                'desc' => 'Developing trust-based trade frameworks for high-compliance businesses.',
-                'img' => 'assets/img/Trade and Customs.png',
-                'status' => 'Completed',
-                'tags' => ['AEO', 'WCO', 'Private Sector']
-            ],
-            [
-                'title' => 'Export Licensing and Policy Reform for RMG Sector',
-                'category' => 'POLICY & RESEARCH',
-                'year' => '2024',
-                'client' => 'BGMEA / DONOR-FUNDED',
-                'desc' => 'Reforming license delivery and policy frameworks for the ready-made garment industry.',
-                'img' => 'assets/img/Governance.png',
-                'status' => 'Completed',
-                'tags' => ['Policy Reform', 'RMG', 'Licensing']
-            ],
-            [
-                'title' => 'Regional Connectivity and Logistics Policy Analysis',
-                'category' => 'POLICY & RESEARCH',
-                'year' => '2022',
-                'client' => 'WORLD BANK / IFC',
-                'desc' => 'Analysis of regional transport corridors and supply chain logistics.',
-                'img' => 'assets/img/Governance (2).png',
-                'status' => 'Completed',
-                'tags' => ['Connectivity', 'Logistics', 'Policy']
-            ]
-        ];
-    @endphp
+        <div class="row g-4">
+            @forelse($projects as $project)
+                @php
+                    $projectImage = $project->imageUrl() ?: asset('assets/img/Trade and Customs.png');
+                    $projectYear = $project->start_date?->format('Y');
+                    $projectYearEnd = $project->end_date?->format('Y');
+                    $projectYearLabel = $projectYear && $projectYearEnd ? $projectYear . '-' . $projectYearEnd : ($projectYear ?: $projectYearEnd ?: '');
+                    $projectCategory = $project->services->first()?->service_name ?: $project->project_standard ?: 'PROJECT';
+                    $projectTags = $project->services->take(3);
+                    $projectDesc = stripPTags($project->overview) ?: 'Project details will be added soon.';
+                @endphp
+                <div class="col-xl-4 col-lg-4 col-md-6">
+                    <div class="project-card h-100 shadow-sm">
+                        <div class="project-img-box">
+                            <img src="{{ $projectImage }}" alt="{{ $project->project_title }}">
+                            <span class="category-tag">{{ $projectCategory }}</span>
+                            <span class="year-badge">{{ $projectYearLabel ?: $project->project_status }}</span>
+                        </div>
 
-    @foreach($projects as $project)
-    <div class="col-xl-4 col-lg-4 col-md-6">
-        <div class="project-card h-100 shadow-sm">
-            <div class="project-img-box">
-                <img src="{{ asset($project['img']) }}" alt="{{ $project['title'] }}">
-                <span class="category-tag">{{ $project['category'] }}</span>
-                <span class="year-badge">{{ $project['year'] }}</span>
-            </div>
-            
-            <div class="project-content">
-                <h6 class="client-name text-uppercase">{{ $project['client'] }}</h6>
-                <h4 class="project-title">{{ $project['title'] }}</h4>
-                <p class="project-bio text-muted">{{ $project['desc'] }}</p>
-                
-                <div class="project-tags">
-                    @foreach($project['tags'] as $tag)
-                        <span>{{ $tag }}</span>
-                    @endforeach
+                        <div class="project-content">
+                            <h6 class="client-name text-uppercase">{{ abbreviateClientName($project->client) ?: 'TRACE' }}</h6>
+                            <h4 class="project-standard">{{ $project->project_standard ?: 'PROJECT' }}</h4>
+                            <h4 class="project-title">{{ $project->project_title }}</h4>
+                            <p class="project-bio text-muted">{{ \Illuminate\Support\Str::limit($projectDesc, 140) }}</p>
+
+                            <div class="project-tags">
+                                @forelse($projectTags as $tag)
+                                    <span>{{ $tag->service_name }}</span>
+                                @empty
+                                    <span>{{ $project->project_standard ?: $project->project_status }}</span>
+                                @endforelse
+                            </div>
+
+                            <div class="project-footer d-flex justify-content-between align-items-center">
+                                <span class="status text-muted">{{ $projectYearLabel ?: 'Ongoing' }} • {{ $project->project_status }}</span>
+                                <a href="{{ route('projectdetails', $project) }}" class="view-link">View Project <i class="fas fa-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            
-                
-                <div class="project-footer d-flex justify-content-between align-items-center">
-                    <span class="status text-muted">{{ $project['year'] }} • {{ $project['status'] }}</span>
-                    <a href="/projectdetails" class="view-link">View Project <i class="fas fa-arrow-right"></i></a>
+            @empty
+                <div class="col-12">
+                    <div class="text-center py-5 text-muted border rounded bg-white">
+                        No projects found yet.
+                    </div>
                 </div>
-            </div>
+            @endforelse
         </div>
-    </div>
-    @endforeach
-</div>
         </div>
     </div>
 </section>

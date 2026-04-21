@@ -87,6 +87,27 @@
     margin: 0 auto 25px;
 }
 
+.hero-content .hero-desc p {
+    margin: 0;
+    color: inherit;
+    font-size: inherit;
+    line-height: inherit;
+}
+
+.hero-content .hero-desc p + p {
+    margin-top: 10px;
+}
+
+.hero-content .hero-desc ul,
+.hero-content .hero-desc ol {
+    margin: 10px 0 0;
+    padding-left: 20px;
+}
+
+.hero-content .hero-desc li {
+    margin-bottom: 6px;
+}
+
 .hero-btns { display: flex; gap: 15px; justify-content: center; margin-bottom: 25px; }
 
 .btn-hero-primary {
@@ -590,13 +611,35 @@
 @endpush
 
 @section('content')
+@php
+    use Illuminate\Support\Str;
+
+    $heroTagline = $slider?->tagline ?: 'INTERNATIONAL DEVELOPMENT CONSULTING';
+    $heroTitle = $slider?->title ?: 'Empowering Change through Consulting';
+    $heroDesignWord = $slider?->design_word ?: 'Insightful';
+    $heroDescription = $slider?->description ?: 'Trace Consulting partners with governments, regulatory agencies, and development organizations to reform systems, build capacity, and deliver technology that lasts.';
+    $heroImages = $slider?->imageUrls() ?? [];
+
+    $hasDesignWord = filled($heroDesignWord) && Str::contains($heroTitle, $heroDesignWord);
+    $heroTitleBefore = $hasDesignWord ? Str::before($heroTitle, $heroDesignWord) : $heroTitle;
+    $heroTitleAfter = $hasDesignWord ? Str::after($heroTitle, $heroDesignWord) : '';
+
+    if (empty($heroImages)) {
+        $heroImages = [
+            asset('assets/img/image 11.png'),
+            asset('assets/img/ship.jpeg'),
+            asset('assets/img/hero3.jpeg'),
+            asset('assets/img/hero4.jpeg'),
+        ];
+    }
+@endphp
+
 <section class="hero">
     {{-- SLIDES --}}
     <div class="slides">
-        <div class="slide active"><img src="/assets/img/image 11.png" alt="Hero 1"></div>
-        <div class="slide"><img src="/assets/img/ship.jpeg" alt="Hero 2"></div>
-        <div class="slide"><img src="/assets/img/hero3.jpeg" alt="Hero 3"></div>
-        <div class="slide"><img src="/assets/img/hero4.jpeg" alt="Hero 4"></div>
+        @foreach($heroImages as $index => $heroImage)
+            <div class="slide {{ $index === 0 ? 'active' : '' }}"><img src="{{ $heroImage }}" alt="Hero {{ $index + 1 }}"></div>
+        @endforeach
     </div>
 
     {{-- CONTENT --}}
@@ -605,21 +648,22 @@
         {{-- TAG --}}
         <div class="hero-tag-box">
             <span class="tag-line"></span>
-            <span class="hero-tag">INTERNATIONAL DEVELOPMENT CONSULTING</span>
+            <span class="hero-tag">{{ $heroTagline }}</span>
             <span class="tag-line"></span>
         </div>
 
         {{-- TITLE --}}
         <h1>
-            Empowering Change through <br>
-            <span>Insightful</span> Consulting
+            {{ $heroTitleBefore }}
+            @if($hasDesignWord)
+                <span>{{ $heroDesignWord }}</span>{{ $heroTitleAfter }}
+            @endif
         </h1>
 
         {{-- DESC --}}
-        <p class="hero-desc">
-            Trace Consulting partners with governments, regulatory agencies, and development organizations to reform systems,
-            build capacity, and deliver technology that lasts.
-        </p>
+        <div class="hero-desc">
+            {!! $heroDescription !!}
+        </div>
 
         {{-- BUTTONS --}}
         <div class="hero-btns">
@@ -629,10 +673,9 @@
 
         {{-- SLIDER INDICATOR --}}
         <div class="slider-line">
-            <span class="ind active"></span>
-            <span class="ind"></span>
-            <span class="ind"></span>
-            <span class="ind"></span>
+            @foreach($heroImages as $index => $heroImage)
+                <span class="ind {{ $index === 0 ? 'active' : '' }}"></span>
+            @endforeach
         </div>
 
     </div>

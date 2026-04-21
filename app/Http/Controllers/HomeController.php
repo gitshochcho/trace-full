@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Mail\ForgetPassMail;
 use App\Models\Country;
 use App\Models\Gender;
+use App\Models\Project;
+use App\Models\Service;
+use App\Models\Slider;
 use App\Models\User;
 use App\Models\UserDetail;
 use Illuminate\Http\Request;
-use Propaganistas\LaravelPhone\PhoneNumber;
 use Propaganistas\LaravelPhone\Rules\Phone;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -24,29 +26,106 @@ class HomeController extends Controller
 
     public function home(Request $request)
     {
+        $slider = Slider::with('media')->first();
 
-        return view('frontend.pages.home');
+        return view('frontend.pages.home', compact('slider'));
     }
 
      public function services(Request $request)
     {
+        $servicesHero = contentBlock('services-page');
+        $workWithUs = contentBlock('work-with-us');
 
-        return view('frontend.pages.services');
+        $services = Service::query()
+            ->with(['content', 'media', 'solutions'])
+            ->where('active', true)
+            ->orderBy('sort_order')
+            ->get();
+
+        $serviceCards = $services->map(function (Service $service, int $index) {
+            $content = $service->content;
+            
+            // Get image URL - use asset() if it's just a filename
+            $imageUrl = $service->imageUrl() ?? $content?->imageUrl();
+            if (!$imageUrl) {
+                $imageUrl = asset('assets/img/Trade and Customs.png');
+            }
+
+            return [
+                'id' => $service->id,
+                'img' => $imageUrl,
+                'tag' => $content?->section ?? $service->service_name,
+                'title' => $content?->heading ?? $service->service_name,
+                'desc' => $content?->description ?? '',
+                'products' => $service->solutions->isNotEmpty()
+                    ? $service->solutions->count() . ' Solutions'
+                    : ($content?->type ? $content->type : 'View Service'),
+            ];
+        })->values();
+
+        return view('frontend.pages.services', compact('servicesHero', 'workWithUs', 'serviceCards'));
     }
 
       public function serviceDetails(Request $request, $id)
     {
-        return view('frontend.pages.service-details',compact('id'));
+        $service = Service::query()
+            ->with(['content', 'details' => function($q) { $q->orderBy('sort_order'); }, 'solutions' => function($q) { $q->orderBy('sort_order'); }, 'media'])
+            ->findOrFail($id);
+
+        $otherServices = Service::query()
+            ->where('active', true)
+            ->orderBy('sort_order')
+            ->get(['id', 'service_name']);
+
+        return view('frontend.pages.service-details', compact('service', 'otherServices'));
     }
 
       public function projects(Request $request)
     {
+        $projectsHero = contentBlock('projects-page');
 
-        return view('frontend.pages.projects');
+        $services = Service::query()
+            ->whereHas('projects')
+            ->withCount('projects')
+            ->orderBy('service_name')
+            ->get();
+
+        $selectedService = $request->integer('service');
+
+        $projects = Project::query()
+            ->with(['services', 'media'])
+            ->withCount('services')
+            ->when($selectedService, function ($query, $serviceId) {
+                $query->whereHas('services', function ($serviceQuery) use ($serviceId) {
+                    $serviceQuery->where('services.id', $serviceId);
+                });
+            })
+            ->orderBy('sort_order')
+            ->latest('id')
+            ->get();
+
+        return view('frontend.pages.projects', compact('projectsHero', 'services', 'projects', 'selectedService'));
     }
-     public function projectdetails(Request $request)
+
+     public function projectdetails(Request $request, ?Project $project = null)
     {
-        return view ('frontend.pages.projectdetails');
+        $project ??= Project::query()
+            ->with(['services', 'locations', 'phaseDetails', 'outcomes', 'media'])
+            ->orderBy('sort_order')
+            ->latest('id')
+            ->firstOrFail();
+
+        $project->load(['services', 'locations', 'phaseDetails', 'outcomes', 'media']);
+
+        $relatedProjects = Project::query()
+            ->with(['services', 'media'])
+            ->whereKeyNot($project->id)
+            ->orderBy('sort_order')
+            ->latest('id')
+            ->take(3)
+            ->get();
+
+        return view ('frontend.pages.projectdetails', compact('project', 'relatedProjects'));
     }
 
     public function insights(Request $request)

@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
@@ -12,7 +11,7 @@ Route::get('/about', [App\Http\Controllers\HomeController::class, 'about'])->nam
 Route::get('/team', [App\Http\Controllers\HomeController::class, 'team'])->name('team');
 Route::get('/teamdetails', [App\Http\Controllers\HomeController::class, 'teamdetails'])->name('teamdetails');
 Route::get('/projects', [App\Http\Controllers\HomeController::class, 'projects'])->name('projects');
-Route::get('/projectdetails', [App\Http\Controllers\HomeController::class, 'projectdetails'])->name('projectdetails');
+Route::get('/projectdetails/{project?}', [App\Http\Controllers\HomeController::class, 'projectdetails'])->name('projectdetails');
 
 
 Route::get('/services', [App\Http\Controllers\HomeController::class, 'services'])->name('services');
