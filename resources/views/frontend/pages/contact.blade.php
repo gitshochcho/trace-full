@@ -387,6 +387,11 @@
                         </div>
 
                         <div class="mb-3">
+                            <label>Mobile Number <span class="req">*</span></label>
+                            <input type="number" class="form-control" placeholder="Your mobile number" required>
+                        </div>
+
+                        <div class="mb-3">
                             <label>Organization</label>
                             <input type="text" class="form-control" placeholder="Your organisation or institution">
                         </div>
