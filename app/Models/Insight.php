@@ -32,6 +32,11 @@ class Insight extends Model implements HasMedia
         return $this->hasMany(InsightArticle::class)->orderBy('sort_order')->latest('id');
     }
 
+    public function insightType()
+    {
+        return $this->belongsTo(InsightType::class, 'type', 'id');
+    }   
+
     public function imageUrl(): ?string
     {
         $url = $this->getFirstMediaUrl('image');

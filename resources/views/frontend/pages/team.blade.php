@@ -771,7 +771,7 @@
         </div>
 
         <div class="row g-4 experts-grid">
-            @forelse($expertTeams as $index => $expert)
+            @forelse($advisors as $index => $expert)
             <div class="col-xl-6 col-lg-12">
                 <div class="expert-card">
                     <div class="expert-left">

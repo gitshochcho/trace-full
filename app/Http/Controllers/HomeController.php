@@ -292,18 +292,26 @@ class HomeController extends Controller
     {
         $teamPageContent = contentBlock('team-page');
 
-        $teams = Team::query()
-            ->with(['experties.media', 'socialMedia.media', 'projects', 'media'])
+        $advisors = Team::query()
+            ->with(['projects', 'experties.media', 'socialMedia.media', 'media'])
+            ->where('type', 2)
             ->orderBy('sort_order')
             ->latest('id')
             ->get();
 
+        $teams = Team::query()
+            ->with(['experties.media', 'socialMedia.media', 'projects', 'media']) 
+            ->where('type', 1)
+            ->orderBy('sort_order')         
+            ->latest('id')
+            ->get();
+    
         $leadTeam = $teams->first();
         $coreTeams = $teams->filter(function (Team $member) use ($leadTeam) {
             return ! $leadTeam || $member->id !== $leadTeam->id;
         })->values();
 
-        return view('frontend.pages.team', compact('teamPageContent', 'teams', 'leadTeam', 'coreTeams'));
+        return view('frontend.pages.team', compact('teamPageContent', 'teams', 'leadTeam', 'coreTeams', 'advisors'));
     }
     
         public function teamdetails(Request $request, ?Team $team = null)

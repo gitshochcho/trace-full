@@ -29,13 +29,14 @@ class TeamController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $this->validateTeamRequest($request);
-
         $team = Team::create([
             'first_name' => $validated['first_name'],
             'last_name' => $validated['last_name'] ?? null,
             'designation' => $validated['designation'] ?? null,
             'description' => $this->normalizeEditorText($validated['description'] ?? null),
             'sort_order' => $validated['sort_order'] ?? 0,
+            'type' => $validated['type'] ?? 1,
+            'headtitle' => $validated['headtitle'] ?? null,
         ]);
 
         if ($request->hasFile('image')) {
@@ -80,6 +81,8 @@ class TeamController extends Controller
             'designation' => $validated['designation'] ?? null,
             'description' => $this->normalizeEditorText($validated['description'] ?? null),
             'sort_order' => $validated['sort_order'] ?? 0,
+            'type' => $validated['type'] ?? 1,
+            'headtitle' => $validated['headtitle'] ?? null,
         ]);
         $team->save();
 
@@ -166,6 +169,7 @@ class TeamController extends Controller
     {
         $keptIds = [];
 
+
         foreach (array_values($rows) as $index => $item) {
             $rowId = ! empty($item['id']) ? (int) $item['id'] : null;
             $heading = trim((string) ($item['heading'] ?? ''));
@@ -179,12 +183,14 @@ class TeamController extends Controller
             $record = $rowId
                 ? TeamExpertise::firstOrNew(['id' => $rowId, 'team_id' => $team->id])
                 : new TeamExpertise(['team_id' => $team->id]);
-
+         
             $record->team_id = $team->id;
             $record->heading = $heading;
             $record->description = $description;
             $record->sort_order = $index;
             $record->save();
+
+
 
             if ($icon) {
                 $record->clearMediaCollection('icon');
