@@ -805,7 +805,7 @@
             ];
             @endphp
 
-@foreach($services as $service)
+<!-- @foreach($services as $service)
 <div class="col-12 col-sm-6 col-lg-4">
     <div class="service-card h-100 shadow-sm">
         <div class="card-img-wrapper">
@@ -822,7 +822,33 @@
         </div>
     </div>
 </div>
-@endforeach
+@endforeach -->
+
+@forelse($homeServices as $service)
+@php
+    $content  = $service->content;
+    $imageUrl = $service->imageUrl() ?? $content?->imageUrl() ?? asset('assets/img/Trade and Customs.png');
+    $tag      = $content?->section   ?? $service->service_name;
+    $title    = $content?->heading   ?? $service->service_name;
+    $desc     = strip_tags($content?->description ?? '');
+@endphp
+<div class="col-12 col-sm-6 col-lg-4">
+    <div class="service-card h-100 shadow-sm">
+        <div class="card-img-wrapper">
+            <img src="{{ $imageUrl }}" alt="{{ $tag }}">
+        </div>
+        <div class="card-body">
+            <span class="card-cat d-inline-block mb-2">{{ $tag }}</span>
+            <h3 class="card-title-text h5 fw-bold mb-2">{{ $title }}</h3>
+            <div class="animated-line mb-3"></div>
+            <p class="card-text-desc text-muted">{{ Str::limit($desc, 120) }}</p>
+            <a href="{{ route('serviceDetails', $service->id) }}" class="read-more-btn">Read More ›</a>
+        </div>
+    </div>
+</div>
+@empty
+{{-- fallback static cards --}}
+@endforelse
         </div>
     </div>
 </section>
@@ -865,18 +891,27 @@
             ];
             @endphp
 
-            @foreach($projects as $project)
-            <div class="col-12 col-sm-6 col-lg-4">
-                <div class="project-card shadow-sm">
-                    <img src="/assets/img/{{ $project['img'] }}" alt="{{ $project['title'] }}" class="img-fluid">
-                    <div class="proj-overlay">
-                        <div class="proj-badge-box">{{ $project['badge'] }}</div>
-                        <h3 class="proj-title">{{ $project['title'] }}</h3>
-                        <p class="proj-sub">{{ $project['sub'] }}</p>
-                    </div>
-                </div>
+           @forelse($homeProjects as $project)
+@php
+    $pImg    = $project->imageUrl() ?: asset('assets/img/Trade and Customs.png');
+    $pCat    = $project->services->first()?->service_name ?: 'PROJECT';
+    $pClient = abbreviateClientName($project->client) ?: 'TRACE';
+@endphp
+<div class="col-12 col-md-6 col-lg-4">
+    <a href="{{ route('projectdetails', $project) }}" class="text-decoration-none">
+        <div class="project-card">
+            <img src="{{ $pImg }}" alt="{{ $project->project_title }}">
+            <div class="proj-overlay">
+                <div class="proj-badge-box">{{ strtoupper($pCat) }}</div>
+                <h3 class="proj-title">{{ $project->project_title }}</h3>
+                <p class="proj-sub">{{ $pClient }}</p>
             </div>
-            @endforeach
+        </div>
+    </a>
+</div>
+@empty
+{{-- fallback static --}}
+@endforelse
         </div>
     </div>
 </section>
