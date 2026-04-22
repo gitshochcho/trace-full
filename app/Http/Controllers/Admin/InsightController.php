@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Insight;
 use App\Models\InsightArticle;
 use App\Models\Team;
+use App\Models\InsightType;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
@@ -13,20 +14,24 @@ class InsightController extends Controller
 {
     public function index()
     {
-        $insights = Insight::with(['articles.author', 'articles.media', 'media'])
+        $insights = Insight::with(['articles.author', 'articles.media', 'media', 'insightType'])
             ->orderBy('sort_order')
             ->latest('id')
             ->get();
 
+        $insightTypes = InsightType::orderBy('type')->where('status', true)->get(['id', 'type', 'status']);
+
         $teams = Team::query()->orderBy('first_name')->orderBy('last_name')->get(['id', 'first_name', 'last_name']);
 
-        return view('admin.insight.index', compact('insights', 'teams'));
+        return view('admin.insight.index', compact('insights', 'insightTypes', 'teams'));
     }
 
     public function store(Request $request): RedirectResponse
     {
         $validated = $this->validateInsightRequest($request);
 
+        dd($request->all(), $validated);
+        
         $insight = Insight::create([
             'type' => $validated['type'],
             'heading' => $validated['heading'],
@@ -64,14 +69,14 @@ class InsightController extends Controller
     {
         $insight->load(['articles.author', 'articles.media', 'media']);
 
-        $insights = Insight::with(['articles'])
+        $insights = Insight::with(['articles', 'insightType'])
             ->orderBy('sort_order')
             ->latest('id')
             ->get();
-
+        $insightTypes = InsightType::orderBy('type')->where('status', true)->get(['id', 'type', 'status']);
         $teams = Team::query()->orderBy('first_name')->orderBy('last_name')->get(['id', 'first_name', 'last_name']);
 
-        return view('admin.insight.edit', compact('insight', 'insights', 'teams'));
+        return view('admin.insight.edit', compact('insight', 'insights', 'teams', 'insightTypes'));
     }
 
     public function update(Request $request, Insight $insight): RedirectResponse

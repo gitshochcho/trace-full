@@ -5,7 +5,7 @@
         $articleRows = old('articles', [[
             'id' => null,
             'author_team_id' => '',
-            'type' => 'read',
+            'type' => '',
             'title' => '',
             'description' => '',
             'read_minutes' => '',
@@ -43,10 +43,11 @@
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <label class="form-label">Type</label>
-                                        <select name="type" class="form-select @error('type') is-invalid @enderror">
-                                            <option value="download" @selected(old('type') === 'download')>Download</option>
-                                            <option value="read" @selected(old('type', 'read') === 'read')>Read</option>
-                                            <option value="video_watch" @selected(old('type') === 'video_watch')>Video Watch</option>
+                                        <select name="type_id" class="form-select @error('type_id') is-invalid @enderror">
+                                            
+                                            @foreach($insightTypes as $type)
+                                                <option value="{{ $type->id }}" @selected(old('type_id') == $type->id)>{{ $type->type }}</option>
+                                            @endforeach
                                         </select>
                                         @error('type')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
@@ -122,9 +123,10 @@
                                                         <div class="col-md-2">
                                                             <label class="form-label">Type</label>
                                                             <select name="articles[{{ $index }}][type]" class="form-select">
-                                                                <option value="download" @selected(($article['type'] ?? '') === 'download')>Download</option>
-                                                                <option value="read" @selected(($article['type'] ?? 'read') === 'read')>Read</option>
-                                                                <option value="video_watch" @selected(($article['type'] ?? '') === 'video_watch')>Video</option>
+                                                                <option value="">Select Type</option>
+                                                                @foreach($insightTypes as $type)
+                                                                    <option value="{{ $type->id }}" @selected(($article['type'] ?? null) == $type->id)>{{ $type->type }}</option>
+                                                                @endforeach
                                                             </select>
                                                         </div>
                                                         <div class="col-md-2">

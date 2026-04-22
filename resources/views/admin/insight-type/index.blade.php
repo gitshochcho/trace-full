@@ -61,28 +61,22 @@
                             <table class="table table-striped align-middle mb-0">
                                 <thead>
                                     <tr>
-                                        <th>Image</th>
-                                        <th>Heading</th>
                                         <th>Type</th>
-                                        <th>Articles</th>
-                                        <th>Order</th>
+                                        <th>Status</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @forelse($insights as $insight)
                                         <tr>
-                                            <td>
-                                                @if($insight->imageUrl())
-                                                    <img src="{{ $insight->imageUrl() }}" alt="{{ $insight->heading }}" style="width: 42px; height: 42px; object-fit: cover; border-radius: 8px;">
-                                                @else
-                                                    <span class="text-muted">-</span>
-                                                @endif
-                                            </td>
-                                            <td>{{ $insight->heading }}</td>
                                             <td>{{ strtoupper(str_replace('_', ' ', $insight->type)) }}</td>
-                                            <td>{{ $insight->articles->count() }}</td>
-                                            <td>{{ $insight->sort_order }}</td>
+                                            <td>
+                                                @if($insight->status)
+                                                    <span class="badge bg-success">Active</span>
+                                                @else
+                                                    <span class="badge bg-danger">Inactive</span>
+                                                @endif
+                                                </td>
                                             <td class="d-flex gap-2">
                                                 <a href="{{ route('admin.insights.edit', $insight) }}" class="btn btn-sm btn-outline-primary">Edit</a>
                                                 <form action="{{ route('admin.insights.destroy', $insight) }}" method="POST" onsubmit="return confirm('Delete this insight?')">
@@ -106,57 +100,6 @@
         </div>
     </div>
 
-    <template id="articleRowTemplate">
-        <div class="border rounded p-3 article-row">
-            <div class="row g-2 align-items-end">
-                <div class="col-md-4">
-                    <label class="form-label">Title</label>
-                    <input type="hidden" name="__ARTICLE_NAME__[id]" value="">
-                    <input type="text" name="__ARTICLE_NAME__[title]" class="form-control">
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Author</label>
-                    <select name="__ARTICLE_NAME__[author_team_id]" class="form-select">
-                        <option value="">Select</option>
-                        @foreach($teams as $team)
-                            <option value="{{ $team->id }}">{{ $team->fullName() }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">Type</label>
-                    <select name="__ARTICLE_NAME__[type]" class="form-select">
-                        <option value="download">Download</option>
-                        <option value="read" selected>Read</option>
-                        <option value="video_watch">Video</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">Read Min</label>
-                    <input type="number" name="__ARTICLE_NAME__[read_minutes]" class="form-control" min="1" max="999">
-                </div>
-                <div class="col-md-1 d-grid">
-                    <button type="button" class="btn btn-outline-danger remove-article-row">&times;</button>
-                </div>
-                <div class="col-md-5">
-                    <label class="form-label">Description</label>
-                    <input type="text" name="__ARTICLE_NAME__[description]" class="form-control">
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Icon</label>
-                    <input type="file" name="__ARTICLE_ICON_NAME__" class="form-control" accept="image/*">
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label">Attachment</label>
-                    <input type="file" name="__ARTICLE_ATTACHMENT_NAME__" class="form-control" accept=".pdf,.mp4,.mov,.webm,.avi,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.jpg,.jpeg,.png,.webp,.svg">
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Published At</label>
-                    <input type="datetime-local" name="__ARTICLE_NAME__[published_at]" class="form-control">
-                </div>
-            </div>
-        </div>
-    </template>
 @endsection
 
 @push('custome-js')

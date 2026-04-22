@@ -4,13 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\InsightType;
 
 class InsightTypeController extends Controller
 {
     public function index()
     {
-        $types = InsightType::all();
-        return view('admin.insight-type.index', compact('types'));
+        $insights = InsightType::all();
+        return view('admin.insight-type.index', compact('insights'));
     }
 
     public function store(Request $request)

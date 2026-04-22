@@ -9,6 +9,11 @@ class InsightType extends Model
 {
         use HasFactory;
 
+        protected $fillable = [
+            'type',
+            'status',
+        ];
+
         public function insights()
         {
             return $this->hasMany(Insight::class, 'type', 'id');
