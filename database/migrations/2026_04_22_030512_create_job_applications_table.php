@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('job_applications', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('job_posting_id')->constrained()->onDelete('cascade');
+            $table->string('name');
+            $table->string('email');
+            $table->string('phone');
+            $table->string('cv_path');
+            $table->boolean('is_reviewed')->default(false);
             $table->timestamps();
         });
     }

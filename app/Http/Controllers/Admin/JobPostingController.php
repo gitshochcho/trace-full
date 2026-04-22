@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\JobPosting;
 use Illuminate\Http\Request;
 
 class JobPostingController extends Controller
@@ -12,7 +13,8 @@ class JobPostingController extends Controller
      */
     public function index()
     {
-        //
+        $jobs = JobPosting::withCount('applications')->latest()->paginate(15);
+        return view('admin.job-postings.index', compact('jobs'));
     }
 
     /**
@@ -20,7 +22,7 @@ class JobPostingController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.job-postings.create');
     }
 
     /**
@@ -28,38 +30,67 @@ class JobPostingController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'department' => 'required|string|max:255',
+            'employment_type' => 'required|in:Full-Time,Contract,Part-Time',
+            'location' => 'required|string|max:255',
+            'experience_level' => 'required|string|max:255',
+            'is_active' => 'boolean',
+            'posted_date' => 'required|date',
+        ]);
+
+        JobPosting::create($validated);
+
+        return redirect()->route('admin.job-postings.index')->with('success', 'Job posting created successfully.');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(JobPosting $jobPosting)
     {
-        //
+        $jobPosting->load('applications');
+        return view('admin.job-postings.show', compact('jobPosting'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(JobPosting $jobPosting)
     {
-        //
+        return view('admin.job-postings.edit', compact('jobPosting'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, JobPosting $jobPosting)
     {
-        //
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'department' => 'required|string|max:255',
+            'employment_type' => 'required|in:Full-Time,Contract,Part-Time',
+            'location' => 'required|string|max:255',
+            'experience_level' => 'required|string|max:255',
+            'is_active' => 'boolean',
+            'posted_date' => 'required|date',
+        ]);
+
+        $jobPosting->update($validated);
+
+        return redirect()->route('admin.job-postings.index')->with('success', 'Job posting updated successfully.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(JobPosting $jobPosting)
     {
-        //
+        $jobPosting->delete();
+
+        return redirect()->route('admin.job-postings.index')->with('success', 'Job posting deleted successfully.');
     }
 }
