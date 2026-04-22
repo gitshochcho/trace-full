@@ -54,6 +54,12 @@
     transform: translateY(-50%);
     z-index: 2;
 }
+.about-hero-content p {
+    color: rgba(255, 255, 255, 0.5) !important; /* text-white-50 er value */
+    max-width: 480px;
+    font-size: 17px;
+    line-height: 30px;
+}
 
 .about-hero-content h1 {
     font-family: "Sora", sans-serif;
@@ -68,6 +74,11 @@
     height: 5px;
     background: var(--primary-orange);
     border-radius: 2px;
+}
+
+.hero-title span {
+    color: skyblue !important;
+    display: inline-block; 
 }
 
 /* --- About Content Section --- */
@@ -97,6 +108,11 @@
     font-size: clamp(28px, 4vw, 40px);
     color: var(--dark-blue);
 }
+
+.about-title span {
+        color: skyblue !important;
+        font-weight: inherit;
+    }
 
 .about-divider {
     width: 40px;
@@ -866,6 +882,75 @@
     border-radius: 10px;
 }
 
+
+/* ── Partners Slider ── */
+.partners-slider-wrapper {
+    overflow: hidden;
+    border: 1px solid #E5E9ED;
+    border-radius: 16px;
+    margin-top: 52px;
+}
+ 
+.partners-track {
+    display: flex;
+    transition: transform 0.5s ease;
+    will-change: transform;
+}
+ 
+.partner-slide {
+    min-width: 25%;   /* 4 per row default */
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 30px;
+    border-right: 1px solid #E5E9ED;
+    background: #fff;
+    flex-shrink: 0;
+    transition: background 0.3s;
+}
+ 
+.partner-slide:hover { background: #F8FAFC; }
+ 
+.partner-slide a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+ 
+.partner-slide img {
+    max-height: 45px;
+    max-width: 100%;
+    object-fit: contain;
+    filter: grayscale(100%);
+    opacity: 0.6;
+    transition: 0.3s;
+}
+ 
+.partner-slide:hover img {
+    filter: grayscale(0%);
+    opacity: 1;
+}
+ 
+.partner-name-text {
+    font-size: 13px;
+    font-weight: 700;
+    color: #94A3B8;
+    text-align: center;
+}
+ 
+/* dots */
+.dots-box { display: flex; gap: 8px; align-items: center; }
+.dot { width: 8px; height: 8px; background: #E2E8F0; border-radius: 50%; display: inline-block; cursor: pointer; transition: 0.3s; }
+.dot.active { background: #01888C; width: 12px; border-radius: 10px; }
+ 
+/* Responsive */
+@media (max-width: 992px) { .partner-slide { min-width: 33.333%; } }
+@media (max-width: 640px) { .partner-slide { min-width: 50%; } }
+
+
 @media (max-width: 1200px) {
     .partners-container { width: 100%; padding: 0 20px; }
     .logo-grid { grid-template-columns: repeat(2, 1fr); }
@@ -1001,14 +1086,28 @@
 @endphp
 
 <section class="about-hero">
-    <img src="{{ $aboutImage }}" alt="{{ strip_tags($aboutHeading) }}" class="img-fluid rounded-4 shadow-sm">
+    <img src="{{ $aboutHeader?->imageUrl() ?? asset('assets/img/Trade and Customs.png') }}" alt="Hero">
     <div class="container-fluid about-hero-content">
-        <div class="custom-container">
+        <div class="custom-container"> 
             <div class="row">
                 <div class="col-lg-12">
-                    <h1>{!! nl2br(e($aboutHeading)) !!}</h1>
+                   <h1 class="hero-title">
+               @php
+        $heading = $aboutHeader->heading ?? 'Advancing Sustainable Development Through Evidence & Insight';
+        $designWord = $aboutHeader->design_word; 
+
+        if ($designWord) {
+           
+            $formattedHeading = str_ireplace($designWord, "<span>{$designWord}</span>", $heading);
+        } else {
+            $formattedHeading = $heading;
+        }
+    @endphp
+
+    {!! $formattedHeading !!}
+</h1>
                     <p class="text-white-50 mt-3" style="max-width: 480px; font-size: 17px; line-height: 30px;">
-                        {{ strip_tags($aboutSubHeading) }}
+                        {!! $aboutHeader?->description ?? 'We deliver evidence-based policy recommendations...' !!}
                     </p>
                     <div class="hero-line mt-4"></div>
                 </div>
@@ -1021,25 +1120,51 @@
     <div class="custom-container">
         <div class="row align-items-center gy-5">
             <div class="col-lg-6 pe-lg-5">
-                <span class="about-tag mb-3">{{ $aboutSection }}</span>
+                <span class="about-tag mb-3">ABOUT TRACE</span>
+                
                 <h2 class="about-title mb-4">
-                    {!! nl2br(e($aboutSubHeading)) !!}
+                    @php
+                        // Controller theke asha data
+                        $heading = $aboutTrace->heading ?? 'A firm built on insight, strategy, and lasting impact.';
+                        $designWord = $aboutTrace->design_word; 
+
+                        if ($designWord) {
+                            // Heading er bhetor thaka specific word-ke span tag diye wrap korbe
+                            $formattedHeading = str_ireplace($designWord, "<span>{$designWord}</span>", $heading);
+                        } else {
+                            $formattedHeading = $heading;
+                        }
+                    @endphp
+                    {!! $formattedHeading !!}
                 </h2>
 
-                <div class="about-divider mb-4"></div>
+                <div class="about-info mt-4">
+                    {{-- Who We Are Section --}}
+                    <div class="mb-4">
+                        <h4 class="fw-bold" style="font-size: 18px;">{{ $whoWeAre?->heading ?? 'Who We Are' }}</h4>
+                        <div class="text-secondary">
+                            {{-- Editor theke asha p tag remove korbe ebong data display korbe --}}
+                            {!! strip_tags($whoWeAre?->description ?? 'Description here...') !!}
+                        </div>
+                    </div>
 
-                <div class="about-rich-text mt-4">
-                    {!! $aboutDescription !!}
-                </div>
+                    <div class="about-divider mb-4"></div>
 
-                <div class="d-flex gap-3 mt-4">
-                    <a href="{{ route('contact') }}" class="btn btn-orange">Work With Us &rarr;</a>
-                    <a href="{{ route('services') }}" class="btn btn-outline-dark-custom">Our Services</a>
+                    {{-- Our Mission Section --}}
+                    <div class="mb-4">
+                        <h4 class="fw-bold" style="font-size: 18px;">{{ $ourMission?->heading ?? 'Our Mission' }}</h4>
+                        <div class="text-secondary">
+                            {!! strip_tags($ourMission?->description ?? 'Mission description here...') !!}
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div class="col-lg-6 about-right text-end">
-                <img src="{{ $aboutImage }}" class="img-fluid shadow-lg" alt="{{ strip_tags($aboutHeading) }}" style="width: 500px; height: 600px; object-fit: cover;">
+                <img src="{{ $aboutTrace?->imageUrl() ?? asset('assets/img/Trace team.png') }}" 
+                     class="img-fluid shadow-lg" 
+                     alt="Team" 
+                     style="width: 500px; height: 600px; object-fit: cover;">
             </div>
         </div>
     </div>
@@ -1327,46 +1452,177 @@
     </div>
 </section>
 
-<section class="partners-section">
-    <div class="partners-container">
-        <div class="row align-items-center mb-5 gx-lg-5">
+<section class="partners-section py-5">
+    <div class="custom-container">
+        <div class="row align-items-end mb-5">
             <div class="col-lg-6">
                 <div class="partners-tag">
                     <span class="orange-line"></span> OUR PARTNERS
                 </div>
                 <h2 class="partners-title">
-                    Trusted by Leading <br> <span>Institutions</span>
+                    @php
+                        $pHeading    = $partnersContent?->heading     ?: 'Trusted by Leading Institutions';
+                        $pDesignWord = $partnersContent?->design_word ?: 'Institutions';
+                        if ($pDesignWord && Str::contains($pHeading, $pDesignWord)) {
+                            $pHeading = Str::before($pHeading, $pDesignWord)
+                                . '<span>' . $pDesignWord . '</span>'
+                                . Str::after($pHeading, $pDesignWord);
+                        }
+                    @endphp
+                    {!! $pHeading !!}
                 </h2>
             </div>
             <div class="col-lg-6">
                 <p class="partners-desc">
-                    We work with governments, multilateral development organisations, regulatory bodies, and private sector leaders across the region — building long-term partnerships grounded in trust and results.
+                    {!! $partnersContent?->description
+                        ?: 'We work with governments, multilateral development organisations, regulatory bodies, and private sector leaders across the region — building long-term partnerships grounded in trust and results.' !!}
                 </p>
             </div>
         </div>
-
-        <div class="partners-content-box">
-            <div class="logo-grid">
-                @php $logos = ['bafisa.png', 'lir 2.png', 'bijem.png', 'build.png']; @endphp
-                @foreach($logos as $logo)
-                    <div class="partner-logo-wrapper">
-                        <img src="{{ asset('assets/img/'.$logo) }}" alt="Partner Logo">
-                    </div>
-                @endforeach
+ 
+        {{-- Slider --}}
+        <div class="partners-slider-wrapper">
+            <div class="partners-track" id="partnersTrack">
+                @if(isset($partners) && $partners->count() > 0)
+                    {{-- Original items --}}
+                    @foreach($partners as $partner)
+                        <div class="partner-slide">
+                            <a href="{{ $partner->link ?: '#' }}" target="_blank" rel="noopener" title="{{ $partner->name }}">
+                                @if($partner->imageUrl())
+                                    <img src="{{ $partner->imageUrl() }}" alt="{{ $partner->name }}">
+                                @else
+                                    <span class="partner-name-text">{{ $partner->name }}</span>
+                                @endif
+                            </a>
+                        </div>
+                    @endforeach
+                    {{-- Cloned items for infinite loop --}}
+                    @foreach($partners as $partner)
+                        <div class="partner-slide">
+                            <a href="{{ $partner->link ?: '#' }}" target="_blank" rel="noopener" title="{{ $partner->name }}">
+                                @if($partner->imageUrl())
+                                    <img src="{{ $partner->imageUrl() }}" alt="{{ $partner->name }}">
+                                @else
+                                    <span class="partner-name-text">{{ $partner->name }}</span>
+                                @endif
+                            </a>
+                        </div>
+                    @endforeach
+                @else
+                    {{-- Fallback static --}}
+                    @php $logos = ['bafisa.png', 'lir 2.png', 'bijem.png', 'build.png']; @endphp
+                    @foreach(array_merge($logos, $logos) as $logo)
+                        <div class="partner-slide">
+                            <img src="{{ asset('assets/img/' . $logo) }}" alt="Partner">
+                        </div>
+                    @endforeach
+                @endif
             </div>
-
-            <div class="slider-controls">
-                <button class="arrow-btn"><i class="fa-solid fa-arrow-left"></i></button>
-                <div class="dots-box">
-                    <span class="dot active"></span>
-                    <span class="dot"></span>
-                    <span class="dot"></span>
-                </div>
-                <button class="arrow-btn"><i class="fa-solid fa-arrow-right"></i></button>
-            </div>
+        </div>
+ 
+        {{-- Controls --}}
+        <div class="slider-controls mt-4">
+            <button class="arrow-btn" id="partnerPrev">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="dots-box" id="partnerDots"></div>
+            <button class="arrow-btn" id="partnerNext">
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
         </div>
     </div>
 </section>
 
 @include('frontend.layout.cta')
+
+
+<script>
+(function () {
+    const track       = document.getElementById('partnersTrack');
+    const prevBtn     = document.getElementById('partnerPrev');
+    const nextBtn     = document.getElementById('partnerNext');
+    const dotsBox     = document.getElementById('partnerDots');
+ 
+    if (!track) return;
+ 
+    // কতটি slide per view দেখাবে
+    function slidesPerView() {
+        if (window.innerWidth <= 640)  return 2;
+        if (window.innerWidth <= 992)  return 3;
+        return 4;
+    }
+ 
+    const allSlides   = track.querySelectorAll('.partner-slide');
+    const totalReal   = allSlides.length / 2;  // clone বাদে real count
+    let perView       = slidesPerView();
+    let current       = 0;
+    let autoTimer     = null;
+ 
+    // Dots তৈরি করো
+    function buildDots() {
+        dotsBox.innerHTML = '';
+        const pages = Math.ceil(totalReal / perView);
+        for (let i = 0; i < pages; i++) {
+            const d = document.createElement('span');
+            d.className = 'dot' + (i === 0 ? ' active' : '');
+            d.addEventListener('click', () => goTo(i * perView));
+            dotsBox.appendChild(d);
+        }
+    }
+ 
+    function updateDots() {
+        const dots  = dotsBox.querySelectorAll('.dot');
+        const page  = Math.floor(current / perView);
+        dots.forEach((d, i) => d.classList.toggle('active', i === page));
+    }
+ 
+    function slideWidth() {
+        return track.parentElement.offsetWidth / perView;
+    }
+ 
+    function goTo(index) {
+        current = index;
+        // infinite loop reset
+        if (current >= totalReal) current = 0;
+        if (current < 0) current = totalReal - perView;
+ 
+        track.style.transform = `translateX(-${current * slideWidth()}px)`;
+        updateDots();
+    }
+ 
+    function next() { goTo(current + 1); }
+    function prev() { goTo(current - 1 < 0 ? totalReal - perView : current - 1); }
+ 
+    // Slide width গুলো set করো
+    function setSlideWidths() {
+        perView = slidesPerView();
+        const w = slideWidth();
+        allSlides.forEach(s => s.style.minWidth = w + 'px');
+        goTo(current);
+        buildDots();
+    }
+ 
+    // Auto slide
+    function startAuto() {
+        clearInterval(autoTimer);
+        autoTimer = setInterval(next, 3000);
+    }
+ 
+    function stopAuto() { clearInterval(autoTimer); }
+ 
+    // Events
+    prevBtn?.addEventListener('click', () => { prev(); stopAuto(); startAuto(); });
+    nextBtn?.addEventListener('click', () => { next(); stopAuto(); startAuto(); });
+ 
+    track.parentElement.addEventListener('mouseenter', stopAuto);
+    track.parentElement.addEventListener('mouseleave', startAuto);
+ 
+    window.addEventListener('resize', setSlideWidths);
+ 
+    // Init
+    setSlideWidths();
+    startAuto();
+})();
+</script>
+ 
 @endsection
