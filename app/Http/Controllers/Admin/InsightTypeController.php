@@ -18,20 +18,27 @@ class InsightTypeController extends Controller
     {
         $validated = $request->validate([
             'type' => 'required|string|max:255',
-            'status' => 'required|boolean',
         ]);
+
+        $validated['status'] = $request->has('status') ? 1 : 0;
 
         InsightType::create($validated);
 
         return redirect()->route('admin.insight-types.index')->with('message', 'Insight type created successfully');
     }
 
+    public function edit(InsightType $insightType)
+    {
+        return view('admin.insight-type.edit', compact('insightType'));
+    }
+
     public function update(Request $request, InsightType $insightType)
     {
         $validated = $request->validate([
             'type' => 'required|string|max:255',
-            'status' => 'required|boolean',
         ]);
+
+        $validated['status'] = $request->has('status') ? 1 : 0;
 
         $insightType->update($validated);
 

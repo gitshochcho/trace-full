@@ -27,6 +27,8 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Socialite\Facades\Socialite;
 use Propaganistas\LaravelPhone\Rules\Phone;
+use App\Models\InsightType;
+
 
 class HomeController extends Controller
 {
@@ -162,13 +164,30 @@ class HomeController extends Controller
         $insightsPageContent = contentBlock('insights-page');
 
         $insights = Insight::query()
-            ->with(['articles.author.media', 'articles.media', 'media'])
+            ->with(['articles.author.media', 'articles.media', 'media', 'insightType'])
             ->where('active', true)
             ->orderBy('sort_order')
             ->latest('id')
             ->get();
 
-        return view('frontend.pages.insights', compact('insightsPageContent', 'insights'));
+        $insightTypes = InsightType::query()
+            ->where('status', true)
+            ->orderBy('type')
+            ->get()
+            ->map(function ($type) {
+                $type->insights_count = $type->insights()->where('active', true)->count();
+                return $type;
+            });
+
+        // Add "All" option with total count
+        $allOption = (object) [
+            'id' => null,
+            'type' => 'All',
+            'insights_count' => $insights->count(),
+        ];
+        $insightTypes = collect([$allOption])->merge($insightTypes);
+
+        return view('frontend.pages.insights', compact('insightsPageContent', 'insights', 'insightTypes'));
     }
 
     public function articleDetails(Request $request, ?InsightArticle $article = null)
@@ -766,4 +785,5 @@ class HomeController extends Controller
 
         ));
     }
+    
 }

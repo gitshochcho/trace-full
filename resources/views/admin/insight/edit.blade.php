@@ -9,6 +9,14 @@
                 'type' => $article->type,
                 'title' => $article->title,
                 'description' => $article->description,
+                'introduction_title' => $article->introduction_title,
+                'introduction' => $article->introduction,
+                'key_findings_title' => $article->key_findings_title,
+                'key_findings' => $article->key_findings,
+                'country_assessment_title' => $article->country_assessment_title,
+                'country_assessment' => $article->country_assessment,
+                'conclusion_title' => $article->conclusion_title,
+                'conclusion' => $article->conclusion,
                 'read_minutes' => $article->read_minutes,
                 'published_at' => optional($article->published_at)->format('Y-m-d\\TH:i'),
                 'icon_url' => $article->iconUrl(),
@@ -23,6 +31,14 @@
                 'type' => 'read',
                 'title' => '',
                 'description' => '',
+                'introduction_title' => '',
+                'introduction' => '',
+                'key_findings_title' => '',
+                'key_findings' => '',
+                'country_assessment_title' => '',
+                'country_assessment' => '',
+                'conclusion_title' => '',
+                'conclusion' => '',
                 'read_minutes' => '',
                 'published_at' => '',
                 'icon_url' => null,
@@ -60,10 +76,11 @@
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <label class="form-label">Type</label>
-                                        <select name="type" class="form-select @error('type') is-invalid @enderror">
-                                            <option value="download" @selected(old('type', $insight->type) === 'download')>Download</option>
-                                            <option value="read" @selected(old('type', $insight->type) === 'read')>Read</option>
-                                            <option value="video_watch" @selected(old('type', $insight->type) === 'video_watch')>Video Watch</option>
+                                        <select name="type" class="form-select @error('type') is-invalid @enderror" required>
+                                            <option value="">Select Type</option>
+                                            @foreach($insightTypes as $type)
+                                                <option value="{{ $type->id }}" @selected(old('type', $insight->type) == $type->id)>{{ ucfirst(str_replace('_', ' ', $type->type)) }}</option>
+                                            @endforeach
                                         </select>
                                         @error('type')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
@@ -175,9 +192,9 @@
                                                 <div class="col-md-2">
                                                     <label class="form-label">Type</label>
                                                     <select name="articles[{{ $index }}][type]" class="form-select">
-                                                        <option value="download" @selected(($article['type'] ?? '') === 'download')>Download</option>
-                                                        <option value="read" @selected(($article['type'] ?? 'read') === 'read')>Read</option>
-                                                        <option value="video_watch" @selected(($article['type'] ?? '') === 'video_watch')>Video</option>
+                                                        @foreach($insightTypes as $type)
+                                                            <option value="{{ $type->id }}" @selected(($article['type'] ?? null) == $type->id)>{{ ucfirst($type->type) }}</option>
+                                                        @endforeach
                                                     </select>
                                                 </div>
                                                 <div class="col-md-2">
@@ -190,6 +207,38 @@
                                                 <div class="col-md-5">
                                                     <label class="form-label">Description</label>
                                                     <input type="text" name="articles[{{ $index }}][description]" value="{{ $article['description'] ?? '' }}" class="form-control">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Introduction Title</label>
+                                                    <input type="text" name="articles[{{ $index }}][introduction_title]" value="{{ $article['introduction_title'] ?? '' }}" class="form-control">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Introduction</label>
+                                                    <textarea name="articles[{{ $index }}][introduction]" rows="2" class="form-control">{{ $article['introduction'] ?? '' }}</textarea>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Key Findings Title</label>
+                                                    <input type="text" name="articles[{{ $index }}][key_findings_title]" value="{{ $article['key_findings_title'] ?? '' }}" class="form-control">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Key Findings</label>
+                                                    <textarea name="articles[{{ $index }}][key_findings]" rows="2" class="form-control">{{ $article['key_findings'] ?? '' }}</textarea>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Country Assessment Title</label>
+                                                    <input type="text" name="articles[{{ $index }}][country_assessment_title]" value="{{ $article['country_assessment_title'] ?? '' }}" class="form-control">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Country Assessment</label>
+                                                    <textarea name="articles[{{ $index }}][country_assessment]" rows="2" class="form-control">{{ $article['country_assessment'] ?? '' }}</textarea>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Conclusion Title</label>
+                                                    <input type="text" name="articles[{{ $index }}][conclusion_title]" value="{{ $article['conclusion_title'] ?? '' }}" class="form-control">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Conclusion</label>
+                                                    <textarea name="articles[{{ $index }}][conclusion]" rows="2" class="form-control">{{ $article['conclusion'] ?? '' }}</textarea>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <label class="form-label">Icon</label>
@@ -245,9 +294,9 @@
                 <div class="col-md-2">
                     <label class="form-label">Type</label>
                     <select name="__ARTICLE_NAME__[type]" class="form-select">
-                        <option value="download">Download</option>
-                        <option value="read" selected>Read</option>
-                        <option value="video_watch">Video</option>
+                        @foreach($insightTypes as $type)
+                            <option value="{{ $type->id }}">{{ ucfirst($type->type) }}</option>
+                        @endforeach
                     </select>
                 </div>
                 <div class="col-md-2">
@@ -260,6 +309,38 @@
                 <div class="col-md-5">
                     <label class="form-label">Description</label>
                     <input type="text" name="__ARTICLE_NAME__[description]" class="form-control">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Introduction Title</label>
+                    <input type="text" name="__ARTICLE_NAME__[introduction_title]" class="form-control">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Introduction</label>
+                    <textarea name="__ARTICLE_NAME__[introduction]" rows="2" class="form-control"></textarea>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Key Findings Title</label>
+                    <input type="text" name="__ARTICLE_NAME__[key_findings_title]" class="form-control">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Key Findings</label>
+                    <textarea name="__ARTICLE_NAME__[key_findings]" rows="2" class="form-control"></textarea>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Country Assessment Title</label>
+                    <input type="text" name="__ARTICLE_NAME__[country_assessment_title]" class="form-control">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Country Assessment</label>
+                    <textarea name="__ARTICLE_NAME__[country_assessment]" rows="2" class="form-control"></textarea>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Conclusion Title</label>
+                    <input type="text" name="__ARTICLE_NAME__[conclusion_title]" class="form-control">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Conclusion</label>
+                    <textarea name="__ARTICLE_NAME__[conclusion]" rows="2" class="form-control"></textarea>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Icon</label>

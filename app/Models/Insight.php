@@ -14,6 +14,7 @@ class Insight extends Model implements HasMedia
 
     protected $fillable = [
         'type',
+        'type_id',
         'heading',
         'sub_heading',
         'description',
@@ -53,7 +54,8 @@ class Insight extends Model implements HasMedia
 
     public function actionLabel(): string
     {
-        return match (strtolower((string) $this->type)) {
+        $typeString = $this->insightType ? strtolower($this->insightType->type) : 'read';
+        return match ($typeString) {
             'download' => 'Download',
             'video', 'watch', 'video_watch', 'watch_video' => 'Watch',
             default => 'Read',

@@ -74,11 +74,21 @@
                         <p>Team Manager</p>
                     </a>
                 </li>
+                
+                <li class="nav-item">
+                    <a href="{{ route('admin.insight-types.index') }}" class="nav-link {{ request()->routeIs('admin.insight-types.*') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-tags"></i>
+                        <p>Insight Type</p>
+                    </a>
+                </li>
 
                 <li class="nav-item">
                     <a href="{{ route('admin.insights.index') }}" class="nav-link {{ request()->routeIs('admin.insights.*') ? 'active' : '' }}">
                         <i class="nav-icon bi bi-journals"></i>
                         <p>Insights Manager</p>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="{{ route('admin.contact-messages.index') }}" class="nav-link {{ request()->routeIs('admin.contact-messages.*') ? 'active' : '' }}">
                         <i class="nav-icon bi bi-envelope"></i>
                         <p>Contact Messages</p>
