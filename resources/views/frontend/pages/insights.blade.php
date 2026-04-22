@@ -3,10 +3,24 @@
 
 @section('content')
 
+@php
+    $heroSection = $insightsPageContent?->section ?: 'KNOWLEDGE & RESEARCH';
+    $heroHeading = $insightsPageContent?->heading ?: 'Ideas that';
+    $heroDesignWord = $insightsPageContent?->design_word ?: 'move trade forward.';
+    $heroDescription = $insightsPageContent?->description ?: 'Op-eds in national newspapers, in-house research, policy publications, and expert videos - TRACE\'s full body of published work.';
+
+    $allInsights = $insights ?? collect();
+    $typeCounts = [
+        'DOWNLOAD' => $allInsights->where('type', 'download')->count(),
+        'READ' => $allInsights->where('type', 'read')->count(),
+        'VIDEO WATCH' => $allInsights->where('type', 'video_watch')->count(),
+    ];
+@endphp
+
 <nav class="service-breadcrumb">
     <div class="container-fluid px-lg-5 page-align-container">
         <div class="breadcrumb-links">
-            <a href="\">Home</a>
+            <a href="{{ route('home') }}">Home</a>
             <span class="sep">›</span>
             <span class="active">Insights</span>
         </div>
@@ -21,22 +35,22 @@
             <div class="col-lg-7">
                 <div class="hero-tag d-flex align-items-center gap-2 mb-3" style="font-size: 12px; letter-spacing: 1px; color: #e85d26; font-weight: 700;">
                     <span style="width: 25px; height: 2px; background: #e85d26;"></span>
-                    KNOWLEDGE & RESEARCH
+                    {{ $heroSection }}
                 </div>
                 <h1 class="display-4 fw-bolder mb-4" style="line-height: 1.1;">
-                    Ideas that <span style="color: #00bfc5;">move trade</span> forward.
+                    {{ $heroHeading }} <span style="color: #00bfc5;">{{ $heroDesignWord }}</span>
                 </h1>
                 <p class="lead opacity-75 mb-4" style="font-size: 16px; max-width: 550px;">
-                    Op-eds in national newspapers, in-house research, policy publications, and expert videos — TRACE’s full body of published work.
+                    {{ strip_tags($heroDescription) }}
                 </p>
                 <div class="d-flex gap-5 mt-5">
                     <div>
-                        <h3 class="fw-bold mb-0">20+</h3>
-                        <span class="small opacity-50">Op-Eds</span>
+                        <h3 class="fw-bold mb-0">{{ $typeCounts['READ'] }}</h3>
+                        <span class="small opacity-50">Read Insights</span>
                     </div>
                     <div>
-                        <h3 class="fw-bold mb-0">12</h3>
-                        <span class="small opacity-50">Publications</span>
+                        <h3 class="fw-bold mb-0">{{ $allInsights->count() }}</h3>
+                        <span class="small opacity-50">Total Insights</span>
                     </div>
                 </div>
             </div>
@@ -52,12 +66,10 @@
         <div class="row align-items-center">
             <div class="col-lg-8">
                 <div class="filters d-flex flex-wrap gap-2 gap-md-4">
-                    <a href="#" class="filter-link active" data-filter="ALL">All <span class="ms-1 opacity-50">18</span></a>
-                    <a href="#" class="filter-link" data-filter="VIDEO">Videos <span class="ms-1 opacity-50">1</span></a>
-                    <a href="#" class="filter-link" data-filter="OP-ED / PRESS">Op-Ed / Press <span class="ms-1 opacity-50">3</span></a>
-                    <a href="#" class="filter-link" data-filter="ARTICLE">Articles <span class="ms-1 opacity-50">4</span></a>
-                    <a href="#" class="filter-link" data-filter="PUBLICATION">Publications <span class="ms-1 opacity-50">4</span></a>
-                    <a href="#" class="filter-link" data-filter="BROCHURE">Brochures <span class="ms-1 opacity-50">2</span></a>
+                    <a href="#" class="filter-link active" data-filter="ALL">All <span class="ms-1 opacity-50">{{ $allInsights->count() }}</span></a>
+                    <a href="#" class="filter-link" data-filter="VIDEO WATCH">Video Watch <span class="ms-1 opacity-50">{{ $typeCounts['VIDEO WATCH'] }}</span></a>
+                    <a href="#" class="filter-link" data-filter="READ">Read <span class="ms-1 opacity-50">{{ $typeCounts['READ'] }}</span></a>
+                    <a href="#" class="filter-link" data-filter="DOWNLOAD">Download <span class="ms-1 opacity-50">{{ $typeCounts['DOWNLOAD'] }}</span></a>
                 </div>
             </div>
             <div class="col-lg-4 mt-3 mt-lg-0">
@@ -81,52 +93,57 @@
 <section class="insights-list py-5 bg-white">
     <div class="container-fluid px-lg-5 page-align-container">
         <div class="results-info d-flex align-items-center gap-3 mb-5">
-            <span class="small text-muted text-nowrap">Showing <b id="results-count">18</b> insights</span>
+            <span class="small text-muted text-nowrap">Showing <b id="results-count">{{ $allInsights->count() }}</b> insights</span>
             <div class="w-100 bg-light" style="height: 1px;"></div>
         </div>
 
         <div class="row g-4">
+            @forelse($allInsights as $insight)
             @php
-            // Sample Loop for Cards
-            $items = [
-                ['tag' => 'VIDEO', 'cat' => 'TECHNOLOGY SOLUTIONS', 'title' => 'LIMS in Action: Digital Lab Management Transforming Testing in Bangladesh', 'btn' => 'Watch', 'badge_bg' => '#e85d26' , 'img' => 'Op-Ed.png'],
-                ['tag' => 'BROCHURE', 'cat' => 'LABORATORY SERVICES', 'title' => 'TRACE Laboratory Accreditation Services — Brochure 2024', 'btn' => 'Download', 'badge_bg' => '#e85d26', 'img' => 'TRACE Laboratory Accreditation Services — Brochure 2024.png'],
-                ['tag' => 'BROCHURE', 'cat' => 'TRADE FACILITATION', 'title' => 'TRACE Trade Facilitation Services — 2025 Capability Overview', 'btn' => 'Download', 'badge_bg' => '#e85d26', 'img' => 'TRACE Trade Facilitation Services — 2025 Capability Overview.png'],
-                ['tag' => 'PUBLICATION', 'cat' => 'RESEARCH & ASSESSMENT', 'title' => 'Export Performance Management: A Framework for South Asian Governments', 'btn' => 'Read', 'badge_bg' => '#00898e', 'img' => 'Export Performance Management_ A Framework for South Asian Governments.png'],
-                ['tag' => 'PUBLICATION', 'cat' => 'TECHNOLOGY SOLUTIONS', 'title' => 'Digital Trade Infrastructure in Bangladesh: A Readiness Assessment', 'btn' => 'Read', 'badge_bg' => '#00898e', 'img' => 'Digital Trade Infrastructure in Bangladesh_ A Readiness Assessment.png'],
-                ['tag' => 'PUBLICATION', 'cat' => 'POLICY ADVOCACY', 'title' => "Reforming Bangladesh's Export Licensing Framework: Policy Brief 2024", 'btn' => 'Read', 'badge_bg' => '#00898e', 'img' => "Reforming Bangladesh's Export Licensing Framework_ Policy Brief 2024.png"],
-                ['tag' => 'ARTICLE', 'cat' => 'RESEARCH & ASSESSMENT', 'title' => 'Strengthening Cross-Border Trade: A Diagnostic of Non-Tariff Barriers in South Asia', 'btn' => 'Read', 'badge_bg' => '#00898e', 'img' => 'TRACE Trade Facilitation Services — 2025 Capability Overview.png'],
-                ['tag' => 'OP-ED / PRESS', 'cat' => 'TRADE FACILITATION', 'title' => "Op-Ed: Why Bangladesh's Export Growth Depends on Trade Facilitation Reform", 'btn' => 'Read', 'badge_bg' => '#00898e', 'img' => "Export Performance Management_ A Framework for South Asian Governments.png"],
-                ['tag' => 'OP-ED / PRESS', 'cat' => 'POLICY ADVOCACY', 'title' => "Op-Ed: Reforming Export Licensing in Bangladesh to Unlock Growth", 'btn' => 'Read', 'badge_bg' => '#00898e', 'img' => "TRACE Laboratory Accreditation Services — Brochure 2024.png"],
-                ['tag' => 'OP-ED / PRESS', 'cat' => 'TECHNOLOGY SOLUTIONS', 'title' => "Op-Ed: The Role of Digital Solutions in Modernizing Trade in South Asia", 'btn' => 'Read', 'badge_bg' => '#00898e', 'img' => "Reforming Bangladesh's Export Licensing Framework_ Policy Brief 2024.png"],
-            ];
-            @endphp
+                $tag = strtoupper(str_replace('_', ' ', $insight->type));
+                $category = strtoupper($insight->sub_heading ?: 'INSIGHT');
+                $title = $insight->heading;
+                $buttonText = $insight->actionLabel();
+                $badgeColor = $insight->type === 'download' ? '#e85d26' : '#00898e';
+                $cardImage = $insight->imageUrl() ?: asset('assets/img/Op-Ed.png');
+                $leadArticle = $insight->articles->first();
+                $description = \Illuminate\Support\Str::limit($insight->description ?: ($leadArticle?->description ?: ''), 120);
 
-            @foreach($items as $index => $item)
-            <div class="col-12 col-md-6 col-lg-4 insight-item" data-tag="{{ strtoupper($item['tag']) }}">
+                $actionLink = '#';
+                if ($insight->type === 'read' && $leadArticle) {
+                    $actionLink = route('articleDetails', $leadArticle);
+                }
+
+                if (in_array($insight->type, ['download', 'video_watch'], true)) {
+                    $actionLink = $insight->attachmentUrl() ?: ($leadArticle?->attachmentUrl() ?: '#');
+                }
+
+                $metaDate = optional($insight->published_at)->format('M Y') ?: 'TBA';
+                $metaDuration = $leadArticle?->read_minutes ? $leadArticle->read_minutes . ' min' : 'Quick read';
+            @endphp
+            <div class="col-12 col-md-6 col-lg-4 insight-item" data-tag="{{ $tag }}">
                 <div class="insight-card h-100 border-0 shadow-sm rounded-5 overflow-hidden bg-white">
                     <div class="card-img-position relative" style="height: 220px; overflow: hidden; position: relative;">
-                        <img src="{{ asset('assets/img/' . $item['img']) }}" class="w-100 h-100 object-fit-cover" alt="{{ $item['title'] }}">
-                        <span class="badge position-absolute top-0 start-0 m-3 px-3 py-1" style="background: {{ $item['badge_bg'] }}; font-size: 10px; border-radius: 4px;">{{ $item['tag'] }}</span>
+                        <img src="{{ $cardImage }}" class="w-100 h-100 object-fit-cover" alt="{{ $title }}">
+                        <span class="badge position-absolute top-0 start-0 m-3 px-3 py-1" style="background: {{ $badgeColor }}; font-size: 10px; border-radius: 4px;">{{ $tag }}</span>
                     </div>
                     <div class="card-body p-4">
-                        <small class="fw-bold text-teal mb-2 d-block" style="font-size: 11px; color: #00898e; letter-spacing: 0.5px;">{{ $item['cat'] }}</small>
-                        <h5 class="card-title fw-bold text-dark mb-3" style="font-size: 17px; line-height: 1.4;">{{ $item['title'] }}</h5>
-                        <p class="card-text text-muted small mb-4">TRACE’s technology team on the rollout of Laboratory Information Management Systems across public sector testing facilities...</p>
+                        <small class="fw-bold text-teal mb-2 d-block" style="font-size: 11px; color: #00898e; letter-spacing: 0.5px;">{{ $category }}</small>
+                        <h5 class="card-title fw-bold text-dark mb-3" style="font-size: 17px; line-height: 1.4;">{{ $title }}</h5>
+                        <p class="card-text text-muted small mb-4">{{ $description ?: 'Insight summary is being updated.' }}</p>
                         
                         <div class="d-flex justify-content-between align-items-center pt-3 border-top mt-auto">
-                            <span class="text-muted" style="font-size: 12px;"><i class="far fa-calendar-alt me-1"></i> Jan 2025 · 18 min</span>
-                            @php
-                                $link = $item['btn'] === 'Read'
-                                    ? route('articleDetails', ['id' => $index + 1])
-                                    : '#';
-                            @endphp
-                            <a href="{{ $link }}" class="fw-bold text-decoration-none text-teal" style="font-size: 12px; color: #00898e;">{{ $item['btn'] }} →</a>
+                            <span class="text-muted" style="font-size: 12px;"><i class="far fa-calendar-alt me-1"></i> {{ $metaDate }} · {{ $metaDuration }}</span>
+                            <a href="{{ $actionLink }}" class="fw-bold text-decoration-none text-teal" style="font-size: 12px; color: #00898e;" @if($insight->type !== 'read') target="_blank" rel="noopener" @endif>{{ $buttonText }} →</a>
                         </div>
                     </div>
                 </div>
             </div>
-            @endforeach
+            @empty
+                <div class="col-12">
+                    <div class="border rounded-3 bg-white p-4 text-muted">No insights have been published yet.</div>
+                </div>
+            @endforelse
         </div>
 
         <div class="text-center mt-5">
