@@ -624,6 +624,36 @@
     $heroTitleBefore = $hasDesignWord ? Str::before($heroTitle, $heroDesignWord) : $heroTitle;
     $heroTitleAfter = $hasDesignWord ? Str::after($heroTitle, $heroDesignWord) : '';
 
+     // Main about block
+    $aTag        = $homeAboutTrace?->section     ?: 'ABOUT TRACE';
+    $aHeading    = $homeAboutTrace?->heading     ?: 'Transforming Challenges into Opportunities';
+    $aDesignWord = $homeAboutTrace?->design_word ?: 'Opportunities';
+    $aDesc       = $homeAboutTrace?->description ?: 'TRACE focuses on international trade, policy reform, and development, working with governments, business groups, and the private sector to strengthen market systems.';
+    $aImage      = $homeAboutTrace?->imageUrl()  ?: asset('assets/img/bg.png');
+ 
+    // Three list items
+    $items = [
+        [
+            'num'   => '01',
+            'title' => $homeAboutTraceOne?->heading     ?: 'Multi-Sector Expertise & Global Reach',
+            'text'  => $homeAboutTraceOne?->description ?: 'Deep knowledge across industries, backed by an objective perspective and access to global networks.',
+        ],
+        [
+            'num'   => '02',
+            'title' => $homeAboutTraceTwo?->heading     ?: 'Proven Methodologies, Policy to Practice',
+            'text'  => $homeAboutTraceTwo?->description ?: 'Rigorous, scalable approaches that translate evidence into implementable reforms.',
+        ],
+        [
+            'num'   => '03',
+            'title' => $homeAboutTraceThree?->heading     ?: 'Change Management & Creative Innovation',
+            'text'  => $homeAboutTraceThree?->description ?: 'Combining structured change management with innovative, context-driven solutions.',
+        ],
+    ];
+ 
+    // Badge
+    $badgeNum  = $homeYearsExpertise?->heading     ?: '8+';
+    $badgeText = $homeYearsExpertise?->description ?: 'Years of Expertise';
+
     if (empty($heroImages)) {
         $heroImages = [
             asset('assets/img/image 11.png'),
@@ -690,65 +720,53 @@
 <section class="about-section py-5 my-lg-4">
     <div class="container" style="max-width: 1072px; margin: 0 auto; padding: 0 15px;">
         <div class="row align-items-center gy-5">
-
+ 
             {{-- LEFT CONTENT --}}
             <div class="col-12 col-lg-6 pe-lg-5">
                 <div class="about-tag-wrapper mb-3">
-                    <span class="about-tag">ABOUT TRACE</span>
+                    <span class="about-tag">{{ $aTag }}</span>
                 </div>
-
+ 
                 <h2 class="about-title mb-4">
-                    Transforming Challenges <br>
-                    into <span class="text-teal">Opportunities</span>
+                    @if($aDesignWord && Str::contains($aHeading, $aDesignWord))
+                        {!! nl2br(e(Str::before($aHeading, $aDesignWord))) !!}<span class="text-teal">{{ $aDesignWord }}</span>{!! nl2br(e(Str::after($aHeading, $aDesignWord))) !!}
+                    @else
+                        {{ $aHeading }}
+                    @endif
                 </h2>
-
+ 
                 <p class="about-desc mb-5">
-                    TRACE focuses on international trade, policy reform, and development, working with governments,
-                    business groups, and the private sector to strengthen market systems.
+                    {!! strip_tags($aDesc) !!}
                 </p>
-
+ 
                 {{-- LIST ITEMS --}}
                 <div class="about-list">
-                    <div class="about-item d-flex gap-3 mb-4">
-                        <span class="about-num">01</span>
-                        <div class="about-content">
-                            <h4 class="item-title">Multi-Sector Expertise & Global Reach</h4>
-                            <p class="item-text">Deep knowledge across industries, backed by an objective perspective and access to global networks.</p>
+                    @foreach($items as $item)
+                        <div class="about-item d-flex gap-3 mb-4">
+                            <span class="about-num">{{ $item['num'] }}</span>
+                            <div class="about-content">
+                                <h4 class="item-title">{{ $item['title'] }}</h4>
+                                <p class="item-text">{{ strip_tags($item['text']) }}</p>
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="about-item d-flex gap-3 mb-4">
-                        <span class="about-num">02</span>
-                        <div class="about-content">
-                            <h4 class="item-title">Proven Methodologies, Policy to Practice</h4>
-                            <p class="item-text">Rigorous, scalable approaches that translate evidence into implementable reforms.</p>
-                        </div>
-                    </div>
-
-                    <div class="about-item d-flex gap-3 mb-4">
-                        <span class="about-num">03</span>
-                        <div class="about-content">
-                            <h4 class="item-title">Change Management & Creative Innovation</h4>
-                            <p class="item-text">Combining structured change management with innovative, context-driven solutions.</p>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
-
+ 
                 <a href="/about" class="learn-btn mt-3 d-inline-block text-decoration-none">Learn About Us &rarr;</a>
             </div>
-
+ 
             {{-- RIGHT IMAGE --}}
             <div class="col-12 col-lg-6">
                 <div class="about-img-wrap position-relative">
-                    <img src="/assets/img/bg.png" alt="About Trace" class="img-fluid rounded-4 shadow-sm">
-                    
+                    <img src="{{ $aImage }}" alt="{{ strip_tags($aHeading) }}" class="img-fluid rounded-4 shadow-sm">
+ 
                     <div class="about-badge shadow-lg">
-                        <h3 class="m-0 fw-bold">8+</h3>
-                        <p class="m-0 small opacity-75">Years of expertise</p>
+                        <h3 class="m-0 fw-bold">{{ $badgeNum }}</h3>
+                        <p class="m-0 small opacity-75">{{ strip_tags($badgeText) }}</p>
                     </div>
                 </div>
             </div>
-
+ 
         </div>
     </div>
 </section>
@@ -922,23 +940,52 @@
 <section class="partners-section py-5">
     <div class="container" style="max-width:1200px;">
 
-            <p class="partners-title mb-4 text-center">TRUSTED BY LEADING INSTITUTIONS</p>
+        <p class="partners-title mb-4 text-center">TRUSTED BY LEADING INSTITUTIONS</p>
 
         <div class="partner-slider position-relative">
             <div class="partner-logos-wrapper">
+                @php
+                    // Marquee এর জন্য logos দুইবার render করতে হবে
+                    $partnerList = $partners->isNotEmpty()
+                        ? $partners
+                        : collect([
+                            (object)['name' => 'BAFISA',    '_fallback' => 'assets/img/bafisa.png'],
+                            (object)['name' => 'LIR',       '_fallback' => 'assets/img/lir 2.png'],
+                            (object)['name' => 'BIJEM',     '_fallback' => 'assets/img/bijem.png'],
+                            (object)['name' => 'SANEM',     '_fallback' => 'assets/img/sanem 2.png'],
+                            (object)['name' => 'BUILD',     '_fallback' => 'assets/img/build.png'],
+                            (object)['name' => 'B-Advancy', '_fallback' => 'assets/img/b-advancy.png'],
+                        ]);
+                @endphp
+
                 <div class="partner-logos d-flex align-items-center gap-4">
-                    <img src="assets/img/bafisa.png" alt="BAFISA">
-                    <img src="assets/img/lir 2.png" alt="LIR">
-                    <img src="assets/img/bijem.png" alt="BIJEM">
-                    <img src="assets/img/sanem 2.png" alt="SANEM">
-                    <img src="assets/img/build.png" alt="BUILD">
-                    <img src="assets/img/b-advancy.png" alt="B-Advancy">
-                    <img src="assets/img/bafisa.png" alt="BAFISA">
-                    <img src="assets/img/lir 2.png" alt="LIR">
-                    <img src="assets/img/bijem.png" alt="BIJEM">
-                    <img src="assets/img/sanem 2.png" alt="SANEM">
-                    <img src="assets/img/build.png" alt="BUILD">
-                    <img src="assets/img/b-advancy.png" alt="B-Advancy">
+                    {{-- First set --}}
+                    @foreach($partnerList as $partner)
+                        @php
+                            $logoUrl = isset($partner->_fallback)
+                                ? asset($partner->_fallback)
+                                : ($partner->getFirstMediaUrl('partner_image') ?: null);
+                        @endphp
+                        @if($logoUrl)
+                            <img src="{{ $logoUrl }}"
+                                 alt="{{ $partner->name }}"
+                                 title="{{ $partner->name }}">
+                        @endif
+                    @endforeach
+
+                    {{-- Duplicate set for seamless marquee loop --}}
+                    @foreach($partnerList as $partner)
+                        @php
+                            $logoUrl = isset($partner->_fallback)
+                                ? asset($partner->_fallback)
+                                : ($partner->getFirstMediaUrl('partner_image') ?: null);
+                        @endphp
+                        @if($logoUrl)
+                            <img src="{{ $logoUrl }}"
+                                 alt="{{ $partner->name }}"
+                                 title="{{ $partner->name }}">
+                        @endif
+                    @endforeach
                 </div>
             </div>
         </div>

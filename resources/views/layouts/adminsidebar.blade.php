@@ -106,6 +106,30 @@
                     </a>
                 </li>
 
+                <li class="nav-item">
+    <a href="#" class="nav-link {{ request()->is('admin/partners*') ? 'active' : '' }}">
+        <i class="nav-icon bi bi-people"></i>
+        <p>
+            Partners
+            <i class="nav-arrow bi bi-chevron-right"></i>
+        </p>
+    </a>
+    <ul class="nav nav-treeview">
+        <li class="nav-item">
+            <a href="{{ route('admin.partners.index') }}" class="nav-link {{ request()->routeIs('admin.partners.index') ? 'active' : '' }}">
+                <i class="nav-icon bi bi-circle"></i>
+                <p>All Partners</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ route('admin.partners.create') }}" class="nav-link {{ request()->routeIs('admin.partners.create') ? 'active' : '' }}">
+                <i class="nav-icon bi bi-circle"></i>
+                <p>Add Partner</p>
+            </a>
+        </li>
+    </ul>
+</li>
+
                 <li class="nav-item {{ request()->is('admin/role/permission/*') ? 'menu-open' : '' }}"> <a href="#" class="nav-link {{ request()->is('admin/role/permission/*') ? 'active' : '' }}">  <span class="nav-icon mdi mdi-home"></span>
                         <p>
                            Role & Permission
