@@ -35,6 +35,12 @@
 <button type="button" id="applyPartnersPreset" class="btn btn-sm btn-outline-primary">About Partners</button>
                 </div>
 
+                <button type="button" id="applyHomeAboutTracePreset" class="btn btn-sm btn-outline-secondary">Home About Trace</button>
+<button type="button" id="applyHomeAboutTraceOnePreset" class="btn btn-sm btn-outline-secondary">Home About Item 1</button>
+<button type="button" id="applyHomeAboutTraceTwoPreset" class="btn btn-sm btn-outline-secondary">Home About Item 2</button>
+<button type="button" id="applyHomeAboutTraceThreePreset" class="btn btn-sm btn-outline-secondary">Home About Item 3</button>
+<button type="button" id="applyHomeYearsPreset" class="btn btn-sm btn-outline-secondary">Home Years Expertise</button>
+
                 <hr class="my-3">
 
                 <div class="d-flex flex-wrap gap-2">
@@ -95,23 +101,39 @@
         @error('description')<div class="invalid-feedback">{{ $message }}</div>@enderror
     </div>
 
-    <div class="col-md-6">
-        <label class="form-label">Icon Image</label>
-        <input type="file" name="icon" class="form-control @error('icon') is-invalid @enderror" accept="image/*">
-        @error('icon')<div class="invalid-feedback">{{ $message }}</div>@enderror
-        @if($currentIconUrl)
-            <div class="mt-2"><img src="{{ $currentIconUrl }}" alt="icon" style="width: 56px; height: 56px; object-fit: contain;"></div>
-        @endif
-    </div>
+   <div class="col-md-6">
+    <label class="form-label">Icon Image</label>
+    <input type="file" name="icon" class="form-control @error('icon') is-invalid @enderror" accept="image/*">
+    @error('icon')<div class="invalid-feedback">{{ $message }}</div>@enderror
+    @if($currentIconUrl)
+        <div class="mt-2 d-flex align-items-center gap-2">
+            <img id="icon-preview" src="{{ $currentIconUrl }}" alt="icon" style="width: 56px; height: 56px; object-fit: contain; border-radius: 6px; border: 1px solid #dee2e6;">
+            <div>
+                <button type="button" class="btn btn-sm btn-outline-danger" id="remove-icon-btn">
+                    <i class="fas fa-trash-alt me-1"></i> Remove
+                </button>
+                <input type="hidden" name="remove_icon" id="remove_icon_input" value="0">
+            </div>
+        </div>
+    @endif
+</div>
 
     <div class="col-md-6">
-        <label class="form-label">Main Image</label>
-        <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" accept="image/*">
-        @error('image')<div class="invalid-feedback">{{ $message }}</div>@enderror
-        @if($currentImageUrl)
-            <div class="mt-2"><img src="{{ $currentImageUrl }}" alt="image" style="width: 100%; max-width: 140px; height: 90px; object-fit: cover;"></div>
-        @endif
-    </div>
+    <label class="form-label">Main Image</label>
+    <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" accept="image/*">
+    @error('image')<div class="invalid-feedback">{{ $message }}</div>@enderror
+    @if($currentImageUrl)
+        <div class="mt-2 d-flex align-items-center gap-3">
+            <img id="image-preview" src="{{ $currentImageUrl }}" alt="image" style="width: 140px; height: 90px; object-fit: cover; border-radius: 8px; border: 1px solid #dee2e6;">
+            <div>
+                <button type="button" class="btn btn-sm btn-outline-danger" id="remove-image-btn">
+                    <i class="fas fa-trash-alt me-1"></i> Remove
+                </button>
+                <input type="hidden" name="remove_image" id="remove_image_input" value="0">
+            </div>
+        </div>
+    @endif
+</div>
 </div>
 
 @push('custome-js')
@@ -144,6 +166,11 @@
         const designWordField = document.getElementById('content_design_word');
         const typeField = document.getElementById('content_type');
         const descriptionField = document.getElementById('content_description');
+        const homeAboutTracePresetBtn      = document.getElementById('applyHomeAboutTracePreset');
+const homeAboutTraceOnePresetBtn   = document.getElementById('applyHomeAboutTraceOnePreset');
+const homeAboutTraceTwoPresetBtn   = document.getElementById('applyHomeAboutTraceTwoPreset');
+const homeAboutTraceThreePresetBtn = document.getElementById('applyHomeAboutTraceThreePreset');
+const homeYearsPresetBtn           = document.getElementById('applyHomeYearsPreset');
 
         let contentEditor = null;
 
@@ -156,6 +183,73 @@
                 contentEditor.setData(nextValue);
             }
         }
+
+        // ── Remove Icon ──
+const removeIconBtn   = document.getElementById('remove-icon-btn');
+const removeIconInput = document.getElementById('remove_icon_input');
+const iconPreview     = document.getElementById('icon-preview');
+
+if (removeIconBtn) {
+    removeIconBtn.addEventListener('click', function () {
+        iconPreview.style.opacity     = '0.3';
+        iconPreview.style.filter      = 'grayscale(100%)';
+        removeIconInput.value         = '1';
+        removeIconBtn.innerHTML       = '<i class="fas fa-undo me-1"></i> Undo';
+        removeIconBtn.classList.replace('btn-outline-danger', 'btn-outline-secondary');
+        removeIconBtn.dataset.removed = 'true';
+    });
+
+    // Undo support
+    removeIconBtn.addEventListener('click', function () {
+        if (removeIconBtn.dataset.removed === 'true') {
+            // already handled above — but swap to undo logic on second click
+        }
+    });
+}
+
+// ── Remove Main Image ──
+const removeImageBtn   = document.getElementById('remove-image-btn');
+const removeImageInput = document.getElementById('remove_image_input');
+const imagePreview     = document.getElementById('image-preview');
+
+if (removeImageBtn) {
+    removeImageBtn.addEventListener('click', function () {
+        if (removeImageInput.value === '0') {
+            // Mark for removal
+            imagePreview.style.opacity      = '0.3';
+            imagePreview.style.filter       = 'grayscale(100%)';
+            removeImageInput.value          = '1';
+            removeImageBtn.innerHTML        = '<i class="fas fa-undo me-1"></i> Undo';
+            removeImageBtn.classList.replace('btn-outline-danger', 'btn-outline-secondary');
+        } else {
+            // Undo
+            imagePreview.style.opacity      = '1';
+            imagePreview.style.filter       = 'none';
+            removeImageInput.value          = '0';
+            removeImageBtn.innerHTML        = '<i class="fas fa-trash-alt me-1"></i> Remove';
+            removeImageBtn.classList.replace('btn-outline-secondary', 'btn-outline-danger');
+        }
+    });
+}
+
+// Same undo toggle for icon
+if (removeIconBtn) {
+    removeIconBtn.onclick = function () {
+        if (removeIconInput.value === '0') {
+            iconPreview.style.opacity  = '0.3';
+            iconPreview.style.filter   = 'grayscale(100%)';
+            removeIconInput.value      = '1';
+            removeIconBtn.innerHTML    = '<i class="fas fa-undo me-1"></i> Undo';
+            removeIconBtn.classList.replace('btn-outline-danger', 'btn-outline-secondary');
+        } else {
+            iconPreview.style.opacity  = '1';
+            iconPreview.style.filter   = 'none';
+            removeIconInput.value      = '0';
+            removeIconBtn.innerHTML    = '<i class="fas fa-trash-alt me-1"></i> Remove';
+            removeIconBtn.classList.replace('btn-outline-secondary', 'btn-outline-danger');
+        }
+    };
+}
 
         if (field) {
             ClassicEditor.create(field)
@@ -382,6 +476,66 @@
                 setDescriptionValue(descriptionField ? descriptionField.value : '');
             });
         }
+
+        if (homeAboutTracePresetBtn) {
+    homeAboutTracePresetBtn.addEventListener('click', function () {
+        if (slugField) slugField.value = 'home_about_trace';
+        if (sectionField) sectionField.value = 'ABOUT TRACE';
+        if (headingField) headingField.value = 'Transforming Challenges into Opportunities';
+        if (subHeadingField) subHeadingField.value = '';
+        if (designWordField) designWordField.value = 'Opportunities';
+        if (typeField) typeField.value = 'About Section';
+        setDescriptionValue('TRACE focuses on international trade, policy reform, and development, working with governments, business groups, and the private sector to strengthen market systems.');
+    });
+}
+
+if (homeAboutTraceOnePresetBtn) {
+    homeAboutTraceOnePresetBtn.addEventListener('click', function () {
+        if (slugField) slugField.value = 'home_about_trace_one';
+        if (sectionField) sectionField.value = 'HOME ABOUT ITEM';
+        if (headingField) headingField.value = 'Multi-Sector Expertise & Global Reach';
+        if (subHeadingField) subHeadingField.value = '';
+        if (designWordField) designWordField.value = '';
+        if (typeField) typeField.value = 'List Item';
+        setDescriptionValue('Deep knowledge across industries, backed by an objective perspective and access to global networks.');
+    });
+}
+
+if (homeAboutTraceTwoPresetBtn) {
+    homeAboutTraceTwoPresetBtn.addEventListener('click', function () {
+        if (slugField) slugField.value = 'home_about_trace_two';
+        if (sectionField) sectionField.value = 'HOME ABOUT ITEM';
+        if (headingField) headingField.value = 'Proven Methodologies, Policy to Practice';
+        if (subHeadingField) subHeadingField.value = '';
+        if (designWordField) designWordField.value = '';
+        if (typeField) typeField.value = 'List Item';
+        setDescriptionValue('Rigorous, scalable approaches that translate evidence into implementable reforms.');
+    });
+}
+
+if (homeAboutTraceThreePresetBtn) {
+    homeAboutTraceThreePresetBtn.addEventListener('click', function () {
+        if (slugField) slugField.value = 'home_about_trace_three';
+        if (sectionField) sectionField.value = 'HOME ABOUT ITEM';
+        if (headingField) headingField.value = 'Change Management & Creative Innovation';
+        if (subHeadingField) subHeadingField.value = '';
+        if (designWordField) designWordField.value = '';
+        if (typeField) typeField.value = 'List Item';
+        setDescriptionValue('Combining structured change management with innovative, context-driven solutions.');
+    });
+}
+
+if (homeYearsPresetBtn) {
+    homeYearsPresetBtn.addEventListener('click', function () {
+        if (slugField) slugField.value = 'home_years_of_expertise';
+        if (sectionField) sectionField.value = 'HOME BADGE';
+        if (headingField) headingField.value = '8+';
+        if (subHeadingField) subHeadingField.value = '';
+        if (designWordField) designWordField.value = '';
+        if (typeField) typeField.value = 'Badge';
+        setDescriptionValue('Years of Expertise');
+    });
+}
 
         // About Header Preset
 const aboutHeaderBtn = document.getElementById('applyAboutHeaderPreset');

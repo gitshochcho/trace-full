@@ -33,7 +33,12 @@ class HomeController extends Controller
 
     public function home(Request $request)
     {
-        $slider = Slider::with('media')->first();
+        $homeAboutTrace      = contentBlock('home_about_trace');
+        $homeAboutTraceOne   = contentBlock('home_about_trace_one');
+        $homeAboutTraceTwo   = contentBlock('home_about_trace_two');
+        $homeAboutTraceThree = contentBlock('home_about_trace_three');
+        $homeYearsExpertise  = contentBlock('home_years_of_expertise');
+        $slider              = Slider::with('media')->first();
 
         $homeServices = Service::query()
             ->with(['content', 'media', 'solutions'])
@@ -50,7 +55,9 @@ class HomeController extends Controller
             ->limit(3)
             ->get();
 
-        return view('frontend.pages.home', compact('slider', 'homeServices', 'homeProjects'));
+             $partners = Partner::with('media')->latest()->get(); 
+
+        return view('frontend.pages.home', compact('slider', 'homeServices', 'homeProjects', 'homeAboutTrace', 'homeAboutTraceOne', 'homeAboutTraceTwo', 'homeAboutTraceThree', 'homeYearsExpertise', 'partners'));
     }
 
     public function services(Request $request)
@@ -251,8 +258,7 @@ class HomeController extends Controller
         $ourMission             = contentBlock('about_us_our_mission');
         $aboutCommitmentContent = contentBlock('about_us_section_3');
         $aboutFrameworkContent  = contentBlock('about_us_how_we_work');
-        $partnersContent = contentBlock('about_us_partners');
-
+        $partnersContent        = contentBlock('about_us_partners');
 
         $frameworkItems = collect([
             contentBlock('about_us_insight'),
@@ -697,7 +703,7 @@ class HomeController extends Controller
         $aboutCommitmentContent     = contentBlock('about_us_section_3');
         $aboutFrameworkContent      = contentBlock('about_us_how_we_work');
         $aboutUniqueFeaturesContent = contentBlock('about_us_we_make_trace_different');
-        $partnersContent = contentBlock('about_us_partners');
+        $partnersContent            = contentBlock('about_us_partners');
 
         $partners = Partner::with('media')->get();
 
@@ -749,7 +755,6 @@ class HomeController extends Controller
             'partners',
             'aboutInsights',
             'partnersContent',
-           
 
         ));
     }
