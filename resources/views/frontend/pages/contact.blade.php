@@ -415,14 +415,20 @@
 
                         <div class="mb-3">
                             <label>Subject / Service Area <span class="req">*</span></label>
-                            <select name="subject" class="form-select" required>
-                                <option value="" disabled selected>Select a subject...</option>
-                                <option>Trade Facilitation</option>
-                                <option>Policy Reform</option>
-                                <option>Digital Solutions</option>
-                                <option>Research & Publications</option>
-                                <option>General Enquiry</option>
-                            </select>
+                            <input 
+                                type="text" 
+                                name="subject" 
+                                list="subject-options" 
+                                class="form-control" 
+                                placeholder="Select or type your subject..." 
+                                required>
+                            <datalist id="subject-options">
+                                <option value="Trade Facilitation"></option>
+                                <option value="Policy Reform"></option>
+                                <option value="Digital Solutions"></option>
+                                <option value="Research & Publications"></option>
+                                <option value="General Enquiry"></option>
+                            </datalist>
                         </div>
 
                         <div class="mb-3">

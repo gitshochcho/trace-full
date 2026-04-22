@@ -71,14 +71,25 @@
                                 @endif
                             </div>
                         </div>
-                        <div class="card-footer">
+                        <div class="card-footer d-flex gap-2">
                             @if(!$application->is_reviewed)
-                            <form action="{{ route('admin.job-applications.mark-reviewed', $application) }}" method="POST" class="d-inline">
+                            <form action="{{ route('admin.job-applications.mark-reviewed', $application) }}" method="POST" class="me-auto">
                                 @csrf
-                                <button type="submit" class="btn btn-success">Mark as Reviewed</button>
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fas fa-check"></i> Mark as Reviewed
+                                </button>
                             </form>
+                            @else
+                            <span class="badge bg-success align-self-center me-auto">
+                                <i class="fas fa-check-circle"></i> Already Reviewed
+                            </span>
                             @endif
-                            <a href="{{ route('admin.job-applications.index') }}" class="btn btn-secondary">Back to Applications</a>
+                            <a href="{{ route('admin.job-applications.download-cv', $application) }}" class="btn btn-primary">
+                                <i class="fas fa-download"></i> Download CV
+                            </a>
+                            <a href="{{ route('admin.job-applications.index') }}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Back
+                            </a>
                         </div>
                     </div>
                 </div>

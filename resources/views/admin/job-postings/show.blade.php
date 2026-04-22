@@ -73,8 +73,13 @@
                                 @endif
                             </div>
                         </div>
-                        <div class="card-footer">
-                            <a href="{{ route('admin.job-postings.edit', $jobPosting) }}" class="btn btn-warning">Edit Job</a>
+                        <div class="card-footer d-flex gap-2">
+                            <a href="{{ route('admin.job-postings.edit', $jobPosting) }}" class="btn btn-warning">
+                                <i class="fas fa-edit"></i> Edit Job
+                            </a>
+                            <a href="{{ route('admin.job-postings.index') }}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Back to List
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -85,12 +90,21 @@
                             <h3 class="card-title">Quick Actions</h3>
                         </div>
                         <div class="card-body">
-                            <a href="{{ route('careerdetails', $jobPosting->id) }}" target="_blank" class="btn btn-info btn-sm w-100 mb-2">
-                                <i class="fas fa-external-link-alt"></i> View on Frontend
+                            <a href="{{ route('careerdetails', $jobPosting->id) }}" target="_blank" class="btn btn-info btn-sm w-100 mb-2" data-bs-toggle="tooltip" title="Preview on frontend">
+                                <i class="fas fa-external-link-alt"></i> Preview on Frontend
                             </a>
-                            <a href="{{ route('admin.job-applications.index') }}" class="btn btn-secondary btn-sm w-100">
-                                <i class="fas fa-users"></i> View All Applications
+                            <a href="{{ route('admin.job-applications.index') }}?job={{ $jobPosting->id }}" class="btn btn-success btn-sm w-100 mb-2">
+                                <i class="fas fa-users"></i> Applications ({{ $jobPosting->applications->count() }})
                             </a>
+                            @if($jobPosting->is_active)
+                            <button type="button" class="btn btn-outline-success btn-sm w-100" disabled>
+                                <i class="fas fa-check-circle"></i> Active
+                            </button>
+                            @else
+                            <button type="button" class="btn btn-outline-secondary btn-sm w-100" disabled>
+                                <i class="fas fa-times-circle"></i> Inactive
+                            </button>
+                            @endif
                         </div>
                     </div>
                 </div>

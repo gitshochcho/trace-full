@@ -13,6 +13,46 @@
     .job-division { color: #01888C; font-weight: 600; margin-bottom: 24px; display: block; }
     .job-main-text p { font-size: 15px; color: #64748b; line-height: 1.8; margin-bottom: 20px; }
 
+    /* Sections - Responsibilities & Requirements */
+    .job-section {
+        margin-top: 40px;
+        padding-top: 40px;
+        border-top: 2px solid #E5E9ED;
+    }
+    .job-section h3 {
+        font-size: 20px;
+        font-weight: 700;
+        color: #01354B;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+    }
+    .job-section h3 i {
+        margin-right: 10px;
+        color: #01888C;
+        font-size: 24px;
+    }
+    .job-section ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .job-section li {
+        font-size: 15px;
+        color: #64748b;
+        line-height: 1.8;
+        padding: 12px 0 12px 32px;
+        position: relative;
+    }
+    .job-section li:before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: #01888C;
+        font-weight: 700;
+        font-size: 18px;
+    }
+
     /* Right Sidebar - Info Card (Now Smaller) */
     .job-sidebar-info {
         background: #F8FAF7;
@@ -106,6 +146,30 @@
                     <div class="job-main-text mt-4">
                         {!! $job->description !!}
                     </div>
+
+                    {{-- Responsibilities Section --}}
+                    @if($job->responsibilities)
+                    <div class="job-section">
+                        <h3><i class="fas fa-tasks"></i> Key Responsibilities</h3>
+                        <ul>
+                            @foreach(array_filter(array_map('trim', explode("\n", $job->responsibilities))) as $responsibility)
+                            <li>{{ $responsibility }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    @endif
+
+                    {{-- Requirements Section --}}
+                    @if($job->requirements)
+                    <div class="job-section">
+                        <h3><i class="fas fa-star"></i> Required Qualifications</h3>
+                        <ul>
+                            @foreach(array_filter(array_map('trim', explode("\n", $job->requirements))) as $requirement)
+                            <li>{{ $requirement }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    @endif
                 </div>
             </div>
 

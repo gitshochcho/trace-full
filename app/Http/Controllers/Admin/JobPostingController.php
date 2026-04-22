@@ -37,6 +37,8 @@ class JobPostingController extends Controller
             'employment_type' => 'required|in:Full-Time,Contract,Part-Time',
             'location' => 'required|string|max:255',
             'experience_level' => 'required|string|max:255',
+            'responsibilities' => 'nullable|string',
+            'requirements' => 'nullable|string',
             'is_active' => 'boolean',
             'posted_date' => 'required|date',
         ]);
@@ -75,6 +77,8 @@ class JobPostingController extends Controller
             'employment_type' => 'required|in:Full-Time,Contract,Part-Time',
             'location' => 'required|string|max:255',
             'experience_level' => 'required|string|max:255',
+            'responsibilities' => 'nullable|string',
+            'requirements' => 'nullable|string',
             'is_active' => 'boolean',
             'posted_date' => 'required|date',
         ]);

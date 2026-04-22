@@ -69,20 +69,24 @@
                                             </span>
                                         </td>
                                         <td>
-                                            <div class="btn-group" role="group">
-                                                <a href="{{ route('admin.job-applications.show', $application) }}" class="btn btn-sm btn-info" title="View">
-                                                    <i class="fas fa-eye"></i>
+                                            <div class="btn-group btn-group-sm" role="group">
+                                                <a href="{{ route('admin.job-applications.show', $application) }}" class="btn btn-info" title="View Details" data-bs-toggle="tooltip">
+                                                    <i class="fas fa-eye"></i> View
                                                 </a>
-                                                <a href="{{ route('admin.job-applications.download-cv', $application) }}" class="btn btn-sm btn-primary" title="Download CV">
-                                                    <i class="fas fa-download"></i>
+                                                <a href="{{ route('admin.job-applications.download-cv', $application) }}" class="btn btn-primary" title="Download CV" data-bs-toggle="tooltip">
+                                                    <i class="fas fa-download"></i> CV
                                                 </a>
                                                 @if(!$application->is_reviewed)
-                                                <form action="{{ route('admin.job-applications.mark-reviewed', $application) }}" method="POST" class="d-inline">
+                                                <form action="{{ route('admin.job-applications.mark-reviewed', $application) }}" method="POST" style="display: inline;">
                                                     @csrf
-                                                    <button type="submit" class="btn btn-sm btn-success" title="Mark as Reviewed">
-                                                        <i class="fas fa-check"></i>
+                                                    <button type="submit" class="btn btn-success" title="Mark as Reviewed" data-bs-toggle="tooltip">
+                                                        <i class="fas fa-check"></i> Approve
                                                     </button>
                                                 </form>
+                                                @else
+                                                <button type="button" class="btn btn-success" disabled title="Already Reviewed">
+                                                    <i class="fas fa-check-circle"></i> Reviewed
+                                                </button>
                                                 @endif
                                             </div>
                                         </td>

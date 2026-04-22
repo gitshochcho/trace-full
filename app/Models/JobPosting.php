@@ -13,6 +13,8 @@ class JobPosting extends Model
         'employment_type',
         'location',
         'experience_level',
+        'responsibilities',
+        'requirements',
         'is_active',
         'posted_date',
     ];

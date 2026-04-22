@@ -63,19 +63,23 @@
                                         <td>{{ $job->applications->count() }}</td>
                                         <td>{{ $job->posted_date->format('M d, Y') }}</td>
                                         <td>
-                                            <div class="btn-group" role="group">
-                                                <a href="{{ route('admin.job-postings.show', $job) }}" class="btn btn-sm btn-info" title="View">
-                                                    <i class="fas fa-eye"></i>
+                                            <div class="btn-group btn-group-sm" role="group">
+                                                <a href="{{ route('admin.job-postings.show', $job) }}" class="btn btn-info" title="View Details" data-bs-toggle="tooltip">
+                                                    <i class="fas fa-eye"></i> View
                                                 </a>
-                                                <a href="{{ route('admin.job-postings.edit', $job) }}" class="btn btn-sm btn-warning" title="Edit">
-                                                    <i class="fas fa-edit"></i>
+                                                <a href="{{ route('admin.job-postings.edit', $job) }}" class="btn btn-warning" title="Edit Job" data-bs-toggle="tooltip">
+                                                    <i class="fas fa-edit"></i> Edit
                                                 </a>
-                                                <form action="{{ route('admin.job-postings.destroy', $job) }}" method="POST" class="d-inline">
+                                                <a href="{{ route('careerdetails', $job->id) }}" class="btn btn-primary" title="Preview" target="_blank" data-bs-toggle="tooltip">
+                                                    <i class="fas fa-external-link-alt"></i> Preview
+                                                </a>
+                                                <form action="{{ route('admin.job-postings.destroy', $job) }}" method="POST" style="display: inline;">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-danger" title="Delete"
-                                                            onclick="return confirm('Are you sure you want to delete this job posting?')">
-                                                        <i class="fas fa-trash"></i>
+                                                    <button type="submit" class="btn btn-danger" title="Delete Job"
+                                                            onclick="return confirm('Are you sure you want to delete this job posting?')"
+                                                            data-bs-toggle="tooltip">
+                                                        <i class="fas fa-trash"></i> Delete
                                                     </button>
                                                 </form>
                                             </div>
