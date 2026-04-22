@@ -6,6 +6,8 @@ use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SliderController;
+use App\Http\Controllers\Admin\ContactMessageController;
+use App\Http\Controllers\Admin\ContactInfoController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -67,6 +69,21 @@ Route::prefix('admin')->group(function () {
         Route::controller(SliderController::class)->group(function () {
             Route::get('slider', 'edit')->name('admin.slider.edit');
             Route::post('slider', 'update')->name('admin.slider.update');
+        });
+
+        Route::controller(ContactMessageController::class)->group(function () {
+            Route::get('contact-messages', 'index')->name('admin.contact-messages.index');
+            Route::get('contact-messages/{id}', 'show')->name('admin.contact-messages.show');
+            Route::delete('contact-messages/{id}', 'destroy')->name('admin.contact-messages.destroy');
+        });
+
+        Route::controller(ContactInfoController::class)->group(function () {
+            Route::get('contact-info', 'index')->name('admin.contact-info.index');
+            Route::get('contact-info/create', 'create')->name('admin.contact-info.create');
+            Route::post('contact-info', 'store')->name('admin.contact-info.store');
+            Route::get('contact-info/{contactInfo}/edit', 'edit')->name('admin.contact-info.edit');
+            Route::put('contact-info/{contactInfo}', 'update')->name('admin.contact-info.update');
+            Route::delete('contact-info/{contactInfo}', 'destroy')->name('admin.contact-info.destroy');
         });
 
     });

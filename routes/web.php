@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ContactMessageController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -21,6 +22,7 @@ Route::get('/article-details/{id}', [App\Http\Controllers\HomeController::class,
 Route::get('/career', [App\Http\Controllers\HomeController::class, 'career'])->name('career');
 Route::get('/careerdetails', [App\Http\Controllers\HomeController::class, 'careerdetails'])->name('careerdetails');
 Route::get('/contact', [App\Http\Controllers\HomeController::class, 'contact'])->name('contact');
+Route::post('/contact', [ContactMessageController::class, 'store'])->name('contact.store');
 Route::get('login', [App\Http\Controllers\HomeController::class, 'login'])->name('login');
 Route::post('validate/login', [App\Http\Controllers\HomeController::class, 'validateLogin'])->name('loginCheck');
 Route::get('/register', [App\Http\Controllers\HomeController::class, 'registration'])->name('registration');

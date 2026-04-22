@@ -50,6 +50,20 @@
                     </a>
                 </li>
 
+                <li class="nav-item">
+                    <a href="{{ route('admin.contact-messages.index') }}" class="nav-link {{ request()->routeIs('admin.contact-messages.*') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-envelope"></i>
+                        <p>Contact Messages</p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('admin.contact-info.index') }}" class="nav-link {{ request()->routeIs('admin.contact-info.*') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-telephone"></i>
+                        <p>Contact Information</p>
+                    </a>
+                </li>
+
                 <li class="nav-item {{ request()->is('admin/role/permission/*') ? 'menu-open' : '' }}"> <a href="#" class="nav-link {{ request()->is('admin/role/permission/*') ? 'active' : '' }}">  <span class="nav-icon mdi mdi-home"></span>
                         <p>
                            Role & Permission

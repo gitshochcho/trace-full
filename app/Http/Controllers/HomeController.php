@@ -9,7 +9,7 @@ use App\Models\Project;
 use App\Models\Service;
 use App\Models\Slider;
 use App\Models\User;
-use App\Models\UserDetail;
+use App\Models\ContactInfo;
 use Illuminate\Http\Request;
 use Propaganistas\LaravelPhone\Rules\Phone;
 use Illuminate\Support\Facades\DB;
@@ -28,7 +28,22 @@ class HomeController extends Controller
     {
         $slider = Slider::with('media')->first();
 
-        return view('frontend.pages.home', compact('slider'));
+        $homeServices = Service::query()
+        ->with(['content', 'media', 'solutions'])
+        ->where('active', true)
+        ->orderBy('sort_order')
+        ->limit(6)
+        ->get();
+
+    // Projects — latest 3টা
+    $homeProjects = Project::query()
+        ->with(['services', 'media'])
+        ->orderBy('sort_order')
+        ->latest('id')
+        ->limit(3)
+        ->get();
+
+        return view('frontend.pages.home', compact('slider', 'homeServices', 'homeProjects'));
     }
 
      public function services(Request $request)
@@ -149,7 +164,11 @@ class HomeController extends Controller
 
     public function contact(Request $request)
     {
-        return view('frontend.pages.contact');
+        $heroContent = contentBlock('contact-page');
+        $contactPhones = ContactInfo::where('type', 'phone')->active()->ordered()->get();
+        $contactEmails = ContactInfo::where('type', 'email')->active()->ordered()->get();
+        $contactAddresses = ContactInfo::where('type', 'address')->active()->ordered()->get();
+        return view('frontend.pages.contact', compact('heroContent', 'contactPhones', 'contactEmails', 'contactAddresses'));
     }
 
 

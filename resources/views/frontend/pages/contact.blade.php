@@ -275,8 +275,13 @@
             <div class="row">
                 <div class="col-lg-6">
                     <div class="hero-label">Reach Out</div>
-                    <h1 class="contact-hero-title">Let's start a<br><span>conversation.</span></h1>
-                    <p class="contact-hero-desc">Whether you're a government agency, development partner, or private company — TRACE is ready to listen, advise, and collaborate. Reach out and we'll respond within one business day.</p>
+                    @if($heroContent)
+                        <h1 class="contact-hero-title">{{ nl2br(e($heroContent->heading ?? 'Let\'s start a conversation.')) }}</h1>
+                        <p class="contact-hero-desc">{{ $heroContent->description ?? '' }}</p>
+                    @else
+                        <h1 class="contact-hero-title">Let's start a<br><span>conversation.</span></h1>
+                        <p class="contact-hero-desc">Whether you're a government agency, development partner, or private company — TRACE is ready to listen, advise, and collaborate. Reach out and we'll respond within one business day.</p>
+                    @endif
                 </div>
             </div>
         </div>
@@ -289,68 +294,66 @@
                 <div class="mb-5 mt-5 mt-lg-0">
                     <h2 class="info-heading"><span class="accent-bar"></span> Contact Us</h2>
                     
+                    @if($contactPhones->count() > 0)
                     <div class="info-group mb-4">
                         <p class="info-group-label"><i class="fas fa-phone-alt me-2"></i> Phone</p>
+                        @foreach($contactPhones as $phone)
                         <div class="info-row">
-                            <div class="info-icon-wrap"><i class="fas fa-phone-alt"></i></div>
+                            <div class="info-icon-wrap"><i class="{{ $phone->icon_class ?? 'fas fa-phone-alt' }}"></i></div>
                             <div class="info-text">
-                                <p class="info-primary">+880 1715-056952</p>
-                                <p class="info-secondary">Head Office — Dhaka</p>
+                                <p class="info-primary">{{ $phone->primary_text }}</p>
+                                <p class="info-secondary">{{ $phone->secondary_text ?? $phone->title }}</p>
                             </div>
-                            <a href="tel:+8801715056952" class="info-action-btn"><i class="fas fa-phone-alt me-2"></i>Call Now</a>
+                            @if($phone->link_value)
+                            <a href="{{ $phone->link_value }}" class="info-action-btn"><i class="fas fa-phone-alt me-2"></i>Call Now</a>
+                            @endif
                         </div>
-                        <div class="info-row">
-                            <div class="info-icon-wrap"><i class="fas fa-mobile-alt"></i></div>
-                            <div class="info-text">
-                                <p class="info-primary">+880 1961 435 277</p>
-                                <p class="info-secondary">Mobile — MD & CEO</p>
-                            </div>
-                            <a href="tel:+8801961435277" class="info-action-btn"><i class="fas fa-phone-alt me-2"></i>Call Now</a>
-                        </div>
+                        @endforeach
                     </div>
+                    @endif
 
+                    @if($contactEmails->count() > 0)
                     <div class="info-group mb-4">
                         <p class="info-group-label"><i class="fas fa-envelope me-2"></i> Send Email</p>
+                        @foreach($contactEmails as $email)
                         <div class="info-row">
-                            <div class="info-icon-wrap"><i class="fas fa-envelope"></i></div>
+                            <div class="info-icon-wrap"><i class="{{ $email->icon_class ?? 'fas fa-envelope' }}"></i></div>
                             <div class="info-text">
-                                <p class="info-primary">contact@traceconsultingltd.com</p>
-                                <p class="info-secondary">General Enquiries</p>
+                                <p class="info-primary">{{ $email->primary_text }}</p>
+                                <p class="info-secondary">{{ $email->secondary_text ?? $email->title }}</p>
                             </div>
-                            <a href="mailto:contact@traceconsultingltd.com" class="info-action-btn"><i class="fas fa-envelope me-2"></i>Send Email</a>
+                            @if($email->link_value)
+                            <a href="{{ $email->link_value }}" class="info-action-btn"><i class="fas fa-envelope me-2"></i>Send Email</a>
+                            @endif
                         </div>
+                        @endforeach
                     </div>
-
-                    <div class="info-group">
-                        <p class="info-group-label"><i class="fas fa-briefcase me-2"></i> Careers & HR</p>
-                        <div class="info-row">
-                            <div class="info-icon-wrap"><i class="fas fa-envelope"></i></div>
-                            <div class="info-text">
-                                <p class="info-primary">hr@traceconsultingltd.com</p>
-                                <p class="info-secondary">Job Applications & HR</p>
-                            </div>
-                            <a href="mailto:hr@traceconsultingltd.com" class="info-action-btn"><i class="fas fa-envelope me-2"></i>Send Email</a>
-                        </div>
-                    </div>
+                    @endif
                 </div>
 
+                @if($contactAddresses->count() > 0)
                 <div class="mb-5">
                     <h2 class="info-heading"><span class="accent-bar"></span> Our Office</h2>
+                    @foreach($contactAddresses as $address)
                     <div class="office-card">
-                        <div class="office-icon-wrap"><i class="fas fa-map-marker-alt"></i></div>
+                        <div class="office-icon-wrap"><i class="{{ $address->icon_class ?? 'fas fa-map-marker-alt' }}"></i></div>
                         <div class="office-details">
-                            <span class="office-tag">HEAD OFFICE</span>
-                            <p class="office-name">Trace Consulting Limited</p>
+                            <span class="office-tag">{{ strtoupper($address->title) }}</span>
+                            <p class="office-name">{{ $address->name ?? 'Trace Consulting Limited' }}</p>
                             <p class="office-addr">
-                                House 12, Road 4, Block B<br>
-                                Bashundhara R/A, Dhaka 1229<br>
-                                Bangladesh
+                                {!! nl2br(e($address->address)) ?? '' !!}
                             </p>
-                            <p class="office-hours">Sunday – Thursday, 9:00 AM – 6:00 PM BST</p>
-                            <a href="#" target="_blank" class="map-link">View on Google Maps →</a>
+                            @if($address->office_hours)
+                            <p class="office-hours">{{ $address->office_hours }}</p>
+                            @endif
+                            @if($address->link_value)
+                            <a href="{{ $address->link_value }}" target="_blank" class="map-link">View on Google Maps →</a>
+                            @endif
                         </div>
                     </div>
+                    @endforeach
                 </div>
+                @endif
 
                 <div>
                     <h2 class="info-heading"><span class="accent-bar"></span> Find Us</h2>
@@ -369,31 +372,50 @@
                         <p class="form-subtitle">We'll respond within one business day.</p>
                     </div>
 
-                    <form action="#" class="contact-form">
+                    @if (session('success'))
+                        <div id="successAlert" class="alert alert-success alert-dismissible fade show" role="alert" style="position: fixed; top: 100px; right: 20px; width: 350px; border-radius: 8px; border-left: 4px solid #28a745; box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2); z-index: 9999;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <i class="fas fa-check-circle" style="font-size: 20px; color: #28a745; flex-shrink: 0;"></i>
+                                <div>
+                                    <strong>Success!</strong>
+                                    <p style="margin: 5px 0 0 0; font-size: 14px;">{{ session('success') }}</p>
+                                </div>
+                            </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+
+                    <form action="{{ route('contact.store') }}" method="POST" class="contact-form">
+                        @csrf
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label>First Name <span class="req">*</span></label>
-                                <input type="text" class="form-control" placeholder="First name" required>
+                                <input type="text" name="first_name" class="form-control" placeholder="First name" required>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label>Last Name <span class="req">*</span></label>
-                                <input type="text" class="form-control" placeholder="Last name" required>
+                                <input type="text" name="last_name" class="form-control" placeholder="Last name" required>
                             </div>
                         </div>
 
                         <div class="mb-3">
                             <label>Email Address <span class="req">*</span></label>
-                            <input type="email" class="form-control" placeholder="your@email.com" required>
+                            <input type="email" name="email" class="form-control" placeholder="your@email.com" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Mobile Number <span class="req">*</span></label>
+                            <input type="number" name="mobile_number" class="form-control" placeholder="Your mobile number" required>
                         </div>
 
                         <div class="mb-3">
                             <label>Organization</label>
-                            <input type="text" class="form-control" placeholder="Your organisation or institution">
+                            <input type="text" name="organization" class="form-control" placeholder="Your organisation or institution">
                         </div>
 
                         <div class="mb-3">
                             <label>Subject / Service Area <span class="req">*</span></label>
-                            <select class="form-select" required>
+                            <select name="subject" class="form-select" required>
                                 <option value="" disabled selected>Select a subject...</option>
                                 <option>Trade Facilitation</option>
                                 <option>Policy Reform</option>
@@ -405,7 +427,7 @@
 
                         <div class="mb-3">
                             <label>Message <span class="req">*</span></label>
-                            <textarea class="form-control" rows="4" placeholder="Tell us about your project or challenge..." required></textarea>
+                            <textarea name="message" class="form-control" rows="4" placeholder="Tell us about your project or challenge..." required></textarea>
                         </div>
 
                         <button type="submit" class="btn-send">
@@ -432,3 +454,17 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const successAlert = document.getElementById('successAlert');
+        if (successAlert) {
+            setTimeout(function() {
+                const alert = new bootstrap.Alert(successAlert);
+                alert.close();
+            }, 1000); // 10 seconds
+        }
+    });
+</script>
+@endpush
