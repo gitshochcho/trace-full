@@ -1,19 +1,22 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\ContactInfoController;
+use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\ContentController;
 use App\Http\Controllers\Admin\InsightController;
+use App\Http\Controllers\Admin\JobApplicationController;
+use App\Http\Controllers\Admin\JobPostingController;
 use App\Http\Controllers\Admin\ProjectController;
-use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\ServiceController;
+use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\TeamController;
-use App\Http\Controllers\Admin\ContactMessageController;
-use App\Http\Controllers\Admin\ContactInfoController;
-use App\Http\Controllers\Admin\JobPostingController;
-use App\Http\Controllers\Admin\JobApplicationController;
+use App\Http\Controllers\Admin\PartnerController;
+
 
 use Illuminate\Support\Facades\Route;
+
 
 
 Route::prefix('admin')->group(function () {
@@ -77,6 +80,15 @@ Route::prefix('admin')->group(function () {
             Route::put('teams-manager/{team}', 'update')->name('admin.teams.update');
             Route::delete('teams-manager/{team}', 'destroy')->name('admin.teams.destroy');
         });
+
+        Route::controller(PartnerController::class)->group(function () {
+    Route::get('partners', 'index')->name('admin.partners.index');
+    Route::get('partners/create', 'create')->name('admin.partners.create');
+    Route::post('partners', 'store')->name('admin.partners.store');
+    Route::get('partners/{partner}/edit', 'edit')->name('admin.partners.edit');
+    Route::put('partners/{partner}', 'update')->name('admin.partners.update');
+    Route::delete('partners/{partner}', 'destroy')->name('admin.partners.destroy');
+});
 
         Route::controller(InsightController::class)->group(function () {
             Route::get('insights-manager', 'index')->name('admin.insights.index');

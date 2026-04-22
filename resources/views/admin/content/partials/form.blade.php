@@ -27,6 +27,12 @@
                     <button type="button" id="applyProjectOutcomePreset" class="btn btn-sm btn-outline-primary">Project Outcome</button>
                     <button type="button" id="applyProjectsWorkWithUsPreset" class="btn btn-sm btn-outline-primary">Projects CTA Toggle</button>
                     <button type="button" id="applyWorkWithUsPreset" class="btn btn-sm btn-primary">Work With Us</button>
+
+                    <button type="button" id="applyAboutHeaderPreset" class="btn btn-sm btn-outline-primary">About Header</button>
+<button type="button" id="applyAboutTracePreset" class="btn btn-sm btn-outline-primary">About Trace</button>
+<button type="button" id="applyWhoWeArePreset" class="btn btn-sm btn-outline-primary">Who We Are</button>
+<button type="button" id="applyOurMissionPreset" class="btn btn-sm btn-outline-primary">Our Mission</button>
+<button type="button" id="applyPartnersPreset" class="btn btn-sm btn-outline-primary">About Partners</button>
                 </div>
 
                 <hr class="my-3">
@@ -376,6 +382,78 @@
                 setDescriptionValue(descriptionField ? descriptionField.value : '');
             });
         }
+
+        // About Header Preset
+const aboutHeaderBtn = document.getElementById('applyAboutHeaderPreset');
+if (aboutHeaderBtn) {
+    aboutHeaderBtn.addEventListener('click', function () {
+        if (slugField) slugField.value = 'about_us_header';
+        if (sectionField) sectionField.value = 'ABOUT US';
+        if (headingField) headingField.value = 'Empowering Change through Insightful Consulting';
+        if (designWordField) designWordField.value = 'Insightful';
+        if (typeField) typeField.value = 'Hero Section';
+        setDescriptionValue('We deliver evidence-based policy recommendations and advocacy that help governments design actionable, impactful reforms from the ground up.');
+    });
+}
+
+// About Trace Preset
+const aboutTraceBtn = document.getElementById('applyAboutTracePreset');
+if (aboutTraceBtn) {
+    aboutTraceBtn.addEventListener('click', function () {
+        if (slugField) slugField.value = 'about_trace';
+        if (sectionField) sectionField.value = 'ABOUT TRACE';
+        if (headingField) headingField.value = 'A firm built on insight, strategy, and lasting impact.';
+        if (designWordField) designWordField.value = 'insight, strategy,';
+        if (typeField) typeField.value = 'About Section';
+        setDescriptionValue('A firm built on insight, strategy, and lasting impact.');
+    });
+}
+
+// Who We Are Preset
+const whoWeAreBtn = document.getElementById('applyWhoWeArePreset');
+if (whoWeAreBtn) {
+    whoWeAreBtn.addEventListener('click', function () {
+        if (slugField) slugField.value = 'about_us_who_we_are';
+        if (sectionField) sectionField.value = 'ABOUT US DETAILS';
+        if (headingField) headingField.value = 'Who We Are';
+        if (designWordField) designWordField.value = '';
+        if (typeField) typeField.value = 'Detail Item';
+        setDescriptionValue('We work at the intersection of research, innovation, and implementation— empowering institutions with data-driven insights.');
+    });
+}
+
+// Our Mission Preset
+const ourMissionBtn = document.getElementById('applyOurMissionPreset');
+if (ourMissionBtn) {
+    ourMissionBtn.addEventListener('click', function () {
+        if (slugField) slugField.value = 'about_us_our_mission';
+        if (sectionField) sectionField.value = 'ABOUT US DETAILS';
+        if (headingField) headingField.value = 'Our Mission';
+        if (designWordField) designWordField.value = '';
+        if (typeField) typeField.value = 'Detail Item';
+        setDescriptionValue('Our mission is to provide high-quality, evidence-based consulting services.');
+    });
+}
+
+// Partners Section Preset
+const partnersBtn = document.getElementById('applyPartnersPreset');
+if (partnersBtn) {
+    partnersBtn.addEventListener('click', function () {
+        document.getElementById('slug').value = 'about_us_partners'; // Slug oboshoy matching hote hobe
+        document.getElementById('section').value = 'ABOUT US DETAILS';
+        document.getElementById('heading').value = 'Trusted by Leading Institutions';
+        document.getElementById('design_word').value = 'Institutions';
+        document.getElementById('type').value = 'Partners Section';
+        
+        // Description value set kora
+        if (typeof setDescriptionValue === "function") {
+            setDescriptionValue('We work with governments, multilateral development organisations, regulatory bodies, and private sector leaders across the region — building long-term partnerships grounded in trust and results.');
+        }
+        
+        toastr.success('Partners preset applied!');
+    });
+}
+
     })();
 </script>
 @endpush
