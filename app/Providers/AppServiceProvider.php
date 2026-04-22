@@ -24,10 +24,19 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         View::share('siteSettings', $this->loadSiteSettings());
+        // Make `setting` available in all views (used by admin sidebar)
+        View::share('setting', $this->loadSiteSettings());
 
         Gate::before(function ($user, $ability) {
             return $user->hasRole('SuperAdmin') ? true : null;
         });
+
+        View::composer('admin.layout.sidebar', function ($view) {
+        $setting = Cache::remember('site_settings', 3600, function () {
+            return Setting::with('media')->first();
+        });
+        $view->with('setting', $setting);
+    });
     }
 
     private function loadSiteSettings(): ?Setting
