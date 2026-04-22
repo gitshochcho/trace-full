@@ -8,6 +8,10 @@ use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\TeamController;
+use App\Http\Controllers\Admin\ContactMessageController;
+use App\Http\Controllers\Admin\ContactInfoController;
+use App\Http\Controllers\Admin\JobPostingController;
+use App\Http\Controllers\Admin\JobApplicationController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -85,6 +89,38 @@ Route::prefix('admin')->group(function () {
         Route::controller(SliderController::class)->group(function () {
             Route::get('slider', 'edit')->name('admin.slider.edit');
             Route::post('slider', 'update')->name('admin.slider.update');
+        });
+
+        Route::controller(ContactMessageController::class)->group(function () {
+            Route::get('contact-messages', 'index')->name('admin.contact-messages.index');
+            Route::get('contact-messages/{id}', 'show')->name('admin.contact-messages.show');
+            Route::delete('contact-messages/{id}', 'destroy')->name('admin.contact-messages.destroy');
+        });
+
+        Route::controller(ContactInfoController::class)->group(function () {
+            Route::get('contact-info', 'index')->name('admin.contact-info.index');
+            Route::get('contact-info/create', 'create')->name('admin.contact-info.create');
+            Route::post('contact-info', 'store')->name('admin.contact-info.store');
+            Route::get('contact-info/{contactInfo}/edit', 'edit')->name('admin.contact-info.edit');
+            Route::put('contact-info/{contactInfo}', 'update')->name('admin.contact-info.update');
+            Route::delete('contact-info/{contactInfo}', 'destroy')->name('admin.contact-info.destroy');
+        });
+
+        Route::controller(JobPostingController::class)->group(function () {
+            Route::get('job-postings', 'index')->name('admin.job-postings.index');
+            Route::get('job-postings/create', 'create')->name('admin.job-postings.create');
+            Route::post('job-postings', 'store')->name('admin.job-postings.store');
+            Route::get('job-postings/{jobPosting}', 'show')->name('admin.job-postings.show');
+            Route::get('job-postings/{jobPosting}/edit', 'edit')->name('admin.job-postings.edit');
+            Route::put('job-postings/{jobPosting}', 'update')->name('admin.job-postings.update');
+            Route::delete('job-postings/{jobPosting}', 'destroy')->name('admin.job-postings.destroy');
+        });
+
+        Route::controller(JobApplicationController::class)->group(function () {
+            Route::get('job-applications', 'index')->name('admin.job-applications.index');
+            Route::get('job-applications/{application}', 'show')->name('admin.job-applications.show');
+            Route::get('job-applications/{application}/download-cv', 'downloadCv')->name('admin.job-applications.download-cv');
+            Route::post('job-applications/{application}/mark-reviewed', 'markReviewed')->name('admin.job-applications.mark-reviewed');
         });
 
     });

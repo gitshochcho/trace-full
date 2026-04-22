@@ -100,23 +100,11 @@
             {{-- LEFT COLUMN: Job Description --}}
             <div class="col-lg-7">
                 <div class="job-description">
-                    <span class="job-division">Trade & Policy Division</span>
-                    <h2>Trade Facilitation Consultant</h2>
+                    <span class="job-division">{{ $job->department }}</span>
+                    <h2>{{ $job->title }}</h2>
                     
                     <div class="job-main-text mt-4">
-                        <p>We are looking for an experienced trade facilitation consultant to support our growing portfolio of WTO TFA implementation, customs modernisation, and border management reform projects across South Asia.</p>
-                        
-                        <p>Beyond project implementation, you will be responsible for conducting gap analyses, drafting policy recommendations, and facilitating high-level stakeholder consultations with government agencies and private sector trade bodies.</p>
-
-                        <p>The role requires a deep understanding of international trade laws, regional economic integration, and the ability to translate complex regulatory requirements into actionable business processes.</p>
-
-                        <h4 class="mt-4 mb-3" style="font-weight:700;">Key Responsibilities:</h4>
-                        <ul style="color: #64748b; line-height: 2;">
-                            <li>Conduct comprehensive trade process mapping and simplification.</li>
-                            <li>Develop strategic roadmaps for WTO TFA compliance.</li>
-                            <li>Provide technical assistance to customs authorities.</li>
-                            <li>Liaise with international development partners.</li>
-                        </ul>
+                        {!! $job->description !!}
                     </div>
                 </div>
             </div>
@@ -130,22 +118,26 @@
                         <h6 style="font-weight: 700; color: #01354B; margin-bottom: 15px;">Summary</h6>
                         <div class="sidebar-info-item">
                             <span class="info-label">Employment</span>
-                            <span class="info-value">Full-Time</span>
+                            <span class="info-value">{{ $job->employment_type }}</span>
                         </div>
                         <div class="sidebar-info-item">
                             <span class="info-label">Location</span>
-                            <span class="info-value">Dhaka, BD</span>
+                            <span class="info-value">{{ $job->location }}</span>
                         </div>
                         <div class="sidebar-info-item">
                             <span class="info-label">Experience</span>
-                            <span class="info-value">3-5 Years</span>
+                            <span class="info-value">{{ $job->experience_level }}</span>
+                        </div>
+                        <div class="sidebar-info-item">
+                            <span class="info-label">Posted</span>
+                            <span class="info-value">{{ $job->posted_date->format('M d, Y') }}</span>
                         </div>
                     </div>
 
                     {{-- 2. Apply Now Form Card --}}
                     <div class="apply-form-card">
                         <h5>Apply for this position</h5>
-                        <form action="#" method="POST" enctype="multipart/form-data">
+                        <form action="{{ route('job.apply', $job->id) }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="form-group">
                                 <label class="form-label">Full Name</label>
@@ -167,7 +159,7 @@
                                 <label for="cv-file" class="cv-upload-label">
                                     <i class="fas fa-cloud-upload-alt"></i>
                                     <span>Click to upload or drag & drop</span>
-                                    <input type="file" id="cv-file" name="cv" style="display:none;" required>
+                                    <input type="file" id="cv-file" name="cv" style="display:none;" accept=".pdf,.doc,.docx" required>
                                 </label>
                                 <div id="file-name" style="font-size: 11px; color: #01888C; margin-top: 5px;"></div>
                             </div>

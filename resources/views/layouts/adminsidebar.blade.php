@@ -61,6 +61,30 @@
                     <a href="{{ route('admin.insights.index') }}" class="nav-link {{ request()->routeIs('admin.insights.*') ? 'active' : '' }}">
                         <i class="nav-icon bi bi-journals"></i>
                         <p>Insights Manager</p>
+                    <a href="{{ route('admin.contact-messages.index') }}" class="nav-link {{ request()->routeIs('admin.contact-messages.*') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-envelope"></i>
+                        <p>Contact Messages</p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('admin.contact-info.index') }}" class="nav-link {{ request()->routeIs('admin.contact-info.*') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-telephone"></i>
+                        <p>Contact Information</p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('admin.job-postings.index') }}" class="nav-link {{ request()->routeIs('admin.job-postings.*') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-briefcase"></i>
+                        <p>Job Postings</p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('admin.job-applications.index') }}" class="nav-link {{ request()->routeIs('admin.job-applications.*') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-people"></i>
+                        <p>Job Applications</p>
                     </a>
                 </li>
 

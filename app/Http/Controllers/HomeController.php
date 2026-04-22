@@ -17,6 +17,9 @@ use App\Models\Team;
 use App\Models\User;
 use App\Models\UserDetail;
 use Illuminate\Http\RedirectResponse;
+use App\Models\ContactInfo;
+use App\Models\JobPosting;
+use App\Models\JobApplication;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -34,7 +37,22 @@ class HomeController extends Controller
     {
         $slider = Slider::with('media')->first();
 
-        return view('frontend.pages.home', compact('slider'));
+        $homeServices = Service::query()
+        ->with(['content', 'media', 'solutions'])
+        ->where('active', true)
+        ->orderBy('sort_order')
+        ->limit(6)
+        ->get();
+
+    // Projects — latest 3টা
+    $homeProjects = Project::query()
+        ->with(['services', 'media'])
+        ->orderBy('sort_order')
+        ->latest('id')
+        ->limit(3)
+        ->get();
+
+        return view('frontend.pages.home', compact('slider', 'homeServices', 'homeProjects'));
     }
 
      public function services(Request $request)
@@ -173,16 +191,53 @@ class HomeController extends Controller
 
     public function career(Request $request)
     {
-        return view('frontend.pages.career');
+        $jobs = JobPosting::active()->ordered()->paginate(12);
+        return view('frontend.pages.career', compact('jobs'));
     }
-    public function careerdetails(Request $request)
+    public function careerdetails(Request $request, $id)
     {
-        return view('frontend.pages.careerdetails');
+        $job = JobPosting::active()->findOrFail($id);
+        return view('frontend.pages.careerdetails', compact('job'));
+    }
+
+    public function applyForJob(Request $request, $id)
+    {
+        $job = JobPosting::active()->findOrFail($id);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'required|string|max:20',
+            'cover_letter' => 'nullable|string',
+            'cv' => 'required|file|mimes:pdf,doc,docx|max:5120', // 5MB max
+        ]);
+
+        // Handle CV upload
+        $cvPath = null;
+        if ($request->hasFile('cv')) {
+            $cvPath = $request->file('cv')->store('cvs', 'public');
+        }
+
+        JobApplication::create([
+            'job_posting_id' => $job->id,
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'phone' => $validated['phone'],
+            'cover_letter' => $validated['cover_letter'] ?? null,
+            'cv_path' => $cvPath,
+            'is_reviewed' => false,
+        ]);
+
+        return back()->with('success', 'Your application has been submitted successfully!');
     }
 
     public function contact(Request $request)
     {
-        return view('frontend.pages.contact');
+        $heroContent = contentBlock('contact-page');
+        $contactPhones = ContactInfo::where('type', 'phone')->active()->ordered()->get();
+        $contactEmails = ContactInfo::where('type', 'email')->active()->ordered()->get();
+        $contactAddresses = ContactInfo::where('type', 'address')->active()->ordered()->get();
+        return view('frontend.pages.contact', compact('heroContent', 'contactPhones', 'contactEmails', 'contactAddresses'));
     }
 
 
