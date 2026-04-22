@@ -82,6 +82,36 @@
     background: #FFFFFF;
     height: 60px;
     border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.filter-nav-container {
+    max-width: var(--max-content-width);
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 15px;
+}
+
+.filter-tabs-wrapper {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+}
+
+.filter-tabs {
+    display: flex;
+    white-space: nowrap;
+    flex-wrap: nowrap;
+    transition: transform 0.3s ease;
+    gap: 0;
+}
+
+.filter-tabs .nav-item {
+    flex-shrink: 0;
 }
 
 .filter-tabs .nav-link {
@@ -90,6 +120,41 @@
     font-weight: 500;
     padding: 18px 20px;
     transition: all 0.3s;
+    display: block;
+    white-space: nowrap;
+    position: relative;
+}
+
+.scroll-btn {
+    background: #F47735;
+    color: white;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    flex-shrink: 0;
+}
+
+.scroll-btn:hover {
+    background: #d9622a;
+    transform: scale(1.05);
+}
+
+.scroll-btn:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.project-count {
+    flex-shrink: 0;
+    white-space: nowrap;
+    font-size: 13px;
 }
 
 .filter-tabs .nav-link.active {
@@ -120,8 +185,6 @@
 /* Responsive adjustments */
 @media (max-width: 992px) {
     .hero-dark { height: auto; padding: 60px 0; }
-    .filter-nav { height: auto; overflow-x: auto; }
-    .filter-tabs { white-space: nowrap; flex-wrap: nowrap; }
 }
 
 /* Card Styling */
@@ -292,31 +355,73 @@
             <h1 class="hero-title fw-bold">{{ $heroHeading }} <br><span class="text-teal">{{ $heroHighlight }}</span></h1>
 
             <p class="hero-description mt-4">
-                {{ $heroDescription }}
+                {!! nl2br(e(strip_tags($heroDescription))) !!}
             </p>
         </div>
     </div>
 </section>
 
 <section class="filter-nav">
-    <div class="container-custom d-flex justify-content-between align-items-center h-100">
-        <ul class="nav filter-tabs">
-            <li class="nav-item">
-                <a class="nav-link {{ empty($selectedService) ? 'active' : '' }}" href="{{ route('projects') }}">All Projects <span class="badge">{{ $projectCount }}</span></a>
-            </li>
-            @foreach($services as $service)
+    <div class="filter-nav-container">
+        <button class="scroll-btn scroll-left" id="scrollLeft" onclick="scrollTabs('left')" title="Scroll left">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <div class="filter-tabs-wrapper">
+            <ul class="nav filter-tabs" id="filterTabs">
                 <li class="nav-item">
-                    <a class="nav-link {{ (int) $selectedService === (int) $service->id ? 'active' : '' }}" href="{{ route('projects', ['service' => $service->id]) }}">
-                        {{ $service->service_name }} <span class="badge">{{ $service->projects_count }}</span>
-                    </a>
+                    <a class="nav-link {{ empty($selectedService) ? 'active' : '' }}" href="{{ route('projects') }}">All Projects <span class="badge-count">{{ $projectCount }}</span></a>
                 </li>
-            @endforeach
-        </ul>
+                @foreach($services as $service)
+                    <li class="nav-item">
+                        <a class="nav-link {{ (int) $selectedService === (int) $service->id ? 'active' : '' }}" href="{{ route('projects', ['service' => $service->id]) }}">
+                            {{ $service->service_name }} <span class="badge-count">{{ $service->projects_count }}</span>
+                        </a>
+                    </li>
+                @endforeach
+            </ul>
+        </div>
+        <button class="scroll-btn scroll-right" id="scrollRight" onclick="scrollTabs('right')" title="Scroll right">
+            <i class="fas fa-chevron-right"></i>
+        </button>
         <div class="project-count text-muted small">
             Showing <strong>{{ $projectCount }}</strong> projects
         </div>
     </div>
 </section>
+
+<script>
+    function scrollTabs(direction) {
+        const filterTabs = document.getElementById('filterTabs');
+        const scrollAmount = 200;
+        const currentTransform = parseInt(filterTabs.style.transform.match(/-?\d+/)?.[0] || 0);
+        
+        if (direction === 'left') {
+            filterTabs.style.transform = `translateX(${currentTransform + scrollAmount}px)`;
+        } else {
+            filterTabs.style.transform = `translateX(${currentTransform - scrollAmount}px)`;
+        }
+        
+        updateScrollButtons();
+    }
+    
+    function updateScrollButtons() {
+        const filterTabs = document.getElementById('filterTabs');
+        const wrapper = document.querySelector('.filter-tabs-wrapper');
+        const scrollLeftBtn = document.getElementById('scrollLeft');
+        const scrollRightBtn = document.getElementById('scrollRight');
+        
+        const translateX = parseInt(filterTabs.style.transform.match(/-?\d+/)?.[0] || 0);
+        const maxScroll = -(filterTabs.scrollWidth - wrapper.clientWidth);
+        
+        scrollLeftBtn.disabled = translateX >= 0;
+        scrollRightBtn.disabled = translateX <= maxScroll;
+    }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        updateScrollButtons();
+        window.addEventListener('resize', updateScrollButtons);
+    });
+</script>
 
 <section class="project-grid-section py-5">
     <div class="container-custom">
@@ -341,7 +446,7 @@
 
                         <div class="project-content">
                             <h6 class="client-name text-uppercase">{{ abbreviateClientName($project->client) ?: 'TRACE' }}</h6>
-                            <h4 class="project-standard">{{ $project->project_standard ?: 'PROJECT' }}</h4>
+                            <h4 class="project-standard">{{ $project->project_standard ?: '' }}</h4>
                             <h4 class="project-title">{{ $project->project_title }}</h4>
                             <p class="project-bio text-muted">{{ \Illuminate\Support\Str::limit($projectDesc, 140) }}</p>
 
