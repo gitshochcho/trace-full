@@ -9,15 +9,16 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [App\Http\Controllers\HomeController::class, 'home'])->name('home');
 Route::get('/about', [App\Http\Controllers\HomeController::class, 'about'])->name('about');
 Route::get('/team', [App\Http\Controllers\HomeController::class, 'team'])->name('team');
-Route::get('/teamdetails', [App\Http\Controllers\HomeController::class, 'teamdetails'])->name('teamdetails');
+Route::get('/teamdetails/{team?}', [App\Http\Controllers\HomeController::class, 'teamdetails'])->name('teamdetails');
 Route::get('/projects', [App\Http\Controllers\HomeController::class, 'projects'])->name('projects');
 Route::get('/projectdetails/{project?}', [App\Http\Controllers\HomeController::class, 'projectdetails'])->name('projectdetails');
+
 
 
 Route::get('/services', [App\Http\Controllers\HomeController::class, 'services'])->name('services');
 Route::get('/service-details/{id}', [App\Http\Controllers\HomeController::class, 'serviceDetails'])->name('serviceDetails');
 Route::get('/insights', [App\Http\Controllers\HomeController::class, 'insights'])->name('insights');
-Route::get('/article-details/{id}', [App\Http\Controllers\HomeController::class, 'articleDetails'])->name('articleDetails');
+Route::get('/article-details/{article?}', [App\Http\Controllers\HomeController::class, 'articleDetails'])->name('articleDetails');
 Route::get('/career', [App\Http\Controllers\HomeController::class, 'career'])->name('career');
 Route::get('/careerdetails', [App\Http\Controllers\HomeController::class, 'careerdetails'])->name('careerdetails');
 Route::get('/contact', [App\Http\Controllers\HomeController::class, 'contact'])->name('contact');

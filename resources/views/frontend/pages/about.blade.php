@@ -58,12 +58,10 @@
 .about-hero-content h1 {
     font-family: "Sora", sans-serif;
     font-weight: 800;
-    font-size: clamp(32px, 5vw, 58px); 
+    font-size: clamp(32px, 5vw, 58px);
     line-height: 1.15;
     color: #ffffff;
 }
-
-.about-hero-content h1 span { color: var(--accent-teal); }
 
 .hero-line {
     width: 145px;
@@ -100,8 +98,6 @@
     color: var(--dark-blue);
 }
 
-.about-title span { color: var(--accent-teal); }
-
 .about-divider {
     width: 40px;
     height: 3px;
@@ -116,32 +112,25 @@
     border-radius: 20px;
 }
 
-/* --- Updated Custom Button Styles with 3D Shadow --- */
-
-/* ১. Work With Us (Solid Orange Button with 3D Effect) */
-.btn-orange {
-    background-color: #F47735 !important; 
-    color: #FFFFFF !important;          
-    border: none !important; /* বর্ডার রিমোভ করে শ্যাডো সেট করা হয়েছে */
-    border-radius: 50px !important;     
-    padding: 12px 30px !important;       
-    font-size: 16px !important;
-    font-weight: 600 !important;        
-    text-decoration: none !important;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px; 
-    transition: all 0.2s ease;
-   
-    position: relative;
-    top: 0;
+.about-rich-text,
+.about-rich-text p,
+.about-rich-text ul,
+.about-rich-text ol,
+.about-rich-text li {
+    color: #6c757d;
+    font-size: 15px;
+    line-height: 1.8;
 }
 
-/* ১. Work With Us (Solid Orange Button) */
+.about-rich-text p:last-child {
+    margin-bottom: 0;
+}
+
+/* Buttons */
 .btn-orange {
     background-color: #F47735 !important;
     color: #FFFFFF !important;
-    border: 1px solid #F47735 !important; 
+    border: 1px solid #F47735 !important;
     border-radius: 50px !important;
     padding: 10px 28px !important;
     font-size: 16px !important;
@@ -150,27 +139,26 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    box-shadow: none !important; 
+    box-shadow: none !important;
     transition: all 0.3s ease;
 }
 
 .btn-orange:hover {
     background-color: #d9632a !important;
     border-color: #d9632a !important;
-    box-shadow: 0 4px 12px rgba(244, 119, 53, 0.2) !important; 
+    box-shadow: 0 4px 12px rgba(244, 119, 53, 0.2) !important;
 }
 
-/* ২. Our Services (Outline Button) */
 .btn-outline-dark-custom {
     background-color: transparent !important;
     color: #0F172A !important;
-    border: 1px solid #D1D5DB !important; 
+    border: 1px solid #D1D5DB !important;
     border-radius: 50px !important;
     padding: 10px 28px !important;
     font-size: 16px !important;
     font-weight: 600 !important;
     text-decoration: none !important;
-    box-shadow: none !important; 
+    box-shadow: none !important;
     transition: all 0.3s ease;
 }
 
@@ -179,10 +167,9 @@
     border-color: #94A3B8 !important;
 }
 
-/* Responsive Fix for Left Margin */
 @media (min-width: 1200px) {
     .hero-container-offset {
-        margin-left: 15%; 
+        margin-left: 15%;
     }
 }
 
@@ -242,8 +229,7 @@
 
 .commitment-content-box {
     max-width: 441px;
-    /* Grid lines effect */
-    background-image: 
+    background-image:
         linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
         linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px);
     background-size: 80px 100%, 100% 80px;
@@ -285,34 +271,30 @@
     background: #F8F9FB;
 }
 
-/* Main Wrapper Box (Width: 1080px) */
 .framework-main-container {
-    width: 1080px; 
+    width: 1080px;
     margin: 0 auto;
     display: block;
 }
 
-/* Right Side Content Box (Width: 708px) */
 .framework-right-box {
-    width: 708px; 
+    width: 708px;
     min-height: 524px;
     background: #ffffff;
     border: 1px solid #E5E9ED;
-    border-radius: 16px; 
+    border-radius: 16px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     overflow: hidden;
 }
 
-/* Row Adjustment for 72px Gap */
 .framework-main-container .row {
     margin: 0;
     display: flex;
-    flex-wrap: nowrap; 
+    flex-wrap: nowrap;
 }
 
-/* Left Content Styles */
 .framework-tag .line {
     width: 30px;
     height: 2px;
@@ -337,7 +319,6 @@
     line-height: 1.7;
 }
 
-/* Button */
 .btn-get-started {
     display: inline-block;
     padding: 10px 28px;
@@ -350,7 +331,6 @@
     transition: 0.3s;
 }
 
-/* Individual Items inside Right Box */
 .framework-item {
     display: flex;
     gap: 20px;
@@ -379,10 +359,9 @@
     margin: 0;
 }
 
-/* Responsive */
 @media (max-width: 1100px) {
     .framework-main-container {
-        width: 95%; 
+        width: 95%;
     }
     .framework-right-box {
         width: 100%;
@@ -425,20 +404,18 @@
 
 .features-title span { color: #22c1c3; }
 
-/* Feature Card Style */
 .feature-card {
     background: #fff;
     padding: 40px 30px;
-    border-radius: 16px; 
+    border-radius: 16px;
     border: 1px solid #f1f5f9;
     transition: all 0.3s ease;
 }
 
-
 .icon-wrapper {
     width: 55px;
     height: 55px;
-    background-color: #e6f7f8; 
+    background-color: #e6f7f8;
     border-radius: 12px;
     display: flex;
     align-items: center;
@@ -447,7 +424,7 @@
 
 .icon-wrapper i {
     font-size: 24px;
-    color: #01888C; 
+    color: #01888C;
 }
 
 .feature-card h5 {
@@ -479,7 +456,7 @@
 }
 
 .projects-main-container {
-    max-width: 1080px; 
+    max-width: 1080px;
     margin: 0 auto;
 }
 
@@ -510,7 +487,6 @@
     display: inline-block;
 }
 
-/* All Projects Button */
 .all-projects-link {
     text-decoration: none;
     color: #01354B;
@@ -532,18 +508,25 @@
     transition: 0.3s;
 }
 
-/* Grid Layout */
 .projects-grid {
     display: flex;
-    gap: 20px; 
+    gap: 20px;
+    flex-wrap: wrap;
 }
 
-/* Project Card (Exact Size) */
+.project-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    flex: 1 1 0;
+    min-width: 300px;
+}
+
 .project-card {
     position: relative;
-    width: 346.66px;
-    height: 280px;    
-    border-radius: 16px; 
+    width: 100%;
+    height: 280px;
+    border-radius: 16px;
     overflow: hidden;
     background: #01354B;
 }
@@ -602,10 +585,9 @@
     margin: 0;
 }
 
-/* Responsive */
 @media (max-width: 1080px) {
     .projects-main-container { width: 95%; }
-    .projects-grid { flex-wrap: wrap; justify-content: center; }
+    .projects-grid { justify-content: center; }
 }
 
 /* ================= INSIGHTS SECTION ================= */
@@ -622,7 +604,6 @@
     margin: 0 auto;
 }
 
-/* Header Styles */
 .insights-header {
     display: flex;
     justify-content: space-between;
@@ -638,12 +619,6 @@
     align-items: center;
     gap: 10px;
     margin-bottom: 12px;
-}
-
-.orange-line {
-    width: 20px;
-    height: 2px;
-    background: #F47735;
 }
 
 .insights-title {
@@ -670,18 +645,21 @@
     padding-bottom: 5px;
 }
 
-/* Grid Layout */
 .insights-grid {
     display: grid;
-    grid-template-columns: 516px 256px 256px; 
+    grid-template-columns: 516px 256px 256px;
     grid-template-rows: repeat(2, auto);
     column-gap: 20px;
     row-gap: 20px;
 }
 
-/* Big Card Styling */
+.insight-card-link {
+    text-decoration: none;
+    color: inherit;
+}
+
 .big-card {
-    grid-row: span 2; /* row-span: 2 */
+    grid-row: span 2;
     width: 516px;
     height: 482.8px;
     background: #fff;
@@ -695,7 +673,6 @@
 
 .big-card .card-img-box img { height: 260px; object-fit: cover; }
 
-/* Small Card Styling */
 .small-card {
     width: 256px;
     height: auto;
@@ -707,7 +684,6 @@
 
 .small-img img { height: 140px; object-fit: cover; }
 
-/* Generic Card Elements */
 .card-img-box { position: relative; }
 
 .img-overlay-gradient {
@@ -720,7 +696,7 @@
     position: absolute;
     bottom: 12px;
     left: 12px;
-    background: #F47735; /* Article badge color */
+    background: #F47735;
     color: #fff;
     font-size: 10px;
     padding: 3px 10px;
@@ -741,7 +717,6 @@
 .meta-text { font-size: 11px; color: #94A3B8; }
 .footer-link { font-size: 12px; color: #01888C; font-weight: 700; text-decoration: none; }
 
-/* All Insights Link Box */
 .all-box-link {
     background: #F1F5F9;
     border: 1px solid #E3E8EB;
@@ -760,7 +735,6 @@
 .insights-link-text { color: #01888C; font-size: 20px; font-weight: 800; margin: 2px 0; }
 .arrow-icon { color: #01354B; font-size: 24px; }
 
-/* Responsive */
 @media (max-width: 1100px) {
     .insights-container { width: 95%; }
     .insights-grid { grid-template-columns: 1fr; }
@@ -772,7 +746,7 @@
     width: 100%;
     max-width: 1920px;
     background: #ffffff;
-    padding: 100px 0; 
+    padding: 100px 0;
     border-top: 1px solid #E5E9ED;
     margin: 0 auto;
 }
@@ -795,12 +769,6 @@
     margin-bottom: 15px;
 }
 
-.orange-line {
-    width: 30px;
-    height: 2px;
-    background: #F47735;
-}
-
 .partners-title {
     font-family: 'Sora', sans-serif;
     font-weight: 700;
@@ -817,7 +785,6 @@
     line-height: 1.7;
     margin-bottom: 0;
 }
-
 
 .logo-grid {
     display: grid;
@@ -854,7 +821,6 @@
     opacity: 1;
 }
 
-/* Slider Controls (Dots & Arrows) */
 .slider-controls {
     display: flex;
     align-items: center;
@@ -900,35 +866,149 @@
     border-radius: 10px;
 }
 
-/* Responsive */
 @media (max-width: 1200px) {
     .partners-container { width: 100%; padding: 0 20px; }
     .logo-grid { grid-template-columns: repeat(2, 1fr); }
     .partner-logo-wrapper:nth-child(2) { border-right: none; }
     .partner-logo-wrapper { border-bottom: 1px solid #E5E9ED; }
 }
-
-
 </style>
 @endpush
 
 
 @section('content')
+@php
+    $aboutSection = $aboutPageContent?->section ?: 'ABOUT TRACE';
+    $aboutHeading = $aboutPageContent?->heading ?: 'Empowering Change through Insightful Consulting';
+    $aboutSubHeading = $aboutPageContent?->sub_heading ?: 'A firm built on insight, strategy, and lasting impact.';
+    $aboutDescription = $aboutPageContent?->description ?: 'We work at the intersection of research, innovation, and implementation—empowering institutions with data-driven insights.';
+    $aboutImage = $aboutPageContent?->imageUrl() ?: asset('assets/img/Trace team.png');
+
+    $aboutProjects = $aboutProjects ?? collect();
+    $aboutInsights = $aboutInsights ?? collect();
+
+    $aboutCommitmentContent = $aboutCommitmentContent ?? null;
+    $aboutFrameworkContent = $aboutFrameworkContent ?? null;
+    $frameworkItems = $frameworkItems ?? collect();
+    $aboutUniqueFeaturesContent = $aboutUniqueFeaturesContent ?? null;
+    $uniqueFeatureCards = $uniqueFeatureCards ?? collect();
+
+    $commitmentHeading = $aboutCommitmentContent?->heading ?: 'OUR COMMITMENT';
+    $commitmentSubHeading = $aboutCommitmentContent?->sub_heading ?: 'We are committed to';
+    $commitmentImage = $aboutCommitmentContent?->imageUrl() ?: asset('assets/img/Background (3).png');
+    $commitmentRawDescription = (string) ($aboutCommitmentContent?->description ?: '');
+
+    $commitmentPoints = collect();
+    $commitmentBottomText = '';
+
+    if ($commitmentRawDescription !== '') {
+        preg_match_all('/<li[^>]*>(.*?)<\/li>/si', $commitmentRawDescription, $listMatches);
+        $listItems = collect($listMatches[1] ?? [])
+            ->map(fn ($item) => trim(strip_tags($item)))
+            ->filter();
+
+        if ($listItems->isNotEmpty()) {
+            $commitmentPoints = $listItems;
+
+            $withoutLists = preg_replace('/<ul\b[^>]*>.*?<\/ul>/si', '', $commitmentRawDescription);
+            $commitmentBottomText = trim(strip_tags((string) $withoutLists));
+        } else {
+            $plainDescription = html_entity_decode(strip_tags(str_ireplace(['<br>', '<br/>', '<br />'], "\n", $commitmentRawDescription)));
+            $lines = collect(preg_split('/\r\n|\r|\n/', $plainDescription ?: ''))
+                ->map(fn ($line) => trim($line))
+                ->filter();
+
+            if ($lines->count() > 1) {
+                $commitmentPoints = $lines;
+            } else {
+                $commitmentBottomText = $lines->first() ?: '';
+            }
+        }
+    }
+
+    $commitmentBottomText = $commitmentBottomText ?: ($aboutCommitmentContent?->design_word ?: 'At Trace Consulting, we do not just advise, we collaborate to create lasting change.');
+    $defaultCommitmentPoints = collect([
+        'Integrity and transparency in every engagement',
+        'Delivering measurable outcomes, not just recommendations',
+        'Building local capacity and ownership',
+        'Promoting innovation and sustainability in every project',
+    ]);
+    $commitmentPoints = $commitmentPoints->isNotEmpty() ? $commitmentPoints : $defaultCommitmentPoints;
+
+    $frameworkTag = $aboutFrameworkContent?->section ?: 'OUR FRAMEWORK';
+    $frameworkHeading = $aboutFrameworkContent?->heading ?: "How We\nWork";
+    $frameworkDescription = $aboutFrameworkContent?->description ?: 'Our proven three-stage framework turns complex trade and policy challenges into measurable, lasting outcomes for every client we serve.';
+    $defaultFrameworkItems = collect([
+        [
+            'title' => 'Insight',
+            'description' => 'We turn complex trade and policy issues into clear insights using research, data, and deep expertise to transform challenges and risks into well-defined opportunities ready for action.',
+            'icon' => null,
+        ],
+        [
+            'title' => 'Strategy',
+            'description' => 'We formulate insights into strategies, devising evidence and technology-driven solutions that meet global standards, align with institutional realities, and drive sustainable growth.',
+            'icon' => null,
+        ],
+        [
+            'title' => 'Impact',
+            'description' => 'We deliver measurable and lasting results by reducing barriers, enhancing competitiveness, driving reforms, and embedding the tools clients need to sustain change independently.',
+            'icon' => null,
+        ],
+    ]);
+    $frameworkDisplayItems = $frameworkItems->isNotEmpty()
+        ? $frameworkItems->map(fn ($item) => [
+            'title' => $item->heading ?: 'Framework Item',
+            'description' => strip_tags((string) $item->description),
+            'icon' => $item->iconUrl(),
+        ])
+        : $defaultFrameworkItems;
+
+    $featuresTag = $aboutUniqueFeaturesContent?->section ?: 'OUR UNIQUE FEATURES';
+    $featuresHeading = $aboutUniqueFeaturesContent?->heading ?: "What Makes TRACE\nDifferent";
+    $featuresDescription = $aboutUniqueFeaturesContent?->description ?: 'TRACE delivers connected, sustainable, and tailored solutions from policy to practice that streamline processes, strengthen institutions, and empower growth.';
+    $defaultFeatureCards = collect([
+        [
+            'title' => 'Industry-wide Network',
+            'description' => "With proven networks across government agencies and private sector stakeholders, TRACE consistently bridges policy leadership and business realities, enabling reforms prioritising client's need.",
+            'icon' => null,
+        ],
+        [
+            'title' => 'Sustainable Approach',
+            'description' => 'TRACE works with partners to build sustainable solutions, embedding facilitation tools into legislation, training mechanisms, and digital systems that outlast the engagement.',
+            'icon' => null,
+        ],
+        [
+            'title' => 'Tailored Innovation',
+            'description' => 'From tech-driven trade systems, lab-accreditation roadmaps, or temperature-controlled logistics, TRACE designs solutions customised to sectoral realities and institutional capacity.',
+            'icon' => null,
+        ],
+        [
+            'title' => 'End-to-End Integrated Solutions',
+            'description' => 'TRACE provides fully integrated support from strategic design through implementation and evaluation, ensuring every solution works as a connected, coherent whole.',
+            'icon' => null,
+        ],
+    ]);
+    $featureDisplayCards = $uniqueFeatureCards->isNotEmpty()
+        ? $uniqueFeatureCards->map(fn ($item) => [
+            'title' => $item->heading ?: 'Feature',
+            'description' => strip_tags((string) $item->description),
+            'icon' => $item->iconUrl(),
+        ])
+        : $defaultFeatureCards;
+
+    $featuredInsight = $aboutInsights->first();
+    $secondaryInsights = $aboutInsights->slice(1, 3);
+@endphp
 
 <section class="about-hero">
-    <img src="{{ asset('assets/img/Trade and Customs.png') }}" alt="Hero" class="img-fluid rounded-4 shadow-sm">
+    <img src="{{ $aboutImage }}" alt="{{ strip_tags($aboutHeading) }}" class="img-fluid rounded-4 shadow-sm">
     <div class="container-fluid about-hero-content">
-        <div class="custom-container"> 
+        <div class="custom-container">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1>
-                        Empowering Change <br>
-                        through <span>Insightful</span> <br>
-                        Consulting
-                    </h1>
+                    <h1>{!! nl2br(e($aboutHeading)) !!}</h1>
                     <p class="text-white-50 mt-3" style="max-width: 480px; font-size: 17px; line-height: 30px;">
-                        We deliver evidence-based policy recommendations and advocacy that help
-                        governments design actionable, impactful reforms from the ground up.
+                        {{ strip_tags($aboutSubHeading) }}
                     </p>
                     <div class="hero-line mt-4"></div>
                 </div>
@@ -940,44 +1020,27 @@
 <section class="py-5 my-md-5">
     <div class="custom-container">
         <div class="row align-items-center gy-5">
-            
             <div class="col-lg-6 pe-lg-5">
-                <span class="about-tag mb-3">ABOUT TRACE</span>
+                <span class="about-tag mb-3">{{ $aboutSection }}</span>
                 <h2 class="about-title mb-4">
-                    A firm built on <span>insight, strategy,</span> and lasting impact.
+                    {!! nl2br(e($aboutSubHeading)) !!}
                 </h2>
 
-                <div class="about-info mt-4">
-                    <div class="mb-4">
-                        <h4 class="fw-bold" style="font-size: 18px;">Who We Are</h4>
-                        <p class="text-secondary">
-                            We work at the intersection of research, innovation, and implementation—
-                            empowering institutions with data-driven insights.
-                        </p>
-                    </div>
+                <div class="about-divider mb-4"></div>
 
-                    <div class="about-divider mb-4"></div>
-
-                    <div class="mb-4">
-                        <h4 class="fw-bold" style="font-size: 18px;">Our Mission</h4>
-                        <p class="text-secondary">
-                            To deliver smart, sustainable, and inclusive solutions that drive economic
-                            growth and strengthen institutions.
-                        </p>
-                    </div>
+                <div class="about-rich-text mt-4">
+                    {!! $aboutDescription !!}
                 </div>
 
-               <div class="d-flex gap-3 mt-4">
-    <a href="/contact" class="btn btn-orange">Work With Us &rarr;</a>
-    
-    <a href="/services" class="btn btn-outline-dark-custom">Our Services</a>
-</div>
+                <div class="d-flex gap-3 mt-4">
+                    <a href="{{ route('contact') }}" class="btn btn-orange">Work With Us &rarr;</a>
+                    <a href="{{ route('services') }}" class="btn btn-outline-dark-custom">Our Services</a>
+                </div>
             </div>
 
             <div class="col-lg-6 about-right text-end">
-                <img src="{{ asset('assets/img/Trace team.png') }}" class="img-fluid shadow-lg" alt="Team" style="width: 500px; height: 600px; object-fit: cover;">
+                <img src="{{ $aboutImage }}" class="img-fluid shadow-lg" alt="{{ strip_tags($aboutHeading) }}" style="width: 500px; height: 600px; object-fit: cover;">
             </div>
-
         </div>
     </div>
 </section>
@@ -987,29 +1050,28 @@
         <img src="{{ asset('assets/img/Background (8).png') }}" alt="Background">
     </div>
     <div class="commitment-left-img">
-        <img src="{{ asset('assets/img/Background (3).png') }}" alt="Chess Overlay">
+        <img src="{{ $commitmentImage }}" alt="{{ strip_tags($commitmentHeading) }}">
     </div>
 
     <div class="custom-container commitment-content-area">
         <div class="row">
             <div class="col-lg-6 offset-lg-6">
                 <div class="commitment-content-box">
-                    <h2>OUR COMMITMENT</h2>
+                    <h2>{!! nl2br(e($commitmentHeading)) !!}</h2>
                     <div class="underline" style="width:32px; height:3px; background:#F47735; margin-bottom:22px;"></div>
-                    
+
                     <p class="small mb-3 text-uppercase fw-bold text-info" style="font-size: 13px; letter-spacing: 1px;">
-                        We are committed to
+                        {{ strip_tags($commitmentSubHeading) }}
                     </p>
 
                     <ul>
-                        <li>Integrity and transparency in every engagement</li>
-                        <li>Delivering measurable outcomes, not just recommendations</li>
-                        <li>Building local capacity and ownership</li>
-                        <li>Promoting innovation and sustainability in every project</li>
+                        @foreach($commitmentPoints as $point)
+                            <li>{{ $point }}</li>
+                        @endforeach
                     </ul>
 
                     <p class="bottom-text mt-4" style="color:#cbd5e1; font-style: italic;">
-                        At Trace Consulting, we don’t just advise — we collaborate to create lasting change.
+                        {{ $commitmentBottomText }}
                     </p>
                 </div>
             </div>
@@ -1020,61 +1082,45 @@
 <section class="framework-section">
     <div class="framework-main-container">
         <div class="row align-items-center" style="column-gap: 72px;">
-            
             <div class="col-lg-5 p-0">
                 <div class="framework-tag d-flex align-items-center gap-2 mb-3">
                     <span class="line"></span>
-                    <span class="tag-text">OUR FRAMEWORK</span>
+                    <span class="tag-text">{{ $frameworkTag }}</span>
                 </div>
                 <h2 class="framework-title mb-4">
-                    How We <br> <span>Work</span>
+                    {!! nl2br(e($frameworkHeading)) !!}
                 </h2>
                 <p class="framework-desc mb-4">
-                    Our proven three-stage framework turns complex trade and policy challenges
-                    into measurable, lasting outcomes for every client we serve.
+                    {{ strip_tags($frameworkDescription) }}
                 </p>
-                <a href="#" class="btn-get-started">
+                <a href="{{ route('contact') }}" class="btn-get-started">
                     Get Started &rarr;
                 </a>
             </div>
 
             <div class="col-lg-7 p-0">
                 <div class="framework-right-box shadow-sm">
-                    <div class="framework-item">
-                        <div class="num">01</div>
-                        <div class="icon-box"><i class="fa-regular fa-lightbulb"></i></div>
-                        <div class="content">
-                            <h4>Insight</h4>
-                            <p>We turn complex trade and policy issues into clear insights — using
-research, data, and deep expertise to transform challenges and risks
-into well-defined opportunities ready for action.</p>
+                    @php
+                        $frameworkFallbackIcons = ['fa-regular fa-lightbulb', 'fa-solid fa-gear', 'fa-solid fa-rocket'];
+                    @endphp
+                    @foreach($frameworkDisplayItems as $index => $item)
+                        <div class="framework-item">
+                            <div class="num">{{ str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT) }}</div>
+                            <div class="icon-box">
+                                @if(!empty($item['icon']))
+                                    <img src="{{ $item['icon'] }}" alt="{{ $item['title'] }}" style="width:24px; height:24px; object-fit:contain; margin-top:10px;">
+                                @else
+                                    <i class="{{ $frameworkFallbackIcons[$index] ?? 'fa-regular fa-circle' }}"></i>
+                                @endif
+                            </div>
+                            <div class="content">
+                                <h4>{{ $item['title'] }}</h4>
+                                <p>{{ $item['description'] }}</p>
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="framework-item">
-                        <div class="num">02</div>
-                        <div class="icon-box"><i class="fa-solid fa-gear"></i></div>
-                        <div class="content">
-                            <h4>Strategy</h4>
-                            <p>We formulate insights into strategies — devising evidence and
-technology-driven solutions that meet global standards, align with
-institutional realities, and drive sustainable growth.</p>
-                        </div>
-                    </div>
-
-                    <div class="framework-item">
-                        <div class="num">03</div>
-                        <div class="icon-box"><i class="fa-solid fa-rocket"></i></div>
-                        <div class="content">
-                            <h4>Impact</h4>
-                            <p>We deliver measurable and lasting results by reducing barriers,
-enhancing competitiveness, driving reforms, and embedding the tools
-clients need to sustain change independently.</p>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
             </div>
-
         </div>
     </div>
 </section>
@@ -1085,86 +1131,48 @@ clients need to sustain change independently.</p>
             <div class="col-lg-5">
                 <div class="features-tag mb-2">
                     <span class="line"></span>
-                    OUR UNIQUE FEATURES
+                    {{ $featuresTag }}
                 </div>
                 <h2 class="features-title">
-                    What Makes TRACE <br> <span>Different</span>
+                    {!! nl2br(e($featuresHeading)) !!}
                 </h2>
             </div>
             <div class="col-lg-7">
                 <p class="text-secondary mb-0" style="font-size: 15px; line-height: 1.8; max-width: 600px;">
-                    TRACE delivers connected, sustainable, and tailored solutions from policy to practice that streamline processes, strengthen institutions, and empower growth.
+                    {{ strip_tags($featuresDescription) }}
                 </p>
             </div>
         </div>
 
-<div class="row g-4">
-    @php
-        $features = [
-            [
-                'icon' => 'fa-solid fa-users-viewfinder', 
-                'title' => 'Industry-wide Network', 
-                'desc' => "With proven networks across
-government agencies and
-private sector stakeholders,
-TRACE consistently bridges
-policy leadership and
-business realities, enabling
-reforms prioritising client's
-need."
-            ],
-            [
-                'icon' => 'fa-regular fa-clock', 
-                'title' => 'Sustainable Approach', 
-                'desc' => "TRACE works with partners
-to build sustainable
-solutions, embedding
-facilitation tools into
-legislation, training
-mechanisms, and digital
-systems that outlast the
-engagement."
-            ],
-            [
-                'icon' => 'fa-solid fa-arrow-trend-up',
-                'title' => 'Tailored Innovation', 
-                'desc' => "From tech-driven trade
-systems, lab-accreditation
-roadmaps, or temperature-
-controlled logistics, TRACE
-designs solutions
-customised to sectoral
-realities and institutional
-capacity."
-            ],
-            [
-                'icon' => 'fa-regular fa-sun', 
-                'title' => 'End-to-End Integrated Solutions', 
-                'desc' => "TRACE provides fully
-integrated support — from
-strategic design through
-implementation and
-evaluation — ensuring every
-solution works as a
-connected, coherent whole."
-            ]
-        ];
-    @endphp
+        <div class="row g-4">
+            @php
+                $featureFallbackIcons = [
+                    'fa-solid fa-users-viewfinder',
+                    'fa-regular fa-clock',
+                    'fa-solid fa-arrow-trend-up',
+                    'fa-regular fa-sun',
+                ];
+            @endphp
 
-    @foreach($features as $feature)
-    <div class="col-md-6 col-lg-3">
-        <div class="feature-card shadow-sm h-100">
-            <div class="icon-wrapper mb-4">
-                <i class="{{ $feature['icon'] }}"></i>
-            </div>
-            <h5 class="fw-bold mb-3">{{ $feature['title'] }}</h5>
-            <p class="text-secondary small line-height-relaxed">
-                {{ $feature['desc'] }}
-            </p>
+            @foreach($featureDisplayCards as $index => $feature)
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card shadow-sm h-100">
+                        <div class="icon-wrapper mb-4">
+                            @if(!empty($feature['icon']))
+                                <img src="{{ $feature['icon'] }}" alt="{{ $feature['title'] }}" style="width:24px; height:24px; object-fit:contain;">
+                            @else
+                                <i class="{{ $featureFallbackIcons[$index] ?? 'fa-regular fa-circle' }}"></i>
+                            @endif
+                        </div>
+                        <h5 class="fw-bold mb-3">{{ $feature['title'] }}</h5>
+                        <p class="text-secondary small line-height-relaxed">
+                            {{ $feature['description'] }}
+                        </p>
+                    </div>
+                </div>
+            @endforeach
         </div>
     </div>
-    @endforeach
-</div>
 </section>
 
 <section class="projects-section">
@@ -1180,48 +1188,38 @@ connected, coherent whole."
                 </h2>
             </div>
             <div class="col-md-4 text-md-end">
-                <a href="#" class="all-projects-link">
+                <a href="{{ route('projects') }}" class="all-projects-link">
                     All Projects <span class="arrow-circle">→</span>
                 </a>
             </div>
         </div>
 
         <div class="projects-grid">
-            <div class="project-card">
-                <img src="{{ asset('assets/img/Lab Project.png') }}" alt="Lab Project">
-                <div class="project-overlay">
-                    <span class="project-badge">LAB ACCREDITATION</span>
-                    <h3 class="project-h">ISO/IEC 17025:2017 Accreditation Support to PRTC, CVASU</h3>
-                    <div class="project-meta">
-                        <span class="meta-line"></span>
-                        <p>Chittagong Veterinary & Animal Sciences University</p>
-                    </div>
-                </div>
-            </div>
+            @forelse($aboutProjects as $project)
+                @php
+                    $projectImage = $project->imageUrl() ?: asset('assets/img/Lab Project.png');
+                    $projectBadge = strtoupper($project->services->first()?->service_name ?: ($project->project_standard ?: 'PROJECT'));
+                    $projectClient = $project->client ?: 'TRACE Project';
+                @endphp
 
-            <div class="project-card">
-                <img src="{{ asset('assets/img/Infrastructure Project.png') }}" alt="Infrastructure">
-                <div class="project-overlay">
-                    <span class="project-badge">INFRASTRUCTURE DESIGN</span>
-                    <h3 class="project-h">Seven-Storey Customs Laboratory Layout Design, Chattogram</h3>
-                    <div class="project-meta">
-                        <span class="meta-line"></span>
-                        <p>Customs Authority, Chattogram</p>
+                <a href="{{ route('projectdetails', $project) }}" class="project-card-link">
+                    <div class="project-card">
+                        <img src="{{ $projectImage }}" alt="{{ $project->project_title }}">
+                        <div class="project-overlay">
+                            <span class="project-badge">{{ $projectBadge }}</span>
+                            <h3 class="project-h">{{ $project->project_title }}</h3>
+                            <div class="project-meta">
+                                <span class="meta-line"></span>
+                                <p>{{ $projectClient }}</p>
+                            </div>
+                        </div>
                     </div>
+                </a>
+            @empty
+                <div class="w-100">
+                    <div class="border rounded-3 bg-white p-4 text-muted">No projects have been added yet.</div>
                 </div>
-            </div>
-
-            <div class="project-card">
-                <img src="{{ asset('assets/img/BAFISA Project.png') }}" alt="Digital Solutions">
-                <div class="project-overlay">
-                    <span class="project-badge">DIGITAL SOLUTIONS</span>
-                    <h3 class="project-h">HS Code Import Database & BAFISA Website Upgrade</h3>
-                    <div class="project-meta">
-                        <span class="meta-line"></span>
-                        <p>Bangladesh Freight Forwarders & Shipping Association</p>
-                    </div>
-                </div>
-            </div>
+            @endforelse
         </div>
     </div>
 </section>
@@ -1237,73 +1235,90 @@ connected, coherent whole."
                 <p class="insights-desc">Thought leadership, research publications, and knowledge resources from our team.</p>
             </div>
             <div class="header-right">
-                <a href="/insights" class="all-insights-btn">All Insights &rarr;</a>
+                <a href="{{ route('insights') }}" class="all-insights-btn">All Insights &rarr;</a>
             </div>
         </div>
 
         <div class="insights-grid">
-            <div class="insight-card big-card">
-                <div class="card-img-box">
-                    <img src="{{ asset('assets/img/Insight.png') }}" alt="Insight">
-                    <div class="img-overlay-gradient"></div>
-                    <span class="in-badge-custom">ARTICLE</span>
-                </div>
-                <div class="card-body">
-                    <h4 class="card-h">Unlocking Animal Health & Nutrition Ecosystems to Power National Growth</h4>
-                    <p class="card-p">Achieving international accreditation in resource-constrained settings requires more than documentation — it demands a cultural shift. This article draws on our direct experience...</p>
-                </div>
-                <div class="card-footer">
-                    <span class="meta-text">March 2025 · 8 min read</span>
-                    <a href="#" class="footer-link">Read article &rarr;</a>
-                </div>
-            </div>
+            @if($featuredInsight)
+                @php
+                    $featuredLeadArticle = $featuredInsight->articles->first();
+                    $featuredImage = $featuredInsight->imageUrl() ?: asset('assets/img/Insight.png');
+                    $featuredType = strtoupper(str_replace('_', ' ', $featuredInsight->type ?: 'read'));
+                    $featuredTitle = $featuredInsight->heading ?: ($featuredLeadArticle?->title ?: 'Insight');
+                    $featuredDescription = \Illuminate\Support\Str::limit(strip_tags($featuredInsight->description ?: ($featuredLeadArticle?->description ?: '')), 180);
+                    $featuredAction = $featuredInsight->actionLabel();
+                    $featuredMetaDate = optional($featuredInsight->published_at)->format('M Y') ?: 'TBA';
+                    $featuredMetaDuration = $featuredLeadArticle?->read_minutes ? $featuredLeadArticle->read_minutes . ' min read' : 'Quick read';
 
-            <div class="insight-card small-card">
-                <div class="card-img-box small-img">
-                    <img src="{{ asset('assets/img/WTO.png') }}" alt="WTO">
-                    <div class="img-overlay-gradient"></div>
-                    <span class="in-badge-custom">PUBLICATION</span>
-                </div>
-                <div class="card-body-small">
-                    <h4 class="card-h-small">Trade Facilitation & WTO Agreement: Roadmap for South Asian Customs Agencies</h4>
-                    <div class="card-footer-small">
-                        <span class="meta-text">Feb 2025 · 24pp</span>
-                        <a href="#" class="footer-link">Download &rarr;</a>
+                    $featuredLink = '#';
+                    if ($featuredInsight->type === 'read' && $featuredLeadArticle) {
+                        $featuredLink = route('articleDetails', $featuredLeadArticle);
+                    } elseif (in_array($featuredInsight->type, ['download', 'video_watch'], true)) {
+                        $featuredLink = $featuredInsight->attachmentUrl() ?: ($featuredLeadArticle?->attachmentUrl() ?: '#');
+                    }
+                @endphp
+
+                <a href="{{ $featuredLink }}" class="insight-card-link" @if($featuredInsight->type !== 'read') target="_blank" rel="noopener" @endif>
+                    <div class="insight-card big-card">
+                        <div class="card-img-box">
+                            <img src="{{ $featuredImage }}" alt="{{ $featuredTitle }}" class="w-100">
+                            <div class="img-overlay-gradient"></div>
+                            <span class="in-badge-custom">{{ $featuredType }}</span>
+                        </div>
+                        <div class="card-body">
+                            <h4 class="card-h">{{ $featuredTitle }}</h4>
+                            <p class="card-p">{{ $featuredDescription ?: 'Insight summary is being updated.' }}</p>
+                        </div>
+                        <div class="card-footer">
+                            <span class="meta-text">{{ $featuredMetaDate }} · {{ $featuredMetaDuration }}</span>
+                            <span class="footer-link">{{ $featuredAction }} &rarr;</span>
+                        </div>
                     </div>
+                </a>
+            @else
+                <div class="big-card d-flex align-items-center justify-content-center p-4 text-muted">
+                    No insights have been published yet.
                 </div>
-            </div>
+            @endif
 
-            <div class="insight-card small-card">
-                <div class="card-img-box small-img">
-                    <img src="{{ asset('assets/img/Video.png') }}" alt="Video">
-                    <div class="img-overlay-gradient"></div>
-                    <span class="in-badge-custom" style="background: #01888C;">VIDEO</span>
-                </div>
-                <div class="card-body-small">
-                    <h4 class="card-h-small">Single Window Systems: A Practitioner's Guide to Trade Digitalisation</h4>
-                    <div class="card-footer-small">
-                        <span class="meta-text">Jan 2025 · 18 min</span>
-                        <a href="#" class="footer-link">Watch &rarr;</a>
+            @foreach($secondaryInsights as $insight)
+                @php
+                    $leadArticle = $insight->articles->first();
+                    $insightImage = $insight->imageUrl() ?: asset('assets/img/WTO.png');
+                    $insightType = strtoupper(str_replace('_', ' ', $insight->type ?: 'read'));
+                    $insightTitle = $insight->heading ?: ($leadArticle?->title ?: 'Insight');
+                    $insightAction = $insight->actionLabel();
+                    $insightMetaDate = optional($insight->published_at)->format('M Y') ?: 'TBA';
+                    $insightMetaDuration = $leadArticle?->read_minutes ? $leadArticle->read_minutes . ' min' : 'Quick read';
+
+                    $insightLink = '#';
+                    if ($insight->type === 'read' && $leadArticle) {
+                        $insightLink = route('articleDetails', $leadArticle);
+                    } elseif (in_array($insight->type, ['download', 'video_watch'], true)) {
+                        $insightLink = $insight->attachmentUrl() ?: ($leadArticle?->attachmentUrl() ?: '#');
+                    }
+                @endphp
+
+                <a href="{{ $insightLink }}" class="insight-card-link" @if($insight->type !== 'read') target="_blank" rel="noopener" @endif>
+                    <div class="insight-card small-card">
+                        <div class="card-img-box small-img">
+                            <img src="{{ $insightImage }}" alt="{{ $insightTitle }}" class="w-100">
+                            <div class="img-overlay-gradient"></div>
+                            <span class="in-badge-custom" @if($insight->type === 'video_watch') style="background: #01888C;" @endif>{{ $insightType }}</span>
+                        </div>
+                        <div class="card-body-small">
+                            <h4 class="card-h-small">{{ $insightTitle }}</h4>
+                            <div class="card-footer-small">
+                                <span class="meta-text">{{ $insightMetaDate }} · {{ $insightMetaDuration }}</span>
+                                <span class="footer-link">{{ $insightAction }} &rarr;</span>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
+                </a>
+            @endforeach
 
-            <div class="insight-card small-card">
-                <div class="card-img-box small-img">
-                    <img src="{{ asset('assets/img/pr-BAFISA.png') }}" alt="BAFISA">
-                    <div class="img-overlay-gradient"></div>
-                    <span class="in-badge-custom">BROCHURE</span>
-                </div>
-                <div class="card-body-small">
-                    <h4 class="card-h-small">BAFISA Unified Presentation for Exporting Countries & Delegations</h4>
-                    <div class="card-footer-small">
-                        <span class="meta-text">Dec 2024</span>
-                        <a href="#" class="footer-link">Download &rarr;</a>
-                    </div>
-                </div>
-            </div>
-
-            <a href="#" class="all-box-link">
+            <a href="{{ route('insights') }}" class="all-box-link">
                 <span class="all-text">All</span>
                 <h4 class="insights-link-text">Insights</h4>
                 <div class="arrow-icon">&rarr;</div>
@@ -1311,6 +1326,7 @@ connected, coherent whole."
         </div>
     </div>
 </section>
+
 <section class="partners-section">
     <div class="partners-container">
         <div class="row align-items-center mb-5 gx-lg-5">
@@ -1333,9 +1349,9 @@ connected, coherent whole."
             <div class="logo-grid">
                 @php $logos = ['bafisa.png', 'lir 2.png', 'bijem.png', 'build.png']; @endphp
                 @foreach($logos as $logo)
-                <div class="partner-logo-wrapper">
-                    <img src="{{ asset('assets/img/'.$logo) }}" alt="Partner Logo">
-                </div>
+                    <div class="partner-logo-wrapper">
+                        <img src="{{ asset('assets/img/'.$logo) }}" alt="Partner Logo">
+                    </div>
                 @endforeach
             </div>
 

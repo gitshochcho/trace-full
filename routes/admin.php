@@ -2,10 +2,12 @@
 
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\ContentController;
+use App\Http\Controllers\Admin\InsightController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SliderController;
+use App\Http\Controllers\Admin\TeamController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -62,6 +64,22 @@ Route::prefix('admin')->group(function () {
             Route::get('projects-manager/{project}/edit', 'edit')->name('admin.projects.edit');
             Route::put('projects-manager/{project}', 'update')->name('admin.projects.update');
             Route::delete('projects-manager/{project}', 'destroy')->name('admin.projects.destroy');
+        });
+
+        Route::controller(TeamController::class)->group(function () {
+            Route::get('teams-manager', 'index')->name('admin.teams.index');
+            Route::post('teams-manager', 'store')->name('admin.teams.store');
+            Route::get('teams-manager/{team}/edit', 'edit')->name('admin.teams.edit');
+            Route::put('teams-manager/{team}', 'update')->name('admin.teams.update');
+            Route::delete('teams-manager/{team}', 'destroy')->name('admin.teams.destroy');
+        });
+
+        Route::controller(InsightController::class)->group(function () {
+            Route::get('insights-manager', 'index')->name('admin.insights.index');
+            Route::post('insights-manager', 'store')->name('admin.insights.store');
+            Route::get('insights-manager/{insight}/edit', 'edit')->name('admin.insights.edit');
+            Route::put('insights-manager/{insight}', 'update')->name('admin.insights.update');
+            Route::delete('insights-manager/{insight}', 'destroy')->name('admin.insights.destroy');
         });
 
         Route::controller(SliderController::class)->group(function () {

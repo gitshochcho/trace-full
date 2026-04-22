@@ -50,6 +50,20 @@
                     </a>
                 </li>
 
+                <li class="nav-item">
+                    <a href="{{ route('admin.teams.index') }}" class="nav-link {{ request()->routeIs('admin.teams.*') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-people"></i>
+                        <p>Team Manager</p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('admin.insights.index') }}" class="nav-link {{ request()->routeIs('admin.insights.*') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-journals"></i>
+                        <p>Insights Manager</p>
+                    </a>
+                </li>
+
                 <li class="nav-item {{ request()->is('admin/role/permission/*') ? 'menu-open' : '' }}"> <a href="#" class="nav-link {{ request()->is('admin/role/permission/*') ? 'active' : '' }}">  <span class="nav-icon mdi mdi-home"></span>
                         <p>
                            Role & Permission
