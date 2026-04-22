@@ -2,26 +2,33 @@
 
 namespace App\Http\Controllers;
 
+
+use App\Models\Partner;
 use App\Mail\ForgetPassMail;
+use App\Models\Content;
 use App\Models\Country;
 use App\Models\Gender;
+use App\Models\Insight;
+use App\Models\InsightArticle;
 use App\Models\Project;
 use App\Models\Service;
 use App\Models\Slider;
+use App\Models\Team;
 use App\Models\User;
+use App\Models\UserDetail;
+use Illuminate\Http\RedirectResponse;
 use App\Models\ContactInfo;
 use App\Models\JobPosting;
 use App\Models\JobApplication;
 use Illuminate\Http\Request;
-use Propaganistas\LaravelPhone\Rules\Phone;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
-use Laravel\Socialite\Facades\Socialite;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator ;
+use Laravel\Socialite\Facades\Socialite;
+use Propaganistas\LaravelPhone\Rules\Phone;
 
 class HomeController extends Controller
 {
@@ -147,12 +154,39 @@ class HomeController extends Controller
 
     public function insights(Request $request)
     {
-        return view('frontend.pages.insights');
+        $insightsPageContent = contentBlock('insights-page');
+
+        $insights = Insight::query()
+            ->with(['articles.author.media', 'articles.media', 'media'])
+            ->where('active', true)
+            ->orderBy('sort_order')
+            ->latest('id')
+            ->get();
+
+        return view('frontend.pages.insights', compact('insightsPageContent', 'insights'));
     }
 
-        public function articleDetails(Request $request, $id)
+        public function articleDetails(Request $request, ?InsightArticle $article = null)
     {
-        return view('frontend.pages.article-details',compact('id'));
+        $article ??= InsightArticle::query()
+            ->with(['author.media', 'insight.media', 'media'])
+            ->where('active', true)
+            ->orderBy('sort_order')
+            ->latest('id')
+            ->firstOrFail();
+
+        $article->load(['author.media', 'insight.media', 'media']);
+
+        $relatedArticles = InsightArticle::query()
+            ->with(['insight.media'])
+            ->where('active', true)
+            ->whereKeyNot($article->id)
+            ->orderBy('sort_order')
+            ->latest('id')
+            ->take(3)
+            ->get();
+
+        return view('frontend.pages.article-details', compact('article', 'relatedArticles'));
     }
 
     public function career(Request $request)
@@ -209,17 +243,90 @@ class HomeController extends Controller
 
         public function about(Request $request)
     {
-        return view ('frontend.pages.about');
+        $aboutPageContent = contentBlock('about-page') ?? contentBlock('about');
+            $aboutCommitmentContent = contentBlock('about_us_section_3');
+            $aboutFrameworkContent = contentBlock('about_us_how_we_work');
+            $aboutUniqueFeaturesContent = contentBlock('about_us_we_make_trace_different');
+
+            $frameworkItems = collect([
+                contentBlock('about_us_insight'),
+                contentBlock('about_us_strategy') ?? contentBlock('about_us_stratigy'),
+                contentBlock('about_us_impact'),
+            ])->filter();
+
+            $uniqueFeatureCards = collect([
+                contentBlock('about_us_industry_wide_network'),
+                contentBlock('about_us_sustainable_approach'),
+                contentBlock('about_us_tailored_innovation'),
+                contentBlock('about_us_end_to_end_integrated_solutions'),
+            ])->filter();
+
+        $aboutProjects = Project::query()
+            ->with(['services', 'media'])
+            ->orderBy('sort_order')
+            ->latest('id')
+            ->take(3)
+            ->get();
+
+        $aboutInsights = Insight::query()
+            ->with(['articles.author.media', 'articles.media', 'media'])
+            ->where('active', true)
+            ->orderBy('sort_order')
+            ->latest('id')
+            ->take(4)
+            ->get();
+
+        return view('frontend.pages.about', compact(
+            'aboutPageContent',
+            'aboutCommitmentContent',
+            'aboutFrameworkContent',
+            'frameworkItems',
+            'aboutUniqueFeaturesContent',
+            'uniqueFeatureCards',
+            'aboutProjects',
+            'aboutInsights'
+        ));
     }
 
       public function team(Request $request)
     {
-        return view ('frontend.pages.team');
+        $teamPageContent = contentBlock('team-page');
+
+        $teams = Team::query()
+            ->with(['experties.media', 'socialMedia.media', 'projects', 'media'])
+            ->orderBy('sort_order')
+            ->latest('id')
+            ->get();
+
+        $leadTeam = $teams->first();
+        $coreTeams = $teams->filter(function (Team $member) use ($leadTeam) {
+            return ! $leadTeam || $member->id !== $leadTeam->id;
+        })->values();
+
+        return view('frontend.pages.team', compact('teamPageContent', 'teams', 'leadTeam', 'coreTeams'));
     }
     
-        public function teamdetails(Request $request)
+        public function teamdetails(Request $request, ?Team $team = null)
     {
-        return view ('frontend.pages.teamdetails');
+        $team ??= Team::query()
+            ->with(['experties.media', 'socialMedia.media', 'projects', 'media'])
+            ->orderBy('sort_order')
+            ->latest('id')
+            ->firstOrFail();
+
+        $team->load(['experties.media', 'socialMedia.media', 'projects', 'media']);
+
+        $otherTeamMembers = Team::query()
+            ->with(['media'])
+            ->whereKeyNot($team->id)
+            ->orderBy('sort_order')
+            ->latest('id')
+            ->take(3)
+            ->get();
+
+        $allTeamMembersCount = Team::query()->count();
+
+        return view('frontend.pages.teamdetails', compact('team', 'otherTeamMembers', 'allTeamMembersCount'));
     }
 
     public function dashboard(Request $request)
@@ -605,4 +712,6 @@ class HomeController extends Controller
 
         return redirect()->route('login')->with($toster);
     }
+
+
 }

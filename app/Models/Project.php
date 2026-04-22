@@ -50,6 +50,11 @@ class Project extends Model implements HasMedia
         return $this->hasMany(ProjectOutcome::class)->orderBy('sort_order');
     }
 
+    public function teams()
+    {
+        return $this->belongsToMany(Team::class, 'team_project_table');
+    }
+
     public function imageUrl(): ?string
     {
         $url = $this->getFirstMediaUrl('images');

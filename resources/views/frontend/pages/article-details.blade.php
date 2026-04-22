@@ -631,32 +631,64 @@
 
 @section('content')
 
+@php
+    $articleTypeLabel = strtoupper(str_replace('_', ' ', $article->type ?: 'READ'));
+    $categoryLabel = $article->insight?->sub_heading ?: 'Insight';
+    $articleTitle = $article->title ?: 'Insight Article';
+    $author = $article->author;
+    $authorName = $author?->fullName() ?: 'TRACE Research Desk';
+    $authorRole = $author?->designation ?: 'Author';
+    $authorInitials = collect(explode(' ', $authorName))->filter()->map(fn ($word) => strtoupper(substr($word, 0, 1)))->take(2)->implode('');
+    $publishedLabel = optional($article->published_at)->format('F Y') ?: 'Recent';
+    $readMinutes = $article->read_minutes ?: 8;
+    $viewCount = max(120, ($readMinutes * 90));
+    $articleImage = $article->iconUrl() ?: ($article->insight?->imageUrl() ?: asset('assets/img/Trace team.png'));
+    $downloadUrl = $article->attachmentUrl() ?: ($article->insight?->attachmentUrl() ?: '#');
+
+    $rawDescription = trim((string) ($article->description ?: $article->insight?->description));
+    $paragraphs = collect(preg_split('/\n\s*\n/', $rawDescription))->map(fn ($row) => trim($row))->filter()->values();
+    if ($paragraphs->isEmpty()) {
+        $paragraphs = collect(['Insight content is being updated.']);
+    }
+
+    $introParagraphs = $paragraphs->slice(0, 2);
+    $mainParagraphs = $paragraphs->slice(2);
+    if ($mainParagraphs->isEmpty()) {
+        $mainParagraphs = $paragraphs;
+    }
+
+    $tags = collect([
+        $article->insight?->heading,
+        $article->insight?->sub_heading,
+        strtoupper(str_replace('_', ' ', $article->type ?: 'read')),
+        $authorRole,
+    ])->filter()->take(7);
+@endphp
+
 {{-- ==============================
      ARTICLE HERO
 ============================== --}}
 <section class="article-hero">
     <div class="article-hero-inner">
 
-        <a href="/insights" class="back-link">← Back to Insights</a>
+        <a href="{{ route('insights') }}" class="back-link">← Back to Insights</a>
 
         <div class="article-meta-top">
-            <span class="art-tag pub-tag">PUBLICATION</span>
-            <span class="art-tag cat-tag">Trade Facilitation</span>
+            <span class="art-tag pub-tag">{{ $articleTypeLabel }}</span>
+            <span class="art-tag cat-tag">{{ $categoryLabel }}</span>
         </div>
 
-        <h1 class="article-title">
-            Unlocking Animal Health &amp; Nutrition Ecosystems to Power National Growth
-        </h1>
+        <h1 class="article-title">{{ $articleTitle }}</h1>
 
         <div class="article-byline">
-            <div class="author-avatar-sm" style="background: #1a9e75;">FM</div>
-            <span class="byline-name">Fuad M Khalid Hossen</span>
+            <div class="author-avatar-sm" style="background: #1a9e75;">{{ $authorInitials ?: 'TR' }}</div>
+            <span class="byline-name">{{ $authorName }}</span>
             <span class="byline-sep">·</span>
-            <span class="byline-meta"><i class="far fa-calendar"></i> March 2025</span>
+            <span class="byline-meta"><i class="far fa-calendar"></i> {{ $publishedLabel }}</span>
             <span class="byline-sep">·</span>
-            <span class="byline-meta"><i class="far fa-clock"></i> 12 min read</span>
+            <span class="byline-meta"><i class="far fa-clock"></i> {{ $readMinutes }} min read</span>
             <span class="byline-sep">·</span>
-            <span class="byline-meta"><i class="far fa-eye"></i> 1,340 views</span>
+            <span class="byline-meta"><i class="far fa-eye"></i> {{ number_format($viewCount) }} views</span>
         </div>
 
     </div>
@@ -681,16 +713,17 @@
 
         {{-- Hero Image --}}
         <div class="article-img-wrap">
-            <img src="/assets/img/Trace team.png"
-                 alt="Two people shaking hands at a trade facilitation event"
+              <img src="{{ $articleImage }}"
+                  alt="{{ $articleTitle }}"
                  class="article-main-img">
-            <p class="img-caption">— Diplomats meeting at Chattogram Port, Bangladesh — A key focus of trade facilitation reform in South Asia.</p>
+              <p class="img-caption">{{ $categoryLabel }} — published by TRACE Insights.</p>
         </div>
 
         {{-- Introduction --}}
         <h2 class="section-heading" id="introduction">Introduction</h2>
-        <p class="body-text">Lorem ipsum dolor sit amet consectetur. Faugiat lorem enim lectus sit. Volutpat neque fauat est pharetra elementum sit ipsum. Mi id ut vehicula dis. Non habitant felis arcu amet tristique. Sagittis sed eros mi rhoncus id. Cursus pharetra sit in vulputate quis mauris nulla nibh pellentesque. Vitae eu sapien diam eget diam vel mattis congue metus.</p>
-        <p class="body-text">Lorem ipsum dolor sit amet consectetur. Faugiat lorem enim lectus sit. Volutpat neque fauat est pharetra elementum sit ipsum. Mi id ut vehicula dis. Non habitant felis arcu amet tristique. Sagittis sed eros mi rhoncus id. Cursus pharetra sit in vulputate quis mauris nulla nibh pellentesque. Vitae eu sapien diam eget diam vel mattis congue metus.</p>
+        @foreach($introParagraphs as $row)
+            <p class="body-text">{{ $row }}</p>
+        @endforeach
 
         {{-- Key Findings --}}
         <div class="key-findings-box">
@@ -699,10 +732,9 @@
                 <span class="kf-title">KEY FINDINGS</span>
             </div>
             <ol class="kf-list">
-                <li>Lorem ipsum dolor sit amet consectetur. Faaugiat lorem neque fauat neque fauat est phar netra elementum sit ipsum.</li>
-                <li>Lorem ipsum dolor sit amet consectetur. Faaugiat lorem enim lectus sit. Volutpat neque fauat est pharentra elementum sit ipsum.</li>
-                <li>Lorem ipsum dolor sit amet consectetur. Faaugiat lorem enim lectus sit. Volutpat neque fauat est pharentra elementum sit ipsum.</li>
-                <li>Lorem ipsum dolor sit amet consectetur. Faaugiat lorem enim lectus sit. Volutpat neque fauat est pharentra elementum sit ipsum.</li>
+                @foreach($mainParagraphs->take(4) as $row)
+                    <li>{{ \Illuminate\Support\Str::limit($row, 170) }}</li>
+                @endforeach
             </ol>
         </div>
 
@@ -710,36 +742,38 @@
         <h2 class="section-heading" id="country-assessment">Country-by-Country Assessment</h2>
 
         <h3 class="sub-heading">Bangladesh</h3>
-        <p class="body-text">Lorem ipsum dolor sit amet consectetur. Faaugiat lorem enim lectus sit. Volutpat neque fauat est pharetra elementum sit ipsum. Mi id ut vehicula dis. Non habitant felis arcu amet tristique. Sagittis sed eros mi rhoncus id. Cursus pharetra sit in vulputate quis mauris nulla nibh pellentesque. Vitae eu sapien diam eget diam vel mattis congue metus.</p>
-        <p class="body-text">Lorem ipsum dolor sit amet consectetur. Faaugiat lorem enim lectus sit. Volutpat neque fauat est pharetra elementum sit ipsum. Mi id ut vehicula dis. Non habitant felis arcu amet tristique. Sagittis sed eros mi rhoncus id. Cursus pharetra sit in vulputate quis mauris nulla nibh pellentesque.</p>
+        @foreach($mainParagraphs->slice(0, 2) as $row)
+            <p class="body-text">{{ $row }}</p>
+        @endforeach
 
         <blockquote class="pull-quote">
-            "The technical infrastructure is largely in place. The constraint now is governance — getting 45 agencies to agree on data standards and share authority over the clearance process."
+            "{{ \Illuminate\Support\Str::limit($mainParagraphs->get(2) ?: $paragraphs->first(), 180) }}"
         </blockquote>
 
         <h3 class="sub-heading">India</h3>
-        <p class="body-text">Lorem ipsum dolor sit amet consectetur. Faaugiat lorem enim lectus sit. Volutpat neque fauat est pharetra elementum sit ipsum. Mi id ut vehicula dis. Non habitant felis arcu amet tristique. Sagittis sed eros mi rhoncus id.</p>
-        <p class="body-text">Lorem ipsum dolor sit amet consectetur. Faaugiat lorem enim lectus sit. Volutpat neque fauat est pharetra elementum sit ipsum. Mi id ut vehicula dis. Non habitant felis arcu amet tristique. Sagittis sed eros mi rhoncus id.</p>
+        @foreach($mainParagraphs->slice(2, 2) as $row)
+            <p class="body-text">{{ $row }}</p>
+        @endforeach
 
         <div class="policy-rec-box">
-            <span class="policy-label">Policy Recommendation:</span> Lorem ipsum dolor sit amet consectetur. Faaugiat lorem enim lectus sit. Volutpat neque fauat est pharetra elementum sit ipsum. Mi id ut vehicula dis. Non habitant felis arcu amet tristique. Sagittis sed eros mi rhoncus id.
+            <span class="policy-label">Policy Recommendation:</span> {{ \Illuminate\Support\Str::limit($mainParagraphs->get(4) ?: $paragraphs->last(), 260) }}
         </div>
 
         <h3 class="sub-heading">Nepal and Sri Lanka</h3>
-        <p class="body-text">Lorem ipsum dolor sit amet consectetur. Faaugiat lorem enim lectus sit. Volutpat neque fauat est pharetra elementum sit ipsum. Mi id ut vehicula dis. Non habitant felis arcu amet tristique. Sagittis sed eros mi rhoncus id. Cursus pharetra sit in vulputate quis mauris nulla nibh pellentesque. Vitae eu sapien diam eget diam vel mattis congue metus.</p>
+        <p class="body-text">{{ $mainParagraphs->get(5) ?: $paragraphs->first() }}</p>
 
         {{-- Barriers --}}
         <h2 class="section-heading" id="barriers">Barriers to Implementation</h2>
-        <p class="body-text">Lorem ipsum dolor sit amet consectetur. Faaugiat lorem enim lectus sit. Volutpat neque fauat est pharetra elementum sit ipsum. Mi id ut vehicula dis. Non habitant felis arcu amet tristique.</p>
+        <p class="body-text">{{ $mainParagraphs->get(6) ?: $paragraphs->first() }}</p>
 
         {{-- Recommendations --}}
         <h2 class="section-heading" id="recommendations">Recommendations</h2>
-        <p class="body-text">Lorem ipsum dolor sit amet consectetur. Faaugiat lorem enim lectus sit. Volutpat neque fauat est pharetra elementum sit ipsum. Mi id ut vehicula dis. Non habitant felis arcu amet tristique.</p>
+        <p class="body-text">{{ $mainParagraphs->get(7) ?: $paragraphs->last() }}</p>
 
         {{-- Conclusion --}}
         <h2 class="section-heading" id="conclusion">Conclusion</h2>
-        <p class="body-text">The WTO TFA remains one of the highest-return investments available to South Asian governments seeking to improve trade competitiveness and economic growth. The evidence from early implementers is clear: countries that invest in effective, sustained TFA reform see measurable reductions in trade costs, dwell times, and border delays.</p>
-        <p class="body-text">TRACE remains committed to supporting governments, development partners, and private sector stakeholders in South Asia to accelerate this agenda — combining policy expertise with practical implementation experience to turn TFA commitments into real-world results.</p>
+        <p class="body-text">{{ $mainParagraphs->get(8) ?: $paragraphs->first() }}</p>
+        <p class="body-text">{{ $mainParagraphs->get(9) ?: $paragraphs->last() }}</p>
 
         <p class="body-text article-footnote">
             <em>This publication was prepared by TRACE Consulting Limited. For more information or to discuss the findings, please contact
@@ -748,7 +782,7 @@
 
         {{-- Tags --}}
         <div class="article-tags">
-            @foreach(['Trade Facilitation','WTO TFA','South Asia','Bangladesh','Customs Reform','Single Window','Policy Reform'] as $tag)
+            @foreach($tags as $tag)
                 <span class="art-pill">{{ $tag }}</span>
             @endforeach
         </div>
@@ -775,44 +809,37 @@
             <div class="dl-icon"><i class="far fa-file-alt"></i></div>
             <p class="dl-text">Download Full Publication</p>
             <p class="dl-sub">Get the complete PDF report, data appendices and methodology notes.</p>
-            <a href="#" class="dl-btn"><i class="fas fa-download"></i> Download PDF</a>
+            <a href="{{ $downloadUrl }}" class="dl-btn" target="_blank" rel="noopener"><i class="fas fa-download"></i> Download File</a>
         </div>
 
         {{-- Author --}}
         <div class="sidebar-card author-card">
             <h4 class="sidebar-heading">AUTHOR</h4>
             <div class="author-info">
-                <div class="author-avatar-lg" style="background: #1a9e75;">FM</div>
+                <div class="author-avatar-lg" style="background: #1a9e75;">{{ $authorInitials ?: 'TR' }}</div>
                 <div>
-                    <p class="author-full-name">Fuad M Khalid Hossen</p>
-                    <p class="author-role">MD &amp; CEO, TRACE Consulting</p>
+                    <p class="author-full-name">{{ $authorName }}</p>
+                    <p class="author-role">{{ $authorRole }}</p>
                 </div>
             </div>
-            <p class="author-bio">Trade Facilitation specialist with 15+ years of experience supporting WTO TFA implementation across South and Southeast Asia.</p>
+            <p class="author-bio">{{ \Illuminate\Support\Str::limit(stripPTags($author?->description), 150) ?: 'Author profile is being updated.' }}</p>
         </div>
 
         {{-- Related Insights --}}
         <div class="sidebar-card related-card">
             <h4 class="sidebar-heading">RELATED INSIGHTS</h4>
             <div class="related-list">
-
-                @php
-                $related = [
-                    ['bg' => '#cfd8dc', 'cat' => 'POLICY REFORM',       'title' => 'How Risk-Based Customs Clearance Can Cut Trade Costs by 30%'],
-                    ['bg' => '#b2dfdb', 'cat' => 'TRADE INFORMATION',   'title' => 'Why Trade Transparency Portals Fail — and How to Build One That Works'],
-                    ['bg' => '#c8e6c9', 'cat' => 'TRADE FACILITATION',  'title' => 'AEO Programmes: Unlocking Competitive Advantage'],
-                ];
-                @endphp
-
-                @foreach($related as $item)
-                <div class="related-item">
-                    <div class="related-thumb" style="background: {{ $item['bg'] }};"></div>
-                    <div class="related-text">
-                        <span class="related-cat">{{ $item['cat'] }}</span>
-                        <p class="related-title">{{ $item['title'] }}</p>
-                    </div>
-                </div>
-                @endforeach
+                @forelse($relatedArticles as $related)
+                    <a href="{{ route('articleDetails', $related) }}" class="related-item text-decoration-none">
+                        <div class="related-thumb" style="background-image: url('{{ $related->iconUrl() ?: ($related->insight?->imageUrl() ?: asset('assets/img/Op-Ed.png')) }}');"></div>
+                        <div class="related-text">
+                            <span class="related-cat">{{ strtoupper(str_replace('_', ' ', $related->type ?: 'read')) }}</span>
+                            <p class="related-title">{{ \Illuminate\Support\Str::limit($related->title, 70) }}</p>
+                        </div>
+                    </a>
+                @empty
+                    <p class="small text-muted mb-0">No related insights available.</p>
+                @endforelse
 
             </div>
         </div>

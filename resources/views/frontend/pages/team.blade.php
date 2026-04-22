@@ -576,10 +576,32 @@
 
 @section('content')
 
+@php
+    $heroTag = $teamPageContent?->section ?: 'THE PEOPLE BEHIND THE WORK';
+    $heroHeading = $teamPageContent?->heading ?: 'Experts who';
+    $heroDesignWord = $teamPageContent?->design_word ?: 'drive change.';
+    $heroDescription = $teamPageContent?->description ?: 'TRACE brings together a permanent core team of trade specialists, researchers, and technologists - supported by a network of domain experts engaged on specific projects and engagements.';
+
+    $leader = $leadTeam;
+    $leaderImage = $leader?->imageUrl() ?: asset('assets/img/fuad.png');
+    $leaderName = $leader?->fullName() ?: 'Team Lead';
+    $leaderDesignation = $leader?->designation ?: 'Managing Director & Chief Executive Officer';
+    $leaderBio = stripPTags($leader?->description) ?: 'Profile details are being updated.';
+
+    $leaderSocials = $leader?->socialMedia ?? collect();
+    $leaderExpertise = $leader?->experties ?? collect();
+
+    $coreTeamMembers = ($coreTeams ?? collect())->take(8);
+    $expertTeams = ($teams ?? collect())->take(6);
+
+    $badgeClasses = ['badge-advisory', 'badge-technical', 'badge-research'];
+    $expertLabels = ['ADVISORY', 'TECHNICAL EXPERT', 'RESEARCH EXPERT'];
+@endphp
+
 <nav class="service-breadcrumb">
     <div class="custom-container">
         <div class="breadcrumb-links">
-            <a href="\">Home</a>
+            <a href="{{ route('home') }}">Home</a>
             <span class="sep">›</span>
             <span class="active">Our Team</span>
         </div>
@@ -590,11 +612,11 @@
     <div class="custom-container"> <div class="row">
             <div class="col-lg-7 text-start"> 
                 <div class="hero-content-wrapper ms-0"> <div class="hero-tag">
-                        <span class="orange-line-hero"></span> THE PEOPLE BEHIND THE WORK
+                        <span class="orange-line-hero"></span> {{ $heroTag }}
                     </div>
-                    <h1 class="hero-title">Experts who <br> <span>drive change.</span></h1>
+                    <h1 class="hero-title">{{ $heroHeading }} <br> <span>{{ $heroDesignWord }}</span></h1>
                     <p class="hero-desc">
-                        TRACE brings together a permanent core team of trade specialists, researchers, and technologists — supported by a network of domain experts engaged on specific projects and engagements.
+                        {{ strip_tags($heroDescription) }}
                     </p>
                 </div>
             </div>
@@ -617,38 +639,45 @@
             <div class="row g-0">
                 <div class="col-lg-5 position-relative">
                     <div class="leader-img-box">
-                        <img src="{{ asset('assets/img/fuad.png') }}" alt="Fuad M Khalid Hossen">
+                        <img src="{{ $leaderImage }}" alt="{{ $leaderName }}">
                         <span class="leader-badge">MD & CEO</span>
                     </div>
                 </div>
                 <div class="col-lg-7">
                     <div class="leader-info">
-                        <h3 class="name">Fuad M Khalid Hossen</h3>
-                        <p class="role">Managing Director & Chief Executive Officer</p>
+                        <h3 class="name">{{ $leaderName }}</h3>
+                        <p class="role">{{ $leaderDesignation }}</p>
                         <p class="company">Trace Consulting Limited · Dhaka, Bangladesh</p>
                         
                         <div class="orange-divider"></div>
                         
                         <p class="bio">
-                            Fuad brings over 15 years of hands-on experience in trade facilitation, customs modernisation, and development consulting across South and Southeast Asia. He holds an official MoU with B-ADVANCY Certification Ltd, UK, and has personally led WTO TFA implementation advisory, ISO/IEC 17025 laboratory accreditation programmes, and digital trade infrastructure projects across the region.
+                            {{ \Illuminate\Support\Str::limit($leaderBio, 420) }}
                         </p>
 
                         <div class="skill-tags">
-                            <span>Trade Facilitation</span>
-                            <span>WTO TFA</span>
-                            <span>Customs Reform</span>
-                            <span>Policy</span>
-                            <span>Lab Accreditation</span>
-                            <span>Digital Trade</span>
+                            @forelse($leaderExpertise->take(6) as $expertise)
+                                <span>{{ $expertise->heading }}</span>
+                            @empty
+                                <span>Team Leadership</span>
+                            @endforelse
                         </div>
 
                         <div class="leader-card-footer">
                             <div class="social-links">
-                                <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
-                                <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
-                                <a href="#"><i class="fa-regular fa-envelope"></i></a>
+                                @forelse($leaderSocials->take(3) as $social)
+                                    <a href="{{ $social->social_link ?: '#' }}" target="_blank" rel="noopener">
+                                        @if($social->iconUrl())
+                                            <img src="{{ $social->iconUrl() }}" alt="{{ $social->title ?: 'social' }}" style="width: 16px; height: 16px; object-fit: contain;">
+                                        @else
+                                            <i class="fa-solid fa-link"></i>
+                                        @endif
+                                    </a>
+                                @empty
+                                    <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+                                @endforelse
                             </div>
-                            <a href="/teamdetails" class="btn-profile">View Full Profile →</a>
+                            <a href="{{ route('teamdetails', $leader) }}" class="btn-profile">View Full Profile →</a>
                         </div>
                     </div>
                 </div>
@@ -669,142 +698,58 @@
         </div>
 
         <div class="row g-4">
-            @php
-                $team = [
-                    [
-                        'name' => 'ASM Saifullah',
-                        'role' => 'Senior Trade Policy Specialist',
-                        'sub' => 'Trade Facilitation & Policy',
-                        'desc' => '10+ years advising governments
-and development agencies on
-WTO compliance, trade policy…',
-                        'img' => 'assets/img/saifullah.png',
-                        'tags' => ['WTO TFA', 'Policy Reform', 'Advocacy']
-                    ],
-                    [
-                        'name' => 'Tahsina Shiva',
-                        'role' => 'Technology Solutions Lead',
-                        'sub' => 'Digital & Tech Systems',
-                        'desc' => 'Full-stack developer and systems
-architect specialising in LIMS,
-trade single window platforms,…
-and customs automation for
-government agencies.',
-                        'img' => 'assets/img/Shiva.png',
-                        'tags' => ['LIMS', 'Single Window', 'Systems']
-                    ],
-                    [
-                        'name' => 'Nabeel Khan',
-                        'role' => 'Laboratory Quality Specialist',
-                        'sub' => 'Laboratory Services',
-                        'desc' => 'ISO/IEC 17025 accreditation
-expert guiding public and private
-laboratories through QMS…
-development and assessment
-preparation.',
-                        'img' => 'assets/img/nabeel.png',
-                        'tags' => ['ISO 17025', 'QMS', 'Accreditation']
-                    ],
-                    [
-                        'name' => 'Md. Mahbubul Alam',
-                        'role' => 'Research & Assessments Lead',
-                        'sub' => 'Research & Evaluation',
-                        'desc' => 'Economist and trade researcher
-with expertise in trade facilitation
-assessments, value chain…
-analysis, and M&E framework
-development.',
-                        'img' => 'assets/img/mahbub.png',
-                        'tags' => ['Research', 'M&E', 'Economics']
-                    ],
-                    [
-                        'name' => 'Tanvir Kabir',
-                        'role' => 'Capacity Building Coordinator',
-                        'sub' => 'Training & Development',
-                        'desc' => 'Training design and facilitation specialist delivering programmes for customs officials, lab technicians, and private sector',
-                        'img' => 'assets/img/tanvir.png',
-                        'tags' => ['Training', 'Facilitation', 'Curriculum']
-                    ],
-                    [
-                        'name' => 'Mobarak Uddin Ahmed',
-                        'role' => 'Cold Chain & Logistics Specialist',
-                        'sub' => 'Supply Chain Systems',
-                        'desc' => 'Temperature-controlled logistics
-expert advising exporters and
-pharmaceutical companies on…
-cold chain infrastructure and',
-                        'img' => 'assets/img/mobarak.png',
-                        'tags' => ['Cold Chain', 'Logistics', 'Compliance']
-                    ],
-                    [
-                        'name' => 'Md. Mahmudur Rahman',
-                        'role' => 'Project Manager',
-                        'sub' => 'Project Management Office',
-                        'desc' => 'PMP-certified project manager
-overseeing multi-donor trade
-reform engagements with a…
-consistent track record of on-
-time, on-budget delivery.',
-                        'img' => 'assets/img/mahmud.png',
-                        'tags' => ['PMP', 'Donor Reporting', 'RBM']
-                    ],
-                    [
-                        'name' => 'Mimma Afrin',
-                        'role' => 'Technical Lead, Laboratory Operations',
-                        'sub' => 'Trade Information & Data',
-                        'desc' => 'Data analyst and portal developer
-specialising in HS code
-databases, trade transparency…',
-                        'img' => 'assets/img/mimma.png',
-                        'tags' => ['Data Systems', 'HS Codes', 'Portal Dev']
-                    ]
-                    
-                ];
-            @endphp
-
-@foreach($team as $member)
+@forelse($coreTeamMembers as $member)
     <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
         <div class="team-card h-100 shadow-sm d-flex flex-column">
             
-            {{-- ইমেজ বক্স এবং সোশ্যাল ওভারলে --}}
             <div class="team-img-box">
-                <img src="{{ asset($member['img']) }}" alt="{{ $member['name'] }}">
+                <img src="{{ $member->imageUrl() ?: asset('assets/img/saifullah.png') }}" alt="{{ $member->fullName() }}">
                 
-                {{-- এই অংশটুকু নতুন যোগ করা হয়েছে --}}
                 <div class="team-social-overlay">
-                    <a href="{{ $member['linkedin'] ?? '#' }}" class="social-icon" target="_blank">
-                        <i class="fab fa-linkedin-in"></i>
-                    </a>
-                    <a href="mailto:{{ $member['email'] ?? '' }}" class="social-icon">
-                        <i class="fas fa-envelope"></i>
-                    </a>
+                    @forelse($member->socialMedia->take(2) as $social)
+                        <a href="{{ $social->social_link ?: '#' }}" class="social-icon" target="_blank" rel="noopener">
+                            @if($social->iconUrl())
+                                <img src="{{ $social->iconUrl() }}" alt="{{ $social->title ?: 'social' }}" style="width: 16px; height: 16px; object-fit: contain;">
+                            @else
+                                <i class="fas fa-link"></i>
+                            @endif
+                        </a>
+                    @empty
+                        <a href="#" class="social-icon" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+                    @endforelse
                 </div>
             </div>
 
             <div class="fixed-divider"></div>
             
             <div class="team-content flex-grow-1">
-                <h4 class="name">{{ $member['name'] }}</h4>
-                <h5 class="role">{{ $member['role'] }}</h5>
-                <span class="sub text-muted">{{ $member['sub'] }}</span>
+                <h4 class="name">{{ $member->fullName() }}</h4>
+                <h5 class="role">{{ $member->designation ?: 'Team Specialist' }}</h5>
+                <span class="sub text-muted">{{ $member->experties->first()?->heading ?: 'Core Team' }}</span>
                 
-                <p class="bio">{{ $member['desc'] }}</p>
+                <p class="bio">{{ \Illuminate\Support\Str::limit(stripPTags($member->description), 150) ?: 'Profile summary is coming soon.' }}</p>
                 
                 <div class="tags">
-                    @foreach($member['tags'] as $tag)
-                        <span>{{ $tag }}</span>
-                    @endforeach
+                    @forelse($member->experties->take(3) as $expertise)
+                        <span>{{ $expertise->heading }}</span>
+                    @empty
+                        <span>Team Member</span>
+                    @endforelse
                 </div>
             </div>
 
             <div class="view-profile-box mt-auto">
-                <a href="#" class="view-profile">
+                <a href="{{ route('teamdetails', $member) }}" class="view-profile">
                     View Profile <i class="fas fa-arrow-right ms-1"></i>
                 </a>
             </div>
         </div>
     </div>
-@endforeach
+@empty
+    <div class="col-12">
+        <div class="border rounded-3 bg-white p-4 text-muted">No core team members have been added yet.</div>
+    </div>
+@endforelse
         </div>
     </div>
 </section>
@@ -825,91 +770,47 @@ databases, trade transparency…',
             </p>
         </div>
 
-       @php
-    $experts = [
-        [
-            'name' => 'Michael J Parr',
-            'role' => 'Trade Economics & WTO Law Specialist',
-            'badge' => 'ADVISORY',
-            'badge_class' => 'orange',
-            'img' => 'assets/img/michael.png',
-            'desc' => 'Former WTO dispute settlement consultant with 20+ years of expertise in trade law, multilateral negotiations, and TFA implementation advisory across LDCs.',
-            'tags' => ['WTO Law', 'Trade Economics', 'LDC Policy']
-        ],
-        [
-            'name' => 'Nittya Ranjan Biswas',
-            'role' => 'Aquaculture and Sanitary Compliance Systems',
-            'badge' => 'TECHNICAL EXPERT',
-            'badge_class' => 'cyan',
-            'img' => 'assets/img/nittya.png',
-            'desc' => 'ISO/IEC 17025 lead assessor with 18 years of QMS implementation and food safety testing expertise. Supports TRACE\'s laboratory accreditation projects.',
-            'tags' => ['ISO 17025', 'Food Safety', 'QMS']
-        ],
-        [
-            'name' => 'Syed Rezaul Karim',
-            'role' => 'Customs Reform & Modernisation Specialist',
-            'badge' => 'ADVISORY',
-            'badge_class' => 'orange',
-            'img' => 'assets/img/Syed.png',
-            'desc' => 'Retired senior customs official with 25 years of operational experience at the National Board of Revenue. Advises TRACE on practical customs reform implementation.',
-            'tags' => ['Customs', 'NBR Systems', 'Risk Mgmt']
-        ],
-        [
-            'name' => 'Dr. Tahmina Akter',
-            'role' => 'Development Economics & M&E Specialist',
-            'badge' => 'RESEARCH EXPERT',
-            'badge_class' => 'blue',
-            'img' => 'assets/img/tahmina.png',
-            'desc' => 'Specialises in results-based evaluation of trade and development programmes. Leads TRACE\'s monitoring, evaluation, and research assessment work.',
-            'tags' => ['Development Economics', 'M&E', 'Impact Evaluation']
-        ],
-        [
-            'name' => 'Kazi Mahbubur Rahman',
-            'role' => 'Cold Chain Infrastructure & Logistics Specialist',
-            'badge' => 'PROJECT EXPERT',
-            'badge_class' => 'cyan',
-            'img' => 'assets/img/kazi.png',
-            'desc' => '30 years of private sector experience in agricultural supply chains and refrigerated logistics. Advises TRACE on infrastructure projects for agro-exporters.',
-            'tags' => ['Cold Chain', 'Agro-Export', 'Supply Chain']
-        ],
-        [
-            'name' => 'Dr. Imran Chowdhury',
-            'role' => 'Digital Trade & e-Government Systems Expert',
-            'badge' => 'ADVISORY',
-            'badge_class' => 'orange',
-            'img' => 'assets/img/imran.png',
-            'desc' => 'Expert in e-government system architecture and digital trade platform design. Advises TRACE on technical specifications for single window and LIMS projects.',
-            'tags' => ['e-Government', 'Single Window', 'System Design']
-        ]
-    ];
-@endphp
-
         <div class="row g-4 experts-grid">
-            @foreach($experts as $expert)
+            @forelse($expertTeams as $index => $expert)
             <div class="col-xl-6 col-lg-12">
                 <div class="expert-card">
                     <div class="expert-left">
-                        <img src="{{ asset($expert['img']) }}" alt="{{ $expert['name'] }}">
+                        <img src="{{ $expert->imageUrl() ?: asset('assets/img/michael.png') }}" alt="{{ $expert->fullName() }}">
                         <div class="leader-social">
-                            <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
-                            <a href="#"><i class="fa-regular fa-envelope"></i></a>
+                            @forelse($expert->socialMedia->take(2) as $social)
+                                <a href="{{ $social->social_link ?: '#' }}" target="_blank" rel="noopener">
+                                    @if($social->iconUrl())
+                                        <img src="{{ $social->iconUrl() }}" alt="{{ $social->title ?: 'social' }}" style="width: 14px; height: 14px; object-fit: contain;">
+                                    @else
+                                        <i class="fa-solid fa-link"></i>
+                                    @endif
+                                </a>
+                            @empty
+                                <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+                            @endforelse
                         </div>
                     </div>
 
                     <div class="expert-right">
-                        <span class="expert-badge {{ $expert['badge_class'] }}">{{ $expert['badge'] }}</span>
-                        <h4>{{ $expert['name'] }}</h4>
-                        <p class="role">{{ $expert['role'] }}</p>
-                        <p class="desc">{{ Str::limit($expert['desc'], 110) }}</p>
+                        <span class="expert-badge {{ $badgeClasses[$index % count($badgeClasses)] }}">{{ $expertLabels[$index % count($expertLabels)] }}</span>
+                        <h4>{{ $expert->fullName() }}</h4>
+                        <p class="role">{{ $expert->designation ?: 'Domain Expert' }}</p>
+                        <p class="desc">{{ \Illuminate\Support\Str::limit(stripPTags($expert->description), 110) ?: 'Expert profile summary is coming soon.' }}</p>
                         <div class="expert-tags">
-                            @foreach($expert['tags'] as $tag)
-                                <span>{{ $tag }}</span>
-                            @endforeach
+                            @forelse($expert->experties->take(3) as $expertise)
+                                <span>{{ $expertise->heading }}</span>
+                            @empty
+                                <span>Consulting</span>
+                            @endforelse
                         </div>
                     </div>
                 </div>
             </div>
-            @endforeach
+            @empty
+                <div class="col-12">
+                    <div class="border rounded-3 bg-white p-4 text-muted">No expert profiles have been added yet.</div>
+                </div>
+            @endforelse
         </div>
 
     </div>

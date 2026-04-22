@@ -12,13 +12,39 @@
 @endphp
 
 <div class="row g-3">
-    <div class="col-12 d-flex flex-wrap justify-content-end gap-2">
-        <button type="button" id="applyProjectsPagePreset" class="btn btn-sm btn-outline-secondary">Apply Projects Page Preset</button>
-        <button type="button" id="applyProjectLocationPreset" class="btn btn-sm btn-outline-secondary">Apply Project Location Preset</button>
-        <button type="button" id="applyProjectPhasePreset" class="btn btn-sm btn-outline-secondary">Apply Project Phase Preset</button>
-        <button type="button" id="applyProjectOutcomePreset" class="btn btn-sm btn-outline-secondary">Apply Project Outcome Preset</button>
-        <button type="button" id="applyProjectsWorkWithUsPreset" class="btn btn-sm btn-outline-secondary">Apply Projects Work With Us Toggle</button>
-        <button type="button" id="applyWorkWithUsPreset" class="btn btn-sm btn-outline-primary">Apply Work With Us Preset</button>
+    <div class="col-12">
+        <div class="card card-primary card-outline mb-2">
+            <div class="card-header py-2">
+                <div class="card-title">Quick Presets</div>
+            </div>
+            <div class="card-body py-3">
+                <div class="d-flex flex-wrap gap-2">
+                    <button type="button" id="applyTeamPagePreset" class="btn btn-sm btn-outline-primary">Team Page</button>
+                    <button type="button" id="applyInsightsPagePreset" class="btn btn-sm btn-outline-primary">Insights Page</button>
+                    <button type="button" id="applyProjectsPagePreset" class="btn btn-sm btn-outline-primary">Projects Page</button>
+                    <button type="button" id="applyProjectLocationPreset" class="btn btn-sm btn-outline-primary">Project Location</button>
+                    <button type="button" id="applyProjectPhasePreset" class="btn btn-sm btn-outline-primary">Project Phase</button>
+                    <button type="button" id="applyProjectOutcomePreset" class="btn btn-sm btn-outline-primary">Project Outcome</button>
+                    <button type="button" id="applyProjectsWorkWithUsPreset" class="btn btn-sm btn-outline-primary">Projects CTA Toggle</button>
+                    <button type="button" id="applyWorkWithUsPreset" class="btn btn-sm btn-primary">Work With Us</button>
+                </div>
+
+                <hr class="my-3">
+
+                <div class="d-flex flex-wrap gap-2">
+                    <button type="button" id="applyAboutCommitmentPreset" class="btn btn-sm btn-outline-info">About Commitment</button>
+                    <button type="button" id="applyAboutFrameworkPreset" class="btn btn-sm btn-outline-info">About How We Work</button>
+                    <button type="button" id="applyAboutInsightPreset" class="btn btn-sm btn-outline-info">About Insight</button>
+                    <button type="button" id="applyAboutStrategyPreset" class="btn btn-sm btn-outline-info">About Strategy</button>
+                    <button type="button" id="applyAboutImpactPreset" class="btn btn-sm btn-outline-info">About Impact</button>
+                    <button type="button" id="applyAboutUniqueFeaturesPreset" class="btn btn-sm btn-outline-info">About Unique Features</button>
+                    <button type="button" id="applyAboutIndustryNetworkPreset" class="btn btn-sm btn-outline-info">About Industry Network</button>
+                    <button type="button" id="applyAboutSustainablePreset" class="btn btn-sm btn-outline-info">About Sustainable Approach</button>
+                    <button type="button" id="applyAboutTailoredPreset" class="btn btn-sm btn-outline-info">About Tailored Innovation</button>
+                    <button type="button" id="applyAboutEndToEndPreset" class="btn btn-sm btn-outline-info">About End-to-End</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="col-md-6">
@@ -87,12 +113,24 @@
 <script>
     (function () {
         const field = document.getElementById('content_description');
+        const teamPagePresetBtn = document.getElementById('applyTeamPagePreset');
+        const insightsPagePresetBtn = document.getElementById('applyInsightsPagePreset');
         const projectsPagePresetBtn = document.getElementById('applyProjectsPagePreset');
         const projectLocationPresetBtn = document.getElementById('applyProjectLocationPreset');
         const projectPhasePresetBtn = document.getElementById('applyProjectPhasePreset');
         const projectOutcomePresetBtn = document.getElementById('applyProjectOutcomePreset');
         const projectsWorkWithUsPresetBtn = document.getElementById('applyProjectsWorkWithUsPreset');
         const presetBtn = document.getElementById('applyWorkWithUsPreset');
+        const aboutCommitmentPresetBtn = document.getElementById('applyAboutCommitmentPreset');
+        const aboutFrameworkPresetBtn = document.getElementById('applyAboutFrameworkPreset');
+        const aboutInsightPresetBtn = document.getElementById('applyAboutInsightPreset');
+        const aboutStrategyPresetBtn = document.getElementById('applyAboutStrategyPreset');
+        const aboutImpactPresetBtn = document.getElementById('applyAboutImpactPreset');
+        const aboutUniqueFeaturesPresetBtn = document.getElementById('applyAboutUniqueFeaturesPreset');
+        const aboutIndustryNetworkPresetBtn = document.getElementById('applyAboutIndustryNetworkPreset');
+        const aboutSustainablePresetBtn = document.getElementById('applyAboutSustainablePreset');
+        const aboutTailoredPresetBtn = document.getElementById('applyAboutTailoredPreset');
+        const aboutEndToEndPresetBtn = document.getElementById('applyAboutEndToEndPreset');
         const slugField = document.getElementById('content_slug');
         const sectionField = document.getElementById('content_section');
         const headingField = document.getElementById('content_heading');
@@ -101,8 +139,50 @@
         const typeField = document.getElementById('content_type');
         const descriptionField = document.getElementById('content_description');
 
+        let contentEditor = null;
+
+        function setDescriptionValue(value) {
+            const nextValue = value || '';
+            if (descriptionField) {
+                descriptionField.value = nextValue;
+            }
+            if (contentEditor) {
+                contentEditor.setData(nextValue);
+            }
+        }
+
         if (field) {
-            ClassicEditor.create(field).catch(function (error) { console.error(error); });
+            ClassicEditor.create(field)
+                .then(function (editor) {
+                    contentEditor = editor;
+                })
+                .catch(function (error) {
+                    console.error(error);
+                });
+        }
+
+        if (teamPagePresetBtn) {
+            teamPagePresetBtn.addEventListener('click', function () {
+                if (slugField) slugField.value = 'team-page';
+                if (sectionField) sectionField.value = 'THE PEOPLE BEHIND THE WORK';
+                if (headingField) headingField.value = 'Experts who';
+                if (subHeadingField) subHeadingField.value = '';
+                if (designWordField) designWordField.value = 'drive change.';
+                if (typeField) typeField.value = 'Hero';
+                setDescriptionValue('TRACE brings together a permanent core team of trade specialists, researchers, and technologists - supported by a network of domain experts engaged on specific projects and engagements.');
+            });
+        }
+
+        if (insightsPagePresetBtn) {
+            insightsPagePresetBtn.addEventListener('click', function () {
+                if (slugField) slugField.value = 'insights-page';
+                if (sectionField) sectionField.value = 'KNOWLEDGE & RESEARCH';
+                if (headingField) headingField.value = 'Ideas that';
+                if (subHeadingField) subHeadingField.value = '';
+                if (designWordField) designWordField.value = 'move trade forward.';
+                if (typeField) typeField.value = 'Hero';
+                setDescriptionValue('Op-eds in national newspapers, in-house research, policy publications, and expert videos - TRACE\'s full body of published work.');
+            });
         }
 
         if (projectsPagePresetBtn) {
@@ -113,7 +193,7 @@
                 if (subHeadingField) subHeadingField.value = '';
                 if (designWordField) designWordField.value = 'changes systems.';
                 if (typeField) typeField.value = 'Hero';
-                if (descriptionField) descriptionField.value = 'TRACE has delivered trade facilitation reform, laboratory accreditation, digital systems, and policy advisory projects across South Asia — for governments, development banks, and regulatory bodies.';
+                setDescriptionValue('TRACE has delivered trade facilitation reform, laboratory accreditation, digital systems, and policy advisory projects across South Asia — for governments, development banks, and regulatory bodies.');
             });
         }
 
@@ -125,7 +205,7 @@
                 if (subHeadingField) subHeadingField.value = '';
                 if (designWordField) designWordField.value = '';
                 if (typeField) typeField.value = 'Section';
-                if (descriptionField) descriptionField.value = 'Locations where this project has been implemented or delivered.';
+                setDescriptionValue('Locations where this project has been implemented or delivered.');
             });
         }
 
@@ -137,7 +217,7 @@
                 if (subHeadingField) subHeadingField.value = '';
                 if (designWordField) designWordField.value = '';
                 if (typeField) typeField.value = 'Section';
-                if (descriptionField) descriptionField.value = 'Phase-wise implementation milestones and downloadable documents.';
+                setDescriptionValue('Phase-wise implementation milestones and downloadable documents.');
             });
         }
 
@@ -149,7 +229,7 @@
                 if (subHeadingField) subHeadingField.value = '';
                 if (designWordField) designWordField.value = '';
                 if (typeField) typeField.value = 'Section';
-                if (descriptionField) descriptionField.value = 'Measurable results and outcomes delivered through this project.';
+                setDescriptionValue('Measurable results and outcomes delivered through this project.');
             });
         }
 
@@ -161,7 +241,127 @@
                 if (subHeadingField) subHeadingField.value = 'Set type to show or hide';
                 if (designWordField) designWordField.value = '';
                 if (typeField) typeField.value = 'show';
-                if (descriptionField) descriptionField.value = 'Use type=show to display CTA on project details page; type=hide to hide CTA.';
+                setDescriptionValue('Use type=show to display CTA on project details page; type=hide to hide CTA.');
+            });
+        }
+
+        if (aboutCommitmentPresetBtn) {
+            aboutCommitmentPresetBtn.addEventListener('click', function () {
+                if (slugField) slugField.value = 'about_us_section_3';
+                if (sectionField) sectionField.value = 'OUR COMMITMENT';
+                if (headingField) headingField.value = 'OUR COMMITMENT';
+                if (subHeadingField) subHeadingField.value = 'We are committed to';
+                if (designWordField) designWordField.value = 'At Trace Consulting, we do not just advise, we collaborate to create lasting change.';
+                if (typeField) typeField.value = 'Section';
+                setDescriptionValue('<ul><li>Integrity and transparency in every engagement</li><li>Delivering measurable outcomes, not just recommendations</li><li>Building local capacity and ownership</li><li>Promoting innovation and sustainability in every project</li></ul>');
+            });
+        }
+
+        if (aboutFrameworkPresetBtn) {
+            aboutFrameworkPresetBtn.addEventListener('click', function () {
+                if (slugField) slugField.value = 'about_us_how_we_work';
+                if (sectionField) sectionField.value = 'OUR FRAMEWORK';
+                if (headingField) headingField.value = 'How We\nWork';
+                if (subHeadingField) subHeadingField.value = '';
+                if (designWordField) designWordField.value = '';
+                if (typeField) typeField.value = 'Section';
+                setDescriptionValue('Our proven three-stage framework turns complex trade and policy challenges into measurable, lasting outcomes for every client we serve.');
+            });
+        }
+
+        if (aboutInsightPresetBtn) {
+            aboutInsightPresetBtn.addEventListener('click', function () {
+                if (slugField) slugField.value = 'about_us_insight';
+                if (sectionField) sectionField.value = 'ABOUT FRAMEWORK ITEM';
+                if (headingField) headingField.value = 'Insight';
+                if (subHeadingField) subHeadingField.value = '';
+                if (designWordField) designWordField.value = '';
+                if (typeField) typeField.value = 'Framework Item';
+                setDescriptionValue('We turn complex trade and policy issues into clear insights using research, data, and deep expertise to transform challenges and risks into well-defined opportunities ready for action.');
+            });
+        }
+
+        if (aboutStrategyPresetBtn) {
+            aboutStrategyPresetBtn.addEventListener('click', function () {
+                if (slugField) slugField.value = 'about_us_strategy';
+                if (sectionField) sectionField.value = 'ABOUT FRAMEWORK ITEM';
+                if (headingField) headingField.value = 'Strategy';
+                if (subHeadingField) subHeadingField.value = '';
+                if (designWordField) designWordField.value = '';
+                if (typeField) typeField.value = 'Framework Item';
+                setDescriptionValue('We formulate insights into strategies, devising evidence and technology-driven solutions that meet global standards, align with institutional realities, and drive sustainable growth.');
+            });
+        }
+
+        if (aboutImpactPresetBtn) {
+            aboutImpactPresetBtn.addEventListener('click', function () {
+                if (slugField) slugField.value = 'about_us_impact';
+                if (sectionField) sectionField.value = 'ABOUT FRAMEWORK ITEM';
+                if (headingField) headingField.value = 'Impact';
+                if (subHeadingField) subHeadingField.value = '';
+                if (designWordField) designWordField.value = '';
+                if (typeField) typeField.value = 'Framework Item';
+                setDescriptionValue('We deliver measurable and lasting results by reducing barriers, enhancing competitiveness, driving reforms, and embedding the tools clients need to sustain change independently.');
+            });
+        }
+
+        if (aboutUniqueFeaturesPresetBtn) {
+            aboutUniqueFeaturesPresetBtn.addEventListener('click', function () {
+                if (slugField) slugField.value = 'about_us_we_make_trace_different';
+                if (sectionField) sectionField.value = 'OUR UNIQUE FEATURES';
+                if (headingField) headingField.value = 'What Makes TRACE\nDifferent';
+                if (subHeadingField) subHeadingField.value = '';
+                if (designWordField) designWordField.value = '';
+                if (typeField) typeField.value = 'Section';
+                setDescriptionValue('TRACE delivers connected, sustainable, and tailored solutions from policy to practice that streamline processes, strengthen institutions, and empower growth.');
+            });
+        }
+
+        if (aboutIndustryNetworkPresetBtn) {
+            aboutIndustryNetworkPresetBtn.addEventListener('click', function () {
+                if (slugField) slugField.value = 'about_us_industry_wide_network';
+                if (sectionField) sectionField.value = 'ABOUT UNIQUE FEATURE ITEM';
+                if (headingField) headingField.value = 'Industry-wide Network';
+                if (subHeadingField) subHeadingField.value = '';
+                if (designWordField) designWordField.value = '';
+                if (typeField) typeField.value = 'Feature Item';
+                setDescriptionValue("With proven networks across government agencies and private sector stakeholders, TRACE consistently bridges policy leadership and business realities, enabling reforms prioritising client's need.");
+            });
+        }
+
+        if (aboutSustainablePresetBtn) {
+            aboutSustainablePresetBtn.addEventListener('click', function () {
+                if (slugField) slugField.value = 'about_us_sustainable_approach';
+                if (sectionField) sectionField.value = 'ABOUT UNIQUE FEATURE ITEM';
+                if (headingField) headingField.value = 'Sustainable Approach';
+                if (subHeadingField) subHeadingField.value = '';
+                if (designWordField) designWordField.value = '';
+                if (typeField) typeField.value = 'Feature Item';
+                setDescriptionValue('TRACE works with partners to build sustainable solutions, embedding facilitation tools into legislation, training mechanisms, and digital systems that outlast the engagement.');
+            });
+        }
+
+        if (aboutTailoredPresetBtn) {
+            aboutTailoredPresetBtn.addEventListener('click', function () {
+                if (slugField) slugField.value = 'about_us_tailored_innovation';
+                if (sectionField) sectionField.value = 'ABOUT UNIQUE FEATURE ITEM';
+                if (headingField) headingField.value = 'Tailored Innovation';
+                if (subHeadingField) subHeadingField.value = '';
+                if (designWordField) designWordField.value = '';
+                if (typeField) typeField.value = 'Feature Item';
+                setDescriptionValue('From tech-driven trade systems, lab-accreditation roadmaps, or temperature-controlled logistics, TRACE designs solutions customised to sectoral realities and institutional capacity.');
+            });
+        }
+
+        if (aboutEndToEndPresetBtn) {
+            aboutEndToEndPresetBtn.addEventListener('click', function () {
+                if (slugField) slugField.value = 'about_us_end_to_end_integrated_solutions';
+                if (sectionField) sectionField.value = 'ABOUT UNIQUE FEATURE ITEM';
+                if (headingField) headingField.value = 'End-to-End Integrated Solutions';
+                if (subHeadingField) subHeadingField.value = '';
+                if (designWordField) designWordField.value = '';
+                if (typeField) typeField.value = 'Feature Item';
+                setDescriptionValue('TRACE provides fully integrated support from strategic design through implementation and evaluation, ensuring every solution works as a connected, coherent whole.');
             });
         }
 
@@ -173,6 +373,7 @@
                 if (subHeadingField) subHeadingField.value = 'Get in Touch';
                 if (designWordField) designWordField.value = 'that lasts.';
                 if (typeField) typeField.value = 'CTA';
+                setDescriptionValue(descriptionField ? descriptionField.value : '');
             });
         }
     })();
