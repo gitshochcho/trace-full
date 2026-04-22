@@ -243,15 +243,19 @@
                     <div class="filter-title">FILTER BY TYPE</div>
                     <div class="filter-item active" data-filter="all">
                         <span>All Roles</span>
-                        <span class="count">5</span>
+                        <span class="count">{{ $jobs->total() }}</span>
                     </div>
-                    <div class="filter-item" data-filter="fulltime">
+                    <div class="filter-item" data-filter="Full-Time">
                         <span>Full-Time</span>
-                        <span class="count">3</span>
+                        <span class="count">{{ $jobs->where('employment_type', 'Full-Time')->count() }}</span>
                     </div>
-                    <div class="filter-item" data-filter="contract">
+                    <div class="filter-item" data-filter="Contract">
                         <span>Contract</span>
-                        <span class="count">2</span>
+                        <span class="count">{{ $jobs->where('employment_type', 'Contract')->count() }}</span>
+                    </div>
+                    <div class="filter-item" data-filter="Part-Time">
+                        <span>Part-Time</span>
+                        <span class="count">{{ $jobs->where('employment_type', 'Part-Time')->count() }}</span>
                     </div>
                 </div>
 
@@ -263,105 +267,38 @@
             </aside>
 
             <div class="col-lg-8 job-listings">
-                
-                <div class="job-card" data-type="fulltime">
+                @forelse($jobs as $job)
+                <div class="job-card" data-type="{{ $job->employment_type }}">
                     <div class="d-flex justify-content-between align-items-start mb-3">
                         <div class="job-tags">
-                            <span class="tag tag-fulltime">FULL-TIME</span>
-                            <span class="tag tag-location">DHAKA</span>
+                            <span class="tag tag-{{ strtolower(str_replace('-', '', $job->employment_type)) }}">{{ strtoupper($job->employment_type) }}</span>
+                            <span class="tag tag-location">{{ strtoupper($job->location) }}</span>
                         </div>
-                        <a href="/careerdetails" class="btn-apply d-none d-md-flex">Go For Apply <i class="fas fa-arrow-right ms-2"></i></a>
+                        <a href="{{ route('careerdetails', $job->id) }}" class="btn-apply d-none d-md-flex">Go For Apply <i class="fas fa-arrow-right ms-2"></i></a>
                     </div>
-                    <h3 class="job-title">Trade Facilitation Consultant</h3>
-                    <div class="job-dept">Trade & Policy Division</div>
-                    <p class="job-desc">We are looking for an experienced trade facilitation consultant to support our growing portfolio across South Asia.</p>
+                    <h3 class="job-title">{{ $job->title }}</h3>
+                    <div class="job-dept">{{ $job->department }}</div>
+                    <p class="job-desc">{{ Str::limit($job->description, 150) }}</p>
                     <div class="job-meta">
-                        <div class="meta-item"><i class="fas fa-map-marker-alt"></i> Dhaka, Bangladesh</div>
-                        <div class="meta-item"><i class="far fa-calendar"></i> Posted April 2025</div>
-                         <div class="meta-item"><i class="far fa-clock"></i> 4+ years experience</div>
+                        <div class="meta-item"><i class="fas fa-map-marker-alt"></i> {{ $job->location }}</div>
+                        <div class="meta-item"><i class="far fa-calendar"></i> Posted {{ $job->posted_date->format('M Y') }}</div>
+                        <div class="meta-item"><i class="far fa-clock"></i> {{ $job->experience_level }}</div>
                     </div>
-                    <a href="/careerdetails" class="btn-apply w-100 mt-4 d-md-none text-center justify-content-center">Go For Apply <i class="fas fa-arrow-right ms-2"></i></a>
+                    <a href="{{ route('careerdetails', $job->id) }}" class="btn-apply w-100 mt-4 d-md-none text-center justify-content-center">Go For Apply <i class="fas fa-arrow-right ms-2"></i></a>
                 </div>
-
-                <div class="job-card" data-type="contract">
-                    <div class="d-flex justify-content-between align-items-start mb-3">
-                        <div class="job-tags">
-                            <span class="tag tag-contract">CONTRACT</span>
-                            <span class="tag tag-hybrid">HYBRID</span>
-                        </div>
-                        <a href="/careerdetails" class="btn-apply d-none d-md-flex">Go For Apply <i class="fas fa-arrow-right ms-2"></i></a>
-                    </div>
-                    <h3 class="job-title">Full-Stack Developer — Trade Systems</h3>
-                    <div class="job-dept">Technology Solutions</div>
-                    <p class="job-desc">Seeking a full-stack developer with experience in government systems, LIMS, or trade platform development.</p>
-                    <div class="job-meta">
-                        <div class="meta-item"><i class="fas fa-map-marker-alt"></i> Dhaka / Remote</div>
-                        <div class="meta-item"><i class="far fa-calendar"></i> Posted March 2025</div>
-                         <div class="meta-item"><i class="far fa-clock"></i> 2–4 years experience</div>
-                    </div>
-                    <a href="/careerdetails" class="btn-apply w-100 mt-4 d-md-none text-center justify-content-center">Apply Now <i class="fas fa-arrow-right ms-2"></i></a>
+                @empty
+                <div class="text-center py-5">
+                    <h4>No job openings available at the moment</h4>
+                    <p class="text-muted">Please check back later or send us your CV for future opportunities.</p>
+                    <a href="/contact" class="btn-cv">Send Your CV</a>
                 </div>
+                @endforelse
 
-                                <div class="job-card" data-type="contract">
-                    <div class="d-flex justify-content-between align-items-start mb-3">
-                        <div class="job-tags">
-                            <span class="tag tag-contract">FULL-TIME</span>
-                            <span class="tag tag-hybrid">DHAKA</span>
-                        </div>
-                        <a href="/careerdetails" class="btn-apply d-none d-md-flex">Go For Apply <i class="fas fa-arrow-right ms-2"></i></a>
-                    </div>
-                    <h3 class="job-title">Research & Assessments Analyst</h3>
-                    <div class="job-dept">Research & Evaluation</div>
-                    <p class="job-desc">A rigorous analyst to support trade facilitation needs assessments, economic impact studies, and value
-chain analyses for government and donor clients. Strong quantitative and qualitative research skills required.</p>
-                    <div class="job-meta">
-                        <div class="meta-item"><i class="fas fa-map-marker-alt"></i> Dhaka, Bangladesh</div>
-                        <div class="meta-item"><i class="far fa-calendar"></i> Posted March 2025</div>
-                        <div class="meta-item"><i class="far fa-clock"></i> 2–4 years experience</div>
-                    </div>
-                    <a href="/careerdetails" class="btn-apply w-100 mt-4 d-md-none text-center justify-content-center">Apply Now <i class="fas fa-arrow-right ms-2"></i></a>
+                @if($jobs->hasPages())
+                <div class="d-flex justify-content-center mt-4">
+                    {{ $jobs->links() }}
                 </div>
-
-                                <div class="job-card" data-type="contract">
-                    <div class="d-flex justify-content-between align-items-start mb-3">
-                        <div class="job-tags">
-                            <span class="tag tag-contract">CONTRACT</span>
-                            <span class="tag tag-hybrid">DHAKA</span>
-                        </div>
-                        <a href="/careerdetails" class="btn-apply d-none d-md-flex">Go For Apply <i class="fas fa-arrow-right ms-2"></i></a>
-                    </div>
-                    <h3 class="job-title">Laboratory Quality & Accreditation Specialist</h3>
-                    <div class="job-dept">Laboratory Services</div>
-                    <p class="job-desc">Experienced ISO/IEC 17025 specialist to support our laboratory accreditation advisory projects. You'll guide
-public and private lab clients through QMS development, gap analysis, and assessment preparation.</p>
-                    <div class="job-meta">
-                        <div class="meta-item"><i class="fas fa-map-marker-alt"></i> Dhaka, Bangladesh</div>
-                        <div class="meta-item"><i class="far fa-calendar"></i> Posted Feb 2025</div>
-                         <div class="meta-item"><i class="far fa-clock"></i> 5+ years experience</div>
-                    </div>
-                    <a href="/careerdetails" class="btn-apply w-100 mt-4 d-md-none text-center justify-content-center">Apply Now <i class="fas fa-arrow-right ms-2"></i></a>
-                </div>
-
-                                <div class="job-card" data-type="contract">
-                    <div class="d-flex justify-content-between align-items-start mb-3">
-                        <div class="job-tags">
-                            <span class="tag tag-contract">FULL-TIME</span>
-                            <span class="tag tag-hybrid">DHAKA</span>
-                        </div>
-                        <a href="/careerdetails" class="btn-apply d-none d-md-flex">Go For Apply <i class="fas fa-arrow-right ms-2"></i></a>
-                    </div>
-                    <h3 class="job-title">Junior Project Coordinator</h3>
-                    <div class="job-dept">Project Management Office</div>
-                    <p class="job-desc">An organised, proactive junior coordinator to support our project management team across multiple
-simultaneous engagements. Ideal for someone early in their development consulting career.</p>
-                    <div class="job-meta">
-                        <div class="meta-item"><i class="fas fa-map-marker-alt"></i> Dhaka, Bangladesh</div>
-                        <div class="meta-item"><i class="far fa-calendar"></i> Posted Feb 2025</div>
-                         <div class="meta-item"><i class="far fa-clock"></i> 0–2 years experience</div>
-                    </div>
-                    <a href="/careerdetails" class="btn-apply w-100 mt-4 d-md-none text-center justify-content-center">Apply Now <i class="fas fa-arrow-right ms-2"></i></a>
-                </div>
-
+                @endif
             </div>
         </div>
     </div>

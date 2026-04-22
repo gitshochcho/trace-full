@@ -20,7 +20,8 @@ Route::get('/service-details/{id}', [App\Http\Controllers\HomeController::class,
 Route::get('/insights', [App\Http\Controllers\HomeController::class, 'insights'])->name('insights');
 Route::get('/article-details/{id}', [App\Http\Controllers\HomeController::class, 'articleDetails'])->name('articleDetails');
 Route::get('/career', [App\Http\Controllers\HomeController::class, 'career'])->name('career');
-Route::get('/careerdetails', [App\Http\Controllers\HomeController::class, 'careerdetails'])->name('careerdetails');
+Route::get('/careerdetails/{id}', [App\Http\Controllers\HomeController::class, 'careerdetails'])->name('careerdetails');
+Route::post('/job/apply/{id}', [App\Http\Controllers\HomeController::class, 'applyForJob'])->name('job.apply');
 Route::get('/contact', [App\Http\Controllers\HomeController::class, 'contact'])->name('contact');
 Route::post('/contact', [ContactMessageController::class, 'store'])->name('contact.store');
 Route::get('login', [App\Http\Controllers\HomeController::class, 'login'])->name('login');

@@ -1,0 +1,110 @@
+@extends('layouts.app')
+
+@section('content')
+    <div class="app-content-header">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-sm-6">
+                    <h3 class="mb-0">Job Applications</h3>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-end mb-0">
+                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Job Applications</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-content">
+        <div class="container-fluid">
+            <div class="row g-4">
+                <div class="col-12">
+                    <div class="card card-outline card-primary">
+                        <div class="card-header">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h3 class="card-title mb-0">All Applications ({{ $applications->total() }})</h3>
+                                <div class="card-tools">
+                                    <form method="GET" class="d-flex">
+                                        <input type="text" name="search" value="{{ request('search') }}" class="form-control form-control-sm me-2" placeholder="Search by name or email">
+                                        <select name="status" class="form-control form-control-sm me-2">
+                                            <option value="">All Status</option>
+                                            <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                                            <option value="reviewed" {{ request('status') == 'reviewed' ? 'selected' : '' }}>Reviewed</option>
+                                        </select>
+                                        <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-striped align-middle mb-0">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Job Position</th>
+                                        <th>Applied Date</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($applications as $application)
+                                    <tr>
+                                        <td>{{ $application->name }}</td>
+                                        <td>{{ $application->email }}</td>
+                                        <td>{{ $application->phone }}</td>
+                                        <td>
+                                            <a href="{{ route('admin.job-postings.show', $application->jobPosting) }}" class="text-decoration-none">
+                                                {{ $application->jobPosting->title }}
+                                            </a>
+                                        </td>
+                                        <td>{{ $application->created_at->format('M d, Y H:i') }}</td>
+                                        <td>
+                                            <span class="badge bg-{{ $application->is_reviewed ? 'success' : 'warning' }}">
+                                                {{ $application->is_reviewed ? 'Reviewed' : 'Pending' }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <a href="{{ route('admin.job-applications.show', $application) }}" class="btn btn-sm btn-info" title="View">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a href="{{ route('admin.job-applications.download-cv', $application) }}" class="btn btn-sm btn-primary" title="Download CV">
+                                                    <i class="fas fa-download"></i>
+                                                </a>
+                                                @if(!$application->is_reviewed)
+                                                <form action="{{ route('admin.job-applications.mark-reviewed', $application) }}" method="POST" class="d-inline">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-sm btn-success" title="Mark as Reviewed">
+                                                        <i class="fas fa-check"></i>
+                                                    </button>
+                                                </form>
+                                                @endif
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @empty
+                                    <tr>
+                                        <td colspan="7" class="text-center py-4">
+                                            <p class="mb-0">No applications found.</p>
+                                        </td>
+                                    </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                        @if($applications->hasPages())
+                        <div class="card-footer">
+                            {{ $applications->links() }}
+                        </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection

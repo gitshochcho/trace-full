@@ -13,6 +13,14 @@ return new class extends Migration
     {
         Schema::create('job_postings', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
+            $table->text('description');
+            $table->string('department');
+            $table->string('employment_type')->default('Full-Time'); // Full-Time, Contract, Part-Time
+            $table->string('location');
+            $table->string('experience_level');
+            $table->boolean('is_active')->default(true);
+            $table->date('posted_date');
             $table->timestamps();
         });
     }
