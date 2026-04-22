@@ -473,11 +473,7 @@
 <section class="service-hero">
 
     <div class="hero-bg">
-<<<<<<< HEAD
-        <img src="{{ asset('assets/img/Trade and Customs.png') }}" alt="Trade Facilitation">
-=======
         <img src="{{ $heroImage }}" alt="{{ $heroTitle }}">
->>>>>>> ed11679e44845fa5c39c1288c27654ecd94748ac
     </div>
 
     <div class="hero-overlay"></div>

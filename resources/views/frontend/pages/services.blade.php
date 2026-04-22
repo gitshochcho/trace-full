@@ -441,7 +441,7 @@
                             <span class="dot"></span>
                             {{ $service['products'] }}
                         </span>
-                        <a href="{{ route('serviceDetails', ['id' => $loop->index + 1]) }}">View Service →</a>
+                        <a href="{{ route('serviceDetails', ['id' => $service['id']]) }}">View Service →</a>
                     </div>
 
                 </div>
