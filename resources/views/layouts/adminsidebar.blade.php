@@ -1,5 +1,5 @@
 <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark"> <!--begin::Sidebar Brand-->
-    <div class="sidebar-brand"><a href="/admin/dashboard" class="brand-link">
+    <div class="sidebar-brand"><a href="/admin/settings" class="brand-link">
             <!--begin::Brand Image--> {{-- Logo Image --}}
 @if($setting?->getFirstMediaUrl('logo_image'))
     <img src="{{ $setting->getFirstMediaUrl('logo_image') }}"
@@ -26,12 +26,12 @@
         <nav class="mt-2"> <!--begin::Sidebar Menu-->
             <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
 
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                     <a href="{{ route('admin.dashboard') }}" class="nav-link">
                         <i class="nav-icon bi bi-border"></i>
                         <p>Dashboard</p>
                     </a>
-                </li>
+                </li> -->
 
                 <li class="nav-item">
                     <a href="{{ route('admin.settings.edit') }}" class="nav-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
