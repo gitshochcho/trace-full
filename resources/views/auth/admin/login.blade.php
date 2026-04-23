@@ -19,10 +19,16 @@
 <body class="login-page bg-body-secondary">
     <div class="login-box">
         <div class="card card-outline card-primary">
-            <div class="card-header"> <a href="../index2.html" class="link-dark text-center link-offset-2 link-opacity-100 link-opacity-50-hover">
-                    <h1 class="mb-0"> <b>Admin</b>LTE
-                    </h1>
-                </a> </div>
+            <div class="card-header"> <a href="/" class="link-dark text-center link-offset-2 link-opacity-100 link-opacity-50-hover">
+                    <!-- <h1 class="mb-0"> Admin Trace
+                    </h1> -->
+                    <img src="{{ $setting->getFirstMediaUrl('logo_image') }}"
+         alt="{{ $setting->logo_text ?? 'Logo' }}"
+         class="brand-image opacity-75 shadow"
+         style="height: 33px; width: auto; object-fit: contain; content">
+         
+                </a>
+               </div>
             <div class="card-body login-card-body">
                 <p class="login-box-msg">Sign in to start your session</p>
                 <form action="{{route('adminValidateLogin')}}" method="post">
