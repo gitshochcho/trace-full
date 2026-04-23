@@ -1094,7 +1094,7 @@
                    <h1 class="hero-title">
                @php
         $heading = $aboutHeader->heading ?? 'Advancing Sustainable Development Through Evidence & Insight';
-        $designWord = $aboutHeader->design_word; 
+        $designWord = $aboutHeader?->design_word; 
 
         if ($designWord) {
            
@@ -1126,7 +1126,7 @@
                     @php
                         // Controller theke asha data
                         $heading = $aboutTrace->heading ?? 'A firm built on insight, strategy, and lasting impact.';
-                        $designWord = $aboutTrace->design_word; 
+                        $designWord = $aboutTrace?->design_word; 
 
                         if ($designWord) {
                             // Heading er bhetor thaka specific word-ke span tag diye wrap korbe
