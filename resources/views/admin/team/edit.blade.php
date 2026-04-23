@@ -68,11 +68,12 @@
                                         <input type="text" name="last_name" value="{{ old('last_name', $team->last_name) }}" class="form-control @error('last_name') is-invalid @enderror">
                                         @error('last_name')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
+                                    
                                     <div class="col-md-6">
                                         <label class="form-label">Type</label>
                                         <select name="type" class="form-select">
                                             <option value="1" {{ old('type', $team->type) == 1 ? 'selected' : '' }}>Team Member</option>
-                                            <option value="2" {{ old('type', $team->type) == 2 ? 'selected' : '' }}>Team Leader</option>
+                                            <option value="2" {{ old('type', $team->type) == 2 ? 'selected' : '' }}>Advisor</option>
                                         </select>
                                     </div>
                                      <div class="col-md-6">

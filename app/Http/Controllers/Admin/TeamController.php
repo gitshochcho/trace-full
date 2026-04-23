@@ -73,6 +73,8 @@ class TeamController extends Controller
 
     public function update(Request $request, Team $team): RedirectResponse
     {
+
+        // dd($request->all());
         $validated = $this->validateTeamRequest($request, true);
 
         $team->fill([
@@ -81,7 +83,7 @@ class TeamController extends Controller
             'designation' => $validated['designation'] ?? null,
             'description' => $this->normalizeEditorText($validated['description'] ?? null),
             'sort_order' => $validated['sort_order'] ?? 0,
-            'type' => $validated['type'] ?? 1,
+            'type' => $validated['type'],
             'headtitle' => $validated['headtitle'] ?? null,
         ]);
         $team->save();
@@ -140,6 +142,7 @@ class TeamController extends Controller
             'last_name' => ['nullable', 'string', 'max:255'],
             'designation' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
+            'type' => ['nullable', 'string', 'in:1,2'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
             'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:4096'],
             'remove_image' => ['nullable', 'boolean'],
