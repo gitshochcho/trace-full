@@ -433,7 +433,7 @@
                         <span class="card-tag">{{ $service['tag'] }}</span>
                         <div class="card-line"></div>
                         <h3>{{ $service['title'] }}</h3>
-                        <p>{{ $service['desc'] }}</p>
+                        <p>{!! $service['desc'] !!}</p>
                     </div>
 
                     <div class="card-footer-bar">

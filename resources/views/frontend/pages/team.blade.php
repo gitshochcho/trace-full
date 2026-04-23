@@ -483,9 +483,9 @@
 .expert-left img {
     width: 72px;
     height: 72px;
-    border-radius: 50%;
+    /* border-radius: 50%; */
     object-fit: cover;
-    border: 4px solid #F1F5F9;
+    /* border: 4px solid #F1F5F9; */
 }
 
 .leader-social {
