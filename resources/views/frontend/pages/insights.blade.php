@@ -66,10 +66,16 @@
         <div class="row align-items-center">
             <div class="col-lg-8">
                 <div class="filters d-flex flex-wrap gap-2 gap-md-4">
-                    <a href="#" class="filter-link active" data-filter="ALL">All <span class="ms-1 opacity-50">{{ $allInsights->count() }}</span></a>
+
+                    @foreach($insightTypes as $index => $type)
+                        <a href="#" class="filter-link {{ $index === 0 ? 'active' : '' }}" data-filter="{{ strtoupper($type->type) }}">
+                            {{ $type->type }} <span class="ms-1 opacity-50">{{ $type->insights_count }}</span>
+                        </a>
+                    @endforeach
+                    {{-- <a href="#" class="filter-link active" data-filter="ALL">All <span class="ms-1 opacity-50">{{ $allInsights->count() }}</span></a>
                     <a href="#" class="filter-link" data-filter="VIDEO WATCH">Video Watch <span class="ms-1 opacity-50">{{ $typeCounts['VIDEO WATCH'] }}</span></a>
                     <a href="#" class="filter-link" data-filter="READ">Read <span class="ms-1 opacity-50">{{ $typeCounts['READ'] }}</span></a>
-                    <a href="#" class="filter-link" data-filter="DOWNLOAD">Download <span class="ms-1 opacity-50">{{ $typeCounts['DOWNLOAD'] }}</span></a>
+                    <a href="#" class="filter-link" data-filter="DOWNLOAD">Download <span class="ms-1 opacity-50">{{ $typeCounts['DOWNLOAD'] }}</span></a> --}}
                 </div>
             </div>
             <div class="col-lg-4 mt-3 mt-lg-0">
@@ -100,7 +106,7 @@
         <div class="row g-4">
             @forelse($allInsights as $insight)
             @php
-                $tag = strtoupper(str_replace('_', ' ', $insight->type));
+                $tag = strtoupper($insight->insightType?->type ?: 'OTHER');
                 $category = strtoupper($insight->sub_heading ?: 'INSIGHT');
                 $title = $insight->heading;
                 $buttonText = $insight->actionLabel();
@@ -275,7 +281,7 @@
             });
         }
 
-        updateFilterLinkCounts();
+        // updateFilterLinkCounts(); // Commented out - counts come from backend
 
         const activeLink = document.querySelector('.filter-link.active');
         if (activeLink) {

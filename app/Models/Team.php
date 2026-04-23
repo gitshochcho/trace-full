@@ -17,6 +17,8 @@ class Team extends Model implements HasMedia
         'designation',
         'description',
         'sort_order',
+        'type',
+        'headtitle'
     ];
 
     public function experties()

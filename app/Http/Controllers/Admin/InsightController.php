@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Insight;
 use App\Models\InsightArticle;
 use App\Models\Team;
+use App\Models\InsightType;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
@@ -13,22 +14,25 @@ class InsightController extends Controller
 {
     public function index()
     {
-        $insights = Insight::with(['articles.author', 'articles.media', 'media'])
+        $insights = Insight::with(['articles.author', 'articles.media', 'media', 'insightType'])
             ->orderBy('sort_order')
             ->latest('id')
             ->get();
 
+        $insightTypes = InsightType::orderBy('type')->where('status', true)->get(['id', 'type', 'status']);
+
         $teams = Team::query()->orderBy('first_name')->orderBy('last_name')->get(['id', 'first_name', 'last_name']);
 
-        return view('admin.insight.index', compact('insights', 'teams'));
+        return view('admin.insight.index', compact('insights', 'insightTypes', 'teams'));
     }
 
     public function store(Request $request): RedirectResponse
     {
         $validated = $this->validateInsightRequest($request);
-
+        
         $insight = Insight::create([
             'type' => $validated['type'],
+            'type_id' => $validated['type'],
             'heading' => $validated['heading'],
             'sub_heading' => $validated['sub_heading'] ?? null,
             'description' => $this->normalizeEditorText($validated['description'] ?? null),
@@ -64,14 +68,14 @@ class InsightController extends Controller
     {
         $insight->load(['articles.author', 'articles.media', 'media']);
 
-        $insights = Insight::with(['articles'])
+        $insights = Insight::with(['articles', 'insightType'])
             ->orderBy('sort_order')
             ->latest('id')
             ->get();
-
+        $insightTypes = InsightType::orderBy('type')->where('status', true)->get(['id', 'type', 'status']);
         $teams = Team::query()->orderBy('first_name')->orderBy('last_name')->get(['id', 'first_name', 'last_name']);
 
-        return view('admin.insight.edit', compact('insight', 'insights', 'teams'));
+        return view('admin.insight.edit', compact('insight', 'insights', 'teams', 'insightTypes'));
     }
 
     public function update(Request $request, Insight $insight): RedirectResponse
@@ -80,6 +84,7 @@ class InsightController extends Controller
 
         $insight->fill([
             'type' => $validated['type'],
+            'type_id' => $validated['type'],
             'heading' => $validated['heading'],
             'sub_heading' => $validated['sub_heading'] ?? null,
             'description' => $this->normalizeEditorText($validated['description'] ?? null),
@@ -147,7 +152,7 @@ class InsightController extends Controller
     private function validateInsightRequest(Request $request, bool $isUpdate = false): array
     {
         return $request->validate([
-            'type' => ['required', 'string', 'in:download,read,video_watch'],
+            'type' => ['required', 'integer', 'exists:insight_types,id'],
             'heading' => ['required', 'string', 'max:255'],
             'sub_heading' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
@@ -161,9 +166,17 @@ class InsightController extends Controller
             'articles' => ['nullable', 'array'],
             'articles.*.id' => ['nullable', 'integer'],
             'articles.*.author_team_id' => ['nullable', 'integer', 'exists:teams,id'],
-            'articles.*.type' => ['nullable', 'string', 'in:download,read,video_watch'],
+            'articles.*.type' => ['nullable', 'integer', 'exists:insight_types,id'],
             'articles.*.title' => ['nullable', 'string', 'max:255'],
             'articles.*.description' => ['nullable', 'string'],
+            'articles.*.introduction_title' => ['nullable', 'string', 'max:255'],
+            'articles.*.introduction' => ['nullable', 'string'],
+            'articles.*.key_findings_title' => ['nullable', 'string', 'max:255'],
+            'articles.*.key_findings' => ['nullable', 'string'],
+            'articles.*.country_assessment_title' => ['nullable', 'string', 'max:255'],
+            'articles.*.country_assessment' => ['nullable', 'string'],
+            'articles.*.conclusion_title' => ['nullable', 'string', 'max:255'],
+            'articles.*.conclusion' => ['nullable', 'string'],
             'articles.*.read_minutes' => ['nullable', 'integer', 'min:1', 'max:999'],
             'articles.*.published_at' => ['nullable', 'date'],
             'article_icons' => ['nullable', 'array'],
@@ -181,7 +194,7 @@ class InsightController extends Controller
             $rowId = ! empty($item['id']) ? (int) $item['id'] : null;
             $title = trim((string) ($item['title'] ?? ''));
             $description = $this->normalizeEditorText($item['description'] ?? null) ?? '';
-            $type = trim((string) ($item['type'] ?? 'read'));
+            $type = ! empty($item['type']) ? (int) $item['type'] : null;
             $authorId = ! empty($item['author_team_id']) ? (int) $item['author_team_id'] : null;
             $readMinutes = ! empty($item['read_minutes']) ? (int) $item['read_minutes'] : null;
             $publishedAt = $item['published_at'] ?? null;
@@ -198,9 +211,17 @@ class InsightController extends Controller
 
             $record->insight_id = $insight->id;
             $record->author_team_id = $authorId;
-            $record->type = in_array($type, ['download', 'read', 'video_watch'], true) ? $type : 'read';
+            $record->type = $type;
             $record->title = $title;
             $record->description = $description;
+            $record->introduction_title = $item['introduction_title'] ?? null;
+            $record->introduction = $this->normalizeEditorText($item['introduction'] ?? null);
+            $record->key_findings_title = $item['key_findings_title'] ?? null;
+            $record->key_findings = $this->normalizeEditorText($item['key_findings'] ?? null);
+            $record->country_assessment_title = $item['country_assessment_title'] ?? null;
+            $record->country_assessment = $this->normalizeEditorText($item['country_assessment'] ?? null);
+            $record->conclusion_title = $item['conclusion_title'] ?? null;
+            $record->conclusion = $this->normalizeEditorText($item['conclusion'] ?? null);
             $record->sort_order = $index;
             $record->read_minutes = $readMinutes;
             $record->published_at = $publishedAt;

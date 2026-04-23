@@ -14,6 +14,7 @@ class Insight extends Model implements HasMedia
 
     protected $fillable = [
         'type',
+        'type_id',
         'heading',
         'sub_heading',
         'description',
@@ -32,6 +33,11 @@ class Insight extends Model implements HasMedia
         return $this->hasMany(InsightArticle::class)->orderBy('sort_order')->latest('id');
     }
 
+    public function insightType()
+    {
+        return $this->belongsTo(InsightType::class, 'type', 'id');
+    }   
+
     public function imageUrl(): ?string
     {
         $url = $this->getFirstMediaUrl('image');
@@ -48,7 +54,8 @@ class Insight extends Model implements HasMedia
 
     public function actionLabel(): string
     {
-        return match (strtolower((string) $this->type)) {
+        $typeString = $this->insightType ? strtolower($this->insightType->type) : 'read';
+        return match ($typeString) {
             'download' => 'Download',
             'video', 'watch', 'video_watch', 'watch_video' => 'Watch',
             default => 'Read',

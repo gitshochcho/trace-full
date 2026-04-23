@@ -53,8 +53,8 @@ class JobPostingController extends Controller
      */
     public function show(JobPosting $jobPosting)
     {
-        $jobPosting->load('applications');
-        return view('admin.job-postings.show', compact('jobPosting'));
+        $applications = $jobPosting->applications()->latest()->paginate(10);
+        return view('admin.job-postings.show', compact('jobPosting', 'applications'));
     }
 
     /**

@@ -1,8 +1,26 @@
 <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark"> <!--begin::Sidebar Brand-->
-    <div class="sidebar-brand"> <!--begin::Brand Link--> <a href="../index.html" class="brand-link">
-            <!--begin::Brand Image--> <img src="../../../dist/assets/img/AdminLTELogo.png" alt="AdminLTE Logo"
-                class="brand-image opacity-75 shadow"> <!--end::Brand Image--> <!--begin::Brand Text--> <span
-                class="brand-text fw-light">AdminLTE 4</span> <!--end::Brand Text--> </a> <!--end::Brand Link--> </div>
+    <div class="sidebar-brand"><a href="/admin/dashboard" class="brand-link">
+            <!--begin::Brand Image--> {{-- Logo Image --}}
+@if($setting?->getFirstMediaUrl('logo_image'))
+    <img src="{{ $setting->getFirstMediaUrl('logo_image') }}"
+         alt="{{ $setting->logo_text ?? 'Logo' }}"
+         class="brand-image opacity-75 shadow"
+         style="height: 33px; width: auto; object-fit: contain;">
+@else
+    <img src="{{ asset('dist/assets/img/AdminLTELogo.png') }}"
+         alt="Logo"
+         class="brand-image opacity-75 shadow">
+@endif
+
+{{-- Logo Text + Tagline --}}
+<span class="brand-text fw-light">
+    {{ $setting?->logo_text ?? 'Trace Consultancy ltd.' }}
+    @if($setting?->logo_tagline)
+        <small class="d-block opacity-50" style="font-size:10px; line-height:1;">
+            {{ $setting->logo_tagline }}
+        </small>
+    @endif
+</span> <!--end::Brand Text--> </a> <!--end::Brand Link--> </div>
     <!--end::Sidebar Brand--> <!--begin::Sidebar Wrapper-->
     <div class="sidebar-wrapper">
         <nav class="mt-2"> <!--begin::Sidebar Menu-->
@@ -56,11 +74,21 @@
                         <p>Team Manager</p>
                     </a>
                 </li>
+                
+                <li class="nav-item">
+                    <a href="{{ route('admin.insight-types.index') }}" class="nav-link {{ request()->routeIs('admin.insight-types.*') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-tags"></i>
+                        <p>Insight Type</p>
+                    </a>
+                </li>
 
                 <li class="nav-item">
                     <a href="{{ route('admin.insights.index') }}" class="nav-link {{ request()->routeIs('admin.insights.*') ? 'active' : '' }}">
                         <i class="nav-icon bi bi-journals"></i>
                         <p>Insights Manager</p>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="{{ route('admin.contact-messages.index') }}" class="nav-link {{ request()->routeIs('admin.contact-messages.*') ? 'active' : '' }}">
                         <i class="nav-icon bi bi-envelope"></i>
                         <p>Contact Messages</p>

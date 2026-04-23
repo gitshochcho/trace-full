@@ -45,6 +45,19 @@
                                         <input type="text" name="last_name" value="{{ old('last_name') }}" class="form-control @error('last_name') is-invalid @enderror">
                                         @error('last_name')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Type</label>
+                                        <select name="type" class="form-select" value="{{ old('type', 1) }}">
+                                            <option value="1" {{ old('type', 1) == 1 ? 'selected' : '' }}>Team Member</option>
+                                            <option value="2" {{ old('type', 1) == 2 ? 'selected' : '' }}>Advisor</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form -label">Head Title</label>
+                                        <input type="text" name="headtitle" value="{{ old('headtitle') }}" class="form-control @error('headtitle') is-invalid @enderror">
+                                        @error('headtitle')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                    </div>
+
                                     <div class="col-md-8">
                                         <label class="form-label">Designation</label>
                                         <input type="text" name="designation" value="{{ old('designation') }}" class="form-control @error('designation') is-invalid @enderror">

@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\TeamController;
 use App\Http\Controllers\Admin\PartnerController;
+use App\Http\Controllers\Admin\InsightTypeController;
 
 
 use Illuminate\Support\Facades\Route;
@@ -133,6 +134,14 @@ Route::prefix('admin')->group(function () {
             Route::get('job-applications/{application}', 'show')->name('admin.job-applications.show');
             Route::get('job-applications/{application}/download-cv', 'downloadCv')->name('admin.job-applications.download-cv');
             Route::post('job-applications/{application}/mark-reviewed', 'markReviewed')->name('admin.job-applications.mark-reviewed');
+        });
+
+        Route::controller(InsightTypeController::class)->group(function () {
+            Route::get('insight-types', 'index')->name('admin.insight-types.index');
+            Route::post('insight-types', 'store')->name('admin.insight-types.store');
+            Route::get('insight-types/{insightType}/edit', 'edit')->name('admin.insight-types.edit');
+            Route::put('insight-types/{insightType}', 'update')->name('admin.insight-types.update');
+            Route::delete('insight-types/{insightType}', 'destroy')->name('admin.insight-types.destroy');
         });
 
     });
