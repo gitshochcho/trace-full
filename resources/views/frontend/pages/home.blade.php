@@ -241,7 +241,7 @@
     }
 
     /* Image Badge */
-    .about-badge {
+    /* .about-badge {
         position: absolute;
         bottom: 30px;
         left: -20px;
@@ -250,7 +250,7 @@
         padding: 15px 25px;
         border-radius: 12px;
         text-align: center;
-    }
+    } */
 
     /* Responsive adjustments */
     @media (max-width: 991px) {
@@ -760,10 +760,10 @@
                 <div class="about-img-wrap position-relative">
                     <img src="{{ $aImage }}" alt="{{ strip_tags($aHeading) }}" class="img-fluid rounded-4 shadow-sm">
  
-                    <div class="about-badge shadow-lg">
+                    <!-- <div class="about-badge shadow-lg">
                         <h3 class="m-0 fw-bold">{{ $badgeNum }}</h3>
                         <p class="m-0 small opacity-75">{{ strip_tags($badgeText) }}</p>
-                    </div>
+                    </div> -->
                 </div>
             </div>
  

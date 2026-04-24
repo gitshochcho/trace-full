@@ -201,6 +201,43 @@
                     {{-- 2. Apply Now Form Card --}}
                     <div class="apply-form-card">
                         <h5>Apply for this position</h5>
+                        
+                        {{-- Success Message --}}
+                        @if(session('success'))
+                        <div style="background: #d4edda; border: 1px solid #c3e6cb; color: #155724; padding: 12px 16px; border-radius: 6px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                            <i class="fas fa-check-circle" style="font-size: 18px;"></i>
+                            <div>
+                                <strong>Success!</strong>
+                                <p style="margin: 0; font-size: 13px;">{{ session('success') }}</p>
+                            </div>
+                        </div>
+                        @endif
+
+                        {{-- Error Message --}}
+                        @if(session('error'))
+                        <div style="background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 12px 16px; border-radius: 6px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                            <i class="fas fa-exclamation-circle" style="font-size: 18px;"></i>
+                            <div>
+                                <strong>Error!</strong>
+                                <p style="margin: 0; font-size: 13px;">{{ session('error') }}</p>
+                            </div>
+                        </div>
+                        @endif
+
+                        {{-- Validation Errors --}}
+                        @if($errors->any())
+                        <div style="background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 12px 16px; border-radius: 6px; margin-bottom: 15px;">
+                            <strong style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                                <i class="fas fa-exclamation-circle"></i> Validation Errors
+                            </strong>
+                            <ul style="margin: 0; padding-left: 20px; font-size: 13px;">
+                                @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                        @endif
+
                         <form action="{{ route('job.apply', $job->id) }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="form-group">

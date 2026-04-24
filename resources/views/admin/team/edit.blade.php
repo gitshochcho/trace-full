@@ -22,13 +22,7 @@
             ];
         })->values()->all());
 
-        if (empty($experties)) {
-            $experties = [['id' => null, 'heading' => '', 'description' => '', 'icon_url' => null]];
-        }
-
-        if (empty($socialMediaRows)) {
-            $socialMediaRows = [['id' => null, 'title' => '', 'social_link' => '', 'icon_url' => null]];
-        }
+        // Default empty rows initialization soriye deya hoyeche jate blank row na dekha jay
     @endphp
 
     <div class="app-content-header">
@@ -187,11 +181,11 @@
                                                 <div class="col-md-3">
                                                     <label class="form-label">Title</label>
                                                     <input type="hidden" name="social_media[{{ $index }}][id]" value="{{ $social['id'] ?? '' }}">
-                                                    <input type="text" name="social_media[{{ $index }}][title]" value="{{ $social['title'] ?? '' }}" class="form-control" placeholder="LinkedIn">
+                                                    <input type="text" name="social_media[{{ $index }}][title]" value="{{ $social['title'] ?? '' }}" class="form-control">
                                                 </div>
                                                 <div class="col-md-5">
                                                     <label class="form-label">Social Link</label>
-                                                    <input type="text" name="social_media[{{ $index }}][social_link]" value="{{ $social['social_link'] ?? '' }}" class="form-control" placeholder="https://...">
+                                                    <input type="text" name="social_media[{{ $index }}][social_link]" value="{{ $social['social_link'] ?? '' }}" class="form-control">
                                                 </div>
                                                 <div class="col-md-3">
                                                     <label class="form-label">Social Icon</label>
@@ -248,11 +242,11 @@
                 <div class="col-md-3">
                     <label class="form-label">Title</label>
                     <input type="hidden" name="__SOCIAL_NAME__[id]" value="">
-                    <input type="text" name="__SOCIAL_NAME__[title]" class="form-control" placeholder="LinkedIn">
+                    <input type="text" name="__SOCIAL_NAME__[title]" class="form-control">
                 </div>
                 <div class="col-md-5">
                     <label class="form-label">Social Link</label>
-                    <input type="text" name="__SOCIAL_NAME__[social_link]" class="form-control" placeholder="https://...">
+                    <input type="text" name="__SOCIAL_NAME__[social_link]" class="form-control">
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Social Icon</label>
@@ -282,18 +276,12 @@
         const imageQueue = document.getElementById('teamImageQueue');
 
         function renderImageQueue() {
-            if (!imageQueue) {
-                return;
-            }
+            if (!imageQueue) return;
 
             const selectedCard = imageQueue.querySelector('[data-selected-image="1"]');
-            if (selectedCard) {
-                selectedCard.remove();
-            }
+            if (selectedCard) selectedCard.remove();
 
-            if (!imageInput.files || imageInput.files.length === 0) {
-                return;
-            }
+            if (!imageInput.files || imageInput.files.length === 0) return;
 
             const file = imageInput.files[0];
             const card = document.createElement('div');
@@ -364,17 +352,13 @@
         }
 
         expertiseWrapper.addEventListener('click', function (event) {
-            if (!event.target.classList.contains('remove-expertise-row')) {
-                return;
-            }
+            if (!event.target.classList.contains('remove-expertise-row')) return;
             event.target.closest('.expertise-row').remove();
             reindexExpertiseRows();
         });
 
         socialWrapper.addEventListener('click', function (event) {
-            if (!event.target.classList.contains('remove-social-row')) {
-                return;
-            }
+            if (!event.target.classList.contains('remove-social-row')) return;
             event.target.closest('.social-row').remove();
             reindexSocialRows();
         });

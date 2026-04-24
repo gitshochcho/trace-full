@@ -1,12 +1,10 @@
 @extends('frontend.layout.app')
 
-
 @push('custome-css')
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.css" integrity="sha256-4MX+61mt9NVvvuPjUWdUdyfZfxSB1/Rf9WtqRHgG5S0=" crossorigin="anonymous"><!-- jsvectormap -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.css" integrity="sha256-4MX+61mt9NVvvuPjUWdUdyfZfxSB1/Rf9WtqRHgG5S0=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/css/jsvectormap.min.css" integrity="sha256-+uGLJmmTKOqBr+2E6KDYs/NRsHxSkONXFHUL0fy2O/4=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
-
 /* Custom Container for 1072px width */
 .custom-container {
     max-width: 1012px !important;
@@ -45,14 +43,12 @@
     min-height: 512px;
 }
 
-/* ================= UPDATED IMAGE BOX ================= */
 .team-image-box {
     width: 340px;  
     height: 440px; 
     border-radius: 16px;
     overflow: hidden;
     position: relative;
-    /* Your Gradient Background */
     background: linear-gradient(155.69deg, rgba(1, 53, 75, 0.0288) 15.56%, rgba(1, 53, 75, 0.0592) 75.7%);
 }
 
@@ -85,13 +81,11 @@
     margin-bottom: 15px;
 }
 
-
 @media (min-width: 992px) {
     .ps-lg-5 {
         padding-left: 60px !important; 
     }
 }
-
 
 .team-tag .line {
     width: 20px;
@@ -152,11 +146,10 @@
     transform: translateY(-2px);
 }
 
-
 .btn-email {
-    background: #01979B;
+      border: 1px solid rgba(255, 255, 255, 0.3);
     color: #fff;
-    border: 1px solid #01979B;
+    background: transparent;
 }
 
 .btn-email:hover {
@@ -166,25 +159,11 @@
     transform: translateY(-2px);
 }
 
-/* Responsive adjustments */
-@media (max-width: 991px) {
-    .team-image-box {
-        width: 300px; 
-        height: 388px;
-    }
-    .profile-name {
-        font-size: 36px;
-        line-height: 42px;
-    }
-}
-
-/* Container Fix */
 .custom-container-1080 {
     max-width: 1080px !important;
     margin: 0 auto;
 }
 
-/* Titles */
 .about-title-box {
     display: flex;
     align-items: center;
@@ -215,7 +194,6 @@
     text-align: justify;
 }
 
-/* Expertise Cards */
 .expertise-card {
     background: #FFFFFF;
     border: 1px solid #E5E9ED;
@@ -243,16 +221,6 @@
     font-size: 18px;
 }
 
-.icon-box-small svg {
-    width: 20px;
-    height: 20px;
-    transition: transform 0.3s ease;
-}
-
-.expertise-card:hover .icon-box-small svg {
-    transform: scale(1.1);
-}
-
 .card-text h6 {
     font-size: 15px;
     font-weight: 700;
@@ -267,7 +235,6 @@
     line-height: 1.4;
 }
 
-/* Sidebar CTA */
 .sidebar-container {
     position: sticky;
     top: 20px;
@@ -277,17 +244,6 @@
     background: #01354B;
     border-radius: 20px;
     padding: 35px 25px;
-}
-
-.cta-icon-box {
-    width: 50px;
-    height: 50px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 22px;
 }
 
 .btn-orange {
@@ -301,24 +257,12 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    text-decoration: none !important;
-    
-   
-    box-shadow: none !important; 
-    outline: none !important;
     transition: all 0.3s ease;
 }
 
 .btn-orange:hover {
     background: #d9632a !important;
-    color: white !important;
-    box-shadow: none !important; 
     transform: translateY(-2px); 
-}
-
-.btn-orange:focus, .btn-orange:active {
-    box-shadow: none !important;
-    outline: none !important;
 }
 
 .other-team-card {
@@ -372,16 +316,11 @@
     font-size: 14px;
 }
 
-.team-sidebar-item:hover .arrow-icon {
-    color: #F47735;
-    transform: translateX(3px);
-}
-
-/* Responsive */
 @media (max-width: 991px) {
+    .team-image-box { width: 300px; height: 388px; }
+    .profile-name { font-size: 36px; line-height: 42px; }
     .sidebar-container { margin-top: 40px; }
 }
-
 </style>
 @endpush
 
@@ -446,27 +385,40 @@
                     </p>
 
                     <div class="team-tags d-flex flex-wrap justify-content-center justify-content-md-start gap-2 mb-4">
-                        @forelse($expertiseItems as $expertise)
+                        @foreach($expertiseItems as $expertise)
                             <span class="badge-custom">{{ $expertise->heading }}</span>
-                        @empty
-                            <span class="badge-custom">Team Specialist</span>
-                        @endforelse
+                        @endforeach
                     </div>
 
-                    <div class="team-social d-flex flex-wrap justify-content-center justify-content-md-start gap-3">
-                        @forelse($socialItems as $social)
-                            @php
-                                $title = trim((string) ($social->title ?: 'Social'));
-                                $isEmail = str_contains(strtolower($title), 'email') || str_starts_with(strtolower((string) $social->social_link), 'mailto:');
-                                $socialUrl = $social->social_link ?: '#';
-                            @endphp
-                            <a href="{{ $socialUrl }}" class="{{ $isEmail ? 'btn-email' : 'btn-social' }}" target="_blank" rel="noopener">
-                                {{ $title }}
-                            </a>
-                        @empty
-                            <a href="#" class="btn-social">LinkedIn</a>
-                        @endforelse
-                    </div>
+  {{-- Social Media Part --}}
+<div class="team-social d-flex flex-wrap justify-content-center justify-content-md-start gap-3">
+    @foreach($socialItems as $social)
+        @php
+            $title = trim((string)$social->title);
+            $socialUrl = $social->social_link ?: '#';
+            $isEmail = str_contains(strtolower($title), 'email') || str_starts_with(strtolower((string)$social->social_link), 'mailto:');
+            
+            // Icon URL collect kora hocche
+            $iconPath = $social->iconUrl(); 
+        @endphp
+        
+        @if(!empty($title) || $iconPath)
+            <a href="{{ $socialUrl }}" class="{{ $isEmail ? 'btn-email' : 'btn-social' }}" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 8px;">
+                
+                {{-- Jodi admin theke icon deya thake --}}
+                @if($iconPath)
+                    <img src="{{ $iconPath }}" alt="{{ $title }}" style="width: 18px; height: 18px; object-fit: contain;">
+                @endif
+
+                {{-- Jodi title thake --}}
+                @if(!empty($title))
+                    {{ $title }}
+                @endif
+                
+            </a>
+        @endif
+    @endforeach
+</div>
                 </div>
             </div>
 
@@ -527,9 +479,9 @@
                 <aside class="sidebar-container">
                     <div class="cta-card text-center text-white mb-4">
                         <div class="cta-icon-box mx-auto mb-3">
-                            <i class="bi bi-chat-dots-fill"> <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-                            <path d="M4 6h16M4 12h16M4 18h10" stroke="#fff" stroke-width="2" />
-                        </svg></i>
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                                <path d="M4 6h16M4 12h16M4 18h10" stroke="#fff" stroke-width="2" />
+                            </svg>
                         </div>
                         <h5 class="fw-bold">Work with Our Team</h5>
                         <p class="small opacity-75">Reach out to discuss how TRACE can support your institution's trade reform objectives.</p>
@@ -538,8 +490,7 @@
 
                     <div class="other-team-card">
                         <h6 class="fw-bold mb-4">Other Team Members</h6>
-
-                        @forelse($otherTeamMembers as $member)
+                        @foreach($otherTeamMembers as $member)
                             <a href="{{ route('teamdetails', $member) }}" class="team-sidebar-item">
                                 <img src="{{ $member->imageUrl() ?: asset('assets/img/nadia.png') }}" class="member-img" alt="{{ $member->fullName() }}">
                                 <div class="member-info">
@@ -548,16 +499,16 @@
                                 </div>
                                 <i class="bi bi-arrow-right arrow-icon"></i>
                             </a>
-                        @empty
-                            <p class="small text-muted mb-3">No other team members found.</p>
-                        @endforelse
+                        @endforeach
 
                         <hr class="my-3 opacity-10">
 
                         <a href="{{ route('team') }}" class="team-sidebar-item view-all-link">
-                            <div class="view-all-icon"><i class="bi bi-people"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M17 21V19C17 17.9391 16.5786 16.9217 15.8284 16.1716C15.0783 15.4214 14.0609 15 13 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21M13 7C13 9.20914 11.2091 11 9 11C6.79086 11 5 9.20914 5 7C5 4.79086 6.79086 3 9 3C11.2091 3 13 4.79086 13 7ZM23 21V19C22.9993 18.1137 22.7044 17.2524 22.1614 16.5523C21.6184 15.8522 20.8581 15.3516 20 15.13M19 3.13C19.8604 3.35031 20.623 3.85071 21.1676 4.55232C21.7122 5.25392 22.0078 6.11768 22.0078 7.005C22.0078 7.89232 21.7122 8.75608 21.1676 9.45768C20.623 10.1593 19.8604 10.6597 19 10.88" stroke="#01888C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></i></div>
+                            <div class="view-all-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M17 21V19C17 17.9391 16.5786 16.9217 15.8284 16.1716C15.0783 15.4214 14.0609 15 13 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21M13 7C13 9.20914 11.2091 11 9 11C6.79086 11 5 9.20914 5 7C5 4.79086 6.79086 3 9 3C11.2091 3 13 4.79086 13 7ZM23 21V19C22.9993 18.1137 22.7044 17.2524 22.1614 16.5523C21.6184 15.8522 20.8581 15.3516 20 15.13M19 3.13C19.8604 3.35031 20.623 3.85071 21.1676 4.55232C21.7122 5.25392 22.0078 6.11768 22.0078 7.005C22.0078 7.89232 21.7122 8.75608 21.1676 9.45768C20.623 10.1593 19.8604 10.6597 19 10.88" stroke="#01888C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
                             <div class="member-info">
                                 <h6 class="mb-0">View Full Team</h6>
                                 <span class="small">All {{ $allTeamMembersCount }} team members</span>
@@ -570,5 +521,4 @@
         </div>
     </div>
 </section>
-
 @endsection

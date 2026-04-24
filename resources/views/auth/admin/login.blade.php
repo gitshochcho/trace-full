@@ -19,13 +19,13 @@
 <body class="login-page bg-body-secondary">
     <div class="login-box">
         <div class="card card-outline card-primary">
-            <div class="card-header"> <a href="/" class="link-dark text-center link-offset-2 link-opacity-100 link-opacity-50-hover">
+            <div class="card-header d-flex justify-content-center align-items-center"> <a href="/" class="link-dark text-center link-offset-2 link-opacity-100 link-opacity-50-hover">
                     <!-- <h1 class="mb-0"> Admin Trace
                     </h1> -->
                     <img src="{{ $setting->getFirstMediaUrl('logo_image') }}"
          alt="{{ $setting->logo_text ?? 'Logo' }}"
          class="brand-image opacity-75 shadow"
-         style="height: 33px; width: auto; object-fit: contain; content">
+         style="height: 43px; width: auto; object-fit: contain; content">
          
                 </a>
                </div>
@@ -57,7 +57,7 @@
                         </div> <!-- /.col -->
                     </div> <!--end::Row-->
                 </form>
-                <p class="mb-1"> <a href="{{ route('loadForgetMyPass') }}">I forgot my password</a> </p>
+                <!-- <p class="mb-1"> <a href="{{ route('loadForgetMyPass') }}">I forgot my password</a> </p> -->
             </div> <!-- /.login-card-body -->
         </div>
     </div>
