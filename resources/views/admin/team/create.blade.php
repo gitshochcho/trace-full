@@ -69,8 +69,14 @@
                                         @error('sort_order')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
                                     <div class="col-12">
+                                        <label class="form-label">Short Description</label>
+                                        <textarea name="short_description" rows="3" maxlength="500" class="form-control @error('short_description') is-invalid @enderror" placeholder="Brief intro shown on team cards (max 500 chars)">{{ old('short_description') }}</textarea>
+                                        <small class="text-muted"><i class="fas fa-info-circle"></i> Shown on the team card preview. Keep it short and punchy.</small>
+                                        @error('short_description')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                    </div>
+                                    <div class="col-12">
                                         <label class="form-label">Description</label>
-                                        <textarea name="description" rows="6" class="form-control @error('description') is-invalid @enderror">{{ old('description') }}</textarea>
+                                        <textarea name="description" rows="6" class="form-control team-description-editor @error('description') is-invalid @enderror">{{ old('description') }}</textarea>
                                         @error('description')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
                                     <div class="col-12">
@@ -233,8 +239,40 @@
 @endsection
 
 @push('custome-js')
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
 <script>
 (function () {
+    // ── CKEditor for description ─────────────────────────────────────
+    const descEditorEl = document.querySelector('.team-description-editor');
+    let descEditor = null;
+
+    function normalizeEditorHtml(html) {
+        if (!html) return '';
+        let text = html;
+        text = text.replace(/<p[^>]*>/gi, '');
+        text = text.replace(/<\/p>/gi, "\n");
+        text = text.replace(/<br\s*\/?>/gi, "\n");
+        text = text.replace(/&nbsp;/gi, ' ');
+        text = text.replace(/<[^>]*>/g, '');
+        text = text.replace(/\n{3,}/g, "\n\n");
+        return text.trim();
+    }
+
+    if (descEditorEl) {
+        ClassicEditor.create(descEditorEl)
+            .then(function (editor) { descEditor = editor; })
+            .catch(function (err) { console.error(err); });
+
+        const teamForm = document.getElementById('teamForm');
+        if (teamForm) {
+            teamForm.addEventListener('submit', function () {
+                if (descEditor) {
+                    descEditorEl.value = normalizeEditorHtml(descEditor.getData());
+                }
+            });
+        }
+    }
+
     // ── Image upload preview ─────────────────────────────────────────
     const imageInput  = document.getElementById('teamImageInput');
     const addImageBtn = document.getElementById('addTeamImageRow');

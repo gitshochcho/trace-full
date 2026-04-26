@@ -17,11 +17,13 @@ class JobPosting extends Model
         'requirements',
         'is_active',
         'posted_date',
+        'end_date',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
         'posted_date' => 'date',
+        'end_date' => 'date',
     ];
 
     public function scopeActive($query)

@@ -47,6 +47,17 @@
                                     <strong>Posted:</strong> {{ $jobPosting->posted_date->format('M d, Y') }}
                                 </div>
                                 <div class="col-md-6">
+                                    <strong>End Date:</strong>
+                                    @if($jobPosting->end_date)
+                                        {{ $jobPosting->end_date->format('M d, Y') }}
+                                        @if($jobPosting->end_date->isPast())
+                                            <span class="badge bg-danger ms-1">Expired</span>
+                                        @endif
+                                    @else
+                                        <span class="text-muted">Open-ended</span>
+                                    @endif
+                                </div>
+                                <div class="col-md-6">
                                     <strong>Status:</strong>
                                     <span class="badge bg-{{ $jobPosting->is_active ? 'success' : 'secondary' }}">
                                         {{ $jobPosting->is_active ? 'Active' : 'Inactive' }}
