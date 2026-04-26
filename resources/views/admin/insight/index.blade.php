@@ -88,6 +88,7 @@
                                         <button type="button" id="addInsightImage" class="btn btn-sm btn-outline-primary mb-2">+ Add Image</button>
                                         <input type="file" id="insightImageInput" name="image" class="d-none" accept="image/*">
                                         <div id="insightImageQueue" class="d-grid gap-2"></div>
+                                        <small class="text-muted d-block mt-2"><i class="fas fa-info-circle"></i> Recommended: 1200×630px (max 4MB)</small>
                                     </div>
 
                                     <div class="col-12">
@@ -176,6 +177,7 @@
                                                         <div class="col-md-3">
                                                             <label class="form-label">Icon</label>
                                                             <input type="file" name="article_icons[{{ $index }}]" class="form-control" accept="image/*">
+                                                            <small class="text-muted"><i class="fas fa-info-circle"></i> 64×64px square</small>
                                                         </div>
                                                         <div class="col-md-4">
                                                             <label class="form-label">Attachment</label>
@@ -324,6 +326,7 @@
                 <div class="col-md-3">
                     <label class="form-label">Icon</label>
                     <input type="file" name="__ARTICLE_ICON_NAME__" class="form-control" accept="image/*">
+                    <small class="text-muted"><i class="fas fa-info-circle"></i> 64×64px square</small>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Attachment</label>

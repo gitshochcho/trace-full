@@ -104,6 +104,7 @@
                                             @endif
                                         </div>
                                         <input type="file" id="teamImageInput" name="image" class="d-none" accept="image/*">
+                                        <small class="text-muted d-block mb-2"><i class="fas fa-info-circle"></i> Recommended: 600×600px square portrait (max 4MB)</small>
                                         <div id="teamImageQueue" class="d-grid gap-2 mb-2">
                                             @if($team->imageUrl())
                                                 <div class="border rounded p-2 d-flex justify-content-between align-items-center">
@@ -154,6 +155,7 @@
                                                 <div class="col-md-3">
                                                     <label class="form-label">Icon</label>
                                                     <input type="file" name="experties_icons[{{ $index }}]" class="form-control" accept="image/*">
+                                                    <small class="text-muted"><i class="fas fa-info-circle"></i> 64×64px square</small>
                                                     @if(!empty($expertise['icon_url']))
                                                         <img src="{{ $expertise['icon_url'] }}" alt="icon" style="width: 24px; height: 24px; object-fit: contain; margin-top: 6px;">
                                                     @endif
@@ -190,6 +192,7 @@
                                                 <div class="col-md-3">
                                                     <label class="form-label">Social Icon</label>
                                                     <input type="file" name="social_media_icons[{{ $index }}]" class="form-control" accept="image/*">
+                                                    <small class="text-muted"><i class="fas fa-info-circle"></i> 32×32px square</small>
                                                     @if(!empty($social['icon_url']))
                                                         <img src="{{ $social['icon_url'] }}" alt="icon" style="width: 24px; height: 24px; object-fit: contain; margin-top: 6px;">
                                                     @endif
@@ -228,6 +231,7 @@
                 <div class="col-md-3">
                     <label class="form-label">Icon</label>
                     <input type="file" name="__EXPERTISE_ICON_NAME__" class="form-control" accept="image/*">
+                    <small class="text-muted"><i class="fas fa-info-circle"></i> 64×64px square</small>
                 </div>
                 <div class="col-md-1 d-grid">
                     <button type="button" class="btn btn-outline-danger remove-expertise-row">&times;</button>
@@ -251,6 +255,7 @@
                 <div class="col-md-3">
                     <label class="form-label">Social Icon</label>
                     <input type="file" name="__SOCIAL_ICON_NAME__" class="form-control" accept="image/*">
+                    <small class="text-muted"><i class="fas fa-info-circle"></i> 32×32px square</small>
                 </div>
                 <div class="col-md-1 d-grid">
                     <button type="button" class="btn btn-outline-danger remove-social-row">&times;</button>

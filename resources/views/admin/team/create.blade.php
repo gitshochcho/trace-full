@@ -80,6 +80,7 @@
                                         </div>
                                         <input type="file" id="teamImageInput" name="image" class="d-none" accept="image/*">
                                         <div id="teamImageQueue" class="d-grid gap-2"></div>
+                                        <small class="text-muted d-block mt-2"><i class="fas fa-info-circle"></i> Recommended: 600×600px square portrait (max 4MB)</small>
                                         @error('image')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
                                     </div>
                                     <div class="col-12">
@@ -120,6 +121,7 @@
                                                 <div class="col-md-2">
                                                     <label class="form-label">Icon</label>
                                                     <input type="file" name="experties_icons[{{ $index }}]" class="form-control" accept="image/*">
+                                                    <small class="text-muted"><i class="fas fa-info-circle"></i> 64×64px square</small>
                                                 </div>
                                                 <div class="col-md-1 d-grid">
                                                     <button type="button" class="btn btn-outline-danger remove-expertise-row">&times;</button>
@@ -153,6 +155,7 @@
                                                 <div class="col-md-2">
                                                     <label class="form-label">Icon</label>
                                                     <input type="file" name="social_media_icons[{{ $index }}]" class="form-control" accept="image/*">
+                                                    <small class="text-muted"><i class="fas fa-info-circle"></i> 32×32px square</small>
                                                 </div>
                                                 <div class="col-md-1 d-grid">
                                                     <button type="button" class="btn btn-outline-danger remove-social-row">&times;</button>
@@ -194,6 +197,7 @@
                 <div class="col-md-2">
                     <label class="form-label">Icon</label>
                     <input type="file" name="__EXPERTISE_ICON_NAME__" class="form-control" accept="image/*">
+                    <small class="text-muted"><i class="fas fa-info-circle"></i> 64×64px square</small>
                 </div>
                 <div class="col-md-1 d-grid">
                     <button type="button" class="btn btn-outline-danger remove-expertise-row">&times;</button>
@@ -217,6 +221,7 @@
                 <div class="col-md-2">
                     <label class="form-label">Icon</label>
                     <input type="file" name="__SOCIAL_ICON_NAME__" class="form-control" accept="image/*">
+                    <small class="text-muted"><i class="fas fa-info-circle"></i> 32×32px square</small>
                 </div>
                 <div class="col-md-1 d-grid">
                     <button type="button" class="btn btn-outline-danger remove-social-row">&times;</button>
