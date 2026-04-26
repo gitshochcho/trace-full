@@ -52,6 +52,7 @@ Route::prefix('admin')->group(function () {
 
         Route::controller(ContentController::class)->group(function () {
             Route::get('content', 'index')->name('admin.content.index');
+            Route::get('content/create', 'create')->name('admin.content.create');
             Route::post('content', 'store')->name('admin.content.store');
             Route::get('content/{content}/edit', 'edit')->name('admin.content.edit');
             Route::put('content/{content}', 'update')->name('admin.content.update');
@@ -60,6 +61,7 @@ Route::prefix('admin')->group(function () {
 
         Route::controller(ServiceController::class)->group(function () {
             Route::get('services-manager', 'index')->name('admin.services.index');
+            Route::get('services-manager/create', 'create')->name('admin.services.create');
             Route::post('services-manager', 'store')->name('admin.services.store');
             Route::get('services-manager/{service}/edit', 'edit')->name('admin.services.edit');
             Route::put('services-manager/{service}', 'update')->name('admin.services.update');
@@ -68,6 +70,7 @@ Route::prefix('admin')->group(function () {
 
         Route::controller(ProjectController::class)->group(function () {
             Route::get('projects-manager', 'index')->name('admin.projects.index');
+            Route::get('projects-manager/create', 'create')->name('admin.projects.create');
             Route::post('projects-manager', 'store')->name('admin.projects.store');
             Route::get('projects-manager/{project}/edit', 'edit')->name('admin.projects.edit');
             Route::put('projects-manager/{project}', 'update')->name('admin.projects.update');
@@ -76,6 +79,7 @@ Route::prefix('admin')->group(function () {
 
         Route::controller(TeamController::class)->group(function () {
             Route::get('teams-manager', 'index')->name('admin.teams.index');
+            Route::get('teams-manager/create', 'create')->name('admin.teams.create');
             Route::post('teams-manager', 'store')->name('admin.teams.store');
             Route::get('teams-manager/{team}/edit', 'edit')->name('admin.teams.edit');
             Route::put('teams-manager/{team}', 'update')->name('admin.teams.update');
@@ -134,6 +138,7 @@ Route::prefix('admin')->group(function () {
             Route::get('job-applications/{application}', 'show')->name('admin.job-applications.show');
             Route::get('job-applications/{application}/download-cv', 'downloadCv')->name('admin.job-applications.download-cv');
             Route::post('job-applications/{application}/mark-reviewed', 'markReviewed')->name('admin.job-applications.mark-reviewed');
+            Route::delete('job-applications/{application}', 'destroy')->name('admin.job-applications.destroy');
         });
 
         Route::controller(InsightTypeController::class)->group(function () {
