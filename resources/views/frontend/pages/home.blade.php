@@ -614,54 +614,38 @@
 @php
     use Illuminate\Support\Str;
 
-    $heroTagline = $slider?->tagline ?: 'INTERNATIONAL DEVELOPMENT CONSULTING';
-    $heroTitle = $slider?->title ?: 'Empowering Change through Consulting';
-    $heroDesignWord = $slider?->design_word ?: 'Insightful';
-    $heroDescription = $slider?->description ?: 'Trace Consulting partners with governments, regulatory agencies, and development organizations to reform systems, build capacity, and deliver technology that lasts.';
-    $heroImages = $slider?->imageUrls() ?? [];
+    $heroTagline    = $slider?->tagline     ?? '';
+    $heroTitle      = $slider?->title       ?? '';
+    $heroDesignWord = $slider?->design_word ?? '';
+    $heroDescription= $slider?->description ?? '';
+    $heroImages     = $slider?->imageUrls() ?? [];
 
-    $hasDesignWord = filled($heroDesignWord) && Str::contains($heroTitle, $heroDesignWord);
+    $hasDesignWord   = filled($heroDesignWord) && Str::contains($heroTitle, $heroDesignWord);
     $heroTitleBefore = $hasDesignWord ? Str::before($heroTitle, $heroDesignWord) : $heroTitle;
-    $heroTitleAfter = $hasDesignWord ? Str::after($heroTitle, $heroDesignWord) : '';
+    $heroTitleAfter  = $hasDesignWord ? Str::after($heroTitle, $heroDesignWord)  : '';
 
-     // Main about block
-    $aTag        = $homeAboutTrace?->section     ?: 'ABOUT TRACE';
-    $aHeading    = $homeAboutTrace?->heading     ?: 'Transforming Challenges into Opportunities';
-    $aDesignWord = $homeAboutTrace?->design_word ?: 'Opportunities';
-    $aDesc       = $homeAboutTrace?->description ?: 'TRACE focuses on international trade, policy reform, and development, working with governments, business groups, and the private sector to strengthen market systems.';
-    $aImage      = $homeAboutTrace?->imageUrl()  ?: asset('assets/img/bg.png');
- 
+    // Main about block
+    $aTag        = $homeAboutTrace?->section     ?? '';
+    $aHeading    = $homeAboutTrace?->heading     ?? '';
+    $aDesignWord = $homeAboutTrace?->design_word ?? '';
+    $aDesc       = $homeAboutTrace?->description ?? '';
+    $aImage      = $homeAboutTrace?->imageUrl()  ?? '';
+
     // Three list items
-    $items = [
-        [
-            'num'   => '01',
-            'title' => $homeAboutTraceOne?->heading     ?: 'Multi-Sector Expertise & Global Reach',
-            'text'  => $homeAboutTraceOne?->description ?: 'Deep knowledge across industries, backed by an objective perspective and access to global networks.',
-        ],
-        [
-            'num'   => '02',
-            'title' => $homeAboutTraceTwo?->heading     ?: 'Proven Methodologies, Policy to Practice',
-            'text'  => $homeAboutTraceTwo?->description ?: 'Rigorous, scalable approaches that translate evidence into implementable reforms.',
-        ],
-        [
-            'num'   => '03',
-            'title' => $homeAboutTraceThree?->heading     ?: 'Change Management & Creative Innovation',
-            'text'  => $homeAboutTraceThree?->description ?: 'Combining structured change management with innovative, context-driven solutions.',
-        ],
-    ];
- 
-    // Badge
-    $badgeNum  = $homeYearsExpertise?->heading     ?: '8+';
-    $badgeText = $homeYearsExpertise?->description ?: 'Years of Expertise';
-
-    if (empty($heroImages)) {
-        $heroImages = [
-            asset('assets/img/image 11.png'),
-            asset('assets/img/ship.jpeg'),
-            asset('assets/img/hero3.jpeg'),
-            asset('assets/img/hero4.jpeg'),
-        ];
+    $items = [];
+    if ($homeAboutTraceOne?->heading || $homeAboutTraceOne?->description) {
+        $items[] = ['num' => '01', 'title' => $homeAboutTraceOne?->heading ?? '', 'text' => $homeAboutTraceOne?->description ?? ''];
     }
+    if ($homeAboutTraceTwo?->heading || $homeAboutTraceTwo?->description) {
+        $items[] = ['num' => '02', 'title' => $homeAboutTraceTwo?->heading ?? '', 'text' => $homeAboutTraceTwo?->description ?? ''];
+    }
+    if ($homeAboutTraceThree?->heading || $homeAboutTraceThree?->description) {
+        $items[] = ['num' => '03', 'title' => $homeAboutTraceThree?->heading ?? '', 'text' => $homeAboutTraceThree?->description ?? ''];
+    }
+
+    // Badge
+    $badgeNum  = $homeYearsExpertise?->heading     ?? '';
+    $badgeText = $homeYearsExpertise?->description ?? '';
 @endphp
 
 <section class="hero">
@@ -845,9 +829,9 @@
 @forelse($homeServices as $service)
 @php
     $content  = $service->content;
-    $imageUrl = $service->imageUrl() ?? $content?->imageUrl() ?? asset('assets/img/Trade and Customs.png');
-    $tag      = $content?->section   ?? $service->service_name;
-    $title    = $content?->heading   ?? $service->service_name;
+    $imageUrl = $service->imageUrl() ?? $content?->imageUrl() ?? '';
+    $tag      = $content?->section   ?? $service->service_name ?? '';
+    $title    = $content?->heading   ?? $service->service_name ?? '';
     $desc     = strip_tags($content?->description ?? '');
 @endphp
 <div class="col-12 col-sm-6 col-lg-4">
@@ -911,9 +895,9 @@
 
            @forelse($homeProjects as $project)
 @php
-    $pImg    = $project->imageUrl() ?: asset('assets/img/Trade and Customs.png');
-    $pCat    = $project->services->first()?->service_name ?: 'PROJECT';
-    $pClient = abbreviateClientName($project->client) ?: 'TRACE';
+    $pImg    = $project->imageUrl() ?? '';
+    $pCat    = $project->services->first()?->service_name ?? '';
+    $pClient = abbreviateClientName($project->client) ?? '';
 @endphp
 <div class="col-12 col-md-6 col-lg-4">
     <a href="{{ route('projectdetails', $project) }}" class="text-decoration-none">
@@ -946,16 +930,7 @@
             <div class="partner-logos-wrapper">
                 @php
                     // Marquee এর জন্য logos দুইবার render করতে হবে
-                    $partnerList = $partners->isNotEmpty()
-                        ? $partners
-                        : collect([
-                            (object)['name' => 'BAFISA',    '_fallback' => 'assets/img/bafisa.png'],
-                            (object)['name' => 'LIR',       '_fallback' => 'assets/img/lir 2.png'],
-                            (object)['name' => 'BIJEM',     '_fallback' => 'assets/img/bijem.png'],
-                            (object)['name' => 'SANEM',     '_fallback' => 'assets/img/sanem 2.png'],
-                            (object)['name' => 'BUILD',     '_fallback' => 'assets/img/build.png'],
-                            (object)['name' => 'B-Advancy', '_fallback' => 'assets/img/b-advancy.png'],
-                        ]);
+                    $partnerList = $partners;
                 @endphp
 
                 <div class="partner-logos d-flex align-items-center gap-4">

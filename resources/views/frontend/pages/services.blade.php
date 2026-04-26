@@ -302,77 +302,13 @@
 @php
     use Illuminate\Support\Str;
 
-    $servicesHeroTag = $servicesHero?->section ?: 'WHAT WE DO';
-    $servicesHeroTitle = $servicesHero?->heading ?: 'Our Services';
-    $servicesHeroTitleWord = $servicesHero?->design_word ?: 'Services';
-    $servicesHeroDescription = $servicesHero?->description ?: 'TRACE provides consultancy, research, and advocacy services that help government agencies and businesses reform policies, advance trade facilitation, expand market access, and strengthen laboratory and cold chain systems.';
+    $servicesHeroTag         = $servicesHero?->section     ?? '';
+    $servicesHeroTitle       = $servicesHero?->heading     ?? '';
+    $servicesHeroTitleWord   = $servicesHero?->design_word ?? '';
+    $servicesHeroDescription = $servicesHero?->description ?? '';
 
     if (empty($serviceCards)) {
-        $serviceCards = collect([
-            [
-                'img'      => 'Trade and Customs.png',
-                'tag'      => 'TRADE FACILITATION & CUSTOMS',
-                'title'    => 'Strengthening Cross-Border Trade & Customs Systems',
-                'desc'     => 'Supporting governments and trade bodies to modernise, simplify, and automate cross-border trade procedures in line with WTO Trade Facilitation Agreement commitments.',
-                'products' => '6 Products',
-            ],
-            [
-                'img'      => 'Lab Accreditation.png',
-                'tag'      => 'POLICY ADVOCACY',
-                'title'    => 'Evidence-Based Policy Reform & Advocacy',
-                'desc'     => 'Delivering evidence-based policy advocacy and recommendations to help governments design actionable, impactful reforms that translate complex realities into clear policy direction.',
-                'products' => '4 Products',
-            ],
-            [
-                'img'      => 'Digital Trade Infrastructure in Bangladesh_ A Readiness Assessment.png',
-                'tag'      => 'RESEARCH & ASSESSMENTS',
-                'title'    => 'In-Depth Trade, Economic & Development Research',
-                'desc'     => 'Conducting rigorous research, assessments, and evaluations on trade, economics, and development issues to drive informed decision-making for governments and development agencies.',
-                'products' => '5 Products',
-            ],
-            [
-                'img'      => 'Reforming Bangladesh\'s Export Licensing Framework_ Policy Brief 2024.png',
-                'tag'      => 'CAPACITY BUILDING',
-                'title'    => 'Need-Based Training for Public & Private Sector',
-                'desc'     => 'Building the capacity of public and private sector stakeholders through targeted, need-based training on trade, markets, IT systems, and laboratory practices.',
-                'products' => '4 Products',
-            ],
-            [
-                'img'      => 'Infrastructure Project.png',
-                'tag'      => 'PROJECT MANAGEMENT',
-                'title'    => 'End-to-End Project Design, Management & Implementation',
-                'desc'     => 'Designing, managing, and implementing tailor-made projects that address trade, economic, and market access challenges — delivering measurable results across the full lifecycle.',
-                'products' => '3 Products',
-            ],
-            [
-                'img'      => 'Capacity Building.png',
-                'tag'      => 'TECHNOLOGY SOLUTIONS',
-                'title'    => 'Technology-Driven Trade Systems & Digital Platforms',
-                'desc'     => 'Designing and deploying technology-driven trade systems — LIMS, certification platforms, single windows, and custom digital tools — that make trade procedures faster and cost-effective.',
-                'products' => '5 Products',
-            ],
-            [
-                'img'      => 'Lab Project.png',
-                'tag'      => 'LABORATORY SERVICES',
-                'title'    => 'Lab Accreditation, QMS & Testing Capacity Development',
-                'desc'     => 'Supporting public and private laboratories to establish quality management systems, obtain ISO/IEC 17025 accreditation, and enhance testing capacity to meet international standards.',
-                'products' => '4 Products',
-            ],
-            [
-                'img'      => 'Infrastructure Design (1).png',
-                'tag'      => 'TRADE INFORMATION SYSTEMS',
-                'title'    => 'Online Portals, Databases & Transparency Platforms',
-                'desc'     => 'Enhancing transparency in export–import by developing online portals, trade information databases, notification systems, and digital platforms for accurate, timely, and reliable data.',
-                'products' => '4 Products',
-            ],
-            [
-                'img'      => 'Capacity Building (2).png',
-                'tag'      => 'COLD CHAIN & LOGISTICS',
-                'title'    => 'Temperature-Controlled Logistics & Supply Chain Systems',
-                'desc'     => 'Designing and strengthening cold chain and logistics systems to help agricultural, pharmaceutical, and perishable goods sectors meet quality and compliance standards.',
-                'products' => '4 Products',
-            ],
-        ]);
+        $serviceCards = collect();
     }
 @endphp
 
@@ -402,7 +338,7 @@
             @if(Str::contains($servicesHeroTitle, $servicesHeroTitleWord))
                 <span class="teal-text">{{ $servicesHeroTitleWord }}</span>{{ Str::after($servicesHeroTitle, $servicesHeroTitleWord) }}
             @else
-                <span class="teal-text">Services</span>
+                <span class="teal-text">asdafdfa</span>
             @endif
         </h2>
 

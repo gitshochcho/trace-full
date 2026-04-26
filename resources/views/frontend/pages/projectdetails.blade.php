@@ -253,8 +253,8 @@
 
 @section('content')
 @php
-    $heroImage = $project->imageUrl() ?: asset('assets/img/projecthero.png');
-    $heroBadge = $project->services->first()?->service_name ?: ($project->project_standard ?: 'PROJECT');
+    $heroImage = $project->imageUrl() ?? '';
+    $heroBadge = $project->services->first()?->service_name ?? $project->project_standard ?? '';
     $galleryImages = $project->galleryImageUrls();
     $galleryMain = $galleryImages[0]['url'] ?? $heroImage;
     $gallerySideOne = $galleryImages[1]['url'] ?? $galleryMain;
@@ -267,12 +267,12 @@
     $phaseSectionContent = contentBlock('project-phase-section');
     $outcomeSectionContent = contentBlock('project-outcome-section');
 
-    $locationHeading = $locationSectionContent?->heading ?: 'Project Locations';
-    $locationDescription = $locationSectionContent?->description;
-    $phaseHeading = $phaseSectionContent?->heading ?: 'Project Phases';
-    $phaseDescription = $phaseSectionContent?->description;
-    $outcomeHeading = $outcomeSectionContent?->heading ?: 'Key Outcomes';
-    $outcomeDescription = $outcomeSectionContent?->description;
+    $locationHeading     = $locationSectionContent?->heading     ?? '';
+    $locationDescription = $locationSectionContent?->description ?? '';
+    $phaseHeading        = $phaseSectionContent?->heading        ?? '';
+    $phaseDescription    = $phaseSectionContent?->description    ?? '';
+    $outcomeHeading      = $outcomeSectionContent?->heading      ?? '';
+    $outcomeDescription  = $outcomeSectionContent?->description  ?? '';
 
     $projectWorkWithUsControl = contentBlock('projects-work-with-us');
     $showWorkWithUs = ! in_array(
@@ -308,17 +308,17 @@
         </div>
 
         <div class="project-title-wrapper">
-            <h2 class="sub-heading mb-0">{{ $project->project_standard ?: 'Project Brief' }}</h2>
+            <h2 class="sub-heading mb-0">{{ $project->project_standard ?? '' }}</h2>
             <h1 class="main-heading">{{ $project->project_title }}</h1>
         </div>
 
         <div class="client-meta mb-5">
-            <p class="mb-0 text-white-50">Client: <span class="text-white fw-medium">{{ abbreviateClientName($project->client) ?: 'N/A' }}</span></p>
+            <p class="mb-0 text-white-50">Client: <span class="text-white fw-medium">{{ abbreviateClientName($project->client) ?? '' }}</span></p>
         </div>
 
         <div class="project-meta-footer d-flex flex-wrap gap-4 pt-4 border-top border-white-5">
             <div class="meta-item">
-                <i class="far fa-calendar-alt"></i> {{ $project->durationLabel() ?: 'TBA' }}
+                <i class="far fa-calendar-alt"></i> {{ $project->durationLabel() ?? '' }}
             </div>
             <div class="meta-item">
                 <i class="fas fa-map-marker-alt"></i> {{ $locationSummary }}
@@ -339,7 +339,7 @@
             <div class="col-lg-8">
                 <div class="overview-content mb-5">
                     <h3 class="section-title-accent">Project Overview</h3>
-                    <p class="mt-4">{{ stripPTags($project->overview) ?: 'No project overview has been added yet.' }}</p>
+                    <p class="mt-4">{{ stripPTags($project->overview) ?? '' }}</p>
                 </div>
 
                 {{-- <div class="mb-5">
@@ -411,14 +411,14 @@
                 </div> --}}
 
                 <div class="outcomes-content">
-                    <h3 class="section-title-accent">{{ $outcomeHeading }}</h3>
+                    <h3 class="section-title-accent">{{ $outcomeHeading }}Key Outcomes</h3>
                     @if(!empty($outcomeDescription))
                         <p class="mt-3">{{ strip_tags($outcomeDescription) }}</p>
                     @endif
                     <ul class="outcomes-list list-unstyled mt-4">
                         @forelse($project->outcomes as $outcome)
                             <li>
-                                <i class="{{ $outcome->icon ?: 'fas fa-check-circle' }} me-2"></i>
+                                <i class="{{ $outcome->icon ?? 'fas fa-check-circle' }} me-2"></i>
                                 <span>{!! nl2br(e(strip_tags($outcome->text))) !!}</span>
                             </li>
                         @empty
@@ -431,12 +431,12 @@
     <div class="facts-card mb-4 shadow-sm">
         <div class="facts-header">
             <h6 class="mb-1 fw-bold text-white">Project Facts</h6>
-            <p class="mb-0 extra-small text-white-50">{{ $project->project_standard ?: 'Project Overview' }} — {{ abbreviateClientName($project->client) ?: 'TRACE' }}</p>
+            <p class="mb-0 extra-small text-white-50">{{ $project->project_standard ?? '' }}{{ $project->project_standard && $project->client ? ' — ' : '' }}{{ abbreviateClientName($project->client) ?? '' }}</p>
         </div>
         <div class="facts-body">
             <div class="fact-row">
                 <span class="label">Client</span>
-                <span class="value text-end">{{ abbreviateClientName($project->client) ?: 'N/A' }}</span>
+                <span class="value text-end">{{ abbreviateClientName($project->client) ?? '' }}</span>
             </div>
             @if($project->project_standard)
             <div class="fact-row">
@@ -450,7 +450,7 @@
             </div>
             <div class="fact-row">
                 <span class="label">Standard</span>
-                <span class="value text-end">{{ $project->project_standard ?: 'N/A' }}</span>
+                <span class="value text-end">{{ $project->project_standard ?? '' }}</span>
             </div>
             <div class="fact-row">
                 <span class="label">Location</span>
@@ -458,7 +458,7 @@
             </div>
             <div class="fact-row">
                 <span class="label">Duration</span>
-                <span class="value text-end">{{ $project->durationLabel() ?: 'TBA' }}</span>
+                <span class="value text-end">{{ $project->durationLabel() ?? '' }}</span>
             </div>
             <div class="fact-row border-0">
                 <span class="label">Phases</span>
@@ -496,11 +496,11 @@
         <div class="row g-4">
             @forelse($relatedProjects as $item)
                 @php
-                    $itemImage = $item->imageUrl() ?: asset('assets/img/Trade and Customs.png');
-                    $itemSector = $item->services->first()?->service_name ?: $item->project_standard ?: 'Project';
-                    $itemYear = $item->start_date?->format('Y');
-                    $itemYearEnd = $item->end_date?->format('Y');
-                    $itemYearLabel = $itemYear && $itemYearEnd ? $itemYear . '–' . $itemYearEnd : ($itemYear ?: $itemYearEnd ?: '');
+                    $itemImage     = $item->imageUrl() ?? '';
+                    $itemSector    = $item->services->first()?->service_name ?? $item->project_standard ?? '';
+                    $itemYear      = $item->start_date?->format('Y');
+                    $itemYearEnd   = $item->end_date?->format('Y');
+                    $itemYearLabel = $itemYear && $itemYearEnd ? $itemYear . '–' . $itemYearEnd : ($itemYear ?? $itemYearEnd ?? '');
                 @endphp
                 <div class="col-lg-4 col-md-6">
                     <div class="project-mini-card">
@@ -508,9 +508,9 @@
                             <img src="{{ $itemImage }}" alt="{{ $item->project_title }}" class="img-fluid">
                         </div>
                         <div class="card-content">
-                            <span class="client-name text-uppercase">{{ abbreviateClientName($item->client) ?: 'TRACE' }}</span>
+                            <span class="client-name text-uppercase">{{ abbreviateClientName($item->client) ?? '' }}</span>
                             <h4 class="project-mini-title">{{ $item->project_title }}</h4>
-                            <p class="project-mini-meta">{{ $itemSector }} · {{ $itemYearLabel ?: $item->project_status }}</p>
+                            <p class="project-mini-meta">{{ $itemSector }} · {{ $itemYearLabel ?: ($item->project_status ?? '') }}</p>
                             <a href="{{ route('projectdetails', $item) }}" class="view-link mt-2 d-inline-flex">View Project <i class="fas fa-arrow-right ms-1"></i></a>
                         </div>
                     </div>

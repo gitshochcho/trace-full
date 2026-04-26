@@ -1000,11 +1000,11 @@
 
 @section('content')
 @php
-    $aboutSection = $aboutPageContent?->section ?: 'ABOUT TRACE';
-    $aboutHeading = $aboutPageContent?->heading ?: 'Empowering Change through Insightful Consulting';
-    $aboutSubHeading = $aboutPageContent?->sub_heading ?: 'A firm built on insight, strategy, and lasting impact.';
-    $aboutDescription = $aboutPageContent?->description ?: 'We work at the intersection of research, innovation, and implementation—empowering institutions with data-driven insights.';
-    $aboutImage = $aboutPageContent?->imageUrl() ?: asset('assets/img/Trace team.png');
+    $aboutSection    = $aboutPageContent?->section     ?? '';
+    $aboutHeading    = $aboutPageContent?->heading     ?? '';
+    $aboutSubHeading = $aboutPageContent?->sub_heading ?? '';
+    $aboutDescription= $aboutPageContent?->description ?? '';
+    $aboutImage      = $aboutPageContent?->imageUrl()  ?? '';
 
     $aboutProjects = $aboutProjects ?? collect();
     $aboutInsights = $aboutInsights ?? collect();
@@ -1015,9 +1015,9 @@
     $aboutUniqueFeaturesContent = $aboutUniqueFeaturesContent ?? null;
     $uniqueFeatureCards = $uniqueFeatureCards ?? collect();
 
-    $commitmentHeading = $aboutCommitmentContent?->heading ?: 'OUR COMMITMENT';
-    $commitmentSubHeading = $aboutCommitmentContent?->sub_heading ?: 'We are committed to';
-    $commitmentImage = $aboutCommitmentContent?->imageUrl() ?: asset('assets/img/Background (3).png');
+    $commitmentHeading    = $aboutCommitmentContent?->heading     ?? '';
+    $commitmentSubHeading = $aboutCommitmentContent?->sub_heading ?? '';
+    $commitmentImage      = $aboutCommitmentContent?->imageUrl()  ?? '';
     $commitmentRawDescription = (string) ($aboutCommitmentContent?->description ?: '');
 
     $commitmentPoints = collect();
@@ -1048,75 +1048,25 @@
         }
     }
 
-    $commitmentBottomText = $commitmentBottomText ?: ($aboutCommitmentContent?->design_word ?: 'At Trace Consulting, we do not just advise, we collaborate to create lasting change.');
-    $defaultCommitmentPoints = collect([
-        'Integrity and transparency in every engagement',
-        'Delivering measurable outcomes, not just recommendations',
-        'Building local capacity and ownership',
-        'Promoting innovation and sustainability in every project',
-    ]);
-    $commitmentPoints = $commitmentPoints->isNotEmpty() ? $commitmentPoints : $defaultCommitmentPoints;
+    $commitmentBottomText = $commitmentBottomText ?: ($aboutCommitmentContent?->design_word ?? '');
 
-    $frameworkTag = $aboutFrameworkContent?->section ?: 'OUR FRAMEWORK';
-    $frameworkHeading = $aboutFrameworkContent?->heading ?: "How We\nWork";
-    $frameworkDescription = $aboutFrameworkContent?->description ?: 'Our proven three-stage framework turns complex trade and policy challenges into measurable, lasting outcomes for every client we serve.';
-    $defaultFrameworkItems = collect([
-        [
-            'title' => 'Insight',
-            'description' => 'We turn complex trade and policy issues into clear insights using research, data, and deep expertise to transform challenges and risks into well-defined opportunities ready for action.',
-            'icon' => null,
-        ],
-        [
-            'title' => 'Strategy',
-            'description' => 'We formulate insights into strategies, devising evidence and technology-driven solutions that meet global standards, align with institutional realities, and drive sustainable growth.',
-            'icon' => null,
-        ],
-        [
-            'title' => 'Impact',
-            'description' => 'We deliver measurable and lasting results by reducing barriers, enhancing competitiveness, driving reforms, and embedding the tools clients need to sustain change independently.',
-            'icon' => null,
-        ],
+    $frameworkTag         = $aboutFrameworkContent?->section     ?? '';
+    $frameworkHeading     = $aboutFrameworkContent?->heading     ?? '';
+    $frameworkDescription = $aboutFrameworkContent?->description ?? '';
+    $frameworkDisplayItems = $frameworkItems->map(fn ($item) => [
+        'title'       => $item->heading ?? '',
+        'description' => strip_tags((string) $item->description),
+        'icon'        => $item->iconUrl(),
     ]);
-    $frameworkDisplayItems = $frameworkItems->isNotEmpty()
-        ? $frameworkItems->map(fn ($item) => [
-            'title' => $item->heading ?: 'Framework Item',
-            'description' => strip_tags((string) $item->description),
-            'icon' => $item->iconUrl(),
-        ])
-        : $defaultFrameworkItems;
 
-    $featuresTag = $aboutUniqueFeaturesContent?->section ?: 'OUR UNIQUE FEATURES';
-    $featuresHeading = $aboutUniqueFeaturesContent?->heading ?: "What Makes TRACE\nDifferent";
-    $featuresDescription = $aboutUniqueFeaturesContent?->description ?: 'TRACE delivers connected, sustainable, and tailored solutions from policy to practice that streamline processes, strengthen institutions, and empower growth.';
-    $defaultFeatureCards = collect([
-        [
-            'title' => 'Industry-wide Network',
-            'description' => "With proven networks across government agencies and private sector stakeholders, TRACE consistently bridges policy leadership and business realities, enabling reforms prioritising client's need.",
-            'icon' => null,
-        ],
-        [
-            'title' => 'Sustainable Approach',
-            'description' => 'TRACE works with partners to build sustainable solutions, embedding facilitation tools into legislation, training mechanisms, and digital systems that outlast the engagement.',
-            'icon' => null,
-        ],
-        [
-            'title' => 'Tailored Innovation',
-            'description' => 'From tech-driven trade systems, lab-accreditation roadmaps, or temperature-controlled logistics, TRACE designs solutions customised to sectoral realities and institutional capacity.',
-            'icon' => null,
-        ],
-        [
-            'title' => 'End-to-End Integrated Solutions',
-            'description' => 'TRACE provides fully integrated support from strategic design through implementation and evaluation, ensuring every solution works as a connected, coherent whole.',
-            'icon' => null,
-        ],
+    $featuresTag         = $aboutUniqueFeaturesContent?->section     ?? '';
+    $featuresHeading     = $aboutUniqueFeaturesContent?->heading     ?? '';
+    $featuresDescription = $aboutUniqueFeaturesContent?->description ?? '';
+    $featureDisplayCards = $uniqueFeatureCards->map(fn ($item) => [
+        'title'       => $item->heading ?? '',
+        'description' => strip_tags((string) $item->description),
+        'icon'        => $item->iconUrl(),
     ]);
-    $featureDisplayCards = $uniqueFeatureCards->isNotEmpty()
-        ? $uniqueFeatureCards->map(fn ($item) => [
-            'title' => $item->heading ?: 'Feature',
-            'description' => strip_tags((string) $item->description),
-            'icon' => $item->iconUrl(),
-        ])
-        : $defaultFeatureCards;
 
     $featuredInsight = $aboutInsights->first();
     $secondaryInsights = $aboutInsights->slice(1, 3);
@@ -1363,9 +1313,9 @@
         <div class="projects-grid">
             @forelse($aboutProjects as $project)
                 @php
-                    $projectImage = $project->imageUrl() ?: asset('assets/img/Lab Project.png');
-                    $projectBadge = strtoupper($project->services->first()?->service_name ?: ($project->project_standard ?: 'PROJECT'));
-                    $projectClient = $project->client ?: 'TRACE Project';
+                    $projectImage  = $project->imageUrl() ?? '';
+                    $projectBadge  = strtoupper($project->services->first()?->service_name ?? $project->project_standard ?? '');
+                    $projectClient = $project->client ?? '';
                 @endphp
 
                 <a href="{{ route('projectdetails', $project) }}" class="project-card-link">
@@ -1409,12 +1359,12 @@
             @if($featuredInsight)
                 @php
                     $featuredLeadArticle = $featuredInsight->articles->first();
-                    $featuredImage = $featuredInsight->imageUrl() ?: asset('assets/img/Insight.png');
-                    $featuredType = strtoupper(str_replace('_', ' ', $featuredInsight->type ?: 'read'));
-                    $featuredTitle = $featuredInsight->heading ?: ($featuredLeadArticle?->title ?: 'Insight');
-                    $featuredDescription = \Illuminate\Support\Str::limit(strip_tags($featuredInsight->description ?: ($featuredLeadArticle?->description ?: '')), 180);
-                    $featuredAction = $featuredInsight->actionLabel();
-                    $featuredMetaDate = optional($featuredInsight->published_at)->format('M Y') ?: 'TBA';
+                    $featuredImage       = $featuredInsight->imageUrl() ?? '';
+                    $featuredType        = strtoupper(str_replace('_', ' ', $featuredInsight->type ?? ''));
+                    $featuredTitle       = $featuredInsight->heading ?? $featuredLeadArticle?->title ?? '';
+                    $featuredDescription = \Illuminate\Support\Str::limit(strip_tags($featuredInsight->description ?? $featuredLeadArticle?->description ?? ''), 180);
+                    $featuredAction      = $featuredInsight->actionLabel();
+                    $featuredMetaDate    = optional($featuredInsight->published_at)->format('M Y') ?? '';
                     $featuredMetaDuration = $featuredLeadArticle?->read_minutes ? $featuredLeadArticle->read_minutes . ' min read' : 'Quick read';
 
                     $featuredLink = '#';
@@ -1434,7 +1384,7 @@
                         </div>
                         <div class="card-body">
                             <h4 class="card-h">{{ $featuredTitle }}</h4>
-                            <p class="card-p">{{ $featuredDescription ?: 'Insight summary is being updated.' }}</p>
+                            <p class="card-p">{{ $featuredDescription }}</p>
                         </div>
                         <div class="card-footer">
                             <span class="meta-text">{{ $featuredMetaDate }} · {{ $featuredMetaDuration }}</span>
@@ -1451,11 +1401,11 @@
             @foreach($secondaryInsights as $insight)
                 @php
                     $leadArticle = $insight->articles->first();
-                    $insightImage = $insight->imageUrl() ?: asset('assets/img/WTO.png');
-                    $insightType = strtoupper(str_replace('_', ' ', $insight->type ?: 'read'));
-                    $insightTitle = $insight->heading ?: ($leadArticle?->title ?: 'Insight');
-                    $insightAction = $insight->actionLabel();
-                    $insightMetaDate = optional($insight->published_at)->format('M Y') ?: 'TBA';
+                    $insightImage    = $insight->imageUrl() ?? '';
+                    $insightType     = strtoupper(str_replace('_', ' ', $insight->type ?? ''));
+                    $insightTitle    = $insight->heading ?? $leadArticle?->title ?? '';
+                    $insightAction   = $insight->actionLabel();
+                    $insightMetaDate = optional($insight->published_at)->format('M Y') ?? '';
                     $insightMetaDuration = $leadArticle?->read_minutes ? $leadArticle->read_minutes . ' min' : 'Quick read';
 
                     $insightLink = '#';
@@ -1502,8 +1452,8 @@
                 </div>
                 <h2 class="partners-title">
                     @php
-                        $pHeading    = $partnersContent?->heading     ?: 'Trusted by Leading Institutions';
-                        $pDesignWord = $partnersContent?->design_word ?: 'Institutions';
+                        $pHeading    = $partnersContent?->heading     ?? '';
+                        $pDesignWord = $partnersContent?->design_word ?? '';
                         if ($pDesignWord && Str::contains($pHeading, $pDesignWord)) {
                             $pHeading = Str::before($pHeading, $pDesignWord)
                                 . '<span>' . $pDesignWord . '</span>'
@@ -1515,8 +1465,7 @@
             </div>
             <div class="col-lg-6">
                 <p class="partners-desc">
-                    {!! $partnersContent?->description
-                        ?: 'We work with governments, multilateral development organisations, regulatory bodies, and private sector leaders across the region — building long-term partnerships grounded in trust and results.' !!}
+                    {!! $partnersContent?->description ?? '' !!}
                 </p>
             </div>
         </div>
