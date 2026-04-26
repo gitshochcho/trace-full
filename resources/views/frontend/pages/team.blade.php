@@ -136,7 +136,7 @@
     border-radius: 10px; display: flex; align-items: center; justify-content: center;
     color: #64748B; text-decoration: none; transition: 0.3s;
 }
-.social-links a:hover { background: #01354B; color: #fff; }
+.social-links a:hover { background: #C0C0C0; color: #fff; }
 .btn-profile {
     background: #fff; border: 1px solid #E5E9ED;
     padding: 10px 25px; border-radius: 30px; font-size: 13px;
@@ -347,7 +347,7 @@
      /* background: #ffffff; */
     /* backdrop-filter: blur(8px); */
     -webkit-backdrop-filter: blur(8px);
-    border: 0.5px solid rgba(255, 255, 255, 0.15);
+    border: 0.3px solid rgba(255, 255, 255, 0.15);
     color: white;
     border-radius: 8px; /* ছবি অনুযায়ী অল্প রাউন্ড */
     display: flex;

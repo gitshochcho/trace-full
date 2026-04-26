@@ -288,14 +288,16 @@
 }
 
 .framework-main-container {
-    width: 1080px;
+    max-width: 1072px;
+    width: 100%;
     margin: 0 auto;
     display: block;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
 .framework-right-box {
-    width: 708px;
-    min-height: 524px;
+    width: 500px;
     background: #ffffff;
     border: 1px solid #E5E9ED;
     border-radius: 16px;
@@ -309,6 +311,7 @@
     margin: 0;
     display: flex;
     flex-wrap: nowrap;
+    column-gap: 72px;
 }
 
 .framework-tag .line {
@@ -472,8 +475,11 @@
 }
 
 .projects-main-container {
-    max-width: 1080px;
+    max-width: 1072px;
+    width: 100%;
     margin: 0 auto;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
 .orange-line {
@@ -616,8 +622,11 @@
 }
 
 .insights-container {
-    width: 1072px;
+    max-width: 1072px;
+    width: 100%;
     margin: 0 auto;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
 .insights-header {
@@ -957,6 +966,34 @@
     .partner-logo-wrapper:nth-child(2) { border-right: none; }
     .partner-logo-wrapper { border-bottom: 1px solid #E5E9ED; }
 }
+
+.mission-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 147px;
+    height: 46px;
+    padding: 12px 28px;
+    border-radius: 100px;
+    border: 2px solid #FF6B00;
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    opacity: 1;
+    white-space: nowrap;
+    transition: background-color 0.25s ease, color 0.25s ease, transform 0.2s ease;
+}
+
+.mission-btn-white {
+    background-color: #ffffff;
+    color: #000000;
+    border: 2px solid #D0D8DE;
+}
+.mission-btn-white:hover {
+    background-color: #FF6B00;
+    color: #ffffff;
+    transform: translateY(-2px);
+}
 </style>
 @endpush
 
@@ -1156,6 +1193,10 @@
                         <div class="text-secondary">
                             {!! strip_tags($ourMission?->description ?? 'Mission description here...') !!}
                         </div>
+                        <div class="d-flex gap-3 mt-4 flex-wrap">
+                            <a href="{{ route('contact') }}" class="mission-btn mission-btn-white">Work With Us →</a>
+                            <a href="{{ route('services') }}" class="mission-btn mission-btn-white">Our Services</a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1206,7 +1247,7 @@
 
 <section class="framework-section">
     <div class="framework-main-container">
-        <div class="row align-items-center" style="column-gap: 72px;">
+        <div class="row align-items-center">
             <div class="col-lg-5 p-0">
                 <div class="framework-tag d-flex align-items-center gap-2 mb-3">
                     <span class="line"></span>
