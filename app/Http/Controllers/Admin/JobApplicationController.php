@@ -62,4 +62,15 @@ class JobApplicationController extends Controller
 
         return back()->with('success', $message);
     }
+
+    public function destroy(JobApplication $application)
+    {
+        if ($application->cv_path && Storage::disk('public')->exists($application->cv_path)) {
+            Storage::disk('public')->delete($application->cv_path);
+        }
+
+        $application->delete();
+
+        return back()->with('success', 'Application deleted successfully.');
+    }
 }

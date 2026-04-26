@@ -26,6 +26,15 @@ class TeamController extends Controller
         return view('admin.team.index', compact('teams', 'projects'));
     }
 
+    public function create()
+    {
+        $projects = Project::query()
+            ->orderBy('project_title')
+            ->get(['id', 'project_title']);
+
+        return view('admin.team.create', compact('projects'));
+    }
+
     public function store(Request $request): RedirectResponse
     {
         $validated = $this->validateTeamRequest($request);
@@ -48,7 +57,7 @@ class TeamController extends Controller
         $this->syncSocialMedia($team, $validated['social_media'] ?? [], $request->file('social_media_icons', []));
 
         return redirect()
-            ->route('admin.teams.edit', $team)
+            ->route('admin.teams.index')
             ->with([
                 'message' => 'Team member created successfully',
                 'alert-type' => 'success',
@@ -102,7 +111,7 @@ class TeamController extends Controller
         $this->syncSocialMedia($team, $validated['social_media'] ?? [], $request->file('social_media_icons', []));
 
         return redirect()
-            ->route('admin.teams.edit', $team)
+            ->route('admin.teams.index')
             ->with([
                 'message' => 'Team member updated successfully',
                 'alert-type' => 'success',

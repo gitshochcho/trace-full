@@ -20,26 +20,42 @@ class ServiceController extends Controller
         return view('admin.service.index', compact('services', 'contents'));
     }
 
+    public function create()
+    {
+        $contents = Content::orderBy('heading')->get();
+
+        return view('admin.service.create', compact('contents'));
+    }
+
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'content_id' => ['nullable', 'exists:contents,id'],
-            'slug' => ['required', 'string', 'max:255', 'unique:services,slug'],
-            'service_name' => ['required', 'string', 'max:255'],
-            'sort_order' => ['nullable', 'integer', 'min:0'],
-            'active' => ['nullable', 'boolean'],
-            'overview' => ['nullable', 'string'],
-            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:4096'],
-            'icon' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:2048'],
+            'content_id'          => ['nullable', 'exists:contents,id'],
+            'slug'                => ['required', 'string', 'max:255', 'unique:services,slug'],
+            'service_name'        => ['required', 'string', 'max:255'],
+            'sort_order'          => ['nullable', 'integer', 'min:0'],
+            'active'              => ['nullable', 'boolean'],
+            'overview'            => ['nullable', 'string'],
+            'image'               => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:4096'],
+            'icon'                => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:2048'],
+            'details'             => ['nullable', 'array'],
+            'details.*.id'        => ['nullable', 'integer'],
+            'details.*.text'      => ['nullable', 'string'],
+            'details_icons'       => ['nullable', 'array'],
+            'details_icons.*'     => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:2048'],
+            'solutions'           => ['nullable', 'array'],
+            'solutions.*.id'      => ['nullable', 'integer'],
+            'solutions.*.heading'     => ['nullable', 'string', 'max:255'],
+            'solutions.*.sub_heading' => ['nullable', 'string', 'max:255'],
         ]);
 
         $service = Service::create([
-            'content_id' => $validated['content_id'] ?? null,
-            'slug' => $validated['slug'],
+            'content_id'   => $validated['content_id'] ?? null,
+            'slug'         => $validated['slug'],
             'service_name' => $validated['service_name'],
-            'overview' => $this->normalizeEditorText($validated['overview'] ?? null),
-            'sort_order' => $validated['sort_order'] ?? 0,
-            'active' => $request->boolean('active', true),
+            'overview'     => $this->normalizeEditorText($validated['overview'] ?? null),
+            'sort_order'   => $validated['sort_order'] ?? 0,
+            'active'       => $request->boolean('active', true),
         ]);
 
         if ($request->hasFile('image')) {
@@ -50,8 +66,11 @@ class ServiceController extends Controller
             $service->addMedia($request->file('icon'))->toMediaCollection('icon');
         }
 
+        $this->syncDetails($service, $request->input('details', []), $request->file('details_icons', []));
+        $this->syncSolutions($service, $request->input('solutions', []));
+
         return redirect()
-            ->route('admin.services.edit', $service)
+            ->route('admin.services.index')
             ->with([
                 'message' => 'Service created successfully',
                 'alert-type' => 'success',
@@ -114,7 +133,7 @@ class ServiceController extends Controller
         $this->syncSolutions($service, $request->input('solutions', []));
 
         return redirect()
-            ->route('admin.services.edit', $service)
+            ->route('admin.services.index')
             ->with([
                 'message' => 'Service updated successfully',
                 'alert-type' => 'success',
