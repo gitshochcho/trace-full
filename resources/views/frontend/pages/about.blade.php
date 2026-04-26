@@ -957,6 +957,34 @@
     .partner-logo-wrapper:nth-child(2) { border-right: none; }
     .partner-logo-wrapper { border-bottom: 1px solid #E5E9ED; }
 }
+
+.mission-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 147px;
+    height: 46px;
+    padding: 12px 28px;
+    border-radius: 100px;
+    border: 2px solid #FF6B00;
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    opacity: 1;
+    white-space: nowrap;
+    transition: background-color 0.25s ease, color 0.25s ease, transform 0.2s ease;
+}
+
+.mission-btn-white {
+    background-color: #ffffff;
+    color: #000000;
+    border: 2px solid #D0D8DE;
+}
+.mission-btn-white:hover {
+    background-color: #FF6B00;
+    color: #ffffff;
+    transform: translateY(-2px);
+}
 </style>
 @endpush
 
@@ -1155,6 +1183,10 @@
                         <h4 class="fw-bold" style="font-size: 18px;">{{ $ourMission?->heading ?? 'Our Mission' }}</h4>
                         <div class="text-secondary">
                             {!! strip_tags($ourMission?->description ?? 'Mission description here...') !!}
+                        </div>
+                        <div class="d-flex gap-3 mt-4 flex-wrap">
+                            <a href="{{ route('contact') }}" class="mission-btn mission-btn-white">Work With Us →</a>
+                            <a href="{{ route('services') }}" class="mission-btn mission-btn-white">Our Services</a>
                         </div>
                     </div>
                 </div>

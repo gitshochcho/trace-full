@@ -123,7 +123,7 @@
 }
 
 .btn-social, .btn-email {
-    padding: 8px 18px;
+    padding: 6px 14px;
     border-radius: 8px;
     text-decoration: none;
     font-size: 14px;
@@ -134,9 +134,10 @@
 }
 
 .btn-social {
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: #fff;
-    background: transparent;
+    border: 0.3px solid rgba(255, 255, 255, 0.3);
+    color: #000000;
+    background: #ffffff;
+    font-weight: 700;
 }
 
 .btn-social:hover {
@@ -147,9 +148,10 @@
 }
 
 .btn-email {
-      border: 1px solid rgba(255, 255, 255, 0.3);
-    color: #fff;
-    background: transparent;
+      border: 0.3px solid rgba(255, 255, 255, 0.3);
+    color: #000000;
+    background: #ffffff;
+    font-weight: 700;
 }
 
 .btn-email:hover {
