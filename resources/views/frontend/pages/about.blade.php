@@ -288,14 +288,16 @@
 }
 
 .framework-main-container {
-    width: 1080px;
+    max-width: 1072px;
+    width: 100%;
     margin: 0 auto;
     display: block;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
 .framework-right-box {
-    width: 708px;
-    min-height: 524px;
+    width: 500px;
     background: #ffffff;
     border: 1px solid #E5E9ED;
     border-radius: 16px;
@@ -309,6 +311,7 @@
     margin: 0;
     display: flex;
     flex-wrap: nowrap;
+    column-gap: 72px;
 }
 
 .framework-tag .line {
@@ -472,8 +475,11 @@
 }
 
 .projects-main-container {
-    max-width: 1080px;
+    max-width: 1072px;
+    width: 100%;
     margin: 0 auto;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
 .orange-line {
@@ -616,8 +622,11 @@
 }
 
 .insights-container {
-    width: 1072px;
+    max-width: 1072px;
+    width: 100%;
     margin: 0 auto;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
 .insights-header {
@@ -1238,7 +1247,7 @@
 
 <section class="framework-section">
     <div class="framework-main-container">
-        <div class="row align-items-center" style="column-gap: 72px;">
+        <div class="row align-items-center">
             <div class="col-lg-5 p-0">
                 <div class="framework-tag d-flex align-items-center gap-2 mb-3">
                     <span class="line"></span>
