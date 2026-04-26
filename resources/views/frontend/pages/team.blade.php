@@ -578,16 +578,16 @@
 @section('content')
 
 @php
-    $heroTag = $teamPageContent?->section ?: 'THE PEOPLE BEHIND THE WORK';
-    $heroHeading = $teamPageContent?->heading ?: 'Experts who';
-    $heroDesignWord = $teamPageContent?->design_word ?: 'drive change.';
-    $heroDescription = $teamPageContent?->description ?: 'TRACE brings together a permanent core team of trade specialists, researchers, and technologists - supported by a network of domain experts engaged on specific projects and engagements.';
+    $heroTag         = $teamPageContent?->section     ?? '';
+    $heroHeading     = $teamPageContent?->heading     ?? '';
+    $heroDesignWord  = $teamPageContent?->design_word ?? '';
+    $heroDescription = $teamPageContent?->description ?? '';
 
-    $leader = $leadTeam;
-    $leaderImage = $leader?->imageUrl() ?: asset('assets/img/fuad.png');
-    $leaderName = $leader?->fullName() ?: 'Team Lead';
-    $leaderDesignation = $leader?->designation ?: 'Managing Director & Chief Executive Officer';
-    $leaderBio = stripPTags($leader?->description) ?: 'Profile details are being updated.';
+    $leader            = $leadTeam;
+    $leaderImage       = $leader?->imageUrl()      ?? '';
+    $leaderName        = $leader?->fullName()       ?? '';
+    $leaderDesignation = $leader?->designation      ?? '';
+    $leaderBio         = stripPTags($leader?->description) ?? '';
 
     $leaderSocials = $leader?->socialMedia ?? collect();
     $leaderExpertise = $leader?->experties ?? collect();
@@ -725,16 +725,15 @@
             
             <div class="team-content flex-grow-1">
                 <h4 class="name">{{ $member->fullName() }}</h4>
-                <h5 class="role">{{ $member->designation ?: 'Team Specialist' }}</h5>
-                <span class="sub text-muted">{{ $member->experties->first()?->heading ?: 'Core Team' }}</span>
-                
-                <p class="bio">{{ \Illuminate\Support\Str::limit(stripPTags($member->description), 150) ?: 'Profile summary is coming soon.' }}</p>
-                
+                <h5 class="role">{{ $member->designation ?? '' }}</h5>
+                <span class="sub text-muted">{{ $member->experties->first()?->heading ?? '' }}</span>
+
+                <p class="bio">{{ \Illuminate\Support\Str::limit(stripPTags($member->description), 150) }}</p>
+
                 <div class="tags">
                     @forelse($member->experties->take(3) as $expertise)
                         <span>{{ $expertise->heading }}</span>
                     @empty
-                        <span>Team Member</span>
                     @endforelse
                 </div>
             </div>
@@ -802,13 +801,12 @@
             <div class="expert-right">
                 <span class="expert-badge {{ $badgeClasses[$index % count($badgeClasses)] }}">{{ $expertLabels[$index % count($expertLabels)] }}</span>
                 <h4>{{ $expert->fullName() }}</h4>
-                <p class="role">{{ $expert->designation ?: 'Domain Expert' }}</p>
-                <p class="desc">{{ \Illuminate\Support\Str::limit(stripPTags($expert->description), 110) ?: 'Expert profile summary is coming soon.' }}</p>
+                <p class="role">{{ $expert->designation ?? '' }}</p>
+                <p class="desc">{{ \Illuminate\Support\Str::limit(stripPTags($expert->description), 110) }}</p>
                 <div class="expert-tags">
                     @forelse($expert->experties->take(3) as $expertise)
                         <span>{{ $expertise->heading }}</span>
                     @empty
-                        <span>Consulting</span>
                     @endforelse
                 </div>
             </div>

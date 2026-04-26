@@ -4,10 +4,10 @@
 @section('content')
 
 @php
-    $heroSection = $insightsPageContent?->section ?: 'KNOWLEDGE & RESEARCH';
-    $heroHeading = $insightsPageContent?->heading ?: 'Ideas that';
-    $heroDesignWord = $insightsPageContent?->design_word ?: 'move trade forward.';
-    $heroDescription = $insightsPageContent?->description ?: 'Op-eds in national newspapers, in-house research, policy publications, and expert videos - TRACE\'s full body of published work.';
+    $heroSection    = $insightsPageContent?->section     ?? '';
+    $heroHeading    = $insightsPageContent?->heading     ?? '';
+    $heroDesignWord = $insightsPageContent?->design_word ?? '';
+    $heroDescription= $insightsPageContent?->description ?? '';
 
     $allInsights = $insights ?? collect();
     $typeCounts = [
@@ -106,14 +106,14 @@
         <div class="row g-4">
             @forelse($allInsights as $insight)
             @php
-                $tag = strtoupper($insight->insightType?->type ?: 'OTHER');
-                $category = strtoupper($insight->sub_heading ?: 'INSIGHT');
-                $title = $insight->heading;
-                $buttonText = $insight->actionLabel();
-                $badgeColor = $insight->type === 'download' ? '#e85d26' : '#00898e';
-                $cardImage = $insight->imageUrl() ?: asset('assets/img/Op-Ed.png');
+                $tag         = strtoupper($insight->insightType?->type ?? '');
+                $category    = strtoupper($insight->sub_heading ?? '');
+                $title       = $insight->heading;
+                $buttonText  = $insight->actionLabel();
+                $badgeColor  = $insight->type === 'download' ? '#e85d26' : '#00898e';
+                $cardImage   = $insight->imageUrl() ?? '';
                 $leadArticle = $insight->articles->first();
-                $description = \Illuminate\Support\Str::limit($insight->description ?: ($leadArticle?->description ?: ''), 120);
+                $description = \Illuminate\Support\Str::limit($insight->description ?? $leadArticle?->description ?? '', 120);
 
                 $actionLink = '#';
                 if ($insight->type === 'read' && $leadArticle) {
@@ -121,11 +121,11 @@
                 }
 
                 if (in_array($insight->type, ['download', 'video_watch'], true)) {
-                    $actionLink = $insight->attachmentUrl() ?: ($leadArticle?->attachmentUrl() ?: '#');
+                    $actionLink = $insight->attachmentUrl() ?? $leadArticle?->attachmentUrl() ?? '#';
                 }
 
-                $metaDate = optional($insight->published_at)->format('M Y') ?: 'TBA';
-                $metaDuration = $leadArticle?->read_minutes ? $leadArticle->read_minutes . ' min' : 'Quick read';
+                $metaDate     = optional($insight->published_at)->format('M Y') ?? '';
+                $metaDuration = $leadArticle?->read_minutes ? $leadArticle->read_minutes . ' min' : '';
             @endphp
             <div class="col-12 col-md-6 col-lg-4 insight-item" data-tag="{{ $tag }}">
                 <div class="insight-card h-100 border-0 shadow-sm rounded-5 overflow-hidden bg-white">
@@ -136,7 +136,7 @@
                     <div class="card-body p-4">
                         <small class="fw-bold text-teal mb-2 d-block" style="font-size: 11px; color: #00898e; letter-spacing: 0.5px;">{{ $category }}</small>
                         <h5 class="card-title fw-bold text-dark mb-3" style="font-size: 17px; line-height: 1.4;">{{ $title }}</h5>
-                        <p class="card-text text-muted small mb-4">{{ $description ?: 'Insight summary is being updated.' }}</p>
+                        <p class="card-text text-muted small mb-4">{{ $description }}</p>
                         
                         <div class="d-flex justify-content-between align-items-center pt-3 border-top mt-auto">
                             <span class="text-muted" style="font-size: 12px;"><i class="far fa-calendar-alt me-1"></i> {{ $metaDate }} · {{ $metaDuration }}</span>

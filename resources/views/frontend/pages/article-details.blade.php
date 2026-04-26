@@ -632,24 +632,21 @@
 @section('content')
 
 @php
-    $articleTypeLabel = strtoupper(str_replace('_', ' ', $article->type ?: 'READ'));
-    $categoryLabel = $article->insight?->sub_heading ?: 'Insight';
-    $articleTitle = $article->title ?: 'Insight Article';
-    $author = $article->author;
-    $authorName = $author?->fullName() ?: 'TRACE Research Desk';
-    $authorRole = $author?->designation ?: 'Author';
-    $authorInitials = collect(explode(' ', $authorName))->filter()->map(fn ($word) => strtoupper(substr($word, 0, 1)))->take(2)->implode('');
-    $publishedLabel = optional($article->published_at)->format('F Y') ?: 'Recent';
-    $readMinutes = $article->read_minutes ?: 8;
-    $viewCount = max(120, ($readMinutes * 90));
-    $articleImage = $article->iconUrl() ?: ($article->insight?->imageUrl() ?: asset('assets/img/Trace team.png'));
-    $downloadUrl = $article->attachmentUrl() ?: ($article->insight?->attachmentUrl() ?: '#');
+    $articleTypeLabel = strtoupper(str_replace('_', ' ', $article->type ?? ''));
+    $categoryLabel    = $article->insight?->sub_heading ?? '';
+    $articleTitle     = $article->title ?? '';
+    $author           = $article->author;
+    $authorName       = $author?->fullName()  ?? '';
+    $authorRole       = $author?->designation ?? '';
+    $authorInitials   = collect(explode(' ', $authorName))->filter()->map(fn ($word) => strtoupper(substr($word, 0, 1)))->take(2)->implode('');
+    $publishedLabel   = optional($article->published_at)->format('F Y') ?? '';
+    $readMinutes      = $article->read_minutes ?? 0;
+    $viewCount        = $readMinutes ? max(120, ($readMinutes * 90)) : 0;
+    $articleImage     = $article->iconUrl() ?? $article->insight?->imageUrl() ?? '';
+    $downloadUrl      = $article->attachmentUrl() ?? $article->insight?->attachmentUrl() ?? '#';
 
-    $rawDescription = trim((string) ($article->description ?: $article->insight?->description));
+    $rawDescription = trim((string) ($article->description ?? $article->insight?->description ?? ''));
     $paragraphs = collect(preg_split('/\n\s*\n/', $rawDescription))->map(fn ($row) => trim($row))->filter()->values();
-    if ($paragraphs->isEmpty()) {
-        $paragraphs = collect(['Insight content is being updated.']);
-    }
 
     $introParagraphs = $paragraphs->slice(0, 2);
     $mainParagraphs = $paragraphs->slice(2);
@@ -681,7 +678,7 @@
         <h1 class="article-title">{{ $articleTitle }}</h1>
 
         <div class="article-byline">
-            <div class="author-avatar-sm" style="background: #1a9e75;">{{ $authorInitials ?: 'TR' }}</div>
+            <div class="author-avatar-sm" style="background: #1a9e75;">{{ $authorInitials }}</div>
             <span class="byline-name">{{ $authorName }}</span>
             <span class="byline-sep">·</span>
             <span class="byline-meta"><i class="far fa-calendar"></i> {{ $publishedLabel }}</span>
@@ -816,13 +813,13 @@
         <div class="sidebar-card author-card">
             <h4 class="sidebar-heading">AUTHOR</h4>
             <div class="author-info">
-                <div class="author-avatar-lg" style="background: #1a9e75;">{{ $authorInitials ?: 'TR' }}</div>
+                <div class="author-avatar-lg" style="background: #1a9e75;">{{ $authorInitials }}</div>
                 <div>
                     <p class="author-full-name">{{ $authorName }}</p>
                     <p class="author-role">{{ $authorRole }}</p>
                 </div>
             </div>
-            <p class="author-bio">{{ \Illuminate\Support\Str::limit(stripPTags($author?->description), 150) ?: 'Author profile is being updated.' }}</p>
+            <p class="author-bio">{{ \Illuminate\Support\Str::limit(stripPTags($author?->description), 150) }}</p>
         </div>
 
         {{-- Related Insights --}}

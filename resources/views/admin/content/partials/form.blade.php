@@ -19,6 +19,7 @@
             </div>
             <div class="card-body py-3">
                 <div class="d-flex flex-wrap gap-2">
+                    <button type="button" id="applyContactPagePreset" class="btn btn-sm btn-outline-primary">Contact Page</button>
                     <button type="button" id="applyTeamPagePreset" class="btn btn-sm btn-outline-primary">Team Page</button>
                     <button type="button" id="applyInsightsPagePreset" class="btn btn-sm btn-outline-primary">Insights Page</button>
                     <button type="button" id="applyProjectsPagePreset" class="btn btn-sm btn-outline-primary">Projects Page</button>
@@ -261,6 +262,20 @@ if (removeIconBtn) {
                 .catch(function (error) {
                     console.error(error);
                 });
+        }
+
+        const contactPagePresetBtn = document.getElementById('applyContactPagePreset');
+
+        if (contactPagePresetBtn) {
+            contactPagePresetBtn.addEventListener('click', function () {
+                if (slugField) slugField.value = 'contact-page';
+                if (sectionField) sectionField.value = 'REACH OUT';
+                if (headingField) headingField.value = "Let's start a";
+                if (subHeadingField) subHeadingField.value = '';
+                if (designWordField) designWordField.value = 'conversation.';
+                if (typeField) typeField.value = 'Hero';
+                setDescriptionValue('');
+            });
         }
 
         if (teamPagePresetBtn) {

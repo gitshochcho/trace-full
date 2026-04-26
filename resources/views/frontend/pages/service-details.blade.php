@@ -432,37 +432,16 @@
     use Illuminate\Support\Str;
 
     $serviceContent = $service->content;
-    $heroImage = $service->imageUrl() ?: ($serviceContent?->imageUrl() ?: asset('assets/img/Trade and Customs.png'));
-    $heroTitle = $serviceContent?->heading ?: $service->service_name;
-    $heroDesignWord = $serviceContent?->design_word ?: 'Facilitation';
-    $heroDescription = $serviceContent?->description ?: 'TRACE supports governments, trade bodies, and private stakeholders to modernize, simplify, and automate cross-border trade procedures in line with global best practices and WTO TFA commitments.';
+    $heroImage       = $service->imageUrl() ?? $serviceContent?->imageUrl() ?? '';
+    $heroTitle       = $serviceContent?->heading ?? $service->service_name ?? '';
+    $heroDesignWord  = $serviceContent?->design_word ?? '';
+    $heroDescription = $serviceContent?->description ?? '';
 
-    // Overview: use service's own overview field first, then fallback to content description
-    $overviewText = $service->overview ?: ($serviceContent?->description ?: $heroDescription);
+    $overviewText      = $service->overview ?? $serviceContent?->description ?? '';
     $overviewPlainText = trim(strip_tags((string) $overviewText));
 
-    $includeItems = $service->details->isNotEmpty()
-        ? $service->details
-        : collect([
-            (object) ['text' => 'Mapping and streamlining border processes', 'iconUrl' => null],
-            (object) ['text' => 'Introducing digital solutions for licensing and clearance', 'iconUrl' => null],
-            (object) ['text' => 'Promoting exports following international requirements', 'iconUrl' => null],
-            (object) ['text' => 'Reviewing legislative frameworks to identify bottlenecks', 'iconUrl' => null],
-            (object) ['text' => 'Supporting private sector trade facilitation services', 'iconUrl' => null],
-            (object) ['text' => 'Facilitating stakeholder consultations', 'iconUrl' => null],
-            (object) ['text' => 'Advising business chambers and associations', 'iconUrl' => null],
-        ]);
-
-    $solutionItems = $service->solutions->isNotEmpty()
-        ? $service->solutions
-        : collect([
-            ['heading' => 'Online Pre-Arrival Processing System', 'sub_heading' => 'DIGITAL PLATFORM'],
-            ['heading' => 'Automated Risk Management System', 'sub_heading' => 'TECHNOLOGY'],
-            ['heading' => 'Authorized Economic Operator Facilities', 'sub_heading' => 'CERTIFICATION'],
-            ['heading' => 'Conducting Time Release Study (TRS)', 'sub_heading' => 'ASSESSMENT'],
-            ['heading' => 'Developing Trade Transparency Portal', 'sub_heading' => 'DIGITAL PLATFORM'],
-            ['heading' => 'Online Export Performance Management System', 'sub_heading' => 'TECHNOLOGY'],
-        ]);
+    $includeItems  = $service->details;
+    $solutionItems = $service->solutions;
 
     $sidebarServices = $otherServices;
 @endphp
@@ -537,7 +516,7 @@
                 <div class="service-box">
                     <h3>Products & Solutions</h3>
                     <p class="product-sub">
-                        {{ $serviceContent?->sub_heading ?: 'Specific digital tools and deliverables TRACE designs and deploys under this service area.' }}
+                        {{ $serviceContent?->sub_heading ?? '' }}
                     </p>
 
                     <div class="row g-3">

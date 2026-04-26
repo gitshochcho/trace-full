@@ -330,17 +330,13 @@
 @section('content')
 
 @php
-    $teamName = $team->fullName() ?: 'Team Member';
-    $teamImage = $team->imageUrl() ?: asset('assets/img/fuad.png');
-    $teamDesignation = $team->designation ?: 'Team Specialist';
+    $teamName        = $team->fullName()        ?? '';
+    $teamImage       = $team->imageUrl()        ?? '';
+    $teamDesignation = $team->designation       ?? '';
     $teamDescription = stripPTags($team->description);
     $descriptionParagraphs = collect(preg_split('/\n\s*\n/', (string) $teamDescription))
         ->map(fn ($paragraph) => trim($paragraph))
         ->filter();
-
-    if ($descriptionParagraphs->isEmpty()) {
-        $descriptionParagraphs = collect(['Profile details are being updated.']);
-    }
 
     $expertiseItems = $team->experties->take(6);
     $socialItems = $team->socialMedia;
@@ -456,14 +452,14 @@
                                     <div class="expertise-card d-flex gap-3">
                                         <div class="icon-box-small">
                                             @if($expertise->iconUrl())
-                                                <img src="{{ $expertise->iconUrl() }}" alt="{{ $expertise->heading ?: 'icon' }}" style="width: 20px; height: 20px; object-fit: contain;">
+                                                <img src="{{ $expertise->iconUrl() }}" alt="{{ $expertise->heading ?? '' }}" style="width: 20px; height: 20px; object-fit: contain;">
                                             @else
                                                 <i class="fas fa-check"></i>
                                             @endif
                                         </div>
                                         <div class="card-text">
-                                            <h6>{{ $expertise->heading ?: 'Expertise' }}</h6>
-                                            <p>{{ $expertise->description ?: 'Details are being updated.' }}</p>
+                                            <h6>{{ $expertise->heading ?? '' }}</h6>
+                                            <p>{{ $expertise->description ?? '' }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -494,10 +490,10 @@
                         <h6 class="fw-bold mb-4">Other Team Members</h6>
                         @foreach($otherTeamMembers as $member)
                             <a href="{{ route('teamdetails', $member) }}" class="team-sidebar-item">
-                                <img src="{{ $member->imageUrl() ?: asset('assets/img/nadia.png') }}" class="member-img" alt="{{ $member->fullName() }}">
+                                <img src="{{ $member->imageUrl() ?? '' }}" class="member-img" alt="{{ $member->fullName() }}">
                                 <div class="member-info">
                                     <h6>{{ $member->fullName() }}</h6>
-                                    <span>{{ $member->designation ?: 'Team Specialist' }}</span>
+                                    <span>{{ $member->designation ?? '' }}</span>
                                 </div>
                                 <i class="bi bi-arrow-right arrow-icon"></i>
                             </a>

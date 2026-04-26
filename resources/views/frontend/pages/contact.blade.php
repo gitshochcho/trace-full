@@ -274,13 +274,24 @@
         <div class="container-fluid px-lg-5 page-align-container">
             <div class="row">
                 <div class="col-lg-6">
-                    <div class="hero-label">Reach Out</div>
-                    @if($heroContent)
-                        <h1 class="contact-hero-title">{{ nl2br(e($heroContent->heading ?? 'Let\'s start a conversation.')) }}</h1>
-                        <p class="contact-hero-desc">{{ $heroContent->description ?? '' }}</p>
-                    @else
-                        <h1 class="contact-hero-title">Let's start a<br><span>conversation.</span></h1>
-                        <p class="contact-hero-desc">Whether you're a government agency, development partner, or private company — TRACE is ready to listen, advise, and collaborate. Reach out and we'll respond within one business day.</p>
+                    @if($heroContent?->section)
+                        <div class="hero-label">{{ $heroContent->section }}</div>
+                    @endif
+                    @if($heroContent?->heading)
+                        <h1 class="contact-hero-title">
+                            @php
+                                $dw = $heroContent->design_word ?? '';
+                                $ht = $heroContent->heading ?? '';
+                            @endphp
+                            @if($dw && str_contains($ht, $dw))
+                                {!! nl2br(e(\Illuminate\Support\Str::before($ht, $dw))) !!}<span>{{ $dw }}</span>{!! nl2br(e(\Illuminate\Support\Str::after($ht, $dw))) !!}
+                            @else
+                                {!! nl2br(e($ht)) !!}
+                            @endif
+                        </h1>
+                    @endif
+                    @if($heroContent?->description)
+                        <p class="contact-hero-desc">{!! strip_tags($heroContent->description) !!}</p>
                     @endif
                 </div>
             </div>
