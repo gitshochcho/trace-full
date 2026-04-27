@@ -22,12 +22,12 @@
                     <h2 class="cta-title">
                         @if(!empty($ctaTitleSpan) && Str::contains($ctaTitle, $ctaTitleSpan))
                             {{ trim(Str::before($ctaTitle, $ctaTitleSpan)) }}
-                            <br>
+                          
                             <span>{{ $ctaTitleSpan }}</span>{{ Str::after($ctaTitle, $ctaTitleSpan) }}
                         @else
                             {{ $ctaTitle }}
                             @if(!empty($ctaTitleSpan))
-                                <br>
+                               
                                 <span>{{ $ctaTitleSpan }}</span>
                             @endif
                         @endif

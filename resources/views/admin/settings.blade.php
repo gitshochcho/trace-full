@@ -55,13 +55,13 @@
 
                                     <div class="col-md-6">
                                         <label class="form-label">Logo Text</label>
-                                        <input type="text" name="logo_text" value="{{ old('logo_text', $setting->logo_text ?? 'TRACE') }}" class="form-control @error('logo_text') is-invalid @enderror" placeholder="TRACE">
+                                        <input type="text" name="logo_text" value="{{ old('logo_text', $setting->logo_text ?? '') }}" class="form-control @error('logo_text') is-invalid @enderror" placeholder="TRACE">
                                         @error('logo_text')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
 
                                     <div class="col-md-6">
                                         <label class="form-label">Logo Motto</label>
-                                        <input type="text" name="logo_tagline" value="{{ old('logo_tagline', $setting->logo_tagline ?? 'Insight. Strategy. Impact') }}" class="form-control @error('logo_tagline') is-invalid @enderror" placeholder="Insight. Strategy. Impact">
+                                        <input type="text" name="logo_tagline" value="{{ old('logo_tagline', $setting->logo_tagline ?? '') }}" class="form-control @error('logo_tagline') is-invalid @enderror" placeholder="moto">
                                         @error('logo_tagline')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
 

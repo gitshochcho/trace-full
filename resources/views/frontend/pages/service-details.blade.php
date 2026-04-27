@@ -542,7 +542,7 @@
         <div class="sidebar-cta">
             <h4>Need this service?</h4>
             <p>Get in touch and our team will walk you through our solutions.</p>
-            <a href="#" class="btn-expert">Talk to Our Experts</a>
+            <a href="{{ route('contact') }}" class="btn-expert">Talk to Our Experts</a>
         </div>
 
         {{-- OTHER SERVICES --}}

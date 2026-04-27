@@ -588,6 +588,7 @@
     $leaderName        = $leader?->fullName()       ?? '';
     $leaderDesignation = $leader?->designation      ?? '';
     $leaderBio         = stripPTags($leader?->description) ?? '';
+    $leadershortdescrition        = stripPTags($leader?->short_description) ?? '';
 
     $leaderSocials = $leader?->socialMedia ?? collect();
     $leaderExpertise = $leader?->experties ?? collect();
@@ -653,7 +654,10 @@
                         <div class="orange-divider"></div>
                         
                         <p class="bio">
-                            {{ \Illuminate\Support\Str::limit($leaderBio, 420) }}
+                            
+                            {{ \Illuminate\Support\Str::limit($leadershortdescrition, 780) }}
+
+                           
                         </p>
 
                         <div class="skill-tags">
