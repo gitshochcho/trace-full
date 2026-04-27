@@ -1,3 +1,7 @@
+<!-- Favicon -->
+@if(!empty($setting?->getFirstMediaUrl('logo_image')))
+    <link rel="icon" href="{{ $setting->getFirstMediaUrl('logo_image') }}">
+@endif
 <link rel="dns-prefetch" href="//fonts.bunny.net">
 <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
 
