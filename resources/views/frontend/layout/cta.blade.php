@@ -33,7 +33,8 @@
                         @endif
                     </h2>
                     <p class="cta-desc">
-                        {!! $ctaDescription !!}
+                        <div style="color:#ffffff7a">{!! $ctaDescription !!}</div>
+                        
                     </p>
                 </div>
 
