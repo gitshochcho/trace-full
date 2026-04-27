@@ -73,6 +73,13 @@
                                     </div>
 
                                     <div class="col-md-6">
+                                        <label class="form-label">End Date (Application Deadline)</label>
+                                        <input type="date" name="end_date" value="{{ old('end_date', $jobPosting->end_date?->format('Y-m-d')) }}" class="form-control @error('end_date') is-invalid @enderror">
+                                        <small class="text-muted"><i class="fas fa-info-circle"></i> Last date to accept applications. Leave blank for open-ended.</small>
+                                        @error('end_date')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                    </div>
+
+                                    <div class="col-md-6">
                                         <label class="form-label">Order</label>
                                         <input type="number" name="order" value="{{ old('order', $jobPosting->order) }}" class="form-control @error('order') is-invalid @enderror">
                                         @error('order')<div class="invalid-feedback">{{ $message }}</div>@enderror
@@ -80,8 +87,9 @@
 
                                     <div class="col-md-6">
                                         <label class="form-label">Status</label>
-                                        <div class="form-check">
-                                            <input type="checkbox" name="is_active" value="1" {{ old('is_active', $jobPosting->is_active) ? 'checked' : '' }} class="form-check-input" id="is_active">
+                                        <div class="form-check form-switch">
+                                            <input type="hidden" name="is_active" value="0">
+                                            <input type="checkbox" name="is_active" value="1" {{ old('is_active', $jobPosting->is_active) ? 'checked' : '' }} class="form-check-input" id="is_active" role="switch">
                                             <label class="form-check-label" for="is_active">Active</label>
                                         </div>
                                     </div>
@@ -105,7 +113,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="card-footer d-flex justify-content-between">
+                            <div class="card-footer d-flex justify-content-end gap-2">
                                 <a href="{{ route('admin.job-postings.index') }}" class="btn btn-secondary">Cancel</a>
                                 <button type="submit" class="btn btn-primary">Update Job Posting</button>
                             </div>

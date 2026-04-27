@@ -18,55 +18,131 @@
                 <div class="card-title">Quick Presets</div>
             </div>
             <div class="card-body py-3">
-                <div class="d-flex flex-wrap gap-2">
-                    <button type="button" id="applyTeamPagePreset" class="btn btn-sm btn-outline-primary">Team Page</button>
-                    <button type="button" id="applyInsightsPagePreset" class="btn btn-sm btn-outline-primary">Insights Page</button>
-                    <button type="button" id="applyProjectsPagePreset" class="btn btn-sm btn-outline-primary">Projects Page</button>
-                    <button type="button" id="applyProjectLocationPreset" class="btn btn-sm btn-outline-primary">Project Location</button>
-                    <button type="button" id="applyProjectPhasePreset" class="btn btn-sm btn-outline-primary">Project Phase</button>
-                    <button type="button" id="applyProjectOutcomePreset" class="btn btn-sm btn-outline-primary">Project Outcome</button>
-                    <button type="button" id="applyProjectsWorkWithUsPreset" class="btn btn-sm btn-outline-primary">Projects CTA Toggle</button>
-                    <button type="button" id="applyWorkWithUsPreset" class="btn btn-sm btn-primary">Work With Us</button>
 
-                    <button type="button" id="applyAboutHeaderPreset" class="btn btn-sm btn-outline-primary">About Header</button>
-<button type="button" id="applyAboutTracePreset" class="btn btn-sm btn-outline-primary">About Trace</button>
-<button type="button" id="applyWhoWeArePreset" class="btn btn-sm btn-outline-primary">Who We Are</button>
-<button type="button" id="applyOurMissionPreset" class="btn btn-sm btn-outline-primary">Our Mission</button>
-<button type="button" id="applyPartnersPreset" class="btn btn-sm btn-outline-primary">About Partners</button>
+                {{-- Page Heroes --}}
+                <div class="mb-3">
+                    <small class="preset-group-label fw-semibold text-uppercase text-muted d-flex align-items-center gap-1 mb-2"
+                           style="letter-spacing:.05em; cursor:pointer;"
+                           data-bs-toggle="collapse" data-bs-target="#presetGroupHeroes" aria-expanded="false">
+                        <i class="fas fa-chevron-down preset-chevron"></i> Page Heroes
+                    </small>
+                    <div class="collapse" id="presetGroupHeroes">
+                        <div class="d-flex flex-wrap gap-2 pb-1">
+                            <button type="button" id="applyContactPagePreset" class="btn btn-sm btn-outline-primary preset-btn">Contact Page</button>
+                            <button type="button" id="applyTeamPagePreset" class="btn btn-sm btn-outline-primary preset-btn">Team Page</button>
+                            <button type="button" id="applyInsightsPagePreset" class="btn btn-sm btn-outline-primary preset-btn">Insights Page</button>
+                            <button type="button" id="applyProjectsPagePreset" class="btn btn-sm btn-outline-primary preset-btn">Projects Page</button>
+                        </div>
+                    </div>
                 </div>
 
-                <button type="button" id="applyHomeAboutTracePreset" class="btn btn-sm btn-outline-secondary">Home About Trace</button>
-<button type="button" id="applyHomeAboutTraceOnePreset" class="btn btn-sm btn-outline-secondary">Home About Item 1</button>
-<button type="button" id="applyHomeAboutTraceTwoPreset" class="btn btn-sm btn-outline-secondary">Home About Item 2</button>
-<button type="button" id="applyHomeAboutTraceThreePreset" class="btn btn-sm btn-outline-secondary">Home About Item 3</button>
-<button type="button" id="applyHomeYearsPreset" class="btn btn-sm btn-outline-secondary">Home Years Expertise</button>
-
-                <hr class="my-3">
-
-                <div class="d-flex flex-wrap gap-2">
-                    <button type="button" id="applyAboutCommitmentPreset" class="btn btn-sm btn-outline-info">About Commitment</button>
-                    <button type="button" id="applyAboutFrameworkPreset" class="btn btn-sm btn-outline-info">About How We Work</button>
-                    <button type="button" id="applyAboutInsightPreset" class="btn btn-sm btn-outline-info">About Insight</button>
-                    <button type="button" id="applyAboutStrategyPreset" class="btn btn-sm btn-outline-info">About Strategy</button>
-                    <button type="button" id="applyAboutImpactPreset" class="btn btn-sm btn-outline-info">About Impact</button>
-                    <button type="button" id="applyAboutUniqueFeaturesPreset" class="btn btn-sm btn-outline-info">About Unique Features</button>
-                    <button type="button" id="applyAboutIndustryNetworkPreset" class="btn btn-sm btn-outline-info">About Industry Network</button>
-                    <button type="button" id="applyAboutSustainablePreset" class="btn btn-sm btn-outline-info">About Sustainable Approach</button>
-                    <button type="button" id="applyAboutTailoredPreset" class="btn btn-sm btn-outline-info">About Tailored Innovation</button>
-                    <button type="button" id="applyAboutEndToEndPreset" class="btn btn-sm btn-outline-info">About End-to-End</button></div> </br>
-                    
-                    <div class="d-flex flex-wrap gap-2 fw-bold">Career </div>
-                    <hr class="">
-                    <button type="button" id="applyCareerHeaderPreset" class="btn btn-sm btn-outline-primary mb-3">Career Header</button>
-
-                    </br>
-                    
-                    <div class="d-flex flex-wrap gap-2 fw-bold">Contact </div>
-                    <hr class="">
-                    <button type="button" id="applyContactHeaderPreset" class="btn btn-sm btn-outline-primary">Contact Header</button>
-                
-
+                {{-- Project Details --}}
+                <div class="mb-3">
+                    <small class="preset-group-label fw-semibold text-uppercase text-muted d-flex align-items-center gap-1 mb-2"
+                           style="letter-spacing:.05em; cursor:pointer;"
+                           data-bs-toggle="collapse" data-bs-target="#presetGroupProject" aria-expanded="false">
+                        <i class="fas fa-chevron-down preset-chevron"></i> Project Details
+                    </small>
+                    <div class="collapse" id="presetGroupProject">
+                        <div class="d-flex flex-wrap gap-2 pb-1">
+                            <button type="button" id="applyProjectLocationPreset" class="btn btn-sm btn-outline-primary preset-btn">Project Location</button>
+                            <button type="button" id="applyProjectPhasePreset" class="btn btn-sm btn-outline-primary preset-btn">Project Phase</button>
+                            <button type="button" id="applyProjectOutcomePreset" class="btn btn-sm btn-outline-primary preset-btn">Project Outcome</button>
+                            <button type="button" id="applyProjectsWorkWithUsPreset" class="btn btn-sm btn-outline-primary preset-btn">Projects CTA Toggle</button>
+                        </div>
+                    </div>
                 </div>
+
+                {{-- CTA --}}
+                <div class="mb-3">
+                    <small class="preset-group-label fw-semibold text-uppercase text-muted d-flex align-items-center gap-1 mb-2"
+                           style="letter-spacing:.05em; cursor:pointer;"
+                           data-bs-toggle="collapse" data-bs-target="#presetGroupCta" aria-expanded="false">
+                        <i class="fas fa-chevron-down preset-chevron"></i> CTA
+                    </small>
+                    <div class="collapse" id="presetGroupCta">
+                        <div class="d-flex flex-wrap gap-2 pb-1">
+                            <button type="button" id="applyWorkWithUsPreset" class="btn btn-sm btn-outline-primary preset-btn">Work With Us</button>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-2">
+
+                {{-- About Page --}}
+                <div class="mb-3">
+                    <small class="preset-group-label fw-semibold text-uppercase text-muted d-flex align-items-center gap-1 mb-2"
+                           style="letter-spacing:.05em; cursor:pointer;"
+                           data-bs-toggle="collapse" data-bs-target="#presetGroupAbout" aria-expanded="false">
+                        <i class="fas fa-chevron-down preset-chevron"></i> About Page
+                    </small>
+                    <div class="collapse" id="presetGroupAbout">
+                        <div class="d-flex flex-wrap gap-2 pb-1">
+                            <button type="button" id="applyAboutHeaderPreset" class="btn btn-sm btn-outline-secondary preset-btn">About Header</button>
+                            <button type="button" id="applyAboutTracePreset" class="btn btn-sm btn-outline-secondary preset-btn">About Trace</button>
+                            <button type="button" id="applyWhoWeArePreset" class="btn btn-sm btn-outline-secondary preset-btn">Who We Are</button>
+                            <button type="button" id="applyOurMissionPreset" class="btn btn-sm btn-outline-secondary preset-btn">Our Mission</button>
+                            <button type="button" id="applyPartnersPreset" class="btn btn-sm btn-outline-secondary preset-btn">About Partners</button>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Home Page --}}
+                <div class="mb-3">
+                    <small class="preset-group-label fw-semibold text-uppercase text-muted d-flex align-items-center gap-1 mb-2"
+                           style="letter-spacing:.05em; cursor:pointer;"
+                           data-bs-toggle="collapse" data-bs-target="#presetGroupHome" aria-expanded="false">
+                        <i class="fas fa-chevron-down preset-chevron"></i> Home Page
+                    </small>
+                    <div class="collapse" id="presetGroupHome">
+                        <div class="d-flex flex-wrap gap-2 pb-1">
+                            <button type="button" id="applyHomeAboutTracePreset" class="btn btn-sm btn-outline-secondary preset-btn">Home About Trace</button>
+                            <button type="button" id="applyHomeAboutTraceOnePreset" class="btn btn-sm btn-outline-secondary preset-btn">Home About Item 1</button>
+                            <button type="button" id="applyHomeAboutTraceTwoPreset" class="btn btn-sm btn-outline-secondary preset-btn">Home About Item 2</button>
+                            <button type="button" id="applyHomeAboutTraceThreePreset" class="btn btn-sm btn-outline-secondary preset-btn">Home About Item 3</button>
+                            <button type="button" id="applyHomeYearsPreset" class="btn btn-sm btn-outline-secondary preset-btn">Home Years Expertise</button>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-2">
+
+                {{-- About Framework --}}
+                <div class="mb-3">
+                    <small class="preset-group-label fw-semibold text-uppercase text-muted d-flex align-items-center gap-1 mb-2"
+                           style="letter-spacing:.05em; cursor:pointer;"
+                           data-bs-toggle="collapse" data-bs-target="#presetGroupFramework" aria-expanded="false">
+                        <i class="fas fa-chevron-down preset-chevron"></i> About Framework
+                    </small>
+                    <div class="collapse" id="presetGroupFramework">
+                        <div class="d-flex flex-wrap gap-2 pb-1">
+                            <button type="button" id="applyAboutCommitmentPreset" class="btn btn-sm btn-outline-info preset-btn">About Commitment</button>
+                            <button type="button" id="applyAboutFrameworkPreset" class="btn btn-sm btn-outline-info preset-btn">About How We Work</button>
+                            <button type="button" id="applyAboutInsightPreset" class="btn btn-sm btn-outline-info preset-btn">About Insight</button>
+                            <button type="button" id="applyAboutStrategyPreset" class="btn btn-sm btn-outline-info preset-btn">About Strategy</button>
+                            <button type="button" id="applyAboutImpactPreset" class="btn btn-sm btn-outline-info preset-btn">About Impact</button>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- About Unique Features --}}
+                <div class="mb-0">
+                    <small class="preset-group-label fw-semibold text-uppercase text-muted d-flex align-items-center gap-1 mb-2"
+                           style="letter-spacing:.05em; cursor:pointer;"
+                           data-bs-toggle="collapse" data-bs-target="#presetGroupUnique" aria-expanded="false">
+                        <i class="fas fa-chevron-down preset-chevron"></i> About Unique Features
+                    </small>
+                    <div class="collapse" id="presetGroupUnique">
+                        <div class="d-flex flex-wrap gap-2 pb-1">
+                            <button type="button" id="applyAboutUniqueFeaturesPreset" class="btn btn-sm btn-outline-info preset-btn">About Unique Features</button>
+                            <button type="button" id="applyAboutIndustryNetworkPreset" class="btn btn-sm btn-outline-info preset-btn">Industry Network</button>
+                            <button type="button" id="applyAboutSustainablePreset" class="btn btn-sm btn-outline-info preset-btn">Sustainable Approach</button>
+                            <button type="button" id="applyAboutTailoredPreset" class="btn btn-sm btn-outline-info preset-btn">Tailored Innovation</button>
+                            <button type="button" id="applyAboutEndToEndPreset" class="btn btn-sm btn-outline-info preset-btn">End-to-End</button>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -116,6 +192,7 @@
    <div class="col-md-6">
     <label class="form-label">Icon Image</label>
     <input type="file" name="icon" class="form-control @error('icon') is-invalid @enderror" accept="image/*">
+    <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 64×64px square (max 2MB)</small>
     @error('icon')<div class="invalid-feedback">{{ $message }}</div>@enderror
     @if($currentIconUrl)
         <div class="mt-2 d-flex align-items-center gap-2">
@@ -133,6 +210,7 @@
     <div class="col-md-6">
     <label class="form-label">Main Image</label>
     <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" accept="image/*">
+    <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 1200×800px (max 4MB)</small>
     @error('image')<div class="invalid-feedback">{{ $message }}</div>@enderror
     @if($currentImageUrl)
         <div class="mt-2 d-flex align-items-center gap-3">
@@ -149,6 +227,23 @@
 </div>
 
 @push('custome-js')
+<style>
+    .preset-chevron { transition: transform .2s ease; }
+    .preset-group-label[aria-expanded="false"] .preset-chevron { transform: rotate(-90deg); }
+
+    .preset-group-label { user-select: none; }
+    .preset-group-label::after {
+        content: "\f068";
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+        margin-left: auto;
+        font-size: .7rem;
+        opacity: .5;
+        transition: opacity .2s;
+    }
+    .preset-group-label[aria-expanded="false"]::after { content: "\f067"; }
+    .preset-group-label:hover::after { opacity: 1; }
+</style>
 <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
 <script>
     (function () {
@@ -271,6 +366,20 @@ if (removeIconBtn) {
                 .catch(function (error) {
                     console.error(error);
                 });
+        }
+
+        const contactPagePresetBtn = document.getElementById('applyContactPagePreset');
+
+        if (contactPagePresetBtn) {
+            contactPagePresetBtn.addEventListener('click', function () {
+                if (slugField) slugField.value = 'contact-page';
+                if (sectionField) sectionField.value = 'REACH OUT';
+                if (headingField) headingField.value = "Let's start a";
+                if (subHeadingField) subHeadingField.value = '';
+                if (designWordField) designWordField.value = 'conversation.';
+                if (typeField) typeField.value = 'Hero';
+                setDescriptionValue('');
+            });
         }
 
         if (teamPagePresetBtn) {
@@ -620,43 +729,28 @@ if (partnersBtn) {
     });
 }
 
-    // Career Page Header Preset
-const careerHeaderBtn = document.getElementById('applyCareerHeaderPreset');
-if (careerHeaderBtn) {
-    careerHeaderBtn.addEventListener('click', function () {
-        if (slugField) slugField.value = 'career-heading';
-        if (sectionField) sectionField.value = 'CAREER PAGE';
-        if (headingField) headingField.value = 'Career at Trace Consultancy';
-        if (designWordField) designWordField.value = 'Trace Consultancy';
-        if (typeField) typeField.value = 'Hero Section';
-        
-        // Description field-e value boshano
-        if (typeof setDescriptionValue === "function") {
-            setDescriptionValue('TRACE is a growing team of trade specialists, researchers, technologists, and project managers working on some of the most consequential reform programmes in South Asia.');
-        }
-        
-        toastr.success('Career Header preset applied!');
-    });
-}
+        // Sync chevron with Bootstrap collapse state
+        document.querySelectorAll('.preset-group-label').forEach(function (label) {
+            var targetId = label.getAttribute('data-bs-target');
+            var target = document.querySelector(targetId);
+            if (!target) return;
+            target.addEventListener('show.bs.collapse', function () {
+                label.setAttribute('aria-expanded', 'true');
+            });
+            target.addEventListener('hide.bs.collapse', function () {
+                label.setAttribute('aria-expanded', 'false');
+            });
+        });
 
-// Contact Page Header Preset
-const contactHeaderBtn = document.getElementById('applyContactHeaderPreset');
-if (contactHeaderBtn) {
-    contactHeaderBtn.addEventListener('click', function () {
-        if (slugField) slugField.value = 'contact-us-head';
-        if (sectionField) sectionField.value = 'CONTACT PAGE';
-        if (headingField) headingField.value = "Let's start a conversation.";
-        if (designWordField) designWordField.value = 'conversation.';
-        if (typeField) typeField.value = 'Hero Section';
-        
-        if (typeof setDescriptionValue === "function") {
-            setDescriptionValue("Whether you're a government agency, development partner, or private company — TRACE is ready to listen, advise, and collaborate. Reach out and we'll respond within one business day.");
-        }
-        
-        toastr.success('Contact Header preset applied!');
-    });
-}
-
+        // Highlight active preset button
+        document.querySelectorAll('.preset-btn').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                document.querySelectorAll('.preset-btn').forEach(function (b) {
+                    b.classList.remove('active');
+                });
+                btn.classList.add('active');
+            });
+        });
 
     })();
 </script>

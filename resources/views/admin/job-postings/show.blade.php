@@ -47,6 +47,17 @@
                                     <strong>Posted:</strong> {{ $jobPosting->posted_date->format('M d, Y') }}
                                 </div>
                                 <div class="col-md-6">
+                                    <strong>End Date:</strong>
+                                    @if($jobPosting->end_date)
+                                        {{ $jobPosting->end_date->format('M d, Y') }}
+                                        @if($jobPosting->end_date->isPast())
+                                            <span class="badge bg-danger ms-1">Expired</span>
+                                        @endif
+                                    @else
+                                        <span class="text-muted">Open-ended</span>
+                                    @endif
+                                </div>
+                                <div class="col-md-6">
                                     <strong>Status:</strong>
                                     <span class="badge bg-{{ $jobPosting->is_active ? 'success' : 'secondary' }}">
                                         {{ $jobPosting->is_active ? 'Active' : 'Inactive' }}
@@ -139,21 +150,34 @@
                                             </span>
                                         </td>
                                         <td>
-                                            <div class="btn-group" role="group">
-                                                <a href="{{ route('admin.job-applications.show', $application) }}" class="btn btn-sm btn-info" title="View">
-                                                    <i class="fas fa-eye"></i>
+                                            <div class="btn-group btn-group-sm" role="group">
+                                                <a href="{{ route('admin.job-applications.show', $application) }}" class="btn btn-info" title="View" data-bs-toggle="tooltip">
+                                                    <i class="fas fa-eye"></i> View
                                                 </a>
-                                                <a href="{{ route('admin.job-applications.download-cv', $application) }}" class="btn btn-sm btn-primary" title="Download CV">
-                                                    <i class="fas fa-download"></i>
+                                                <a href="{{ route('admin.job-applications.download-cv', $application) }}" class="btn btn-primary" title="Download CV" data-bs-toggle="tooltip">
+                                                    <i class="fas fa-download"></i> CV
                                                 </a>
-                                                @if(!$application->is_reviewed)
-                                                <form action="{{ route('admin.job-applications.mark-reviewed', $application) }}" method="POST" class="d-inline">
+                                                <form action="{{ route('admin.job-applications.mark-reviewed', $application) }}" method="POST" style="display: inline;">
                                                     @csrf
-                                                    <button type="submit" class="btn btn-sm btn-success" title="Mark as Reviewed">
-                                                        <i class="fas fa-check"></i>
+                                                    @if(!$application->is_reviewed)
+                                                    <button type="submit" class="btn btn-success btn-sm" title="Mark as Reviewed" data-bs-toggle="tooltip">
+                                                        <i class="fas fa-check"></i> Approve
+                                                    </button>
+                                                    @else
+                                                    <button type="submit" class="btn btn-warning btn-sm" title="Mark as Pending" data-bs-toggle="tooltip">
+                                                        <i class="fas fa-undo"></i> Pending
+                                                    </button>
+                                                    @endif
+                                                </form>
+                                                <form action="{{ route('admin.job-applications.destroy', $application) }}" method="POST"
+                                                    style="display: inline;"
+                                                    onsubmit="return confirm('Are you sure you want to delete this application?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger btn-sm" title="Delete" data-bs-toggle="tooltip">
+                                                        <i class="fas fa-trash"></i> Delete
                                                     </button>
                                                 </form>
-                                                @endif
                                             </div>
                                         </td>
                                     </tr>

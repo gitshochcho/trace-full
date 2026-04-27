@@ -134,7 +134,14 @@
         display: inline-block;
         text-decoration: none;
     }
+    .btn-cv:hover {
+        background: #ff8a4d;
+        transform: translateY(-2px);
+    }
 
+     /* Page Alignment */
+     .container-fluid { padding-left: 15px; padding-right: 15px;
+    }
     .page-align-container { max-width: 1072px; margin: 0 auto; }
 
     /* Job Card Styling */
@@ -293,7 +300,8 @@
                     <p class="job-desc">{{ Str::limit($job->description, 150) }}</p>
                     <div class="job-meta">
                         <div class="meta-item"><i class="fas fa-map-marker-alt"></i> {{ $job->location }}</div>
-                        <div class="meta-item"><i class="far fa-calendar"></i> Posted {{ $job->posted_date->format('M Y') }}</div>
+                        <div class="meta-item"><i class="far fa-calendar"></i> Posted {{ $job->posted_date ? $job->posted_date->format('d M Y') : 'Null' }}</div>
+                        <div class="meta-item"><i class="fas fa-calendar-alt"></i>Closing {{ $job->end_date ? $job->end_date->format('d M Y') : 'Null' }}</div>
                         <div class="meta-item"><i class="far fa-clock"></i> {{ $job->experience_level }}</div>
                     </div>
                     <a href="{{ route('careerdetails', $job->id) }}" class="btn-apply w-100 mt-4 d-md-none text-center justify-content-center">Go For Apply <i class="fas fa-arrow-right ms-2"></i></a>

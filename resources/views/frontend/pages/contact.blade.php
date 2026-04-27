@@ -293,6 +293,24 @@
                 <p class="lead text-white-50 mb-0" style="max-width: 580px; line-height: 1.6;">
                     {!! strip_tags($contactHeader->description ?? "Whether you're a government agency, development partner, or private company — TRACE is ready to listen, advise, and collaborate. Reach out and we'll respond within one business day.") !!}
                 </p>
+                    @if($heroContent?->section)
+                        <div class="hero-label">{{ $heroContent->section }}</div>
+                    @endif
+                    @if($heroContent?->heading)
+                        <h1 class="contact-hero-title">
+                            @php
+                                $dw = $heroContent->design_word ?? '';
+                                $ht = $heroContent->heading ?? '';
+                            @endphp
+                            @if($dw && str_contains($ht, $dw))
+                                {!! nl2br(e(\Illuminate\Support\Str::before($ht, $dw))) !!}<span>{{ $dw }}</span>{!! nl2br(e(\Illuminate\Support\Str::after($ht, $dw))) !!}
+                            @else
+                                {!! nl2br(e($ht)) !!}
+                            @endif
+                        </h1>
+                    @endif
+                    @if($heroContent?->description)
+                        <p class="contact-hero-desc">{!! strip_tags($heroContent->description) !!}</p>
                     @endif
                 </div>
             </div>
@@ -351,7 +369,7 @@
                         <div class="office-icon-wrap"><i class="{{ $address->icon_class ?? 'fas fa-map-marker-alt' }}"></i></div>
                         <div class="office-details">
                             <span class="office-tag">{{ strtoupper($address->title) }}</span>
-                            <p class="office-name">{{ $address->name ?? 'Trace Consulting Limited' }}</p>
+                            <p class="office-name">{{ $address->name ?? '' }}</p>
                             <p class="office-addr">
                                 {!! nl2br(e($address->address)) ?? '' !!}
                             </p>

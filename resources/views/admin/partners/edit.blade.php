@@ -25,7 +25,8 @@
                             <label class="form-label">Current Logo</label><br>
                             <img src="{{ $partner->imageUrl() }}" alt="Current Logo" style="max-height: 80px;" class="mb-2">
                             <input type="file" name="image" id="partnerImage" class="form-control" accept="image/*" onchange="previewImage(this)">
-                            
+                            <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 300×150px (transparent PNG preferred, max 2MB)</small>
+
                             <div id="imagePreviewContainer" class="mt-3" style="display:none;">
                                 <p>New Logo Preview:</p>
                                 <img id="preview" src="#" alt="New Logo" style="max-height: 100px; border: 1px solid #ddd; padding: 5px;">

@@ -327,10 +327,10 @@
 @section('content')
 @php
     $projectsHero = $projectsHero ?? contentBlock('projects-page');
-    $heroSection = $projectsHero?->section ?: 'Our Projects';
-    $heroHeading = $projectsHero?->heading ?: 'Work that';
-    $heroHighlight = $projectsHero?->design_word ?: 'changes systems.';
-    $heroDescription = $projectsHero?->description ?: 'TRACE has delivered trade facilitation reform, laboratory accreditation, digital systems, and policy advisory projects across South Asia — for governments, development banks, and regulatory bodies.';
+    $heroSection     = $projectsHero?->section     ?? '';
+    $heroHeading     = $projectsHero?->heading     ?? '';
+    $heroHighlight   = $projectsHero?->design_word ?? '';
+    $heroDescription = $projectsHero?->description ?? '';
     $projectCount = is_countable($projects ?? null) ? count($projects) : 0;
 @endphp
 
@@ -428,24 +428,24 @@
         <div class="row g-4">
             @forelse($projects as $project)
                 @php
-                    $projectImage = $project->imageUrl() ?: asset('assets/img/Trade and Customs.png');
-                    $projectYear = $project->start_date?->format('Y');
-                    $projectYearEnd = $project->end_date?->format('Y');
-                    $projectYearLabel = $projectYear && $projectYearEnd ? $projectYear . '-' . $projectYearEnd : ($projectYear ?: $projectYearEnd ?: '');
-                    $projectCategory = $project->services->first()?->service_name ?: $project->project_standard ?: 'PROJECT';
-                    $projectTags = $project->services->take(3);
-                    $projectDesc = stripPTags($project->overview) ?: 'Project details will be added soon.';
+                    $projectImage     = $project->imageUrl() ?? '';
+                    $projectYear      = $project->start_date?->format('Y');
+                    $projectYearEnd   = $project->end_date?->format('Y');
+                    $projectYearLabel = $projectYear && $projectYearEnd ? $projectYear . '-' . $projectYearEnd : ($projectYear ?? $projectYearEnd ?? '');
+                    $projectCategory  = $project->services->first()?->service_name ?? $project->project_standard ?? '';
+                    $projectTags      = $project->services->take(3);
+                    $projectDesc      = stripPTags($project->overview) ?? '';
                 @endphp
                 <div class="col-xl-4 col-lg-4 col-md-6">
                     <div class="project-card h-100 shadow-sm">
                         <div class="project-img-box">
                             <img src="{{ $projectImage }}" alt="{{ $project->project_title }}">
                             <span class="category-tag">{{ $projectCategory }}</span>
-                            <span class="year-badge">{{ $projectYearLabel ?: $project->project_status }}</span>
+                            <span class="year-badge">{{ $projectYearLabel ?: ($project->project_status ?? '') }}</span>
                         </div>
 
                         <div class="project-content">
-                            <h6 class="client-name text-uppercase">{{ abbreviateClientName($project->client) ?: 'TRACE' }}</h6>
+                            <h6 class="client-name text-uppercase">{{ abbreviateClientName($project->client) ?? '' }}</h6>
                             <h4 class="project-standard">{{ $project->project_standard ?: '' }}</h4>
                             <h4 class="project-title">{{ $project->project_title }}</h4>
                             <p class="project-bio text-muted">{{ \Illuminate\Support\Str::limit($projectDesc, 140) }}</p>

@@ -3,11 +3,11 @@
         use Illuminate\Support\Str;
 
         $ctaContent = contentBlock('work-with-us');
-        $ctaTag = $ctaContent?->section ?: 'WORK WITH US';
-        $ctaTitle = $ctaContent?->heading ?: 'Have a project in mind?';
-        $ctaTitleSpan = $ctaContent?->design_word ?: 'that lasts.';
-        $ctaDescription = $ctaContent?->description ?: "Whether reforming a regulatory system, building technical capacity, or modernising digital infrastructure — we'd like to hear from you.";
-        $ctaButtonLabel = $ctaContent?->sub_heading ?: 'Get in Touch';
+        $ctaTag = $ctaContent?->section ?: '';
+        $ctaTitle = $ctaContent?->heading ?: '';
+        $ctaTitleSpan = $ctaContent?->design_word ?: '';
+        $ctaDescription = $ctaContent?->description ?: "";
+        $ctaButtonLabel = $ctaContent?->sub_heading ?: '';
     @endphp
 
     <div class="container custom-cta-container"> {{-- ১০৭২পিএক্স কন্টেইনার --}}
@@ -22,18 +22,19 @@
                     <h2 class="cta-title">
                         @if(!empty($ctaTitleSpan) && Str::contains($ctaTitle, $ctaTitleSpan))
                             {{ trim(Str::before($ctaTitle, $ctaTitleSpan)) }}
-                            <br>
+                          
                             <span>{{ $ctaTitleSpan }}</span>{{ Str::after($ctaTitle, $ctaTitleSpan) }}
                         @else
                             {{ $ctaTitle }}
                             @if(!empty($ctaTitleSpan))
-                                <br>
+                               
                                 <span>{{ $ctaTitleSpan }}</span>
                             @endif
                         @endif
                     </h2>
                     <p class="cta-desc">
-                        {!! $ctaDescription !!}
+                        <div style="color:#ffffff7a">{!! $ctaDescription !!}</div>
+                        
                     </p>
                 </div>
 

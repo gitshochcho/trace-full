@@ -267,23 +267,37 @@ class HomeController extends Controller
             'cv'           => 'required|file|mimes:pdf,doc,docx|max:5120', // 5MB max
         ]);
 
-        // Handle CV upload
-        $cvPath = null;
-        if ($request->hasFile('cv')) {
-            $cvPath = $request->file('cv')->store('cvs', 'public');
+        // Check for duplicate application with same name, email, and phone
+        $existingApplication = JobApplication::where('name', $validated['name'])
+            ->where('email', $validated['email'])
+            ->where('phone', $validated['phone'])
+            ->first();
+
+        if ($existingApplication) {
+            return back()->with('error', 'You have already applied with this email and phone number. Duplicate applications are not allowed.');
         }
 
-        JobApplication::create([
-            'job_posting_id' => $job->id,
-            'name'           => $validated['name'],
-            'email'          => $validated['email'],
-            'phone'          => $validated['phone'],
-            'cover_letter'   => $validated['cover_letter'] ?? null,
-            'cv_path'        => $cvPath,
-            'is_reviewed'    => false,
-        ]);
+        try {
+            // Handle CV upload
+            $cvPath = null;
+            if ($request->hasFile('cv')) {
+                $cvPath = $request->file('cv')->store('cvs', 'public');
+            }
 
-        return back()->with('success', 'Your application has been submitted successfully!');
+            JobApplication::create([
+                'job_posting_id' => $job->id,
+                'name'           => $validated['name'],
+                'email'          => $validated['email'],
+                'phone'          => $validated['phone'],
+                'cover_letter'   => $validated['cover_letter'] ?? null,
+                'cv_path'        => $cvPath,
+                'is_reviewed'    => false,
+            ]);
+
+            return back()->with('success', 'Your application has been submitted successfully! We will review it soon.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'An error occurred while submitting your application. Please try again later.');
+        }
     }
 
     public function contact(Request $request)

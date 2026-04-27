@@ -4,10 +4,10 @@
 @section('content')
 
 @php
-    $heroSection = $insightsPageContent?->section ?: 'KNOWLEDGE & RESEARCH';
-    $heroHeading = $insightsPageContent?->heading ?: 'Ideas that';
-    $heroDesignWord = $insightsPageContent?->design_word ?: 'move trade forward.';
-    $heroDescription = $insightsPageContent?->description ?: 'Op-eds in national newspapers, in-house research, policy publications, and expert videos - TRACE\'s full body of published work.';
+    $heroSection    = $insightsPageContent?->section     ?? '';
+    $heroHeading    = $insightsPageContent?->heading     ?? '';
+    $heroDesignWord = $insightsPageContent?->design_word ?? '';
+    $heroDescription= $insightsPageContent?->description ?? '';
 
     $allInsights = $insights ?? collect();
     $typeCounts = [
@@ -165,7 +165,7 @@ $isExternal = false;
                     <div class="card-body p-4">
                         <small class="fw-bold text-teal mb-2 d-block" style="font-size: 11px; color: #00898e; letter-spacing: 0.5px;">{{ $category }}</small>
                         <h5 class="card-title fw-bold text-dark mb-3" style="font-size: 17px; line-height: 1.4;">{{ $title }}</h5>
-                        <p class="card-text text-muted small mb-4">{{ $description ?: 'Insight summary is being updated.' }}</p>
+                        <p class="card-text text-muted small mb-4">{{ $description }}</p>
                         
                         <div class="d-flex justify-content-between align-items-center pt-3 border-top mt-auto">
                             <span class="text-muted" style="font-size: 12px;"><i class="far fa-calendar-alt me-1"></i> {{ $metaDate }} · {{ $metaDuration }}</span>

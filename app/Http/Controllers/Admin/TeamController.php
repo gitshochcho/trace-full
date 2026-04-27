@@ -26,6 +26,15 @@ class TeamController extends Controller
         return view('admin.team.index', compact('teams', 'projects'));
     }
 
+    public function create()
+    {
+        $projects = Project::query()
+            ->orderBy('project_title')
+            ->get(['id', 'project_title']);
+
+        return view('admin.team.create', compact('projects'));
+    }
+
     public function store(Request $request): RedirectResponse
     {
         $validated = $this->validateTeamRequest($request);
@@ -33,6 +42,7 @@ class TeamController extends Controller
             'first_name' => $validated['first_name'],
             'last_name' => $validated['last_name'] ?? null,
             'designation' => $validated['designation'] ?? null,
+            'short_description' => $validated['short_description'] ?? null,
             'description' => $this->normalizeEditorText($validated['description'] ?? null),
             'sort_order' => $validated['sort_order'] ?? 0,
             'type' => $validated['type'] ?? 1,
@@ -48,7 +58,7 @@ class TeamController extends Controller
         $this->syncSocialMedia($team, $validated['social_media'] ?? [], $request->file('social_media_icons', []));
 
         return redirect()
-            ->route('admin.teams.edit', $team)
+            ->route('admin.teams.index')
             ->with([
                 'message' => 'Team member created successfully',
                 'alert-type' => 'success',
@@ -73,15 +83,18 @@ class TeamController extends Controller
 
     public function update(Request $request, Team $team): RedirectResponse
     {
+
+        // dd($request->all());
         $validated = $this->validateTeamRequest($request, true);
 
         $team->fill([
             'first_name' => $validated['first_name'],
             'last_name' => $validated['last_name'] ?? null,
             'designation' => $validated['designation'] ?? null,
+            'short_description' => $validated['short_description'] ?? null,
             'description' => $this->normalizeEditorText($validated['description'] ?? null),
             'sort_order' => $validated['sort_order'] ?? 0,
-            'type' => $validated['type'] ?? 1,
+            'type' => $validated['type'],
             'headtitle' => $validated['headtitle'] ?? null,
         ]);
         $team->save();
@@ -100,7 +113,7 @@ class TeamController extends Controller
         $this->syncSocialMedia($team, $validated['social_media'] ?? [], $request->file('social_media_icons', []));
 
         return redirect()
-            ->route('admin.teams.edit', $team)
+            ->route('admin.teams.index')
             ->with([
                 'message' => 'Team member updated successfully',
                 'alert-type' => 'success',
@@ -139,7 +152,9 @@ class TeamController extends Controller
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['nullable', 'string', 'max:255'],
             'designation' => ['nullable', 'string', 'max:255'],
+            'short_description' => ['nullable', 'string', 'max:500'],
             'description' => ['nullable', 'string'],
+            'type' => ['nullable', 'string', 'in:1,2'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
             'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:4096'],
             'remove_image' => ['nullable', 'boolean'],

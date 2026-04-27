@@ -1,7 +1,7 @@
 @php
   $logoImage = $siteSettings?->logoImageUrl();
-  $logoText = $siteSettings?->logo_text ?: 'TRACE';
-  $logoTagline = $siteSettings?->logo_tagline ?: 'Insight. Strategy. Impact';
+  $logoText = $siteSettings?->logo_text ?: '';
+  $logoTagline = $siteSettings?->logo_tagline ?: '';
 @endphp
 
 <div class="d-flex align-items-center gap-2">

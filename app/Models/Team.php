@@ -15,6 +15,7 @@ class Team extends Model implements HasMedia
         'first_name',
         'last_name',
         'designation',
+        'short_description',
         'description',
         'sort_order',
         'type',

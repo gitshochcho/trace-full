@@ -28,6 +28,15 @@ class ProjectController extends Controller
         return view('admin.project.index', compact('projects', 'services'));
     }
 
+    public function create()
+    {
+        $services = Service::withCount('projects')
+            ->orderBy('service_name')
+            ->get();
+
+        return view('admin.project.create', compact('services'));
+    }
+
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
@@ -74,7 +83,7 @@ class ProjectController extends Controller
         $this->syncOutcomes($project, $validated['outcomes'] ?? []);
 
         return redirect()
-            ->route('admin.projects.edit', $project)
+            ->route('admin.projects.index')
             ->with([
                 'message' => 'Project created successfully',
                 'alert-type' => 'success',
@@ -140,7 +149,7 @@ class ProjectController extends Controller
         $this->syncOutcomes($project, $validated['outcomes'] ?? []);
 
         return redirect()
-            ->route('admin.projects.edit', $project)
+            ->route('admin.projects.index')
             ->with([
                 'message' => 'Project updated successfully',
                 'alert-type' => 'success',

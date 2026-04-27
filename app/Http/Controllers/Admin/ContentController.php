@@ -18,6 +18,11 @@ class ContentController extends Controller
         return view('admin.content.index', compact('contents'));
     }
 
+    public function create()
+    {
+        return view('admin.content.create');
+    }
+
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
@@ -94,7 +99,7 @@ class ContentController extends Controller
         Cache::forget('content_block_' . Str::slug($content->slug));
 
         return redirect()
-            ->route('admin.content.edit', $content)
+            ->route('admin.content.index')
             ->with([
                 'message' => 'Content updated successfully',
                 'alert-type' => 'success',

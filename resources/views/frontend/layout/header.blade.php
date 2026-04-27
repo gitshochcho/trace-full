@@ -6,7 +6,7 @@
             </div>
             <div class="topbar-right d-flex align-items-center gap-3">
                 <a href="#" class="text-decoration-none" style="font-size: 11px; color: #fff; opacity: 1;">Company news</a>
-                <a href="#" class="text-decoration-none" style="font-size: 11px; color: #fff; opacity: 1;">Faq</a>
+                <!-- <a href="#" class="text-decoration-none" style="font-size: 11px; color: #fff; opacity: 1;">Faq</a> -->
                 <span class="text-white" style="opacity: 0.5;">|</span>
                 <div class="social-icons d-flex gap-3">
                     @foreach(($siteSettings?->socialLinksWithIcons() ?? []) as $socialLink)

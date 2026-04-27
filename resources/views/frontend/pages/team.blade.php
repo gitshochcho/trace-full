@@ -136,7 +136,7 @@
     border-radius: 10px; display: flex; align-items: center; justify-content: center;
     color: #64748B; text-decoration: none; transition: 0.3s;
 }
-.social-links a:hover { background: #01354B; color: #fff; }
+.social-links a:hover { background: #C0C0C0; color: #fff; }
 .btn-profile {
     background: #fff; border: 1px solid #E5E9ED;
     padding: 10px 25px; border-radius: 30px; font-size: 13px;
@@ -339,16 +339,15 @@
     z-index: 5;
 }
 
-/* আইকনগুলোর স্টাইল (বক্স শেপ এবং ব্লার ইফেক্ট) */
 .social-icon {
     width: 40px;
     height: 40px;
-    background: rgba(255, 255, 255, 0.2); /* হালকা সাদাটে ভাব */
-    backdrop-filter: blur(8px); /* গ্লাস ইফেক্ট */
+    background: #fff;
     -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(8px);
+    border: 0.3px solid rgba(255, 255, 255, 0.3);
     color: white;
-    border-radius: 8px; /* ছবি অনুযায়ী অল্প রাউন্ড */
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -356,9 +355,11 @@
     transition: all 0.3s ease;
 }
 
+/* মাউস নিলে যা হবে */
 .social-icon:hover {
-    background: #ffffff;
-    color: #00898e; /* হোভার করলে টিল কালার */
+    background: #EADDCA;
+    color: #fff;
+    border-color: transparent;
 }
 
 /* যখন কার্ড হোভার হবে তখন আইকন দেখাবে */
@@ -483,9 +484,9 @@
 .expert-left img {
     width: 72px;
     height: 72px;
-    border-radius: 50%;
+    /* border-radius: 50%; */
     object-fit: cover;
-    border: 4px solid #F1F5F9;
+    /* border: 4px solid #F1F5F9; */
 }
 
 .leader-social {
@@ -577,16 +578,17 @@
 @section('content')
 
 @php
-    $heroTag = $teamPageContent?->section ?: 'THE PEOPLE BEHIND THE WORK';
-    $heroHeading = $teamPageContent?->heading ?: 'Experts who';
-    $heroDesignWord = $teamPageContent?->design_word ?: 'drive change.';
-    $heroDescription = $teamPageContent?->description ?: 'TRACE brings together a permanent core team of trade specialists, researchers, and technologists - supported by a network of domain experts engaged on specific projects and engagements.';
+    $heroTag         = $teamPageContent?->section     ?? '';
+    $heroHeading     = $teamPageContent?->heading     ?? '';
+    $heroDesignWord  = $teamPageContent?->design_word ?? '';
+    $heroDescription = $teamPageContent?->description ?? '';
 
-    $leader = $leadTeam;
-    $leaderImage = $leader?->imageUrl() ?: asset('assets/img/fuad.png');
-    $leaderName = $leader?->fullName() ?: 'Team Lead';
-    $leaderDesignation = $leader?->designation ?: 'Managing Director & Chief Executive Officer';
-    $leaderBio = stripPTags($leader?->description) ?: 'Profile details are being updated.';
+    $leader            = $leadTeam;
+    $leaderImage       = $leader?->imageUrl()      ?? '';
+    $leaderName        = $leader?->fullName()       ?? '';
+    $leaderDesignation = $leader?->designation      ?? '';
+    $leaderBio         = stripPTags($leader?->description) ?? '';
+    $leadershortdescrition        = stripPTags($leader?->short_description) ?? '';
 
     $leaderSocials = $leader?->socialMedia ?? collect();
     $leaderExpertise = $leader?->experties ?? collect();
@@ -652,7 +654,10 @@
                         <div class="orange-divider"></div>
                         
                         <p class="bio">
-                            {{ \Illuminate\Support\Str::limit($leaderBio, 420) }}
+                            
+                            {{ \Illuminate\Support\Str::limit($leadershortdescrition, 780) }}
+
+                           
                         </p>
 
                         <div class="skill-tags">
@@ -715,7 +720,7 @@
                             @endif
                         </a>
                     @empty
-                        <a href="#" class="social-icon" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+                        <!-- <a href="#" class="social-icon" target="_blank"><i class="fab fa-linkedin-in"></i></a> -->
                     @endforelse
                 </div>
             </div>
@@ -724,16 +729,15 @@
             
             <div class="team-content flex-grow-1">
                 <h4 class="name">{{ $member->fullName() }}</h4>
-                <h5 class="role">{{ $member->designation ?: 'Team Specialist' }}</h5>
-                <span class="sub text-muted">{{ $member->experties->first()?->heading ?: 'Core Team' }}</span>
-                
-                <p class="bio">{{ \Illuminate\Support\Str::limit(stripPTags($member->description), 150) ?: 'Profile summary is coming soon.' }}</p>
-                
+                <h5 class="role">{{ $member->designation ?? '' }}</h5>
+                <span class="sub text-muted">{{ $member->experties->first()?->heading ?? '' }}</span>
+
+                <p class="bio">{{ $member->short_description ?: \Illuminate\Support\Str::limit(stripPTags($member->description), 150) }}</p>
+
                 <div class="tags">
                     @forelse($member->experties->take(3) as $expertise)
                         <span>{{ $expertise->heading }}</span>
                     @empty
-                        <span>Team Member</span>
                     @endforelse
                 </div>
             </div>
@@ -770,48 +774,54 @@
             </p>
         </div>
 
-        <div class="row g-4 experts-grid">
-            @forelse($advisors as $index => $expert)
-            <div class="col-xl-6 col-lg-12">
-                <div class="expert-card">
-                    <div class="expert-left">
-                        <img src="{{ $expert->imageUrl() ?: asset('assets/img/michael.png') }}" alt="{{ $expert->fullName() }}">
-                        <div class="leader-social">
-                            @forelse($expert->socialMedia->take(2) as $social)
-                                <a href="{{ $social->social_link ?: '#' }}" target="_blank" rel="noopener">
-                                    @if($social->iconUrl())
-                                        <img src="{{ $social->iconUrl() }}" alt="{{ $social->title ?: 'social' }}" style="width: 14px; height: 14px; object-fit: contain;">
-                                    @else
-                                        <i class="fa-solid fa-link"></i>
-                                    @endif
-                                </a>
-                            @empty
-                                <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
-                            @endforelse
-                        </div>
-                    </div>
+       <div class="row g-4 experts-grid">
+    @forelse($advisors as $index => $expert)
+    <div class="col-xl-6 col-lg-12">
+        {{-- কার্ডের মেইন কন্টেইনারে position-relative যোগ করা হয়েছে --}}
+        <div class="expert-card position-relative">
+            
+            {{-- এই অ্যাঙ্কর ট্যাগটি পুরো কার্ডকে ক্লিকেবল করবে --}}
+            <a href="{{ route('teamdetails', $expert) }}" class="stretched-link"></a>
 
-                    <div class="expert-right">
-                        <span class="expert-badge {{ $badgeClasses[$index % count($badgeClasses)] }}">{{ $expertLabels[$index % count($expertLabels)] }}</span>
-                        <h4>{{ $expert->fullName() }}</h4>
-                        <p class="role">{{ $expert->designation ?: 'Domain Expert' }}</p>
-                        <p class="desc">{{ \Illuminate\Support\Str::limit(stripPTags($expert->description), 110) ?: 'Expert profile summary is coming soon.' }}</p>
-                        <div class="expert-tags">
-                            @forelse($expert->experties->take(3) as $expertise)
-                                <span>{{ $expertise->heading }}</span>
-                            @empty
-                                <span>Consulting</span>
-                            @endforelse
-                        </div>
-                    </div>
+            <div class="expert-left">
+                <img src="{{ $expert->imageUrl() ?: asset('assets/img/michael.png') }}" alt="{{ $expert->fullName() }}">
+                
+                {{-- সোশ্যাল লিঙ্কগুলোর z-index বাড়িয়ে দেওয়া হয়েছে যাতে stretched-link এর ওপর কাজ করে --}}
+                <div class="leader-social position-relative" style="z-index: 2;">
+                    @forelse($expert->socialMedia->take(2) as $social)
+                        <a href="{{ $social->social_link ?: '#' }}" target="_blank" rel="noopener">
+                            @if($social->iconUrl())
+                                <img src="{{ $social->iconUrl() }}" alt="{{ $social->title ?: 'social' }}" style="width: 14px; height: 14px; object-fit: contain;">
+                            @else
+                                <i class="fa-solid fa-link"></i>
+                            @endif
+                        </a>
+                    @empty
+                        {{-- সোশ্যাল না থাকলে খালি থাকবে --}}
+                    @endforelse
                 </div>
             </div>
-            @empty
-                <div class="col-12">
-                    <div class="border rounded-3 bg-white p-4 text-muted">No expert profiles have been added yet.</div>
+
+            <div class="expert-right">
+                <span class="expert-badge {{ $badgeClasses[$index % count($badgeClasses)] }}">{{ $expertLabels[$index % count($expertLabels)] }}</span>
+                <h4>{{ $expert->fullName() }}</h4>
+                <p class="role">{{ $expert->designation ?? '' }}</p>
+                <p class="desc">{{ $expert->short_description ?: \Illuminate\Support\Str::limit(stripPTags($expert->description), 110) }}</p>
+                <div class="expert-tags">
+                    @forelse($expert->experties->take(3) as $expertise)
+                        <span>{{ $expertise->heading }}</span>
+                    @empty
+                    @endforelse
                 </div>
-            @endforelse
+            </div>
         </div>
+    </div>
+    @empty
+        <div class="col-12">
+            <div class="border rounded-3 bg-white p-4 text-muted">No expert profiles have been added yet.</div>
+        </div>
+    @endforelse
+</div>
 
     </div>
 </section>

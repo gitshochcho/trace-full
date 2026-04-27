@@ -40,12 +40,12 @@
                                 @error('type') <span class="text-danger">{{ $message }}</span> @enderror
                             </div>
 
-                            <div class="mb-3">
+                            <!-- <div class="mb-3">
                                 <label class="form-label">Icon Class (Font Awesome)</label>
                                 <input type="text" name="icon_class" class="form-control @error('icon_class') is-invalid @enderror" 
                                     placeholder="e.g., fas fa-phone-alt" value="{{ old('icon_class') }}">
                                 @error('icon_class') <span class="text-danger">{{ $message }}</span> @enderror
-                            </div>
+                            </div> -->
 
                             <div class="mb-3">
                                 <label class="form-label">Title <span class="text-danger">*</span></label>
@@ -61,12 +61,12 @@
                                 @error('primary_text') <span class="text-danger">{{ $message }}</span> @enderror
                             </div>
 
-                            <div class="mb-3">
+                            <!-- <div class="mb-3">
                                 <label class="form-label">Secondary Text</label>
                                 <input type="text" name="secondary_text" class="form-control @error('secondary_text') is-invalid @enderror" 
                                     placeholder="e.g., Dhaka or Head Office — Dhaka" value="{{ old('secondary_text') }}">
                                 @error('secondary_text') <span class="text-danger">{{ $message }}</span> @enderror
-                            </div>
+                            </div> -->
 
                             <!-- Address Fields (Hidden by default) -->
                             <div id="addressFields" style="display: none;">

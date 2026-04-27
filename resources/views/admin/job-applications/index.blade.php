@@ -76,18 +76,27 @@
                                                 <a href="{{ route('admin.job-applications.download-cv', $application) }}" class="btn btn-primary" title="Download CV" data-bs-toggle="tooltip">
                                                     <i class="fas fa-download"></i> CV
                                                 </a>
-                                                @if(!$application->is_reviewed)
                                                 <form action="{{ route('admin.job-applications.mark-reviewed', $application) }}" method="POST" style="display: inline;">
                                                     @csrf
-                                                    <button type="submit" class="btn btn-success" title="Mark as Reviewed" data-bs-toggle="tooltip">
+                                                    @if(!$application->is_reviewed)
+                                                    <button type="submit" class="btn btn-success btn-sm" title="Mark as Reviewed" data-bs-toggle="tooltip">
                                                         <i class="fas fa-check"></i> Approve
                                                     </button>
+                                                    @else
+                                                    <button type="submit" class="btn btn-warning btn-sm" title="Mark as Pending" data-bs-toggle="tooltip">
+                                                        <i class="fas fa-undo"></i> Pending
+                                                    </button>
+                                                    @endif
                                                 </form>
-                                                @else
-                                                <button type="button" class="btn btn-success" disabled title="Already Reviewed">
-                                                    <i class="fas fa-check-circle"></i> Reviewed
-                                                </button>
-                                                @endif
+                                                <form action="{{ route('admin.job-applications.destroy', $application) }}" method="POST"
+                                                    style="display: inline;"
+                                                    onsubmit="return confirm('Are you sure you want to delete this application?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger btn-sm" title="Delete" data-bs-toggle="tooltip">
+                                                        <i class="fas fa-trash"></i> Delete
+                                                    </button>
+                                                </form>
                                             </div>
                                         </td>
                                     </tr>
