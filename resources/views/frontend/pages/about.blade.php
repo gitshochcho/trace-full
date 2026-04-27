@@ -672,10 +672,9 @@
 
 .insights-grid {
     display: grid;
-    grid-template-columns: 516px 256px 256px;
-    grid-template-rows: repeat(2, auto);
+    grid-template-columns: 516px 1fr 1fr;
     column-gap: 20px;
-    row-gap: 20px;
+    row-gap: 16px;
 }
 
 .insight-card-link {
@@ -683,10 +682,17 @@
     color: inherit;
 }
 
-.big-card {
+/* Big card link — direct grid child, spans both rows */
+.insights-grid > .insight-card-link:first-child {
     grid-row: span 2;
-    width: 516px;
-    height: 482.8px;
+    display: flex;
+    flex-direction: column;
+}
+
+.big-card {
+    flex: 1;
+    width: 100%;
+    height: 100%;
     background: #fff;
     border: 1px solid #E3E8EB;
     border-radius: 10px;
@@ -699,15 +705,17 @@
 .big-card .card-img-box img { height: 260px; object-fit: cover; }
 
 .small-card {
-    width: 256px;
-    height: auto;
+    width: 100%;
+    height: 100%;
     background: #fff;
     border: 1px solid #E3E8EB;
     border-radius: 10px;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
-.small-img img { height: 140px; object-fit: cover; }
+.small-img img { height: 120px; object-fit: cover; }
 
 .card-img-box { position: relative; }
 
@@ -729,15 +737,15 @@
 }
 
 .card-body { padding: 24px; flex-grow: 1; }
-.card-body-small { padding: 18px 20px; }
+.card-body-small { padding: 18px 20px 12px; flex: 1; }
 
 .card-h { font-size: 18px; font-weight: 600; color: #01354B; line-height: 1.4; }
-.card-h-small { font-size: 14px; font-weight: 700; color: #01354B; line-height: 1.4; margin-bottom: 15px; }
+.card-h-small { font-size: 14px; font-weight: 700; color: #01354B; line-height: 1.4; margin-bottom: 0; }
 
 .card-p { font-size: 13px; color: #64748B; margin-top: 12px; line-height: 1.6; }
 
 .card-footer { padding: 15px 24px; border-top: 1px solid #F1F5F9; display: flex; justify-content: space-between; }
-.card-footer-small { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
+.card-footer-small { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; border-top: 1px solid #F1F5F9; }
 
 .meta-text { font-size: 11px; color: #94A3B8; }
 .footer-link { font-size: 12px; color: #01888C; font-weight: 700; text-decoration: none; }
@@ -752,6 +760,7 @@
     align-items: center;
     text-decoration: none;
     transition: 0.3s;
+    min-height: 120px;
 }
 
 .all-box-link:hover { background: #E6F7F8; }
@@ -760,10 +769,16 @@
 .insights-link-text { color: #01888C; font-size: 20px; font-weight: 800; margin: 2px 0; }
 .arrow-icon { color: #01354B; font-size: 24px; }
 
-@media (max-width: 1100px) {
+@media (max-width: 900px) {
     .insights-container { width: 95%; }
+    .insights-grid { grid-template-columns: 1fr 1fr; }
+    .insights-grid > .insight-card-link:first-child { grid-column: span 2; grid-row: auto; }
+    .big-card { height: auto; }
+}
+
+@media (max-width: 600px) {
     .insights-grid { grid-template-columns: 1fr; }
-    .big-card, .small-card { width: 100%; height: auto; }
+    .insights-grid > .insight-card-link:first-child { grid-column: auto; }
 }
 
 /* ================= PARTNERS SECTION ================= */
@@ -1437,14 +1452,14 @@
                         <div class="card-img-box small-img">
                             <img src="{{ $insightImage }}" alt="{{ $insightTitle }}" class="w-100">
                             <div class="img-overlay-gradient"></div>
-                            <span class="in-badge-custom" @if(in_array($insightTypeCategory, ['watch', 'video', 'video_watch'], true)) style="background: #01888C;" @endif>{{ $insightType }}</span>
+                            <span class="in-badge-custom" style="background: #01888C;">{{ $insightType }}</span>
                         </div>
                         <div class="card-body-small">
                             <h4 class="card-h-small">{{ $insightTitle }}</h4>
-                            <div class="card-footer-small">
-                                <span class="meta-text">{{ $insightMetaDate }} · {{ $insightMetaDuration }}</span>
-                                <span class="footer-link">{{ $insightAction }} &rarr;</span>
-                            </div>
+                        </div>
+                        <div class="card-footer-small">
+                            <span class="meta-text">{{ $insightMetaDate }} · {{ $insightMetaDuration }}</span>
+                            <span class="footer-link">{{ $insightAction }} &rarr;</span>
                         </div>
                     </div>
                 </a>
