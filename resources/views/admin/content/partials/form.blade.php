@@ -728,11 +728,12 @@ if (ourMissionBtn) {
 const partnersBtn = document.getElementById('applyPartnersPreset');
 if (partnersBtn) {
     partnersBtn.addEventListener('click', function () {
-        document.getElementById('slug').value = 'about_us_partners'; // Slug oboshoy matching hote hobe
-        document.getElementById('section').value = 'ABOUT US DETAILS';
-        document.getElementById('heading').value = 'Trusted by Leading Institutions';
-        document.getElementById('design_word').value = 'Institutions';
-        document.getElementById('type').value = 'Partners Section';
+        if (slugField) slugField.value = 'about_us_partners';
+        if (sectionField) sectionField.value = 'ABOUT US DETAILS';
+        if (headingField) headingField.value = 'Trusted by Leading Institutions';
+        if (subHeadingField) subHeadingField.value = '';
+        if (designWordField) designWordField.value = 'Institutions';
+        if (typeField) typeField.value = 'Partners Section';
         
         // Description value set kora
         if (typeof setDescriptionValue === "function") {
