@@ -3,7 +3,6 @@ namespace App\Http\Controllers;
 
 use App\Mail\ForgetPassMail;
 use App\Models\ContactInfo;
-use App\Models\Content;
 use App\Models\Country;
 use App\Models\Gender;
 use App\Models\Insight;
@@ -27,7 +26,6 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Socialite\Facades\Socialite;
 use Propaganistas\LaravelPhone\Rules\Phone;
-use App\Models\InsightType;
 
 
 class HomeController extends Controller
@@ -64,8 +62,11 @@ class HomeController extends Controller
 
     public function services(Request $request)
     {
-        $servicesHero = contentBlock('services-page');
+        $servicesHero = contentBlock('services-page')
+            ?? contentBlock('service-hero')
+            ?? contentBlock('service hero');
         $workWithUs   = contentBlock('work-with-us');
+        // dd($servicesHero);
 
         $services = Service::query()
             ->with(['content', 'media', 'solutions'])
@@ -192,20 +193,21 @@ class HomeController extends Controller
     //     return view('frontend.pages.insights', compact('insightsPageContent', 'insights', 'insightTypes'));
     // }
 
-        public function insights()
-{
-   $insights = Insight::with(['insightType', 'media', 'articles' => function($q) {
-        $q->where('active', true)->orderBy('sort_order');
-    }])
-    ->where('active', true)
-    ->orderBy('sort_order')
-    ->latest('id')
-    ->get();
+    public function insights()
+    {
+        $insights = Insight::with(['insightType', 'media', 'articles' => function($q) {
+            $q->where('active', true)->orderBy('sort_order');
+        }])
+        ->where('active', true)
+        ->orderBy('sort_order')
+        ->latest('id')
+        ->get();
 
-    $insightsPageContent = contentBlock('insights-page-header');
+        $insightsPageContent = contentBlock('insights-page')
+            ?? contentBlock('insights-page-header');
 
-    return view('frontend.pages.insights', compact('insights', 'insightsPageContent'));
-}
+        return view('frontend.pages.insights', compact('insights', 'insightsPageContent'));
+    }
     public function articleDetails(Request $request, ?InsightArticle $article = null)
     {
         $article ??= InsightArticle::query()

@@ -315,7 +315,7 @@
 <nav class="service-breadcrumb">
     <div class="container-fluid px-lg-5 page-align-container">
         <div class="breadcrumb-links">
-            <a href="\">Home</a>
+            <a href="{{ route('home') }}">Home</a>
             <span class="sep">›</span>
             <span class="active">Services</span>
         </div>

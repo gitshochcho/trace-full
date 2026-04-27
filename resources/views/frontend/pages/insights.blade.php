@@ -37,6 +37,7 @@
                     <span style="width: 25px; height: 2px; background: #e85d26;"></span>
                     {{ $heroSection }}
                 </div>
+
                 <h1 class="display-4 fw-bolder mb-4" style="line-height: 1.1;">
                     {{ $heroHeading }} <span style="color: #00bfc5;">{{ $heroDesignWord }}</span>
                 </h1>

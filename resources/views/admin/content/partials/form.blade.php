@@ -28,6 +28,7 @@
                     </small>
                     <div class="collapse" id="presetGroupHeroes">
                         <div class="d-flex flex-wrap gap-2 pb-1">
+                            <button type="button" id="applyServicesPagePreset" class="btn btn-sm btn-outline-primary preset-btn">Services Page</button>
                             <button type="button" id="applyContactPagePreset" class="btn btn-sm btn-outline-primary preset-btn">Contact Page</button>
                             <button type="button" id="applyTeamPagePreset" class="btn btn-sm btn-outline-primary preset-btn">Team Page</button>
                             <button type="button" id="applyInsightsPagePreset" class="btn btn-sm btn-outline-primary preset-btn">Insights Page</button>
@@ -249,6 +250,7 @@
     (function () {
         const field = document.getElementById('content_description');
         const teamPagePresetBtn = document.getElementById('applyTeamPagePreset');
+        const servicesPagePresetBtn = document.getElementById('applyServicesPagePreset');
         const insightsPagePresetBtn = document.getElementById('applyInsightsPagePreset');
         const projectsPagePresetBtn = document.getElementById('applyProjectsPagePreset');
         const projectLocationPresetBtn = document.getElementById('applyProjectLocationPreset');
@@ -369,6 +371,18 @@ if (removeIconBtn) {
         }
 
         const contactPagePresetBtn = document.getElementById('applyContactPagePreset');
+
+        if (servicesPagePresetBtn) {
+            servicesPagePresetBtn.addEventListener('click', function () {
+                if (slugField) slugField.value = 'services-page';
+                if (sectionField) sectionField.value = 'WHAT WE DO';
+                if (headingField) headingField.value = 'Our Services';
+                if (subHeadingField) subHeadingField.value = '';
+                if (designWordField) designWordField.value = 'Services';
+                if (typeField) typeField.value = 'Hero';
+                setDescriptionValue('TRACE provides consultancy, research, and advocacy services that help government agencies and businesses reform policies, advance trade facilitation, and strengthen market systems.');
+            });
+        }
 
         if (contactPagePresetBtn) {
             contactPagePresetBtn.addEventListener('click', function () {

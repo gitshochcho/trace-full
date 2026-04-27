@@ -262,7 +262,7 @@
 <nav class="service-breadcrumb">
     <div class="container-fluid px-lg-5 page-align-container">
         <div class="breadcrumb-links">
-            <a href="\">Home</a>
+            <a href="{{ route('home') }}">Home</a>
             <span class="sep">›</span>
             <span class="active">Contact</span>
         </div>
@@ -274,44 +274,27 @@
         <div class="container-fluid px-lg-5 page-align-container">
             <div class="row">
                 <div class="col-lg-6">
-                    <div class="hero-label">Reach Out</div>
-                    @if($heroContent)
-                        <h1 class="contact-hero-title">{{ nl2br(e($heroContent->heading ?? 'Let\'s start a conversation.')) }}</h1>
-                        <p class="contact-hero-desc">{{ $heroContent->description ?? '' }}</p>
-                    @else
-                        <h1 class="display-4 fw-bold mb-4">
                     @php
-                        $contHeading = $contactHeader->heading ?? "Let's start a conversation.";
-                        $contDesignWord = $contactHeader->design_word ?? 'conversation.';
+                        $resolvedHero = $heroContent ?? $contactHeader;
+                        $heroSection = $resolvedHero?->section ?? 'Reach Out';
+                        $heroHeading = $resolvedHero?->heading ?? "Let's start a conversation.";
+                        $heroDesignWord = $resolvedHero?->design_word ?? 'conversation.';
+                        $heroDescription = $resolvedHero?->description ?? "Whether you're a government agency, development partner, or private company — TRACE is ready to listen, advise, and collaborate. Reach out and we'll respond within one business day.";
 
-                        if ($contDesignWord) {
-                            $contHeading = str_ireplace($contDesignWord, "<span style='color: var(--trace-cyan);'>{$contDesignWord}</span>", $contHeading);
+                        if (!empty($heroDesignWord) && str_contains($heroHeading, $heroDesignWord)) {
+                            $heroHeading = str_replace(
+                                $heroDesignWord,
+                                "<span>{$heroDesignWord}</span>",
+                                e($heroHeading)
+                            );
+                        } else {
+                            $heroHeading = e($heroHeading);
                         }
                     @endphp
-                    {!! $contHeading !!}
-                </h1>
-                <p class="lead text-white-50 mb-0" style="max-width: 580px; line-height: 1.6;">
-                    {!! strip_tags($contactHeader->description ?? "Whether you're a government agency, development partner, or private company — TRACE is ready to listen, advise, and collaborate. Reach out and we'll respond within one business day.") !!}
-                </p>
-                    @if($heroContent?->section)
-                        <div class="hero-label">{{ $heroContent->section }}</div>
-                    @endif
-                    @if($heroContent?->heading)
-                        <h1 class="contact-hero-title">
-                            @php
-                                $dw = $heroContent->design_word ?? '';
-                                $ht = $heroContent->heading ?? '';
-                            @endphp
-                            @if($dw && str_contains($ht, $dw))
-                                {!! nl2br(e(\Illuminate\Support\Str::before($ht, $dw))) !!}<span>{{ $dw }}</span>{!! nl2br(e(\Illuminate\Support\Str::after($ht, $dw))) !!}
-                            @else
-                                {!! nl2br(e($ht)) !!}
-                            @endif
-                        </h1>
-                    @endif
-                    @if($heroContent?->description)
-                        <p class="contact-hero-desc">{!! strip_tags($heroContent->description) !!}</p>
-                    @endif
+
+                    <div class="hero-label">{{ $heroSection }}</div>
+                    <h1 class="contact-hero-title">{!! $heroHeading !!}</h1>
+                    <p class="contact-hero-desc">{!! strip_tags($heroDescription) !!}</p>
                 </div>
             </div>
         </div>
