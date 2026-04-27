@@ -339,17 +339,15 @@
     z-index: 5;
 }
 
-/* আইকনগুলোর স্টাইল (বক্স শেপ এবং ব্লার ইফেক্ট) */
 .social-icon {
     width: 40px;
     height: 40px;
-    background: rgba(255, 255, 255, 255);
-     /* background: #ffffff; */
-    /* backdrop-filter: blur(8px); */
+    background: #fff;
     -webkit-backdrop-filter: blur(8px);
-    border: 0.3px solid rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(8px);
+    border: 0.3px solid rgba(255, 255, 255, 0.3);
     color: white;
-    border-radius: 8px; /* ছবি অনুযায়ী অল্প রাউন্ড */
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -357,10 +355,12 @@
     transition: all 0.3s ease;
 }
 
-/* .social-icon:hover {
-    background: #ffffff;
-    color: #8e3b00; 
-} */
+/* মাউস নিলে যা হবে */
+.social-icon:hover {
+    background: #EADDCA;
+    color: #fff;
+    border-color: transparent;
+}
 
 /* যখন কার্ড হোভার হবে তখন আইকন দেখাবে */
 .team-card:hover .team-social-overlay {
