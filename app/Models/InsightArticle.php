@@ -12,30 +12,18 @@ class InsightArticle extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
 
-    protected $fillable = [
-        'insight_id',
-        'author_team_id',
-        'type',
-        'title',
-        'description',
-        'introduction_title',
-        'introduction',
-        'key_findings_title',
-        'key_findings',
-        'country_assessment_title',
-        'country_assessment',
-        'conclusion_title',
-        'conclusion',
-        'sort_order',
-        'read_minutes',
-        'active',
-        'published_at',
-    ];
+   protected $fillable = [
+    'type', 'video_link', 'heading', 'sub_heading', 'description',
+    'sort_order', 'active', 'published_at',
+    'read_minutes', 'image_description', 'social_links',  
+];
 
     protected $casts = [
-        'active' => 'boolean',
-        'published_at' => 'datetime',
-    ];
+    'active'       => 'boolean',
+    'published_at' => 'datetime',
+    'read_minutes' => 'integer',  
+    'social_links' => 'array',      
+];
 
     public function insight()
     {
@@ -58,6 +46,14 @@ class InsightArticle extends Model implements HasMedia
 
         return $url !== '' ? $url : null;
     }
+    
+    public function registerMediaCollections(): void
+{
+    $this->addMediaCollection('image')->singleFile();
+    $this->addMediaCollection('attachment')->singleFile();
+    $this->addMediaCollection('article_image')->singleFile();
+    $this->addMediaCollection('social_icons');
+}
 
     public function attachmentUrl(): ?string
     {

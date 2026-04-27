@@ -14,19 +14,32 @@ class Insight extends Model implements HasMedia
 
     protected $fillable = [
         'type',
-        'type_id',
+        // 'type_id',
+        'video_link',
         'heading',
         'sub_heading',
         'description',
         'sort_order',
         'active',
         'published_at',
+        'source_name',
     ];
 
     protected $casts = [
         'active' => 'boolean',
         'published_at' => 'datetime',
     ];
+
+    public function videoUrl(): ?string
+{
+    // Priority 1: Direct Video Link (YouTube/Vimeo etc.)
+    if (!empty($this->video_link)) {
+        return $this->video_link;
+    }
+
+    // Priority 2: Uploaded Video File (Attachment)
+    return $this->attachmentUrl();
+}
 
     public function articles()
     {
@@ -52,13 +65,29 @@ class Insight extends Model implements HasMedia
         return $url !== '' ? $url : null;
     }
 
-    public function actionLabel(): string
-    {
-        $typeString = $this->insightType ? strtolower($this->insightType->type) : 'read';
-        return match ($typeString) {
-            'download' => 'Download',
-            'video', 'watch', 'video_watch', 'watch_video' => 'Watch',
-            default => 'Read',
-        };
+public function actionLabel(): string
+{
+    $typeCategory = strtolower(str_replace(' ', '_', $this->insightType?->type_category ?? 'read'));
+
+    if ($typeCategory === 'read_on') {
+        $sourceName = $this->source_name 
+            ? parse_url($this->source_name, PHP_URL_HOST) 
+            : 'Source';
+      
+        $sourceName = preg_replace('/^www\./', '', $sourceName ?? 'Source');
+        return 'Read on ' . ucwords(str_replace(['.com', '.net', '.org', '.bd'], '', $sourceName));
     }
+
+    return match(true) {
+        $typeCategory === 'download' => 'Download',
+        in_array($typeCategory, ['watch', 'video', 'video_watch']) => 'Watch',
+        default => 'Read',
+    };
+}
+
+public function articleImageUrl(): ?string
+{
+    $url = $this->getFirstMediaUrl('article_image');
+    return $url !== '' ? $url : null;
+}
 }

@@ -94,6 +94,9 @@ Route::prefix('admin')->group(function () {
         Route::controller(InsightController::class)->group(function () {
             Route::get('insights-manager', 'index')->name('admin.insights.index');
             Route::post('insights-manager', 'store')->name('admin.insights.store');
+
+           Route::get('/insights/{insight}', 'show')->name('admin.insights.show');
+
             Route::get('insights-manager/{insight}/edit', 'edit')->name('admin.insights.edit');
             Route::put('insights-manager/{insight}', 'update')->name('admin.insights.update');
             Route::delete('insights-manager/{insight}', 'destroy')->name('admin.insights.destroy');

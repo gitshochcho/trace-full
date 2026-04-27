@@ -279,8 +279,20 @@
                         <h1 class="contact-hero-title">{{ nl2br(e($heroContent->heading ?? 'Let\'s start a conversation.')) }}</h1>
                         <p class="contact-hero-desc">{{ $heroContent->description ?? '' }}</p>
                     @else
-                        <h1 class="contact-hero-title">Let's start a<br><span>conversation.</span></h1>
-                        <p class="contact-hero-desc">Whether you're a government agency, development partner, or private company — TRACE is ready to listen, advise, and collaborate. Reach out and we'll respond within one business day.</p>
+                        <h1 class="display-4 fw-bold mb-4">
+                    @php
+                        $contHeading = $contactHeader->heading ?? "Let's start a conversation.";
+                        $contDesignWord = $contactHeader->design_word ?? 'conversation.';
+
+                        if ($contDesignWord) {
+                            $contHeading = str_ireplace($contDesignWord, "<span style='color: var(--trace-cyan);'>{$contDesignWord}</span>", $contHeading);
+                        }
+                    @endphp
+                    {!! $contHeading !!}
+                </h1>
+                <p class="lead text-white-50 mb-0" style="max-width: 580px; line-height: 1.6;">
+                    {!! strip_tags($contactHeader->description ?? "Whether you're a government agency, development partner, or private company — TRACE is ready to listen, advise, and collaborate. Reach out and we'll respond within one business day.") !!}
+                </p>
                     @endif
                 </div>
             </div>

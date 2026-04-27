@@ -18,6 +18,7 @@ class InsightTypeController extends Controller
     {
         $validated = $request->validate([
             'type' => 'required|string|max:255',
+            'type_category' => 'required|string|max:255',
         ]);
 
         $validated['status'] = $request->has('status') ? 1 : 0;
@@ -36,6 +37,7 @@ class InsightTypeController extends Controller
     {
         $validated = $request->validate([
             'type' => 'required|string|max:255',
+            'type_category' => 'required|string|max:255',
         ]);
 
         $validated['status'] = $request->has('status') ? 1 : 0;

@@ -225,8 +225,20 @@
     <section class="hero-career">
         <div class="container-fluid px-lg-5 page-align-container">
             <div class="hero-label">CAREER AT</div>
-            <h1>Career at <span class="highlight">Trace Consultancy</span></h1>
-            <p class="hero-desc">TRACE is a growing team of trade specialists, researchers, technologists, and project managers working on some of the most consequential reform programmes in South Asia.</p>
+            <h1 class="display-4 fw-bold mb-4">
+                    @php
+                        $cHeading = $careerHeader->heading ?? 'Career at Trace Consultancy';
+                        $cDesignWord = $careerHeader->design_word ?? 'Trace Consultancy';
+
+                        if ($cDesignWord) {
+                            $cHeading = str_ireplace($cDesignWord, "<span style='color: var(--trace-orange);'>{$cDesignWord}</span>", $cHeading);
+                        }
+                    @endphp
+                    {!! $cHeading !!}
+                </h1>
+                <p class="lead text-white-50 mb-0" style="max-width: 600px; line-height: 1.6;">
+                    {!! strip_tags($careerHeader->description ?? 'TRACE is a growing team of trade specialists, researchers, technologists, and project managers working on some of the most consequential reform programmes in South Asia.') !!}
+                </p>
         </div>
     </section>
 

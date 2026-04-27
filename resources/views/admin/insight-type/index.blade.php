@@ -36,6 +36,11 @@
                                         <input type="text" name="type" value="{{ old('type') }}" class="form-control @error('type') is-invalid @enderror">
                                         @error('type')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Type Category</label>
+                                        <input type="text" name="type_category" value="{{ old('type_category') }}" class="form-control @error('type_category') is-invalid @enderror">
+                                        @error('type_category')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                    </div>
                                     
                                     <div class="col-md-6 d-flex align-items-end">
                                         <div class="form-check form-switch">

@@ -97,6 +97,8 @@ class HomeController extends Controller
         return view('frontend.pages.services', compact('servicesHero', 'workWithUs', 'serviceCards'));
     }
 
+    
+
     public function serviceDetails(Request $request, $id)
     {
         $service = Service::query()
@@ -159,37 +161,51 @@ class HomeController extends Controller
         return view('frontend.pages.projectdetails', compact('project', 'relatedProjects'));
     }
 
-    public function insights(Request $request)
-    {
-        $insightsPageContent = contentBlock('insights-page');
+    // public function insights(Request $request)
+    // {
+    //     $insightsPageContent = contentBlock('insights-page');
 
-        $insights = Insight::query()
-            ->with(['articles.author.media', 'articles.media', 'media', 'insightType'])
-            ->where('active', true)
-            ->orderBy('sort_order')
-            ->latest('id')
-            ->get();
+    //     $insights = Insight::query()
+    //         ->with(['articles.author.media', 'articles.media', 'media', 'insightType'])
+    //         ->where('active', true)
+    //         ->orderBy('sort_order')
+    //         ->latest('id')
+    //         ->get();
 
-        $insightTypes = InsightType::query()
-            ->where('status', true)
-            ->orderBy('type')
-            ->get()
-            ->map(function ($type) {
-                $type->insights_count = $type->insights()->where('active', true)->count();
-                return $type;
-            });
+    //     $insightTypes = InsightType::query()
+    //         ->where('status', true)
+    //         ->orderBy('type')
+    //         ->get()
+    //         ->map(function ($type) {
+    //             $type->insights_count = $type->insights()->where('active', true)->count();
+    //             return $type;
+    //         });
 
-        // Add "All" option with total count
-        $allOption = (object) [
-            'id' => null,
-            'type' => 'All',
-            'insights_count' => $insights->count(),
-        ];
-        $insightTypes = collect([$allOption])->merge($insightTypes);
+    //     // Add "All" option with total count
+    //     $allOption = (object) [
+    //         'id' => null,
+    //         'type' => 'All',
+    //         'insights_count' => $insights->count(),
+    //     ];
+    //     $insightTypes = collect([$allOption])->merge($insightTypes);
 
-        return view('frontend.pages.insights', compact('insightsPageContent', 'insights', 'insightTypes'));
-    }
+    //     return view('frontend.pages.insights', compact('insightsPageContent', 'insights', 'insightTypes'));
+    // }
 
+        public function insights()
+{
+   $insights = Insight::with(['insightType', 'media', 'articles' => function($q) {
+        $q->where('active', true)->orderBy('sort_order');
+    }])
+    ->where('active', true)
+    ->orderBy('sort_order')
+    ->latest('id')
+    ->get();
+
+    $insightsPageContent = contentBlock('insights-page-header');
+
+    return view('frontend.pages.insights', compact('insights', 'insightsPageContent'));
+}
     public function articleDetails(Request $request, ?InsightArticle $article = null)
     {
         $article ??= InsightArticle::query()
@@ -201,22 +217,37 @@ class HomeController extends Controller
 
         $article->load(['author.media', 'insight.media', 'media']);
 
-        $relatedArticles = InsightArticle::query()
-            ->with(['insight.media'])
-            ->where('active', true)
-            ->whereKeyNot($article->id)
-            ->orderBy('sort_order')
-            ->latest('id')
-            ->take(3)
-            ->get();
+        
 
-        return view('frontend.pages.article-details', compact('article', 'relatedArticles'));
+         $sections = InsightArticle::where('insight_id', $article->insight_id)
+        ->orderBy('sort_order')
+        ->orderBy('id')
+        ->get(['id', 'title', 'description']);
+
+    $relatedArticles = InsightArticle::where('id', '!=', $article->id)
+        ->where('insight_id', '!=', $article->insight_id)
+        ->latest()
+        ->take(4)
+        ->get();
+
+            $dynamicSections = collect();
+    for ($i = 1; $i <= 15; $i++) {
+        $block = contentBlock("read_section_{$i}");
+        if ($block) {
+            $dynamicSections->push($block);
+        }
+    }
+
+   $relatedInsights = Insight::where('active', true)->take(3)->get();
+
+        return view('frontend.pages.article-details', compact('article', 'relatedArticles', 'dynamicSections', 'relatedInsights', 'sections'));
     }
 
     public function career(Request $request)
     {
+        $careerHeader = contentBlock('career-heading');
         $jobs = JobPosting::active()->ordered()->paginate(12);
-        return view('frontend.pages.career', compact('jobs'));
+        return view('frontend.pages.career', compact('careerHeader', 'jobs'));
     }
     public function careerdetails(Request $request, $id)
     {
@@ -258,10 +289,11 @@ class HomeController extends Controller
     public function contact(Request $request)
     {
         $heroContent      = contentBlock('contact-page');
+        $contactHeader = contentBlock('contact-us-head');
         $contactPhones    = ContactInfo::where('type', 'phone')->active()->ordered()->get();
         $contactEmails    = ContactInfo::where('type', 'email')->active()->ordered()->get();
         $contactAddresses = ContactInfo::where('type', 'address')->active()->ordered()->get();
-        return view('frontend.pages.contact', compact('heroContent', 'contactPhones', 'contactEmails', 'contactAddresses'));
+        return view('frontend.pages.contact', compact('heroContent', 'contactHeader', 'contactPhones', 'contactEmails', 'contactAddresses'));
     }
 
     public function about(Request $request)

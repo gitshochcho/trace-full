@@ -11,9 +11,9 @@
 
     $allInsights = $insights ?? collect();
     $typeCounts = [
-        'DOWNLOAD' => $allInsights->where('type', 'download')->count(),
-        'READ' => $allInsights->where('type', 'read')->count(),
-        'VIDEO WATCH' => $allInsights->where('type', 'video_watch')->count(),
+        'DOWNLOAD' => $allInsights->where('insightType.type_category', 'download')->count(),
+        'READ' => $allInsights->where('insightType.type_category', 'read')->count(),
+        'VIDEO WATCH' => $allInsights->where('insightType.type_category', 'video_watch')->count(),
     ];
 @endphp
 
@@ -67,11 +67,17 @@
             <div class="col-lg-8">
                 <div class="filters d-flex flex-wrap gap-2 gap-md-4">
 
-                    @foreach($insightTypes as $index => $type)
-                        <a href="#" class="filter-link {{ $index === 0 ? 'active' : '' }}" data-filter="{{ strtoupper($type->type) }}">
-                            {{ $type->type }} <span class="ms-1 opacity-50">{{ $type->insights_count }}</span>
-                        </a>
-                    @endforeach
+                    @php
+            $uniqueTypes = $insights->map(fn($i) => $i->insightType->type ?? null)->filter()->unique();
+        @endphp
+        
+        <a href="#" class="filter-link active" data-filter="ALL">ALL ({{ $insights->count() }})</a>
+        @foreach($uniqueTypes as $type)
+            <a href="#" class="filter-link" data-filter="{{ strtoupper($type) }}">
+                {{ strtoupper($type) }} 
+                ({{ $insights->where('insightType.type', $type)->count() }})
+            </a>
+        @endforeach
                     {{-- <a href="#" class="filter-link active" data-filter="ALL">All <span class="ms-1 opacity-50">{{ $allInsights->count() }}</span></a>
                     <a href="#" class="filter-link" data-filter="VIDEO WATCH">Video Watch <span class="ms-1 opacity-50">{{ $typeCounts['VIDEO WATCH'] }}</span></a>
                     <a href="#" class="filter-link" data-filter="READ">Read <span class="ms-1 opacity-50">{{ $typeCounts['READ'] }}</span></a>
@@ -104,29 +110,52 @@
         </div>
 
         <div class="row g-4">
-            @forelse($allInsights as $insight)
-            @php
-                $tag = strtoupper($insight->insightType?->type ?: 'OTHER');
-                $category = strtoupper($insight->sub_heading ?: 'INSIGHT');
-                $title = $insight->heading;
-                $buttonText = $insight->actionLabel();
-                $badgeColor = $insight->type === 'download' ? '#e85d26' : '#00898e';
-                $cardImage = $insight->imageUrl() ?: asset('assets/img/Op-Ed.png');
-                $leadArticle = $insight->articles->first();
-                $description = \Illuminate\Support\Str::limit($insight->description ?: ($leadArticle?->description ?: ''), 120);
+           {{-- @foreach($allInsights as $insight)
+    ID: {{ $insight->id }} | 
+    typeCategory: "{{ $insight->insightType?->type_category }}" |
+    leadArticle: {{ $insight->articles->first()?->id ?? 'NULL' }} |
+    actionLink will be: {{ $insight->insightType?->type_category === 'read' && $insight->articles->first() ? 'ROUTE' : '#' }}
+    <br>
+@endforeach --}}
+@forelse($allInsights as $insight)
+@php
+    $tag = strtoupper($insight->insightType?->type ?: 'OTHER' );
+    $badgeText = strtoupper($insight->insightType?->type_category ?: 'OTHER');
+    $category = strtoupper($insight->sub_heading ?: 'INSIGHT');
+    $title = $insight->heading;
+    $buttonText = $insight->actionLabel();
+    $badgeColor = match(strtolower($insight->insightType?->type ?? '')) {
+    'video'        => '#000000',
+    'op-ed/press'  => '#116fa1',
+    'publication'  => '#0f766e',
+    'brochures'    => '#ea580c',
+    'article'      => '#1032ae',
+    default        => '#15803d',
+};
+    $cardImage = $insight->imageUrl() ?: $insight->articleImageUrl() ?: asset('assets/img/Op-Ed.png');
+    $leadArticle = $insight->articles->first();
+    $description = \Illuminate\Support\Str::limit($insight->description ?: ($leadArticle?->description ?: ''), 120);
+$typeCategory = strtolower(str_replace(' ', '_', $insight->insightType?->type_category ?? ''));
 
-                $actionLink = '#';
-                if ($insight->type === 'read' && $leadArticle) {
-                    $actionLink = route('articleDetails', $leadArticle);
-                }
-
-                if (in_array($insight->type, ['download', 'video_watch'], true)) {
-                    $actionLink = $insight->attachmentUrl() ?: ($leadArticle?->attachmentUrl() ?: '#');
-                }
-
-                $metaDate = optional($insight->published_at)->format('M Y') ?: 'TBA';
-                $metaDuration = $leadArticle?->read_minutes ? $leadArticle->read_minutes . ' min' : 'Quick read';
-            @endphp
+if ($typeCategory === 'download') {
+    $actionLink = $insight->attachmentUrl() ?: '#';
+$isExternal = false;
+} elseif (in_array($typeCategory, ['watch', 'video', 'video_watch'], true)) {
+    $actionLink = $insight->videoUrl() ?: '#';
+    $isExternal = true;
+} elseif ($typeCategory === 'read_on') {
+    $actionLink = $insight->source_name ?: '#'; 
+    $isExternal = true;
+} elseif ($typeCategory === 'read' && $leadArticle) {
+    $actionLink = route('articleDetails', $leadArticle);
+    $isExternal = false;
+} else {
+    $actionLink = '#';
+    $isExternal = false;
+}
+    $metaDate = optional($insight->published_at)->format('M Y') ?: 'TBA';
+    $metaDuration = $leadArticle?->read_minutes ? $leadArticle->read_minutes . ' min' : 'Quick read';
+@endphp
             <div class="col-12 col-md-6 col-lg-4 insight-item" data-tag="{{ $tag }}">
                 <div class="insight-card h-100 border-0 shadow-sm rounded-5 overflow-hidden bg-white">
                     <div class="card-img-position relative" style="height: 220px; overflow: hidden; position: relative;">
@@ -140,7 +169,15 @@
                         
                         <div class="d-flex justify-content-between align-items-center pt-3 border-top mt-auto">
                             <span class="text-muted" style="font-size: 12px;"><i class="far fa-calendar-alt me-1"></i> {{ $metaDate }} · {{ $metaDuration }}</span>
-                            <a href="{{ $actionLink }}" class="fw-bold text-decoration-none text-teal" style="font-size: 12px; color: #00898e;" @if($insight->type !== 'read') target="_blank" rel="noopener" @endif>{{ $buttonText }} →</a>
+                            @if($typeCategory === 'download' && $actionLink === '#')
+    <span class="text-muted" style="font-size: 12px;">No file uploaded</span>
+@elseif($typeCategory === 'download')
+    <a href="{{ $actionLink }}" download class="fw-bold text-decoration-none" style="font-size: 12px; color: #e85d26;">
+        <i class="fas fa-download me-1" style="font-size:10px;"></i>{{ $buttonText }}
+    </a>
+@else
+    <a href="{{ $actionLink }}" class="fw-bold text-decoration-none text-teal" style="font-size: 12px; color: #00898e;" @if($isExternal) target="_blank" rel="noopener" @endif>{{ $buttonText }} →</a>
+@endif
                         </div>
                     </div>
                 </div>

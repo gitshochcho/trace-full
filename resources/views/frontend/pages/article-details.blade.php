@@ -634,7 +634,7 @@
 @php
     $articleTypeLabel = strtoupper(str_replace('_', ' ', $article->type ?: 'READ'));
     $categoryLabel = $article->insight?->sub_heading ?: 'Insight';
-    $articleTitle = $article->title ?: 'Insight Article';
+    $articleTitle = $article->insight?->heading ?: 'Insight Article';
     $author = $article->author;
     $authorName = $author?->fullName() ?: 'TRACE Research Desk';
     $authorRole = $author?->designation ?: 'Author';
@@ -642,7 +642,10 @@
     $publishedLabel = optional($article->published_at)->format('F Y') ?: 'Recent';
     $readMinutes = $article->read_minutes ?: 8;
     $viewCount = max(120, ($readMinutes * 90));
-    $articleImage = $article->iconUrl() ?: ($article->insight?->imageUrl() ?: asset('assets/img/Trace team.png'));
+    $articleImage = $article->iconUrl() 
+    ?: $article->insight?->articleImageUrl() 
+    ?: $article->insight?->imageUrl() 
+    ?: asset('assets/img/Trace team.png');
     $downloadUrl = $article->attachmentUrl() ?: ($article->insight?->attachmentUrl() ?: '#');
 
     $rawDescription = trim((string) ($article->description ?: $article->insight?->description));
@@ -703,82 +706,38 @@
     <div class="article-content">
 
         {{-- Share Bar --}}
-        <div class="share-bar">
-            <span class="share-label">SHARE</span>
-            <a href="#" class="share-btn"><i class="fab fa-facebook-f"></i></a>
-            <a href="#" class="share-btn"><i class="fab fa-twitter"></i></a>
-            <a href="#" class="share-btn"><i class="fab fa-linkedin-in"></i></a>
-            <a href="#" class="copy-link-btn"><i class="far fa-copy"></i> Copy link</a>
-        </div>
+       <div class="share-bar">
+    <span class="share-label">SHARE</span>
+    @forelse($article->social_links ?? [] as $social)
+        <a href="{{ $social['link'] ?? '#' }}" class="share-btn" target="_blank" rel="noopener" title="{{ $social['name'] ?? '' }}">
+            <i class="fab fa-{{ strtolower($social['name'] ?? 'link') }}"></i>
+        </a>
+    @empty
+        <a href="#" class="share-btn"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="share-btn"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="share-btn"><i class="fab fa-linkedin-in"></i></a>
+    @endforelse
+    <a href="#" class="copy-link-btn" onclick="navigator.clipboard.writeText(window.location.href); return false;">
+        <i class="far fa-copy"></i> Copy link
+    </a>
+</div>
 
         {{-- Hero Image --}}
         <div class="article-img-wrap">
               <img src="{{ $articleImage }}"
                   alt="{{ $articleTitle }}"
                  class="article-main-img">
-              <p class="img-caption">{{ $categoryLabel }} — published by TRACE Insights.</p>
+             <p class="img-caption">
+    {{ $article->image_description ?: ($categoryLabel . ' — published by TRACE Insights.') }}
+</p>
         </div>
 
-        {{-- Introduction --}}
-        <h2 class="section-heading" id="introduction">Introduction</h2>
-        @foreach($introParagraphs as $row)
-            <p class="body-text">{{ $row }}</p>
-        @endforeach
-
-        {{-- Key Findings --}}
-        <div class="key-findings-box">
-            <div class="kf-header">
-                <span class="kf-icon">🔑</span>
-                <span class="kf-title">KEY FINDINGS</span>
-            </div>
-            <ol class="kf-list">
-                @foreach($mainParagraphs->take(4) as $row)
-                    <li>{{ \Illuminate\Support\Str::limit($row, 170) }}</li>
-                @endforeach
-            </ol>
-        </div>
-
-        {{-- Country Assessment --}}
-        <h2 class="section-heading" id="country-assessment">Country-by-Country Assessment</h2>
-
-        <h3 class="sub-heading">Bangladesh</h3>
-        @foreach($mainParagraphs->slice(0, 2) as $row)
-            <p class="body-text">{{ $row }}</p>
-        @endforeach
-
-        <blockquote class="pull-quote">
-            "{{ \Illuminate\Support\Str::limit($mainParagraphs->get(2) ?: $paragraphs->first(), 180) }}"
-        </blockquote>
-
-        <h3 class="sub-heading">India</h3>
-        @foreach($mainParagraphs->slice(2, 2) as $row)
-            <p class="body-text">{{ $row }}</p>
-        @endforeach
-
-        <div class="policy-rec-box">
-            <span class="policy-label">Policy Recommendation:</span> {{ \Illuminate\Support\Str::limit($mainParagraphs->get(4) ?: $paragraphs->last(), 260) }}
-        </div>
-
-        <h3 class="sub-heading">Nepal and Sri Lanka</h3>
-        <p class="body-text">{{ $mainParagraphs->get(5) ?: $paragraphs->first() }}</p>
-
-        {{-- Barriers --}}
-        <h2 class="section-heading" id="barriers">Barriers to Implementation</h2>
-        <p class="body-text">{{ $mainParagraphs->get(6) ?: $paragraphs->first() }}</p>
-
-        {{-- Recommendations --}}
-        <h2 class="section-heading" id="recommendations">Recommendations</h2>
-        <p class="body-text">{{ $mainParagraphs->get(7) ?: $paragraphs->last() }}</p>
-
-        {{-- Conclusion --}}
-        <h2 class="section-heading" id="conclusion">Conclusion</h2>
-        <p class="body-text">{{ $mainParagraphs->get(8) ?: $paragraphs->first() }}</p>
-        <p class="body-text">{{ $mainParagraphs->get(9) ?: $paragraphs->last() }}</p>
-
-        <p class="body-text article-footnote">
-            <em>This publication was prepared by TRACE Consulting Limited. For more information or to discuss the findings, please contact
-            <a href="mailto:info@traceconsultingltd.com">info@traceconsultingltd.com</a>.</em>
-        </p>
+       @foreach($sections as $section)
+    <h2 class="section-heading" id="section-{{ $loop->index }}">
+        {{ $section->title }}
+    </h2>
+   <div class="body-text">{!! $section->description !!}</div>
+@endforeach
 
         {{-- Tags --}}
         <div class="article-tags">
@@ -796,12 +755,14 @@
         <div class="sidebar-card toc-card">
             <h4 class="sidebar-heading">CONTENTS</h4>
             <ul class="toc-list">
-                <li><a href="#introduction"       class="toc-link">Introduction</a></li>
-                <li><a href="#country-assessment" class="toc-link">Country Assessment</a></li>
-                <li><a href="#barriers"           class="toc-link">Barriers to Implementation</a></li>
-                <li><a href="#recommendations"    class="toc-link">Recommendations</a></li>
-                <li><a href="#conclusion"         class="toc-link toc-active">Conclusion</a></li>
-            </ul>
+    @foreach($sections as $section)
+        <li>
+            <a href="#section-{{ $loop->index }}" class="toc-link">
+                {{ $section->title }}
+            </a>
+        </li>
+    @endforeach
+</ul>
         </div>
 
         {{-- Download --}}

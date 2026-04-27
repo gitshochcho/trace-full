@@ -53,7 +53,19 @@
                     <button type="button" id="applyAboutIndustryNetworkPreset" class="btn btn-sm btn-outline-info">About Industry Network</button>
                     <button type="button" id="applyAboutSustainablePreset" class="btn btn-sm btn-outline-info">About Sustainable Approach</button>
                     <button type="button" id="applyAboutTailoredPreset" class="btn btn-sm btn-outline-info">About Tailored Innovation</button>
-                    <button type="button" id="applyAboutEndToEndPreset" class="btn btn-sm btn-outline-info">About End-to-End</button>
+                    <button type="button" id="applyAboutEndToEndPreset" class="btn btn-sm btn-outline-info">About End-to-End</button></div> </br>
+                    
+                    <div class="d-flex flex-wrap gap-2 fw-bold">Career </div>
+                    <hr class="">
+                    <button type="button" id="applyCareerHeaderPreset" class="btn btn-sm btn-outline-primary mb-3">Career Header</button>
+
+                    </br>
+                    
+                    <div class="d-flex flex-wrap gap-2 fw-bold">Contact </div>
+                    <hr class="">
+                    <button type="button" id="applyContactHeaderPreset" class="btn btn-sm btn-outline-primary">Contact Header</button>
+                
+
                 </div>
             </div>
         </div>
@@ -607,6 +619,44 @@ if (partnersBtn) {
         toastr.success('Partners preset applied!');
     });
 }
+
+    // Career Page Header Preset
+const careerHeaderBtn = document.getElementById('applyCareerHeaderPreset');
+if (careerHeaderBtn) {
+    careerHeaderBtn.addEventListener('click', function () {
+        if (slugField) slugField.value = 'career-heading';
+        if (sectionField) sectionField.value = 'CAREER PAGE';
+        if (headingField) headingField.value = 'Career at Trace Consultancy';
+        if (designWordField) designWordField.value = 'Trace Consultancy';
+        if (typeField) typeField.value = 'Hero Section';
+        
+        // Description field-e value boshano
+        if (typeof setDescriptionValue === "function") {
+            setDescriptionValue('TRACE is a growing team of trade specialists, researchers, technologists, and project managers working on some of the most consequential reform programmes in South Asia.');
+        }
+        
+        toastr.success('Career Header preset applied!');
+    });
+}
+
+// Contact Page Header Preset
+const contactHeaderBtn = document.getElementById('applyContactHeaderPreset');
+if (contactHeaderBtn) {
+    contactHeaderBtn.addEventListener('click', function () {
+        if (slugField) slugField.value = 'contact-us-head';
+        if (sectionField) sectionField.value = 'CONTACT PAGE';
+        if (headingField) headingField.value = "Let's start a conversation.";
+        if (designWordField) designWordField.value = 'conversation.';
+        if (typeField) typeField.value = 'Hero Section';
+        
+        if (typeof setDescriptionValue === "function") {
+            setDescriptionValue("Whether you're a government agency, development partner, or private company — TRACE is ready to listen, advise, and collaborate. Reach out and we'll respond within one business day.");
+        }
+        
+        toastr.success('Contact Header preset applied!');
+    });
+}
+
 
     })();
 </script>
