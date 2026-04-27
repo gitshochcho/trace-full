@@ -124,7 +124,7 @@
 }
 
 .cta-desc p {
-    color: #cbd5e1;
+    color: #cbd5e1; 
     font-size: 16px;
     line-height: 1.6;
     margin-bottom: 14px;
