@@ -196,6 +196,19 @@
                             <span class="info-label">Posted</span>
                             <span class="info-value">{{ $job->posted_date->format('M d, Y') }}</span>
                         </div>
+                        <div class="sidebar-info-item">
+                            <span class="info-label">End Date</span>
+                            <span class="info-value">
+                                @if($job->end_date)
+                                    {{ $job->end_date->format('M d, Y') }}
+                                    @if($job->end_date->isPast())
+                                        <span class="badge bg-danger ms-1">Expired</span>
+                                    @endif
+                                @else
+                                    <span class="text-muted">Open-ended</span>
+                                @endif
+                            </span>
+                        </div>
                     </div>
 
                     {{-- 2. Apply Now Form Card --}}

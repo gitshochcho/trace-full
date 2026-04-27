@@ -106,6 +106,7 @@
                             <div class="card-body">
                                 <input type="file" id="projectImageInput" name="images[]" class="d-none" accept="image/*" multiple>
                                 <div id="projectImageQueue" class="d-grid gap-3"></div>
+                                <small class="text-muted d-block mt-2"><i class="fas fa-info-circle"></i> Recommended: 1600×900px (16:9 aspect ratio, max 4MB each)</small>
                                 @error('images')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
                             </div>
                         </div>

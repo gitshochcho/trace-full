@@ -98,6 +98,7 @@
                                     <div class="col-md-6">
                                         <label class="form-label">Service Image</label>
                                         <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" accept="image/*">
+                                        <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 800×600px (max 4MB)</small>
                                         @error('image')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                         @if($service->imageUrl())
                                             <img src="{{ $service->imageUrl() }}" alt="image" class="img-fluid mt-2 rounded" style="max-height: 90px; object-fit: cover;">
@@ -107,6 +108,7 @@
                                     <div class="col-md-6">
                                         <label class="form-label">Service Icon</label>
                                         <input type="file" name="icon" class="form-control @error('icon') is-invalid @enderror" accept="image/*">
+                                        <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 128×128px square (max 2MB)</small>
                                         @error('icon')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                         @if($service->iconUrl())
                                             <img src="{{ $service->iconUrl() }}" alt="icon" class="mt-2" style="width: 50px; height: 50px; object-fit: contain;">
@@ -136,6 +138,7 @@
                                                 <div class="col-md-10">
                                                     <label class="form-label">Icon Image</label>
                                                     <input type="file" name="details_icons[{{ $index }}]" class="form-control" accept="image/*">
+                                                    <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 64×64px square (max 2MB)</small>
                                                     @if(! empty($detail['id']))
                                                         @php $detailModel = $service->details->firstWhere('id', $detail['id']); @endphp
                                                         @if($detailModel?->iconUrl())
@@ -203,6 +206,7 @@
                 <div class="col-md-10">
                     <label class="form-label">Icon Image</label>
                     <input type="file" name="__DETAIL_ICON_NAME__" class="form-control" accept="image/*">
+                    <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 64×64px square (max 2MB)</small>
                 </div>
                 <div class="col-md-2 d-grid">
                     <button type="button" class="btn btn-outline-danger remove-detail-row">Remove</button>

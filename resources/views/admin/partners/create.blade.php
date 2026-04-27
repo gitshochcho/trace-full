@@ -29,7 +29,8 @@
                         <div class="mb-3">
                             <label class="form-label">Partner Logo</label>
                             <input type="file" name="image" id="partnerImage" class="form-control" accept="image/*" onchange="previewImage(this)" required>
-                            
+                            <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 300×150px (transparent PNG preferred, max 2MB)</small>
+
                             <div id="imagePreviewContainer" class="mt-3" style="display:none;">
                                 <img id="preview" src="#" alt="Logo Preview" style="max-height: 100px; border: 1px solid #ddd; padding: 5px;">
                                 <button type="button" class="btn btn-sm btn-danger ms-2" onclick="resetImage()">Cancel</button>

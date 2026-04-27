@@ -59,6 +59,7 @@
                                     <div class="col-12">
                                         <label class="form-label">Slider Images (Multiple)</label>
                                         <input id="slider_images_input" type="file" name="slider_images[]" multiple class="form-control @error('slider_images') is-invalid @enderror" accept="image/*">
+                                        <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 1920×800px wide banner (max 4MB each)</small>
                                     </div>
                                     
                                     <div class="col-12">

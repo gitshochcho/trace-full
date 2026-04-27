@@ -23,15 +23,18 @@
                 <div class="col-12">
                     <div class="card card-outline card-primary">
                         <div class="card-header">
-                            <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex justify-content-between align-items-center gap-2">
                                 <h3 class="card-title mb-0">All Job Postings ({{ $jobs->total() }})</h3>
-                                <a href="{{ route('admin.job-postings.create') }}" class="btn btn-primary">
-                                    <i class="fas fa-plus"></i> Create Job Posting
-                                </a>
+                                <div class="d-flex gap-2 align-items-center">
+                                    <input type="text" id="jobSearch" class="form-control form-control-sm" placeholder="Search by title, department, location or type..." style="width: 300px;">
+                                    <a href="{{ route('admin.job-postings.create') }}" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-plus"></i> Create Job Posting
+                                    </a>
+                                </div>
                             </div>
                         </div>
                         <div class="card-body table-responsive p-0">
-                            <table class="table table-striped align-middle mb-0">
+                            <table class="table table-striped align-middle mb-0" id="jobTable">
                                 <thead class="table-dark">
                                     <tr>
                                         <th>Title</th>
@@ -47,14 +50,14 @@
                                 <tbody>
                                     @forelse($jobs as $job)
                                     <tr>
-                                        <td>
+                                        <td data-search="{{ strtolower($job->title) }}">
                                             <a href="{{ route('admin.job-postings.show', $job) }}" class="text-decoration-none">
                                                 {{ Str::limit($job->title, 40) }}
                                             </a>
                                         </td>
-                                        <td>{{ $job->department }}</td>
-                                        <td>{{ $job->employment_type }}</td>
-                                        <td>{{ $job->location }}</td>
+                                        <td data-search="{{ strtolower($job->department ?? '') }}">{{ $job->department }}</td>
+                                        <td data-search="{{ strtolower($job->employment_type ?? '') }}">{{ $job->employment_type }}</td>
+                                        <td data-search="{{ strtolower($job->location ?? '') }}">{{ $job->location }}</td>
                                         <td>
                                             <span class="badge bg-{{ $job->is_active ? 'success' : 'secondary' }}">
                                                 {{ $job->is_active ? 'Active' : 'Inactive' }}
@@ -86,7 +89,7 @@
                                         </td>
                                     </tr>
                                     @empty
-                                    <tr>
+                                    <tr id="emptyRow">
                                         <td colspan="8" class="text-center py-4">
                                             <p class="mb-3">No job postings found.</p>
                                             <a href="{{ route('admin.job-postings.create') }}" class="btn btn-primary">
@@ -95,6 +98,9 @@
                                         </td>
                                     </tr>
                                     @endforelse
+                                    <tr id="noResultsRow" style="display: none;">
+                                        <td colspan="8" class="text-center text-muted py-4">No results match your search.</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -109,3 +115,32 @@
         </div>
     </div>
 @endsection
+
+@push('custome-js')
+<script>
+(function () {
+    const searchInput = document.getElementById('jobSearch');
+    const tableBody   = document.querySelector('#jobTable tbody');
+    const noResults   = document.getElementById('noResultsRow');
+
+    if (searchInput) {
+        searchInput.addEventListener('input', function () {
+            const q = this.value.toLowerCase().trim();
+            let visibleCount = 0;
+
+            tableBody.querySelectorAll('tr:not(#noResultsRow):not(#emptyRow)').forEach(function (row) {
+                const match = !q || Array.from(row.querySelectorAll('td[data-search]')).some(function (td) {
+                    return td.dataset.search.includes(q);
+                });
+                row.style.display = match ? '' : 'none';
+                if (match) visibleCount++;
+            });
+
+            if (noResults) {
+                noResults.style.display = (visibleCount === 0 && q !== '') ? '' : 'none';
+            }
+        });
+    }
+})();
+</script>
+@endpush

@@ -728,7 +728,7 @@
                 <h5 class="role">{{ $member->designation ?? '' }}</h5>
                 <span class="sub text-muted">{{ $member->experties->first()?->heading ?? '' }}</span>
 
-                <p class="bio">{{ \Illuminate\Support\Str::limit(stripPTags($member->description), 150) }}</p>
+                <p class="bio">{{ $member->short_description ?: \Illuminate\Support\Str::limit(stripPTags($member->description), 150) }}</p>
 
                 <div class="tags">
                     @forelse($member->experties->take(3) as $expertise)
@@ -802,7 +802,7 @@
                 <span class="expert-badge {{ $badgeClasses[$index % count($badgeClasses)] }}">{{ $expertLabels[$index % count($expertLabels)] }}</span>
                 <h4>{{ $expert->fullName() }}</h4>
                 <p class="role">{{ $expert->designation ?? '' }}</p>
-                <p class="desc">{{ \Illuminate\Support\Str::limit(stripPTags($expert->description), 110) }}</p>
+                <p class="desc">{{ $expert->short_description ?: \Illuminate\Support\Str::limit(stripPTags($expert->description), 110) }}</p>
                 <div class="expert-tags">
                     @forelse($expert->experties->take(3) as $expertise)
                         <span>{{ $expertise->heading }}</span>

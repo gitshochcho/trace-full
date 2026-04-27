@@ -46,7 +46,7 @@
                                                 <th>Type</th>
                                                 <th>Title</th>
                                                 <th>Primary Text</th>
-                                                <th>Secondary Text</th>
+                                                <!-- <th>Secondary Text</th> -->
                                                 <th>Order</th>
                                                 <th>Status</th>
                                                 <th>Actions</th>
@@ -62,7 +62,7 @@
                                                     </td>
                                                     <td>{{ $info->title }}</td>
                                                     <td>{{ $info->primary_text }}</td>
-                                                    <td>{{ $info->secondary_text ?? '-' }}</td>
+                                                    <!-- <td>{{ $info->secondary_text ?? '-' }}</td> -->
                                                     <td>{{ $info->order }}</td>
                                                     <td>
                                                         @if ($info->is_active)

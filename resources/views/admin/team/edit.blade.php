@@ -87,8 +87,14 @@
                                         @error('sort_order')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
                                     <div class="col-12">
+                                        <label class="form-label">Short Description</label>
+                                        <textarea name="short_description" rows="3" maxlength="500" class="form-control @error('short_description') is-invalid @enderror" placeholder="Brief intro shown on team cards (max 500 chars)">{{ old('short_description', $team->short_description) }}</textarea>
+                                        <small class="text-muted"><i class="fas fa-info-circle"></i> Shown on the team card preview. Keep it short and punchy.</small>
+                                        @error('short_description')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                    </div>
+                                    <div class="col-12">
                                         <label class="form-label">Description</label>
-                                        <textarea name="description" rows="6" class="form-control @error('description') is-invalid @enderror">{{ old('description', $team->description) }}</textarea>
+                                        <textarea name="description" rows="6" class="form-control team-description-editor @error('description') is-invalid @enderror">{{ old('description', $team->description) }}</textarea>
                                         @error('description')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
 
@@ -104,6 +110,7 @@
                                             @endif
                                         </div>
                                         <input type="file" id="teamImageInput" name="image" class="d-none" accept="image/*">
+                                        <small class="text-muted d-block mb-2"><i class="fas fa-info-circle"></i> Recommended: 600×600px square portrait (max 4MB)</small>
                                         <div id="teamImageQueue" class="d-grid gap-2 mb-2">
                                             @if($team->imageUrl())
                                                 <div class="border rounded p-2 d-flex justify-content-between align-items-center">
@@ -154,6 +161,7 @@
                                                 <div class="col-md-3">
                                                     <label class="form-label">Icon</label>
                                                     <input type="file" name="experties_icons[{{ $index }}]" class="form-control" accept="image/*">
+                                                    <small class="text-muted"><i class="fas fa-info-circle"></i> 64×64px square</small>
                                                     @if(!empty($expertise['icon_url']))
                                                         <img src="{{ $expertise['icon_url'] }}" alt="icon" style="width: 24px; height: 24px; object-fit: contain; margin-top: 6px;">
                                                     @endif
@@ -190,6 +198,7 @@
                                                 <div class="col-md-3">
                                                     <label class="form-label">Social Icon</label>
                                                     <input type="file" name="social_media_icons[{{ $index }}]" class="form-control" accept="image/*">
+                                                    <small class="text-muted"><i class="fas fa-info-circle"></i> 32×32px square</small>
                                                     @if(!empty($social['icon_url']))
                                                         <img src="{{ $social['icon_url'] }}" alt="icon" style="width: 24px; height: 24px; object-fit: contain; margin-top: 6px;">
                                                     @endif
@@ -228,6 +237,7 @@
                 <div class="col-md-3">
                     <label class="form-label">Icon</label>
                     <input type="file" name="__EXPERTISE_ICON_NAME__" class="form-control" accept="image/*">
+                    <small class="text-muted"><i class="fas fa-info-circle"></i> 64×64px square</small>
                 </div>
                 <div class="col-md-1 d-grid">
                     <button type="button" class="btn btn-outline-danger remove-expertise-row">&times;</button>
@@ -251,6 +261,7 @@
                 <div class="col-md-3">
                     <label class="form-label">Social Icon</label>
                     <input type="file" name="__SOCIAL_ICON_NAME__" class="form-control" accept="image/*">
+                    <small class="text-muted"><i class="fas fa-info-circle"></i> 32×32px square</small>
                 </div>
                 <div class="col-md-1 d-grid">
                     <button type="button" class="btn btn-outline-danger remove-social-row">&times;</button>
@@ -261,8 +272,40 @@
 @endsection
 
 @push('custome-js')
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
 <script>
     (function () {
+        // ── CKEditor for description ─────────────────────────────────
+        const descEditorEl = document.querySelector('.team-description-editor');
+        let descEditor = null;
+
+        function normalizeEditorHtml(html) {
+            if (!html) return '';
+            let text = html;
+            text = text.replace(/<p[^>]*>/gi, '');
+            text = text.replace(/<\/p>/gi, "\n");
+            text = text.replace(/<br\s*\/?>/gi, "\n");
+            text = text.replace(/&nbsp;/gi, ' ');
+            text = text.replace(/<[^>]*>/g, '');
+            text = text.replace(/\n{3,}/g, "\n\n");
+            return text.trim();
+        }
+
+        if (descEditorEl) {
+            ClassicEditor.create(descEditorEl)
+                .then(function (editor) { descEditor = editor; })
+                .catch(function (err) { console.error(err); });
+
+            const teamForm = document.getElementById('teamForm');
+            if (teamForm) {
+                teamForm.addEventListener('submit', function () {
+                    if (descEditor) {
+                        descEditorEl.value = normalizeEditorHtml(descEditor.getData());
+                    }
+                });
+            }
+        }
+
         const expertiseWrapper = document.getElementById('expertiesWrapper');
         const addExpertiseBtn = document.getElementById('addExpertiseRow');
         const expertiseTemplate = document.getElementById('expertiseRowTemplate');

@@ -45,7 +45,7 @@
                                         <label class="form-label">Logo Image</label>
                                         <input type="file" name="logo_image" class="form-control @error('logo_image') is-invalid @enderror">
                                         @error('logo_image')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                                        <div class="form-text">Upload PNG, JPG, WEBP, or SVG.</div>
+                                        <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 240×80px (transparent PNG preferred, max 2MB) — supports PNG, JPG, WEBP, SVG</small>
                                         @if($setting?->logoImageUrl())
                                             <div class="mt-2">
                                                 <img src="{{ $setting->logoImageUrl() }}" alt="Current logo" style="max-height: 70px;">
@@ -110,6 +110,7 @@
                                                     <div class="col-md-3">
                                                         <label class="form-label">Icon Image</label>
                                                         <input type="file" name="social_links_icons[{{ $index }}]" class="form-control" accept="image/*">
+                                                        <small class="text-muted"><i class="fas fa-info-circle"></i> 32×32px square</small>
                                                         @php
                                                             $existingIcon = null;
                                                             if (! empty($socialLink['media_key'])) {
@@ -154,6 +155,7 @@
             <div class="col-md-3">
                 <label class="form-label">Icon Image</label>
                 <input type="file" name="__ICON_NAME__" class="form-control" accept="image/*">
+                <small class="text-muted"><i class="fas fa-info-circle"></i> 32×32px square</small>
             </div>
             <div class="col-md-1 d-grid">
                 <button type="button" class="btn btn-outline-danger remove-social-link">&times;</button>

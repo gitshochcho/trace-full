@@ -39,9 +39,11 @@ class JobPostingController extends Controller
             'experience_level' => 'required|string|max:255',
             'responsibilities' => 'nullable|string',
             'requirements' => 'nullable|string',
-            'is_active' => 'boolean',
             'posted_date' => 'required|date',
+            'end_date' => 'nullable|date|after_or_equal:posted_date',
         ]);
+
+        $validated['is_active'] = $request->boolean('is_active');
 
         JobPosting::create($validated);
 
@@ -79,9 +81,11 @@ class JobPostingController extends Controller
             'experience_level' => 'required|string|max:255',
             'responsibilities' => 'nullable|string',
             'requirements' => 'nullable|string',
-            'is_active' => 'boolean',
             'posted_date' => 'required|date',
+            'end_date' => 'nullable|date|after_or_equal:posted_date',
         ]);
+
+        $validated['is_active'] = $request->boolean('is_active');
 
         $jobPosting->update($validated);
 
