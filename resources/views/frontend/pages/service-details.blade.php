@@ -10,7 +10,7 @@
 ========================================= */
 .service-hero {
     position: relative;
-    height: 300px;
+    height: 420px;
     overflow: hidden;
 }
 

@@ -224,9 +224,9 @@
 <div class="careers-wrapper">
     <section class="hero-career">
         <div class="container-fluid px-lg-5 page-align-container">
-            <div class="hero-label">CAREER AT</div>
-            <h1>Career at <span class="highlight">Trace Consultancy</span></h1>
-            <p class="hero-desc">TRACE is a growing team of trade specialists, researchers, technologists, and project managers working on some of the most consequential reform programmes in South Asia.</p>
+            <div class="hero-label"></div>
+            <h1> <span class="highlight"></span></h1>
+            <p class="hero-desc"></p>
         </div>
     </section>
 

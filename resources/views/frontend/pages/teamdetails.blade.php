@@ -260,6 +260,14 @@
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
+    box-shadow: none !important;
+}
+
+.btn-orange:focus,
+.btn-orange:focus-visible,
+.btn-orange:active {
+    box-shadow: none !important;
+    outline: none !important;
 }
 
 .btn-orange:hover {
@@ -483,7 +491,7 @@
                         </div>
                         <h5 class="fw-bold">Work with Our Team</h5>
                         <p class="small opacity-75">Reach out to discuss how TRACE can support your institution's trade reform objectives.</p>
-                        <a href="#" class="btn btn-orange w-100 mt-2">Get in Touch <i class="bi bi-arrow-right ms-1"></i></a>
+                        <a href="{{ route('contact') }}"class="btn btn-orange w-100 mt-2">Get in Touch <i class="bi bi-arrow-right ms-1"></i></a>
                     </div>
 
                     <div class="other-team-card">

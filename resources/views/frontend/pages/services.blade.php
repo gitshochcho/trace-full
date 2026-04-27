@@ -338,7 +338,7 @@
             @if(Str::contains($servicesHeroTitle, $servicesHeroTitleWord))
                 <span class="teal-text">{{ $servicesHeroTitleWord }}</span>{{ Str::after($servicesHeroTitle, $servicesHeroTitleWord) }}
             @else
-                <span class="teal-text">asdafdfa</span>
+                <span class="teal-text"></span>
             @endif
         </h2>
 

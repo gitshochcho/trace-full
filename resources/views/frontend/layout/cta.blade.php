@@ -3,11 +3,11 @@
         use Illuminate\Support\Str;
 
         $ctaContent = contentBlock('work-with-us');
-        $ctaTag = $ctaContent?->section ?: 'WORK WITH US';
-        $ctaTitle = $ctaContent?->heading ?: 'Have a project in mind?';
-        $ctaTitleSpan = $ctaContent?->design_word ?: 'that lasts.';
-        $ctaDescription = $ctaContent?->description ?: "Whether reforming a regulatory system, building technical capacity, or modernising digital infrastructure — we'd like to hear from you.";
-        $ctaButtonLabel = $ctaContent?->sub_heading ?: 'Get in Touch';
+        $ctaTag = $ctaContent?->section ?: '';
+        $ctaTitle = $ctaContent?->heading ?: '';
+        $ctaTitleSpan = $ctaContent?->design_word ?: '';
+        $ctaDescription = $ctaContent?->description ?: "";
+        $ctaButtonLabel = $ctaContent?->sub_heading ?: '';
     @endphp
 
     <div class="container custom-cta-container"> {{-- ১০৭২পিএক্স কন্টেইনার --}}

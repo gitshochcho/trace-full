@@ -1073,14 +1073,14 @@
 @endphp
 
 <section class="about-hero">
-    <img src="{{ $aboutHeader?->imageUrl() ?? asset('assets/img/Trade and Customs.png') }}" alt="Hero">
+    <img src="{{ $aboutHeader?->imageUrl() ?? asset('') }}" alt="Hero">
     <div class="container-fluid about-hero-content">
         <div class="custom-container"> 
             <div class="row">
-                <div class="col-lg-12">
+                <div class="col-lg-8">
                    <h1 class="hero-title">
                @php
-        $heading = $aboutHeader->heading ?? 'Advancing Sustainable Development Through Evidence & Insight';
+        $heading = $aboutHeader->heading ?? '';
         $designWord = $aboutHeader?->design_word; 
 
         if ($designWord) {
@@ -1094,7 +1094,7 @@
     {!! $formattedHeading !!}
 </h1>
                     <p class="text-white-50 mt-3" style="max-width: 480px; font-size: 17px; line-height: 30px;">
-                        {!! $aboutHeader?->description ?? 'We deliver evidence-based policy recommendations...' !!}
+                        {!! $aboutHeader?->description ?? '' !!}
                     </p>
                     <div class="hero-line mt-4"></div>
                 </div>
@@ -1112,7 +1112,7 @@
                 <h2 class="about-title mb-4">
                     @php
                         // Controller theke asha data
-                        $heading = $aboutTrace->heading ?? 'A firm built on insight, strategy, and lasting impact.';
+                        $heading = $aboutTrace->heading ?? '';
                         $designWord = $aboutTrace?->design_word; 
 
                         if ($designWord) {
@@ -1128,10 +1128,10 @@
                 <div class="about-info mt-4">
                     {{-- Who We Are Section --}}
                     <div class="mb-4">
-                        <h4 class="fw-bold" style="font-size: 18px;">{{ $whoWeAre?->heading ?? 'Who We Are' }}</h4>
+                        <h4 class="fw-bold" style="font-size: 18px;">{{ $whoWeAre?->heading ?? '' }}</h4>
                         <div class="text-secondary">
                             {{-- Editor theke asha p tag remove korbe ebong data display korbe --}}
-                            {!! strip_tags($whoWeAre?->description ?? 'Description here...') !!}
+                            {!! strip_tags($whoWeAre?->description ?? '') !!}
                         </div>
                     </div>
 
@@ -1139,9 +1139,9 @@
 
                     {{-- Our Mission Section --}}
                     <div class="mb-4">
-                        <h4 class="fw-bold" style="font-size: 18px;">{{ $ourMission?->heading ?? 'Our Mission' }}</h4>
+                        <h4 class="fw-bold" style="font-size: 18px;">{{ $ourMission?->heading ?? '' }}</h4>
                         <div class="text-secondary">
-                            {!! strip_tags($ourMission?->description ?? 'Mission description here...') !!}
+                            {!! strip_tags($ourMission?->description ?? '') !!}
                         </div>
                         <div class="d-flex gap-3 mt-4 flex-wrap">
                             <a href="{{ route('contact') }}" class="mission-btn mission-btn-white">Work With Us →</a>
@@ -1152,7 +1152,7 @@
             </div>
 
             <div class="col-lg-6 about-right text-end">
-                <img src="{{ $aboutTrace?->imageUrl() ?? asset('assets/img/Trace team.png') }}" 
+                <img src="{{ $aboutTrace?->imageUrl() ?? asset('') }}" 
                      class="img-fluid shadow-lg" 
                      alt="Team" 
                      style="width: 500px; height: 600px; object-fit: cover;">
@@ -1465,7 +1465,8 @@
             </div>
             <div class="col-lg-6">
                 <p class="partners-desc">
-                    {!! $partnersContent?->description ?? '' !!}
+                    {!! $partnersContent?->description
+                        ?: 'We work with governments, multilateral development organisations, regulatory bodies, and private sector leaders across the region — building long-term partnerships grounded in trust and results.' !!}
                 </p>
             </div>
         </div>

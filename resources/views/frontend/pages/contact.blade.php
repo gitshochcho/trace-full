@@ -350,7 +350,7 @@
                         <div class="office-icon-wrap"><i class="{{ $address->icon_class ?? 'fas fa-map-marker-alt' }}"></i></div>
                         <div class="office-details">
                             <span class="office-tag">{{ strtoupper($address->title) }}</span>
-                            <p class="office-name">{{ $address->name ?? 'Trace Consulting Limited' }}</p>
+                            <p class="office-name">{{ $address->name ?? '' }}</p>
                             <p class="office-addr">
                                 {!! nl2br(e($address->address)) ?? '' !!}
                             </p>

@@ -16,14 +16,14 @@
                              style="width: 38px; height: 38px; object-fit: contain;">
                     @endif
                     <div class="d-flex flex-column">
-                        <h3 class="mb-0 fw-bold footer-brand-title">{{ $siteSettings?->logo_text ?: 'TRACE' }}</h3>
-                        <span class="footer-brand-tagline">{{ $siteSettings?->logo_tagline ?: 'Insight. Strategy. Impact' }}</span>
+                        <h3 class="mb-0 fw-bold footer-brand-title">{{ $siteSettings?->logo_text ?: '' }}</h3>
+                        <span class="footer-brand-tagline">{{ $siteSettings?->logo_tagline ?: '' }}</span>
                     </div>
                 </div>
 
                 {{-- Description --}}
                 <p style="font-size: 13px; color: #8fa6ad; line-height: 1.7; margin-bottom: 20px;">
-                    {{ $siteSettings?->footer_description ?: 'Trace Consulting Limited provides strategic advisory, technical assistance, and digital solutions to governments and development organisations across South Asia.' }}
+                    {{ $siteSettings?->footer_description ?: '' }}
                 </p>
 
                 {{-- Socials --}}
@@ -45,20 +45,20 @@
                 <div class="d-flex align-items-start gap-2 mb-3">
                     <img src="/assets/img/telephone.png" alt="Phone"
                          style="width: 16px; height: 16px; object-fit: contain; filter: brightness(0) invert(1); margin-top: 2px;">
-                    <span style="font-size: 13px; color: #8fa6ad;">{{ $siteSettings?->footer_contact_mobile ?: '+880 1715-056952' }}</span>
+                    <span style="font-size: 13px; color: #8fa6ad;">{{ $siteSettings?->footer_contact_mobile ?: '' }}</span>
                 </div>
 
                 <div class="d-flex align-items-start gap-2 mb-3">
                     <img src="/assets/img/mail.png" alt="Email"
                          style="width: 16px; height: 16px; object-fit: contain; filter: brightness(0) invert(1); margin-top: 2px;">
-                    <span style="font-size: 13px; color: #8fa6ad;">{{ $siteSettings?->footer_contact_email ?: 'contact@traceconsultingltd.com' }}</span>
+                    <span style="font-size: 13px; color: #8fa6ad;">{{ $siteSettings?->footer_contact_email ?: '' }}</span>
                 </div>
 
                 <div class="d-flex align-items-start gap-2">
                     <img src="/assets/img/location.png" alt="Location"
                          style="width: 16px; height: 16px; object-fit: contain; filter: brightness(0) invert(1); margin-top: 2px;">
                     <span style="font-size: 13px; color: #8fa6ad;">
-                        {!! nl2br(e($siteSettings?->footer_contact_location ?: 'Level 2, Plot 285, Road 19/C, New DOHS, Mohakhali, Dhaka-1206')) !!}
+                        {!! nl2br(e($siteSettings?->footer_contact_location ?: '')) !!}
                     </span>
                 </div>
             </div>
