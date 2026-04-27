@@ -1,14 +1,34 @@
 <?php
 
-use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\PartnerController;
+use App\Http\Controllers\ContactMessageController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
 
 
-Route::get('/', [App\Http\Controllers\HomeController::class, 'home'])->name('home');
 
-Route::get('login', [App\Http\Controllers\HomeController::class, 'login'])->name('login');
+
+Route::get('/', [App\Http\Controllers\HomeController::class, 'home'])->name('home');
+Route::get('/about', [App\Http\Controllers\HomeController::class, 'about'])->name('about');
+Route::get('/team', [App\Http\Controllers\HomeController::class, 'team'])->name('team');
+Route::get('/teamdetails/{team?}', [App\Http\Controllers\HomeController::class, 'teamdetails'])->name('teamdetails');
+Route::get('/projects', [App\Http\Controllers\HomeController::class, 'projects'])->name('projects');
+Route::get('/projectdetails/{project?}', [App\Http\Controllers\HomeController::class, 'projectdetails'])->name('projectdetails');
+ 
+
+
+Route::get('/services', [App\Http\Controllers\HomeController::class, 'services'])->name('services');
+Route::get('/service-details/{id}', [App\Http\Controllers\HomeController::class, 'serviceDetails'])->name('serviceDetails');
+Route::get('/insights', [App\Http\Controllers\HomeController::class, 'insights'])->name('insights');
+Route::get('/article-details/{article?}', [App\Http\Controllers\HomeController::class, 'articleDetails'])->name('articleDetails');
+Route::get('/career', [App\Http\Controllers\HomeController::class, 'career'])->name('career');
+Route::get('/careerdetails/{id}', [App\Http\Controllers\HomeController::class, 'careerdetails'])->name('careerdetails');
+Route::post('/job/apply/{id}', [App\Http\Controllers\HomeController::class, 'applyForJob'])->name('job.apply');
+Route::get('/contact', [App\Http\Controllers\HomeController::class, 'contact'])->name('contact');
+Route::post('/contact', [ContactMessageController::class, 'store'])->name('contact.store');
+// Route::get('login', [App\Http\Controllers\HomeController::class, 'login'])->name('login');
+Route::get('login', [App\Http\Controllers\Admin\AdminController::class, 'adminLogin'])->name('login');
 Route::post('validate/login', [App\Http\Controllers\HomeController::class, 'validateLogin'])->name('loginCheck');
 Route::get('/register', [App\Http\Controllers\HomeController::class, 'registration'])->name('registration');
 Route::post('store/register', [App\Http\Controllers\HomeController::class, 'storRegistration'])->name('storRegistration');
