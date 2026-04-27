@@ -1359,8 +1359,9 @@
             @if($featuredInsight)
                 @php
                     $featuredLeadArticle = $featuredInsight->articles->first();
-                    $featuredImage       = $featuredInsight->imageUrl() ?? '';
-                    $featuredType        = strtoupper(str_replace('_', ' ', $featuredInsight->type ?? ''));
+                    $featuredImage       = $featuredInsight->imageUrl() ?: $featuredInsight->articleImageUrl() ?: asset('assets/img/Op-Ed.png');
+                    $featuredTypeCategory = strtolower((string) ($featuredInsight->insightType?->type_category ?? ''));
+                    $featuredType        = strtoupper((string) ($featuredInsight->insightType?->type ?? 'INSIGHT'));
                     $featuredTitle       = $featuredInsight->heading ?? $featuredLeadArticle?->title ?? '';
                     $featuredDescription = \Illuminate\Support\Str::limit(strip_tags($featuredInsight->description ?? $featuredLeadArticle?->description ?? ''), 180);
                     $featuredAction      = $featuredInsight->actionLabel();
@@ -1368,14 +1369,21 @@
                     $featuredMetaDuration = $featuredLeadArticle?->read_minutes ? $featuredLeadArticle->read_minutes . ' min read' : 'Quick read';
 
                     $featuredLink = '#';
-                    if ($featuredInsight->type === 'read' && $featuredLeadArticle) {
+                    $featuredExternal = false;
+                    if ($featuredTypeCategory === 'read' && $featuredLeadArticle) {
                         $featuredLink = route('articleDetails', $featuredLeadArticle);
-                    } elseif (in_array($featuredInsight->type, ['download', 'video_watch'], true)) {
+                    } elseif ($featuredTypeCategory === 'download') {
                         $featuredLink = $featuredInsight->attachmentUrl() ?: ($featuredLeadArticle?->attachmentUrl() ?: '#');
+                    } elseif (in_array($featuredTypeCategory, ['watch', 'video', 'video_watch'], true)) {
+                        $featuredLink = $featuredInsight->videoUrl() ?: '#';
+                        $featuredExternal = true;
+                    } elseif ($featuredTypeCategory === 'read_on') {
+                        $featuredLink = $featuredInsight->source_name ?: '#';
+                        $featuredExternal = true;
                     }
                 @endphp
 
-                <a href="{{ $featuredLink }}" class="insight-card-link" @if($featuredInsight->type !== 'read') target="_blank" rel="noopener" @endif>
+                <a href="{{ $featuredLink }}" class="insight-card-link" @if($featuredExternal) target="_blank" rel="noopener" @endif>
                     <div class="insight-card big-card">
                         <div class="card-img-box">
                             <img src="{{ $featuredImage }}" alt="{{ $featuredTitle }}" class="w-100">
@@ -1401,27 +1409,35 @@
             @foreach($secondaryInsights as $insight)
                 @php
                     $leadArticle = $insight->articles->first();
-                    $insightImage    = $insight->imageUrl() ?? '';
-                    $insightType     = strtoupper(str_replace('_', ' ', $insight->type ?? ''));
+                    $insightImage    = $insight->imageUrl() ?: $insight->articleImageUrl() ?: asset('assets/img/Op-Ed.png');
+                    $insightTypeCategory = strtolower((string) ($insight->insightType?->type_category ?? ''));
+                    $insightType     = strtoupper((string) ($insight->insightType?->type ?? 'INSIGHT'));
                     $insightTitle    = $insight->heading ?? $leadArticle?->title ?? '';
                     $insightAction   = $insight->actionLabel();
                     $insightMetaDate = optional($insight->published_at)->format('M Y') ?? '';
                     $insightMetaDuration = $leadArticle?->read_minutes ? $leadArticle->read_minutes . ' min' : 'Quick read';
 
                     $insightLink = '#';
-                    if ($insight->type === 'read' && $leadArticle) {
+                    $insightExternal = false;
+                    if ($insightTypeCategory === 'read' && $leadArticle) {
                         $insightLink = route('articleDetails', $leadArticle);
-                    } elseif (in_array($insight->type, ['download', 'video_watch'], true)) {
+                    } elseif ($insightTypeCategory === 'download') {
                         $insightLink = $insight->attachmentUrl() ?: ($leadArticle?->attachmentUrl() ?: '#');
+                    } elseif (in_array($insightTypeCategory, ['watch', 'video', 'video_watch'], true)) {
+                        $insightLink = $insight->videoUrl() ?: '#';
+                        $insightExternal = true;
+                    } elseif ($insightTypeCategory === 'read_on') {
+                        $insightLink = $insight->source_name ?: '#';
+                        $insightExternal = true;
                     }
                 @endphp
 
-                <a href="{{ $insightLink }}" class="insight-card-link" @if($insight->type !== 'read') target="_blank" rel="noopener" @endif>
+                <a href="{{ $insightLink }}" class="insight-card-link" @if($insightExternal) target="_blank" rel="noopener" @endif>
                     <div class="insight-card small-card">
                         <div class="card-img-box small-img">
                             <img src="{{ $insightImage }}" alt="{{ $insightTitle }}" class="w-100">
                             <div class="img-overlay-gradient"></div>
-                            <span class="in-badge-custom" @if($insight->type === 'video_watch') style="background: #01888C;" @endif>{{ $insightType }}</span>
+                            <span class="in-badge-custom" @if(in_array($insightTypeCategory, ['watch', 'video', 'video_watch'], true)) style="background: #01888C;" @endif>{{ $insightType }}</span>
                         </div>
                         <div class="card-body-small">
                             <h4 class="card-h-small">{{ $insightTitle }}</h4>

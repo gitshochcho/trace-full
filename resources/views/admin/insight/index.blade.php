@@ -174,7 +174,14 @@ $articleRows = old('articles', [[
                             <tbody>
                                 @forelse($insights as $insight)
                                     <tr>
-                                        <td>@if($insight->imageUrl())<img src="{{ $insight->imageUrl() }}" alt="{{ $insight->heading }}" style="width:42px;height:42px;object-fit:cover;border-radius:8px;">@else<span class="text-muted">-</span>@endif</td>
+                                        <td>
+                                            @php($thumbUrl = $insight->imageUrl() ?: $insight->articleImageUrl())
+                                            @if($thumbUrl)
+                                                <img src="{{ $thumbUrl }}" alt="{{ $insight->heading }}" style="width:42px;height:42px;object-fit:cover;border-radius:8px;">
+                                            @else
+                                                <span class="text-muted">-</span>
+                                            @endif
+                                        </td>
                                         <td>{{ $insight->heading }}</td>
                                         <td>{{ $insight->insightType ? ucfirst(str_replace('_', ' ', $insight->insightType->type)) : '-' }}</td>
                                         <td>{{ $insight->articles->count() }}</td>
