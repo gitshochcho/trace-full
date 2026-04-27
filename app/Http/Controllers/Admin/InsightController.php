@@ -71,6 +71,7 @@ class InsightController extends Controller
             'type' => $validated['type'],
             'type_id' => $validated['type'],
             'heading' => $validated['heading'],
+            'video_link' => $validated['video_link'] ?? $insight->video_link,
             'sub_heading' => $validated['sub_heading'] ?? null,
             'description' => $this->normalizeEditorText($validated['description'] ?? null),
             'sort_order' => $validated['sort_order'] ?? 0,
