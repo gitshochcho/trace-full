@@ -32,9 +32,9 @@
                             @endif
                         @endif
                     </h2>
-                    <p class="cta-desc">
+                    <div class="cta-desc">
                         {!! $ctaDescription !!}
-                    </p>
+                    </div>
                 </div>
 
                 <div class="col-lg-4 text-center text-lg-end">
@@ -117,14 +117,14 @@
 }
 
 .cta-desc {
-    color: #cbd5e1;  
+    color: #FFFFFF7A;  
     font-size: 16px;
     line-height: 1.6;
     max-width: 650px;
 }
 
 .cta-desc p {
-    color: #cbd5e1;
+    color: #FFFFFF7A;
     font-size: 16px;
     line-height: 1.6;
     margin-bottom: 14px;
@@ -137,13 +137,13 @@
 .cta-desc ul,
 .cta-desc ol {
     margin: 0 0 14px 24px;
-    color: #cbd5e1;
+    color: #FFFFFF7A;
 }
 
 .cta-desc li {
     margin-bottom: 8px;
     line-height: 1.6;
-    color: #cbd5e1;
+    color: #FFFFFF7A;
 }
 
 /* Button style */

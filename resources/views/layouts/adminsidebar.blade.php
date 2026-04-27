@@ -140,7 +140,7 @@
     </ul>
 </li>
 
-                <li class="nav-item {{ request()->is('admin/role/permission/*') ? 'menu-open' : '' }}"> <a href="#" class="nav-link {{ request()->is('admin/role/permission/*') ? 'active' : '' }}">  <span class="nav-icon mdi mdi-home"></span>
+                <!-- <li class="nav-item {{ request()->is('admin/role/permission/*') ? 'menu-open' : '' }}"> <a href="#" class="nav-link {{ request()->is('admin/role/permission/*') ? 'active' : '' }}">  <span class="nav-icon mdi mdi-home"></span>
                         <p>
                            Role & Permission
                             <i class="nav-arrow bi bi-chevron-right"></i>
@@ -157,7 +157,7 @@
                                 <p>Permission List</p>
                             </a> </li>
                     </ul>
-                </li>
+                </li> -->
                 <!-- <li class="nav-item"> <a href="#" class="nav-link"> <i class="nav-icon bi bi-pencil-square"></i>
                         <p>
                             Forms
