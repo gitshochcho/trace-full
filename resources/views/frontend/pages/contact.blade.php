@@ -276,10 +276,10 @@
                 <div class="col-lg-6">
                     @php
                         $resolvedHero = $heroContent ?? $contactHeader;
-                        $heroSection = $resolvedHero?->section ?? 'Reach Out';
-                        $heroHeading = $resolvedHero?->heading ?? "Let's start a conversation.";
-                        $heroDesignWord = $resolvedHero?->design_word ?? 'conversation.';
-                        $heroDescription = $resolvedHero?->description ?? "Whether you're a government agency, development partner, or private company — TRACE is ready to listen, advise, and collaborate. Reach out and we'll respond within one business day.";
+                        $heroSection = $resolvedHero?->section ?? '';
+                        $heroHeading = $resolvedHero?->heading ?? "";
+                        $heroDesignWord = $resolvedHero?->design_word ?? '.';
+                        $heroDescription = $resolvedHero?->description ?? "";
 
                         if (!empty($heroDesignWord) && str_contains($heroHeading, $heroDesignWord)) {
                             $heroHeading = str_replace(
