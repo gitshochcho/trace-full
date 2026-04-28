@@ -45,10 +45,10 @@
                     {{ strip_tags($heroDescription) }}
                 </p>
                 <div class="d-flex gap-5 mt-5">
-                    <div>
+                    <!-- <div>
                         <h3 class="fw-bold mb-0">{{ $typeCounts['READ'] }}</h3>
                         <span class="small opacity-50">Read Insights</span>
-                    </div>
+                    </div> -->
                     <div>
                         <h3 class="fw-bold mb-0">{{ $allInsights->count() }}</h3>
                         <span class="small opacity-50">Total Insights</span>
@@ -159,27 +159,26 @@ $isExternal = false;
 @endphp
             <div class="col-12 col-md-6 col-lg-4 insight-item" data-tag="{{ $tag }}">
                 <div class="insight-card h-100 border-0 shadow-sm rounded-5 overflow-hidden bg-white">
-                    <div class="card-img-position relative" style="height: 220px; overflow: hidden; position: relative;">
+                    <div class="card-img-position" style="height: 220px; overflow: hidden; position: relative; flex-shrink: 0;">
                         <img src="{{ $cardImage }}" class="w-100 h-100 object-fit-cover" alt="{{ $title }}">
                         <span class="badge position-absolute top-0 start-0 m-3 px-3 py-1" style="background: {{ $badgeColor }}; font-size: 10px; border-radius: 4px;">{{ $tag }}</span>
                     </div>
                     <div class="card-body p-4">
-                        <small class="fw-bold text-teal mb-2 d-block" style="font-size: 11px; color: #00898e; letter-spacing: 0.5px;">{{ $category }}</small>
-                        <h5 class="card-title fw-bold text-dark mb-3" style="font-size: 17px; line-height: 1.4;">{{ $title }}</h5>
-                        <p class="card-text text-muted small mb-4">{{ $description }}</p>
-                        
-                        <div class="d-flex justify-content-between align-items-center pt-3 border-top mt-auto">
-                            <span class="text-muted" style="font-size: 12px;"><i class="far fa-calendar-alt me-1"></i> {{ $metaDate }} · {{ $metaDuration }}</span>
-                            @if($typeCategory === 'download' && $actionLink === '#')
-    <span class="text-muted" style="font-size: 12px;">No file uploaded</span>
-@elseif($typeCategory === 'download')
-    <a href="{{ $actionLink }}" download class="fw-bold text-decoration-none" style="font-size: 12px; color: #e85d26;">
-        <i class="fas fa-download me-1" style="font-size:10px;"></i>{{ $buttonText }}
-    </a>
-@else
-    <a href="{{ $actionLink }}" class="fw-bold text-decoration-none text-teal" style="font-size: 12px; color: #00898e;" @if($isExternal) target="_blank" rel="noopener" @endif>{{ $buttonText }} →</a>
-@endif
-                        </div>
+                        <small class="fw-bold mb-2 d-block" style="font-size: 11px; color: #00898e; letter-spacing: 0.5px;">{{ $category }}</small>
+                        <h5 class="card-title fw-bold text-dark mb-2" style="font-size: 16px; line-height: 1.4;">{{ $title }}</h5>
+                        <p class="card-text text-muted small mb-0">{{ $description }}</p>
+                    </div>
+                    <div class="insight-card-footer">
+                        <span class="text-muted" style="font-size: 12px;"><i class="far fa-calendar-alt me-1"></i> {{ $metaDate }} · {{ $metaDuration }}</span>
+                        @if($typeCategory === 'download' && $actionLink === '#')
+                            <span class="text-muted" style="font-size: 12px;">No file uploaded</span>
+                        @elseif($typeCategory === 'download')
+                            <a href="{{ $actionLink }}" download class="fw-bold text-decoration-none" style="font-size: 12px; color: #e85d26;">
+                                <i class="fas fa-download me-1" style="font-size:10px;"></i>{{ $buttonText }}
+                            </a>
+                        @else
+                            <a href="{{ $actionLink }}" class="fw-bold text-decoration-none" style="font-size: 12px; color: #00898e;" @if($isExternal) target="_blank" rel="noopener" @endif>{{ $buttonText }} →</a>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -201,11 +200,11 @@ $isExternal = false;
 {{-- ==============================
       SUBSCRIBE SECTION
 ============================== --}}
-<section class="subscribe-section py-5" style="border-top: 1px solid #eee;">
+<section class="subscribe-section py-5" style="border-top: 1px solid #fff; background: #E5E9ED;">
     <div class="container-fluid px-lg-5 page-align-container py-lg-4">
         <div class="row align-items-center">
             <div class="col-lg-7">
-                <div class="d-flex align-items-center gap-2 mb-3" style="font-size: 12px; letter-spacing: 1px; color: #e85d26; font-weight: 700;">
+                <div class="d-flex align-items-center gap-2 mb-3" style="font-size: 12px; letter-spacing: 1px; color: #01888C; font-weight: 700;">
                     <span style="width: 25px; height: 2px; background: #e85d26;"></span>
                     STAY INFORMED
                 </div>
@@ -355,7 +354,21 @@ $isExternal = false;
     }
     .insight-card {
         transition: transform 0.3s ease, box-shadow 0.3s ease;
-        border-radius: 1 rem;
+        display: flex;
+        flex-direction: column;
+    }
+    .insight-card .card-body {
+        flex: 1;
+    }
+    .insight-card-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 24px;
+        border-top: 1px solid #F1F5F9;
+        background: #fff;
+        flex-shrink: 0;
+        min-height: 52px;
     }
     .insight-card:hover {
         transform: translateY(-10px);

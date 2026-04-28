@@ -54,7 +54,7 @@ class InsightController extends Controller
         ]);
 
         $this->handleInsightMedia($insight, $request);
-        $authorTeamId = $this->isReadType((int) $validated['type']) ? (isset($validated['author_team_id']) ? (int) $validated['author_team_id'] : null) : null;
+        $authorTeamId = !empty($validated['author_team_id']) ? (int) $validated['author_team_id'] : null;
         $this->syncArticles($insight, $validated['articles'] ?? [], [], [], $authorTeamId);
 
         return redirect()->route('admin.insights.index')->with(['message' => 'Insight created successfully', 'alert-type' => 'success']);
@@ -90,7 +90,7 @@ class InsightController extends Controller
         $insight->save();
 
         $this->handleInsightMedia($insight, $request, true);
-        $authorTeamId = $this->isReadType((int) $validated['type']) ? (isset($validated['author_team_id']) ? (int) $validated['author_team_id'] : null) : null;
+        $authorTeamId = !empty($validated['author_team_id']) ? (int) $validated['author_team_id'] : null;
         $this->syncArticles($insight, $validated['articles'] ?? [], [], [], $authorTeamId);
 
         return redirect()->route('admin.insights.index')->with(['message' => 'Insight updated successfully', 'alert-type' => 'success']);

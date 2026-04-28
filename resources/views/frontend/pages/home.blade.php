@@ -268,7 +268,7 @@
     .tag-dot {
         width: 8px;
         height: 8px;
-        background-color: #e85d26;
+        background-color: #01888C;
         border-radius: 50%;
     }
     .section-tag-pill {

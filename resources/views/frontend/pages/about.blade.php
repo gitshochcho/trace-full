@@ -77,7 +77,7 @@
 }
 
 .hero-title span {
-    color: skyblue !important;
+    color: #4DC0C4 !important;
     display: inline-block; 
 }
 
@@ -110,7 +110,7 @@
 }
 
 .about-title span {
-        color: skyblue !important;
+        color: #01888c !important;
         font-weight: inherit;
     }
 

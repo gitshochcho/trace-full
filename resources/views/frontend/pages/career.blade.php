@@ -55,11 +55,23 @@
     }
     .hero-career h1 .highlight { color: var(--trace-cyan); }
     .hero-desc {
-        font-size: 18px;
-        line-height: 1.6;
-        max-width: 800px;
+        font-size: 16px;
+        line-height: 1.7;
+        max-width: 650px;
         opacity: 0.85;
     }
+    .hero-desc p {
+        font-size: 16px;
+        color: rgba(255,255,255,0.6);
+        line-height: 1.7;
+        margin-bottom: 10px;
+    }
+    .hero-desc p:last-child { margin-bottom: 0; }
+    .hero-desc ul, .hero-desc ol {
+        margin: 0 0 10px 20px;
+        color: rgba(255,255,255,0.6);
+    }
+    .hero-desc li { margin-bottom: 6px; }
 
     /* Sidebar Styling */
     .section-label {
@@ -210,6 +222,22 @@
     }
     .meta-item i { margin-right: 8px; }
 
+    .hero-cta-btn {
+        display: inline-block;
+        background: var(--trace-orange);
+        color: #fff;
+        padding: 13px 30px;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: background 0.3s;
+    }
+    .hero-cta-btn:hover {
+        background: #c94d1a;
+        color: #fff;
+    }
+
     @media (max-width: 991px) {
         .hero-career h1 { font-size: 32px; }
         .careers-sidebar { margin-bottom: 50px; }
@@ -231,25 +259,43 @@
 <div class="careers-wrapper">
     <section class="hero-career">
         <div class="container-fluid px-lg-5 page-align-container">
-            <div class="hero-label">CAREER AT</div>
-            <h1 class="display-4 fw-bold mb-4">
-                    @php
-                        $cHeading = $careerHeader->heading ?? 'Career at Trace Consultancy';
-                        $cDesignWord = $careerHeader->design_word ?? 'Trace Consultancy';
+            @php
+                use Illuminate\Support\Str;
+                $cSection    = $careerHeader?->section     ?? '';
+                $cHeading    = $careerHeader?->heading     ?? '';
+                $cDesignWord = $careerHeader?->design_word ?? '';
+                $cDesc       = $careerHeader?->description ?? '';
+                $cButton     = $careerHeader?->sub_heading ?? '';
+            @endphp
 
-                        if ($cDesignWord) {
-                            $cHeading = str_ireplace($cDesignWord, "<span style='color: var(--trace-orange);'>{$cDesignWord}</span>", $cHeading);
-                        }
-                    @endphp
-                    {!! $cHeading !!}
-                </h1>
-                <p class="lead text-white-50 mb-0" style="max-width: 600px; line-height: 1.6;">
-                    {!! strip_tags($careerHeader->description ?? 'TRACE is a growing team of trade specialists, researchers, technologists, and project managers working on some of the most consequential reform programmes in South Asia.') !!}
-                </p>
+            @if($cSection)
+                <div class="hero-label">{{ $cSection }}</div> 
+            @endif
+            
+
+            <h1 class="display-4 fw-bold mb-4">
+                {{ Str::before($cHeading, $cDesignWord) }}
+                @if($cDesignWord && Str::contains($cHeading, $cDesignWord))
+                </br>
+                 <span class="highlight">{{ $cDesignWord }}</span>
+                @elseif($cDesignWord)
+                <span class="highlight">{{ $cDesignWord }}</span>
+                @endif
+            </h1>
+
+            @if($cDesc)
+                <div class="hero-desc text-white-50 mb-4">
+                    {!! $cDesc !!}
+                </div>
+            @endif
+
+            @if($cButton)
+                <!-- <a href="#open-positions" class="hero-cta-btn">{{ $cButton }}</a> -->
+            @endif
         </div>
     </section>
 
-    <div class="container-fluid px-lg-5 page-align-container py-5 my-lg-5">
+    <div id="open-positions" class="container-fluid px-lg-5 page-align-container py-5 my-lg-5">
         <div class="row g-lg-5">
             <aside class="col-lg-4 careers-sidebar">
                 <div class="sidebar-section">
