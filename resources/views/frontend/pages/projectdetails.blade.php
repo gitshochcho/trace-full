@@ -225,6 +225,12 @@
     overflow: hidden;
     height: 100%;
     border: 1px solid #E5E9ED;
+    carsor: pointer;
+    transition: .3s;
+}
+
+.project-mini-card:hover {
+    border-color: #4CC3C3;
 }
 
 .card-img-wrapper { height: 180px; overflow: hidden; }
@@ -511,7 +517,7 @@
                             <span class="client-name text-uppercase">{{ abbreviateClientName($item->client) ?? '' }}</span>
                             <h4 class="project-mini-title">{{ $item->project_title }}</h4>
                             <p class="project-mini-meta">{{ $itemSector }} · {{ $itemYearLabel ?: ($item->project_status ?? '') }}</p>
-                            <a href="{{ route('projectdetails', $item) }}" class="view-link mt-2 d-inline-flex">View Project <i class="fas fa-arrow-right ms-1"></i></a>
+                            <!-- <a href="{{ route('projectdetails', $item) }}" class="view-link mt-2 d-inline-flex">View Project <i class="fas fa-arrow-right ms-1"></i></a> -->
                         </div>
                     </div>
                 </div>

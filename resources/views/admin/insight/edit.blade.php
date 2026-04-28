@@ -18,8 +18,9 @@ if (empty($articleRows)) $articleRows = [['id' => null, 'title' => '', 'descript
             <div class="col-sm-6"><h3 class="mb-0">Edit Insight</h3></div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-end mb-0">
+                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
                     <li class="breadcrumb-item"><a href="{{ route('admin.insights.index') }}">Insights Manager</a></li>
-                    <li class="breadcrumb-item active">Edit</li>
+                    <li class="breadcrumb-item active" aria-current="page">Edit</li>
                 </ol>
             </div>
         </div>
@@ -98,7 +99,7 @@ if (empty($articleRows)) $articleRows = [['id' => null, 'title' => '', 'descript
 </div>
 
                             <div class="col-md-8">
-                                <label class="form-label">Article Image</label>
+                                <label class="form-label">Insight Image</label>
                                 <input type="file" name="article_image" class="form-control" accept="image/*">
                                 @if($insight->articleImageUrl() ?? $insight->imageUrl())
                                     <small class="text-muted">Current: <a href="{{ $insight->articleImageUrl() ?? $insight->imageUrl() }}" target="_blank">View image</a></small>

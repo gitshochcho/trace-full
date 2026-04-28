@@ -33,6 +33,7 @@
                             <button type="button" id="applyTeamPagePreset" class="btn btn-sm btn-outline-primary preset-btn">Team Page</button>
                             <button type="button" id="applyInsightsPagePreset" class="btn btn-sm btn-outline-primary preset-btn">Insights Page</button>
                             <button type="button" id="applyProjectsPagePreset" class="btn btn-sm btn-outline-primary preset-btn">Projects Page</button>
+                            <button type="button" id="applyCareerPagePreset" class="btn btn-sm btn-outline-primary preset-btn">Career Page</button>
                         </div>
                     </div>
                 </div>
@@ -253,6 +254,7 @@
         const servicesPagePresetBtn = document.getElementById('applyServicesPagePreset');
         const insightsPagePresetBtn = document.getElementById('applyInsightsPagePreset');
         const projectsPagePresetBtn = document.getElementById('applyProjectsPagePreset');
+        const careerPagePresetBtn   = document.getElementById('applyCareerPagePreset');
         const projectLocationPresetBtn = document.getElementById('applyProjectLocationPreset');
         const projectPhasePresetBtn = document.getElementById('applyProjectPhasePreset');
         const projectOutcomePresetBtn = document.getElementById('applyProjectOutcomePreset');
@@ -429,6 +431,18 @@ if (removeIconBtn) {
                 if (designWordField) designWordField.value = 'changes systems.';
                 if (typeField) typeField.value = 'Hero';
                 setDescriptionValue('TRACE has delivered trade facilitation reform, laboratory accreditation, digital systems, and policy advisory projects across South Asia — for governments, development banks, and regulatory bodies.');
+            });
+        }
+
+        if (careerPagePresetBtn) {
+            careerPagePresetBtn.addEventListener('click', function () {
+                if (slugField)      slugField.value      = 'career-heading';
+                if (sectionField)   sectionField.value   = 'CAREER AT TRACE';
+                if (headingField)   headingField.value   = 'Join Our Growing';
+                if (subHeadingField) subHeadingField.value = 'View Open Positions';
+                if (designWordField) designWordField.value = 'Team';
+                if (typeField)      typeField.value      = 'Hero';
+                setDescriptionValue('We are looking for curious, driven professionals to help us reshape trade policy, regulatory reform, and economic development across South Asia.');
             });
         }
 

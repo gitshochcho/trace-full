@@ -2,7 +2,7 @@
     <div class="container-fluid px-5" style="max-width: 1072px; margin: 0 auto;">
         <div class="d-flex justify-content-between align-items-center py-2">
             <div class="topbar-left">
-                <span style="font-size: 11px; opacity: 1;">✉ {{ $siteSettings?->footer_contact_email ?: 'support@trace.com' }}</span>
+                <span style="font-size: 11px; opacity: 1;">✉ {{ $siteSettings?->footer_contact_email ?: '' }}</span>
             </div>
             <div class="topbar-right d-flex align-items-center gap-3">
                 <a href="#" class="text-decoration-none" style="font-size: 11px; color: #fff; opacity: 1;">Company news</a>
