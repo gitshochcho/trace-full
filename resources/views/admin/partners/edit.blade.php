@@ -24,7 +24,7 @@
                         <div class="mb-3">
                             <label class="form-label">Current Logo</label><br>
                             <img src="{{ $partner->imageUrl() }}" alt="Current Logo" style="max-height: 80px;" class="mb-2">
-                            <input type="file" name="image" id="partnerImage" class="form-control" accept="image/*" onchange="previewImage(this)">
+                            <input type="file" name="image" id="partnerImage" class="form-control" accept="image/*" onchange="previewImage(this)" data-max-size="2048" data-max-width="300" data-max-height="150">
                             <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 300×150px (transparent PNG preferred, max 2MB)</small>
 
                             <div id="imagePreviewContainer" class="mt-3" style="display:none;">

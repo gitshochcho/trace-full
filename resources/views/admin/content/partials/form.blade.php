@@ -193,7 +193,7 @@
 
    <div class="col-md-6">
     <label class="form-label">Icon Image</label>
-    <input type="file" name="icon" class="form-control @error('icon') is-invalid @enderror" accept="image/*">
+    <input type="file" name="icon" class="form-control @error('icon') is-invalid @enderror" accept="image/*" data-max-size="2048" data-max-width="64" data-max-height="64">
     <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 64×64px square (max 2MB)</small>
     @error('icon')<div class="invalid-feedback">{{ $message }}</div>@enderror
     @if($currentIconUrl)
@@ -211,7 +211,7 @@
 
     <div class="col-md-6">
     <label class="form-label">Main Image</label>
-    <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" accept="image/*">
+    <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" accept="image/*" data-max-size="4096" data-max-width="1200" data-max-height="800">
     <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 1200×800px (max 4MB)</small>
     @error('image')<div class="invalid-feedback">{{ $message }}</div>@enderror
     @if($currentImageUrl)

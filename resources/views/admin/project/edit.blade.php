@@ -145,7 +145,7 @@
                                 <button type="button" id="addProjectImageRow" class="btn btn-sm btn-outline-primary">+ Add Image</button>
                             </div>
                             <div class="card-body">
-                                <input type="file" id="projectImageInput" name="images[]" class="d-none" accept="image/*" multiple>
+                                <input type="file" id="projectImageInput" name="images[]" class="d-none" accept="image/*" multiple data-max-size="4096" data-max-width="1600" data-max-height="900">
                                 <div class="row g-3 mb-3">
                                     @forelse($projectImages as $image)
                                         <div class="col-6">
