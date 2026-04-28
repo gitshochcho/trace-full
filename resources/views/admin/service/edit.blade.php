@@ -97,7 +97,7 @@
 
                                     <div class="col-md-6">
                                         <label class="form-label">Service Image</label>
-                                        <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" accept="image/*">
+                                        <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" accept="image/*" data-max-size="4096" data-max-width="800" data-max-height="600">
                                         <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 800×600px (max 4MB)</small>
                                         @error('image')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                         @if($service->imageUrl())
@@ -107,7 +107,7 @@
 
                                     <div class="col-md-6">
                                         <label class="form-label">Service Icon</label>
-                                        <input type="file" name="icon" class="form-control @error('icon') is-invalid @enderror" accept="image/*">
+                                        <input type="file" name="icon" class="form-control @error('icon') is-invalid @enderror" accept="image/*" data-max-size="2048" data-max-width="128" data-max-height="128">
                                         <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 128×128px square (max 2MB)</small>
                                         @error('icon')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                         @if($service->iconUrl())
@@ -137,7 +137,7 @@
                                                 </div>
                                                 <div class="col-md-10">
                                                     <label class="form-label">Icon Image</label>
-                                                    <input type="file" name="details_icons[{{ $index }}]" class="form-control" accept="image/*">
+                                                    <input type="file" name="details_icons[{{ $index }}]" class="form-control" accept="image/*" data-max-size="2048" data-max-width="64" data-max-height="64">
                                                     <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 64×64px square (max 2MB)</small>
                                                     @if(! empty($detail['id']))
                                                         @php $detailModel = $service->details->firstWhere('id', $detail['id']); @endphp
@@ -205,7 +205,7 @@
                 </div>
                 <div class="col-md-10">
                     <label class="form-label">Icon Image</label>
-                    <input type="file" name="__DETAIL_ICON_NAME__" class="form-control" accept="image/*">
+                    <input type="file" name="__DETAIL_ICON_NAME__" class="form-control" accept="image/*" data-max-size="2048" data-max-width="64" data-max-height="64">
                     <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 64×64px square (max 2MB)</small>
                 </div>
                 <div class="col-md-2 d-grid">

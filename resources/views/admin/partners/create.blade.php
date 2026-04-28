@@ -28,7 +28,7 @@
 
                         <div class="mb-3">
                             <label class="form-label">Partner Logo</label>
-                            <input type="file" name="image" id="partnerImage" class="form-control" accept="image/*" onchange="previewImage(this)" required>
+                            <input type="file" name="image" id="partnerImage" class="form-control" accept="image/*" onchange="previewImage(this)" required data-max-size="2048" data-max-width="300" data-max-height="150">
                             <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 300×150px (transparent PNG preferred, max 2MB)</small>
 
                             <div id="imagePreviewContainer" class="mt-3" style="display:none;">

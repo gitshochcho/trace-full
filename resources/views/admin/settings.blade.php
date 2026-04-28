@@ -43,7 +43,7 @@
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <label class="form-label">Logo Image</label>
-                                        <input type="file" name="logo_image" class="form-control @error('logo_image') is-invalid @enderror">
+                                        <input type="file" name="logo_image" class="form-control @error('logo_image') is-invalid @enderror" data-max-size="2048" data-max-width="240" data-max-height="80">
                                         @error('logo_image')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                         <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 240×80px (transparent PNG preferred, max 2MB) — supports PNG, JPG, WEBP, SVG</small>
                                         @if($setting?->logoImageUrl())
@@ -109,7 +109,7 @@
                                                     </div>
                                                     <div class="col-md-3">
                                                         <label class="form-label">Icon Image</label>
-                                                        <input type="file" name="social_links_icons[{{ $index }}]" class="form-control" accept="image/*">
+                                                        <input type="file" name="social_links_icons[{{ $index }}]" class="form-control" accept="image/*" data-max-size="512" data-max-width="32" data-max-height="32">
                                                         <small class="text-muted"><i class="fas fa-info-circle"></i> 32×32px square</small>
                                                         @php
                                                             $existingIcon = null;
@@ -154,7 +154,7 @@
             </div>
             <div class="col-md-3">
                 <label class="form-label">Icon Image</label>
-                <input type="file" name="__ICON_NAME__" class="form-control" accept="image/*">
+                <input type="file" name="__ICON_NAME__" class="form-control" accept="image/*" data-max-size="512" data-max-width="32" data-max-height="32">
                 <small class="text-muted"><i class="fas fa-info-circle"></i> 32×32px square</small>
             </div>
             <div class="col-md-1 d-grid">

@@ -54,7 +54,7 @@ class PartnerController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
-        $partner->merge($validated);
+        $partner->update($validated); 
         $partner->save();
 
         if ($request->hasFile('image')) {

@@ -125,7 +125,7 @@ $articleRows = old('articles', [[
                             <div class="row g-3">
                                 <div class="col-12">
                                     <label class="form-label">Insight Image</label>
-                                    <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" accept="image/*">
+                                    <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" accept="image/*" data-max-size="4096" data-max-width="1200" data-max-height="800">
                                     <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 1200×800px (max 4MB)</small>
                                     @error('image')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
@@ -174,7 +174,7 @@ $articleRows = old('articles', [[
                                         </div>
                                         <div class="col-md-8">
                                             <label class="form-label">Article Image</label>
-                                            <input type="file" name="article_images[{{ $index }}]" class="form-control" accept="image/*">
+                                            <input type="file" name="article_images[{{ $index }}]" class="form-control" accept="image/*" data-max-size="2048" data-max-width="800" data-max-height="600">
                                             <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 800×600px (max 2MB)</small>
                                         </div>
                                         <div class="col-md-4">
@@ -193,7 +193,7 @@ $articleRows = old('articles', [[
                                                 <div class="social-link-row d-flex gap-2 mb-2">
                                                     <input type="text" name="articles[{{ $index }}][social_links][{{ $sIdx }}][name]" class="form-control form-control-sm" placeholder="Platform" value="{{ $link['name'] ?? '' }}" style="width:140px">
                                                     <input type="url" name="articles[{{ $index }}][social_links][{{ $sIdx }}][link]" class="form-control form-control-sm" placeholder="URL" value="{{ $link['link'] ?? '' }}">
-                                                    <input type="file" name="social_icon_files[{{ $index }}][{{ $sIdx }}]" class="form-control form-control-sm" accept="image/*" style="width:150px">
+                                                    <input type="file" name="social_icon_files[{{ $index }}][{{ $sIdx }}]" class="form-control form-control-sm" accept="image/*" style="width:150px" data-max-size="512" data-max-width="32" data-max-height="32">
                                                     <button type="button" class="btn btn-sm btn-outline-danger remove-social-link">&times;</button>
                                                 </div>
                                                 @endforeach
@@ -245,7 +245,7 @@ $articleRows = old('articles', [[
             </div>
             <div class="col-md-8">
                 <label class="form-label">Article Image</label>
-                <input type="file" name="article_images[__INDEX__]" class="form-control" accept="image/*">
+                <input type="file" name="article_images[__INDEX__]" class="form-control" accept="image/*" data-max-size="2048" data-max-width="800" data-max-height="600">
                 <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 800×600px (max 2MB)</small>
             </div>
             <div class="col-md-4">
@@ -262,7 +262,7 @@ $articleRows = old('articles', [[
                     <div class="social-link-row d-flex gap-2 mb-2">
                         <input type="text" name="__ARTICLE_NAME__[social_links][0][name]" class="form-control form-control-sm" placeholder="Platform" style="width:140px">
                         <input type="url" name="__ARTICLE_NAME__[social_links][0][link]" class="form-control form-control-sm" placeholder="URL">
-                        <input type="file" name="social_icon_files[__INDEX__][0]" class="form-control form-control-sm" accept="image/*" style="width:150px">
+                        <input type="file" name="social_icon_files[__INDEX__][0]" class="form-control form-control-sm" accept="image/*" style="width:150px" data-max-size="512" data-max-width="32" data-max-height="32">
                         <button type="button" class="btn btn-sm btn-outline-danger remove-social-link">&times;</button>
                     </div>
                 </div>
