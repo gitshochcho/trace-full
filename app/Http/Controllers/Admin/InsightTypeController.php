@@ -10,8 +10,13 @@ class InsightTypeController extends Controller
 {
     public function index()
     {
-        $insights = InsightType::all();
+        $insights = InsightType::orderBy('type')->paginate(20);
         return view('admin.insight-type.index', compact('insights'));
+    }
+
+    public function create()
+    {
+        return view('admin.insight-type.create');
     }
 
     public function store(Request $request)

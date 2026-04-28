@@ -19,15 +19,20 @@ class InsightController extends Controller
     //     return view('admin.insight.index', compact('insights', 'insightTypes', 'teams'));
     // }
 
-     public function index()
+    public function index()
     {
-        $insights = Insight::with(['articles.author', 'media', 'insightType'])
+        $insights = Insight::with(['articles', 'insightType'])
             ->orderBy('sort_order')
             ->latest('id')
-            ->get();
+            ->paginate(15);
+        return view('admin.insight.index', compact('insights'));
+    }
+
+    public function create()
+    {
         $insightTypes = InsightType::orderBy('type')->where('status', true)->get(['id', 'type', 'type_category', 'status']);
         $teams = Team::query()->orderBy('first_name')->orderBy('last_name')->get(['id', 'first_name', 'last_name']);
-        return view('admin.insight.index', compact('insights', 'insightTypes', 'teams'));
+        return view('admin.insight.create', compact('insightTypes', 'teams'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -52,7 +57,7 @@ class InsightController extends Controller
         $authorTeamId = $this->isReadType((int) $validated['type']) ? (isset($validated['author_team_id']) ? (int) $validated['author_team_id'] : null) : null;
         $this->syncArticles($insight, $validated['articles'] ?? [], [], [], $authorTeamId);
 
-        return redirect()->route('admin.insights.edit', $insight)->with(['message' => 'Insight created successfully', 'alert-type' => 'success']);
+        return redirect()->route('admin.insights.index')->with(['message' => 'Insight created successfully', 'alert-type' => 'success']);
     }
 
     public function edit(Insight $insight)
@@ -88,7 +93,7 @@ class InsightController extends Controller
         $authorTeamId = $this->isReadType((int) $validated['type']) ? (isset($validated['author_team_id']) ? (int) $validated['author_team_id'] : null) : null;
         $this->syncArticles($insight, $validated['articles'] ?? [], [], [], $authorTeamId);
 
-        return redirect()->route('admin.insights.edit', $insight)->with(['message' => 'Insight updated successfully', 'alert-type' => 'success']);
+        return redirect()->route('admin.insights.index')->with(['message' => 'Insight updated successfully', 'alert-type' => 'success']);
     }
 
     public function destroy(Insight $insight): RedirectResponse

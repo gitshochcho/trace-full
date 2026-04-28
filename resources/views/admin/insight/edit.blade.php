@@ -18,8 +18,9 @@ if (empty($articleRows)) $articleRows = [['id' => null, 'title' => '', 'descript
             <div class="col-sm-6"><h3 class="mb-0">Edit Insight</h3></div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-end mb-0">
+                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
                     <li class="breadcrumb-item"><a href="{{ route('admin.insights.index') }}">Insights Manager</a></li>
-                    <li class="breadcrumb-item active">Edit</li>
+                    <li class="breadcrumb-item active" aria-current="page">Edit</li>
                 </ol>
             </div>
         </div>

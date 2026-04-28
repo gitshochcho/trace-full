@@ -97,9 +97,10 @@ Route::prefix('admin')->group(function () {
 
         Route::controller(InsightController::class)->group(function () {
             Route::get('insights-manager', 'index')->name('admin.insights.index');
+            Route::get('insights-manager/create', 'create')->name('admin.insights.create');
             Route::post('insights-manager', 'store')->name('admin.insights.store');
 
-           Route::get('/insights/{insight}', 'show')->name('admin.insights.show');
+            Route::get('/insights/{insight}', 'show')->name('admin.insights.show');
 
             Route::get('insights-manager/{insight}/edit', 'edit')->name('admin.insights.edit');
             Route::put('insights-manager/{insight}', 'update')->name('admin.insights.update');
@@ -146,6 +147,7 @@ Route::prefix('admin')->group(function () {
 
         Route::controller(InsightTypeController::class)->group(function () {
             Route::get('insight-types', 'index')->name('admin.insight-types.index');
+            Route::get('insight-types/create', 'create')->name('admin.insight-types.create');
             Route::post('insight-types', 'store')->name('admin.insight-types.store');
             Route::get('insight-types/{insightType}/edit', 'edit')->name('admin.insight-types.edit');
             Route::put('insight-types/{insightType}', 'update')->name('admin.insight-types.update');
