@@ -84,7 +84,7 @@
                                         <div class="mb-2">
                                             <button type="button" id="addTeamImageRow" class="btn btn-sm btn-outline-primary">+ Add Image</button>
                                         </div>
-                                        <input type="file" id="teamImageInput" name="image" class="d-none" accept="image/*">
+                                        <input type="file" id="teamImageInput" name="image" class="d-none" accept="image/*" data-max-size="4096" data-max-width="600" data-max-height="600">
                                         <div id="teamImageQueue" class="d-grid gap-2"></div>
                                         <small class="text-muted d-block mt-2"><i class="fas fa-info-circle"></i> Recommended: 600×600px square portrait (max 4MB)</small>
                                         @error('image')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
@@ -126,7 +126,7 @@
                                                 </div>
                                                 <div class="col-md-2">
                                                     <label class="form-label">Icon</label>
-                                                    <input type="file" name="experties_icons[{{ $index }}]" class="form-control" accept="image/*">
+                                                    <input type="file" name="experties_icons[{{ $index }}]" class="form-control" accept="image/*" data-max-size="2048" data-max-width="64" data-max-height="64">
                                                     <small class="text-muted"><i class="fas fa-info-circle"></i> 64×64px square</small>
                                                 </div>
                                                 <div class="col-md-1 d-grid">
@@ -160,7 +160,7 @@
                                                 </div>
                                                 <div class="col-md-2">
                                                     <label class="form-label">Icon</label>
-                                                    <input type="file" name="social_media_icons[{{ $index }}]" class="form-control" accept="image/*">
+                                                    <input type="file" name="social_media_icons[{{ $index }}]" class="form-control" accept="image/*" data-max-size="512" data-max-width="32" data-max-height="32">
                                                     <small class="text-muted"><i class="fas fa-info-circle"></i> 32×32px square</small>
                                                 </div>
                                                 <div class="col-md-1 d-grid">
@@ -202,7 +202,7 @@
                 </div>
                 <div class="col-md-2">
                     <label class="form-label">Icon</label>
-                    <input type="file" name="__EXPERTISE_ICON_NAME__" class="form-control" accept="image/*">
+                    <input type="file" name="__EXPERTISE_ICON_NAME__" class="form-control" accept="image/*" data-max-size="2048" data-max-width="64" data-max-height="64">
                     <small class="text-muted"><i class="fas fa-info-circle"></i> 64×64px square</small>
                 </div>
                 <div class="col-md-1 d-grid">
@@ -226,7 +226,7 @@
                 </div>
                 <div class="col-md-2">
                     <label class="form-label">Icon</label>
-                    <input type="file" name="__SOCIAL_ICON_NAME__" class="form-control" accept="image/*">
+                    <input type="file" name="__SOCIAL_ICON_NAME__" class="form-control" accept="image/*" data-max-size="512" data-max-width="32" data-max-height="32">
                     <small class="text-muted"><i class="fas fa-info-circle"></i> 32×32px square</small>
                 </div>
                 <div class="col-md-1 d-grid">

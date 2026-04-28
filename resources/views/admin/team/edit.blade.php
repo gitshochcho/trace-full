@@ -109,7 +109,7 @@
                                                 </div>
                                             @endif
                                         </div>
-                                        <input type="file" id="teamImageInput" name="image" class="d-none" accept="image/*">
+                                        <input type="file" id="teamImageInput" name="image" class="d-none" accept="image/*" data-max-size="4096" data-max-width="600" data-max-height="600">
                                         <small class="text-muted d-block mb-2"><i class="fas fa-info-circle"></i> Recommended: 600×600px square portrait (max 4MB)</small>
                                         <div id="teamImageQueue" class="d-grid gap-2 mb-2">
                                             @if($team->imageUrl())
@@ -160,7 +160,7 @@
                                                 </div>
                                                 <div class="col-md-3">
                                                     <label class="form-label">Icon</label>
-                                                    <input type="file" name="experties_icons[{{ $index }}]" class="form-control" accept="image/*">
+                                                    <input type="file" name="experties_icons[{{ $index }}]" class="form-control" accept="image/*" data-max-size="2048" data-max-width="64" data-max-height="64">
                                                     <small class="text-muted"><i class="fas fa-info-circle"></i> 64×64px square</small>
                                                     @if(!empty($expertise['icon_url']))
                                                         <img src="{{ $expertise['icon_url'] }}" alt="icon" style="width: 24px; height: 24px; object-fit: contain; margin-top: 6px;">
@@ -197,7 +197,7 @@
                                                 </div>
                                                 <div class="col-md-3">
                                                     <label class="form-label">Social Icon</label>
-                                                    <input type="file" name="social_media_icons[{{ $index }}]" class="form-control" accept="image/*">
+                                                    <input type="file" name="social_media_icons[{{ $index }}]" class="form-control" accept="image/*" data-max-size="512" data-max-width="32" data-max-height="32">
                                                     <small class="text-muted"><i class="fas fa-info-circle"></i> 32×32px square</small>
                                                     @if(!empty($social['icon_url']))
                                                         <img src="{{ $social['icon_url'] }}" alt="icon" style="width: 24px; height: 24px; object-fit: contain; margin-top: 6px;">
@@ -236,7 +236,7 @@
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Icon</label>
-                    <input type="file" name="__EXPERTISE_ICON_NAME__" class="form-control" accept="image/*">
+                    <input type="file" name="__EXPERTISE_ICON_NAME__" class="form-control" accept="image/*" data-max-size="2048" data-max-width="64" data-max-height="64">
                     <small class="text-muted"><i class="fas fa-info-circle"></i> 64×64px square</small>
                 </div>
                 <div class="col-md-1 d-grid">
@@ -260,7 +260,7 @@
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Social Icon</label>
-                    <input type="file" name="__SOCIAL_ICON_NAME__" class="form-control" accept="image/*">
+                    <input type="file" name="__SOCIAL_ICON_NAME__" class="form-control" accept="image/*" data-max-size="512" data-max-width="32" data-max-height="32">
                     <small class="text-muted"><i class="fas fa-info-circle"></i> 32×32px square</small>
                 </div>
                 <div class="col-md-1 d-grid">

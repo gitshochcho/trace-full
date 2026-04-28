@@ -58,7 +58,7 @@
                                     {{-- ... Slider images logic and JS remains the same as before ... --}}
                                     <div class="col-12">
                                         <label class="form-label">Slider Images (Multiple)</label>
-                                        <input id="slider_images_input" type="file" name="slider_images[]" multiple class="form-control @error('slider_images') is-invalid @enderror" accept="image/*">
+                                        <input id="slider_images_input" type="file" name="slider_images[]" multiple class="form-control @error('slider_images') is-invalid @enderror" accept="image/*" data-max-size="4096" data-max-width="1920" data-max-height="800">
                                         <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 1920×800px wide banner (max 4MB each)</small>
                                     </div>
                                     
