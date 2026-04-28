@@ -632,13 +632,14 @@
 @section('content')
 
 @php
-    $articleTypeLabel = strtoupper(str_replace('_', ' ', $article->type ?: 'READ'));
+    $articleTypeLabel = strtoupper($article->insightType?->type ?: 'READ');
     $categoryLabel = $article->insight?->sub_heading ?: 'Insight';
     $articleTitle = $article->insight?->heading ?: 'Insight Article';
     $author = $article->author;
     $authorName = $author?->fullName() ?: 'TRACE Research Desk';
     $authorRole = $author?->designation ?: 'Author';
-    $authorInitials = collect(explode(' ', $authorName))->filter()->map(fn ($word) => strtoupper(substr($word, 0, 1)))->take(2)->implode('');
+    $authorInitials  = collect(explode(' ', $authorName))->filter()->map(fn ($word) => strtoupper(substr($word, 0, 1)))->take(2)->implode('');
+    $authorImageUrl  = $author?->imageUrl();
     $publishedLabel = optional($article->published_at)->format('F Y') ?: 'Recent';
     $readMinutes = $article->read_minutes ?: 8;
     $viewCount = max(120, ($readMinutes * 90));
@@ -660,7 +661,7 @@
     $tags = collect([
         $article->insight?->heading,
         $article->insight?->sub_heading,
-        strtoupper(str_replace('_', ' ', $article->type ?: 'read')),
+        strtoupper($article->insightType?->type ?: 'read'),
         $authorRole,
     ])->filter()->take(7);
 @endphp
@@ -681,7 +682,13 @@
         <h1 class="article-title">{{ $articleTitle }}</h1>
 
         <div class="article-byline">
-            <div class="author-avatar-sm" style="background: #1a9e75;">{{ $authorInitials }}</div>
+            <div class="author-avatar-sm" style="{{ $authorImageUrl ? 'overflow:hidden; padding:0;' : 'background:#1a9e75;' }}">
+                @if($authorImageUrl)
+                    <img src="{{ $authorImageUrl }}" alt="{{ $authorName }}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
+                @else
+                    {{ $authorInitials }}
+                @endif
+            </div>
             <span class="byline-name">{{ $authorName }}</span>
             <span class="byline-sep">·</span>
             <span class="byline-meta"><i class="far fa-calendar"></i> {{ $publishedLabel }}</span>
@@ -774,7 +781,13 @@
         <div class="sidebar-card author-card">
             <h4 class="sidebar-heading">AUTHOR</h4>
             <div class="author-info">
-                <div class="author-avatar-lg" style="background: #1a9e75;">{{ $authorInitials }}</div>
+                <div class="author-avatar-lg" style="{{ $authorImageUrl ? 'overflow:hidden; padding:0;' : 'background:#1a9e75;' }}">
+                    @if($authorImageUrl)
+                        <img src="{{ $authorImageUrl }}" alt="{{ $authorName }}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
+                    @else
+                        {{ $authorInitials }}
+                    @endif
+                </div>
                 <div>
                     <p class="author-full-name">{{ $authorName }}</p>
                     <p class="author-role">{{ $authorRole }}</p>
@@ -791,7 +804,7 @@
                     <a href="{{ route('articleDetails', $related) }}" class="related-item text-decoration-none">
                         <div class="related-thumb" style="background-image: url('{{ $related->iconUrl() ?: ($related->insight?->imageUrl() ?: asset('assets/img/Op-Ed.png')) }}');"></div>
                         <div class="related-text">
-                            <span class="related-cat">{{ strtoupper(str_replace('_', ' ', $related->type ?: 'read')) }}</span>
+                            <span class="related-cat">{{ strtoupper($related->insightType?->type ?: 'read') }}</span>
                             <p class="related-title">{{ \Illuminate\Support\Str::limit($related->title, 70) }}</p>
                         </div>
                     </a>

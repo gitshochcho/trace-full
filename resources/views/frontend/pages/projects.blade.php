@@ -57,11 +57,11 @@
     letter-spacing: 1.5px;
     font-size: 13px;
     font-weight: 600;
-    color: #FFFFFF;
+    color: #4DC0C4;
 }
 
 .hero-title {
-    font-size: 64px; /* বড় এবং বোল্ড টাইটেল */
+    font-size: 48px; /* বড় এবং বোল্ড টাইটেল */
     line-height: 1.1;
     letter-spacing: -1px;
 }
@@ -71,7 +71,7 @@
 }
 
 .hero-description {
-    font-size: 18px;
+    font-size: 16px;
     line-height: 1.6;
     max-width: 650px;
     color: rgba(255, 255, 255, 0.7); /* হালকা সাদা টেক্সট */

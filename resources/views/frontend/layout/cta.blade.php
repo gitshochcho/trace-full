@@ -39,9 +39,9 @@
                 </div>
 
                 <div class="col-lg-4 text-center text-lg-end">
-                    <button class="cta-btn">
+                    <a href="/contact"><button class="cta-btn">
                         {{ $ctaButtonLabel }} →
-                    </button>
+                    </button></a>
                 </div>
 
             </div>

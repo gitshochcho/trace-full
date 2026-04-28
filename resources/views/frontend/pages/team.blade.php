@@ -195,7 +195,7 @@
 /* Card Styling */
 
     .team-card {
-    min-height: 480px; /* একটি মিনিমাম হাইট সেট করে দিন জেনো কার্ড দেখতে সুন্দর লাগে */
+    height: 480px;
     display: flex;
     flex-direction: column;
     background: #fff;
@@ -293,8 +293,8 @@
     }
 
     .team-content .role {
-        font-size: 14px;
-        font-weight: 700;
+        font-size: 13px;
+        font-weight: 600;
         color: #00898e;
         margin-bottom: 2px;
     }
@@ -308,8 +308,8 @@
 
     .team-content .divider {
         height: 1px;
-        background: #f1f5f9;
-        margin-bottom: 15px;
+        background: #E5E9ED;
+        margin: 12px -20px 15px;
     }
 
     .team-content .bio {
@@ -649,7 +649,9 @@
                     <div class="leader-info">
                         <h3 class="name">{{ $leaderName }}</h3>
                         <p class="role">{{ $leaderDesignation }}</p>
-                        <p class="company">Trace Consulting Limited · Dhaka, Bangladesh</p>
+                        @if($leader?->headtitle)
+                        <p class="company">{{ $leader->headtitle }}</p>
+                        @endif
                         
                         <div class="orange-divider"></div>
                         
@@ -730,7 +732,8 @@
             <div class="team-content flex-grow-1">
                 <h4 class="name">{{ $member->fullName() }}</h4>
                 <h5 class="role">{{ $member->designation ?? '' }}</h5>
-                <span class="sub text-muted">{{ $member->experties->first()?->heading ?? '' }}</span>
+                <span class="sub text-muted">{{ $member->headtitle ?? '' }}</span>
+                <div class="divider"></div>
 
                 <p class="bio">{{ $member->short_description ?: \Illuminate\Support\Str::limit(stripPTags($member->description), 150) }}</p>
 

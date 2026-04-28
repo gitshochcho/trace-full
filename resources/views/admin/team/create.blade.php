@@ -54,7 +54,7 @@
                                         </select>
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label">Head Title</label>
+                                        <label class="form-label">Department</label>
                                         <input type="text" name="headtitle" value="{{ old('headtitle') }}" class="form-control @error('headtitle') is-invalid @enderror">
                                         @error('headtitle')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
