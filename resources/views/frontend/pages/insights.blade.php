@@ -41,7 +41,7 @@
                 <h1 class="display-4 fw-bolder mb-4" style="line-height: 1.1;">
                     {{ $heroHeading }} <span style="color: #00bfc5;">{{ $heroDesignWord }}</span>
                 </h1>
-                <p class="lead opacity-75 mb-4" style="font-size: 16px; max-width: 550px;">
+                <p class="lead opacity-75 mb-4" style="font-size: 16px; max-width: 550px; color: rgba(255, 255, 255, 0.8);">
                     {{ strip_tags($heroDescription) }}
                 </p>
                 <div class="d-flex gap-5 mt-5">

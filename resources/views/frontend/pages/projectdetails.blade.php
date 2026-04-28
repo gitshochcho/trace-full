@@ -483,7 +483,7 @@
         <h5 class="fw-bold text-white mb-2">Need accreditation support for your laboratory?</h5>
         <p class="small text-white-50 mb-4 px-3">Get in touch and our team will walk you through our solutions.</p>
         
-        <a href="#" class="btn-expert-orange">
+        <a href="/contact" class="btn-expert-orange">
             Talk to Our Experts <i class="fas fa-arrow-right ms-2"></i>
         </a>
     </div>

@@ -682,7 +682,7 @@
         {{-- BUTTONS --}}
         <div class="hero-btns">
             <a href="/services" class="btn-hero-primary">Explore Services <span>→</span></a>
-            <a href="#" class="btn-hero-secondary">View Our Work</a>
+            <a href="/projects" class="btn-hero-secondary">View Our Work</a>
         </div>
 
         {{-- SLIDER INDICATOR --}}
@@ -876,7 +876,7 @@
                         deliver measurable, lasting results.
                     </p>
                 </div>
-                <a href="#" class="all-link text-decoration-none">
+                <a href="/projects" class="all-link text-decoration-none">
                     <span class="fw-bold text-dark me-1" style="font-size: 13px;">All Projects</span>
                     <span class="circle-arrow">&rarr;</span>
                 </a>

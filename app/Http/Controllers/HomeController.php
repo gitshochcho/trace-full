@@ -217,7 +217,7 @@ class HomeController extends Controller
             ->latest('id')
             ->firstOrFail();
 
-        $article->load(['author.media', 'insight.media', 'media']);
+        $article->load(['author.media', 'insight.media', 'media', 'insightType']);
 
         
 
@@ -226,7 +226,8 @@ class HomeController extends Controller
         ->orderBy('id')
         ->get(['id', 'title', 'description']);
 
-    $relatedArticles = InsightArticle::where('id', '!=', $article->id)
+    $relatedArticles = InsightArticle::with('insightType')
+        ->where('id', '!=', $article->id)
         ->where('insight_id', '!=', $article->insight_id)
         ->latest()
         ->take(4)

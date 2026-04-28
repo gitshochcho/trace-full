@@ -1066,7 +1066,11 @@
     $commitmentBottomText = $commitmentBottomText ?: ($aboutCommitmentContent?->design_word ?? '');
 
     $frameworkTag         = $aboutFrameworkContent?->section     ?? '';
-    $frameworkHeading     = $aboutFrameworkContent?->heading     ?? '';
+    $frameworkHeadingRaw  = $aboutFrameworkContent?->heading     ?? '';
+    $frameworkDesignWord  = $aboutFrameworkContent?->design_word ?? '';
+    $frameworkHeading     = $frameworkDesignWord
+        ? str_ireplace($frameworkDesignWord, "<span>{$frameworkDesignWord}</span>", $frameworkHeadingRaw)
+        : $frameworkHeadingRaw;
     $frameworkDescription = $aboutFrameworkContent?->description ?? '';
     $frameworkDisplayItems = $frameworkItems->map(fn ($item) => [
         'title'       => $item->heading ?? '',
@@ -1075,7 +1079,11 @@
     ]);
 
     $featuresTag         = $aboutUniqueFeaturesContent?->section     ?? '';
-    $featuresHeading     = $aboutUniqueFeaturesContent?->heading     ?? '';
+    $featuresHeadingRaw  = $aboutUniqueFeaturesContent?->heading     ?? '';
+    $featuresDesignWord  = $aboutUniqueFeaturesContent?->design_word ?? '';
+    $featuresHeading     = $featuresDesignWord
+        ? str_ireplace($featuresDesignWord, "<span>{$featuresDesignWord}</span>", $featuresHeadingRaw)
+        : $featuresHeadingRaw;
     $featuresDescription = $aboutUniqueFeaturesContent?->description ?? '';
     $featureDisplayCards = $uniqueFeatureCards->map(fn ($item) => [
         'title'       => $item->heading ?? '',
@@ -1219,7 +1227,7 @@
                     <span class="tag-text">{{ $frameworkTag }}</span>
                 </div>
                 <h2 class="framework-title mb-4">
-                    {!! nl2br(e($frameworkHeading)) !!}
+                    {!! nl2br($frameworkHeading) !!}
                 </h2>
                 <p class="framework-desc mb-4">
                     {{ strip_tags($frameworkDescription) }}
@@ -1265,7 +1273,7 @@
                     {{ $featuresTag }}
                 </div>
                 <h2 class="features-title">
-                    {!! nl2br(e($featuresHeading)) !!}
+                    {!! nl2br($featuresHeading) !!}
                 </h2>
             </div>
             <div class="col-lg-7">

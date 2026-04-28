@@ -156,6 +156,7 @@ class TeamController extends Controller
             'description' => ['nullable', 'string'],
             'type' => ['nullable', 'string', 'in:1,2'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
+            'headtitle' => ['nullable', 'string', 'max:255'],
             'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:4096'],
             'remove_image' => ['nullable', 'boolean'],
             'projects' => ['nullable', 'array'],
