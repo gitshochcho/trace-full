@@ -15,7 +15,9 @@
 ========================================= */
 .hero {
     width: 100%;
-    height: 75vh;         
+    height: 70vh; 
+    display: flex;
+    align-items: center;        
     min-height: 480px;
     max-height: 900px;    
     position: relative;
@@ -32,14 +34,19 @@
 }
 
 /* SLIDER */
-.slides { position: absolute; inset: 0; z-index: 0; }
-
-.slide {
+.slides, .slide {
+    width: 100%;
+    height: 100%;
     position: absolute;
-    inset: 0;
-    opacity: 0;
-    z-index: 0;
-    transition: opacity 0.8s ease, transform 0.8s ease;
+    top: 0;
+    left: 0;
+}
+
+.slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* ইমেজকে কন্টেইনারের ভেতর ফিট রাখবে */
+    object-position: center;
 }
 .slide.active {
     opacity: 1;
@@ -50,7 +57,7 @@
 .slide img {
     width: 100%;
     height: 100%;          
-    min-height: 480px;
+   
     object-fit: cover;
     object-position: center;
 }
@@ -86,8 +93,8 @@
 }
 
 .hero-content h1 {
-    font-size: clamp(26px, 4.5vw, 68px);
-    line-height: 1.15;
+ font-size: clamp(45px, 6vw, 75px) !important; /* জুম করলেও ৩৫ পিক্সেলের ছোট হবে না */
+    line-height: 1.2;
     color: white;
     margin-bottom: clamp(10px, 1.5vh, 24px);
 }
@@ -95,7 +102,7 @@
 
 .hero-content .hero-desc {
     max-width: 750px;
-    font-size: clamp(13px, 1.3vw, 17px);
+    font-size: clamp(26px, 1.5vw, 20px) !important;
     line-height: 1.6;
     color: #e2e8f0;
     margin: 0 auto clamp(12px, 2vh, 28px);
@@ -104,7 +111,7 @@
 .hero-content .hero-desc p {
     margin: 0;
     color: inherit;
-    font-size: inherit;
+    font-size: clamp(16px, 1.5vw, 20px) !important; 
     line-height: inherit;
 }
 
@@ -169,7 +176,7 @@
     .hero::after { background: linear-gradient(180deg, rgba(0,0,0,.10) 0%, rgba(0,0,0,.20) 50%, rgba(0,0,0,.45) 100%); }
     .hero-content { top: 52%; }
     .hero-content h1 { font-size: 24px; line-height: 1.3; }
-    .hero-tag { font-size: 10px; letter-spacing: 1px; }
+    .hero-tag { font-size: 20px; letter-spacing: 1px; }
     .hero-tag-box .tag-line { width: 20px; }
     .hero-desc, .hero-btns, .slider-line { display: none !important; }
 }

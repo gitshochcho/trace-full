@@ -148,7 +148,7 @@
 }
 
 .btn-email {
-      border: 0.3px solid rgba(255, 255, 255, 0.3);
+    border: 0.3px solid rgba(255, 255, 255, 0.3);
     color: #000000;
     background: #ffffff;
     font-weight: 700;
@@ -396,35 +396,45 @@
                         @endforeach
                     </div>
 
-  {{-- Social Media Part --}}
-<div class="team-social d-flex flex-wrap justify-content-center justify-content-md-start gap-3">
-    @foreach($socialItems as $social)
-        @php
-            $title = trim((string)$social->title);
-            $socialUrl = $social->social_link ?: '#';
-            $isEmail = str_contains(strtolower($title), 'email') || str_starts_with(strtolower((string)$social->social_link), 'mailto:');
-            
-            // Icon URL collect kora hocche
-            $iconPath = $social->iconUrl(); 
-        @endphp
-        
-        @if(!empty($title) || $iconPath)
-            <a href="{{ $socialUrl }}" class="{{ $isEmail ? 'btn-email' : 'btn-social' }}" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 8px;">
-                
-                {{-- Jodi admin theke icon deya thake --}}
-                @if($iconPath)
-                    <img src="{{ $iconPath }}" alt="{{ $title }}" style="width: 18px; height: 18px; object-fit: contain;">
-                @endif
+                    {{-- Social Media & Email Part --}}
+                    <div class="team-social d-flex flex-wrap justify-content-center justify-content-md-start gap-3">
+                        @foreach($socialItems as $social)
+                            @php
+                                $title = trim((string)$social->title);
+                                $originalLink = trim((string)$social->social_link);
+                                
+                                // ইমেইল কিনা চেক করার লজিক
+                                $isEmail = str_contains(strtolower($title), 'email') || 
+                                           filter_var($originalLink, FILTER_VALIDATE_EMAIL);
+                                
+                                // যদি ইমেইল হয় এবং mailto: না থাকে, তবে mailto: যোগ করবে
+                                if ($isEmail && !str_starts_with(strtolower($originalLink), 'mailto:')) {
+                                    $socialUrl = 'mailto:' . $originalLink;
+                                } else {
+                                    $socialUrl = $originalLink ?: '#';
+                                }
 
-                {{-- Jodi title thake --}}
-                @if(!empty($title))
-                    {{ $title }}
-                @endif
-                
-            </a>
-        @endif
-    @endforeach
-</div>
+                                $iconPath = $social->iconUrl(); 
+                            @endphp
+                            
+                            @if(!empty($title) || $iconPath)
+                                <a href="{{ $socialUrl }}" 
+                                   class="{{ $isEmail ? 'btn-email' : 'btn-social' }}" 
+                                   @if(!$isEmail) target="_blank" @endif 
+                                   rel="noopener" 
+                                   style="display: inline-flex; align-items: center; gap: 8px;">
+                                    
+                                    @if($iconPath)
+                                        <img src="{{ $iconPath }}" alt="{{ $title }}" style="width: 18px; height: 18px; object-fit: contain;">
+                                    @endif
+
+                                    @if(!empty($title))
+                                        {{ $title }}
+                                    @endif
+                                </a>
+                            @endif
+                        @endforeach
+                    </div>
                 </div>
             </div>
 
@@ -491,7 +501,7 @@
                         </div>
                         <h5 class="fw-bold">Work with Our Team</h5>
                         <p class="small opacity-75">Reach out to discuss how TRACE can support your institution's trade reform objectives.</p>
-                        <a href="{{ route('contact') }}"class="btn btn-orange w-100 mt-2">Get in Touch <i class="bi bi-arrow-right ms-1"></i></a>
+                        <a href="{{ route('contact') }}" class="btn btn-orange w-100 mt-2">Get in Touch <i class="bi bi-arrow-right ms-1"></i></a>
                     </div>
 
                     <div class="other-team-card">

@@ -329,7 +329,7 @@
 /* সোশ্যাল ওভারলে কন্টেইনার - সবসময় দৃশ্যমান */
 .team-social-overlay {
     position: absolute;
-    bottom: 25px; 
+    bottom: 15px; 
     left: 50%;
     transform: translateX(-50%) translateY(0); 
     display: flex;
@@ -341,17 +341,8 @@
 .social-icon {
     width: 42px;
     height: 42px;
-    
-    /* ১. গ্লাস ইফেক্ট ব্যাকগ্রাউন্ড: সাদা কালার কিন্তু ২০% স্বচ্ছ */
-    background: rgba(255, 255, 255, 0.2); 
-    
-    /* ২. ব্লার ইফেক্ট */
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
-    
-    /* ৩. গ্লাসের কিনারা বা বর্ডার */
-    border: 1px solid rgba(255, 255, 255, 0.4); 
-    
+    background: #fff; 
+  
     /* ৪. আইকন কালার: সাদা গ্লাসে কালো বা ডার্ক আইকন ভালো ফোটে */
     color: #1a1a1a; 
     
@@ -683,19 +674,19 @@
                         </div>
 
                         <div class="leader-card-footer">
-                            <div class="social-links">
-                                @forelse($leaderSocials->take(3) as $social)
-                                    <a href="{{ $social->social_link ?: '#' }}" target="_blank" rel="noopener">
-                                        @if($social->iconUrl())
-                                            <img src="{{ $social->iconUrl() }}" alt="{{ $social->title ?: 'social' }}" style="width: 16px; height: 16px; object-fit: contain;">
-                                        @else
-                                            <i class="fa-solid fa-link"></i>
-                                        @endif
-                                    </a>
-                                @empty
-                                    <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
-                                @endforelse
-                            </div>
+                           <div class="social-links">
+    @forelse($leaderSocials->take(3) as $social)
+        <a href="mailto:{{ $social->social_link ?: '#' }}" target="_blank" rel="noopener">
+            @if($social->iconUrl())
+                <img src="{{ $social->iconUrl() }}" alt="social" style="width: 16px; height: 16px; object-fit: contain;">
+            @else
+                <i class="fa-solid fa-link"></i>
+            @endif
+        </a>
+    @empty
+        <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+    @endforelse
+</div>
                             <a href="{{ route('teamdetails', $leader) }}" class="btn-profile">View Full Profile →</a>
                         </div>
                     </div>
@@ -724,19 +715,18 @@
             <div class="team-img-box">
                 <img src="{{ $member->imageUrl() ?: asset('assets/img/saifullah.png') }}" alt="{{ $member->fullName() }}">
                 
-                <div class="team-social-overlay">
-                    @forelse($member->socialMedia->take(2) as $social)
-                        <a href="{{ $social->social_link ?: '#' }}" class="social-icon" target="_blank" rel="noopener">
-                            @if($social->iconUrl())
-                                <img src="{{ $social->iconUrl() }}" alt="{{ $social->title ?: 'social' }}" style="width: 16px; height: 16px; object-fit: contain;">
-                            @else
-                                <i class="fas fa-link"></i>
-                            @endif
-                        </a>
-                    @empty
-                        <!-- <a href="#" class="social-icon" target="_blank"><i class="fab fa-linkedin-in"></i></a> -->
-                    @endforelse
-                </div>
+<div class="team-social-overlay">
+    @forelse($member->socialMedia->take(2) as $social)
+        <a href="mailto:{{ $social->social_link ?: '#' }}" class="social-icon" target="_blank" rel="noopener">
+            @if($social->iconUrl())
+                <img src="{{ $social->iconUrl() }}" alt="social" style="width: 16px; height: 16px; object-fit: contain;">
+            @else
+                <i class="fas fa-link"></i>
+            @endif
+        </a>
+    @empty
+    @endforelse
+</div>
             </div>
 
             <div class="fixed-divider"></div>
@@ -802,19 +792,18 @@
                 <img src="{{ $expert->imageUrl() ?: asset('assets/img/michael.png') }}" alt="{{ $expert->fullName() }}">
                 
                 {{-- সোশ্যাল লিঙ্কগুলোর z-index বাড়িয়ে দেওয়া হয়েছে যাতে stretched-link এর ওপর কাজ করে --}}
-                <div class="leader-social position-relative" style="z-index: 2;">
-                    @forelse($expert->socialMedia->take(2) as $social)
-                        <a href="{{ $social->social_link ?: '#' }}" target="_blank" rel="noopener">
-                            @if($social->iconUrl())
-                                <img src="{{ $social->iconUrl() }}" alt="{{ $social->title ?: 'social' }}" style="width: 14px; height: 14px; object-fit: contain;">
-                            @else
-                                <i class="fa-solid fa-link"></i>
-                            @endif
-                        </a>
-                    @empty
-                        {{-- সোশ্যাল না থাকলে খালি থাকবে --}}
-                    @endforelse
-                </div>
+               <div class="leader-social position-relative" style="z-index: 2;">
+    @forelse($expert->socialMedia->take(2) as $social)
+        <a href="mailto:{{ $social->social_link ?: '#' }}" target="_blank" rel="noopener">
+            @if($social->iconUrl())
+                <img src="{{ $social->iconUrl() }}" alt="social" style="width: 14px; height: 14px; object-fit: contain;">
+            @else
+                <i class="fa-solid fa-link"></i>
+            @endif
+        </a>
+    @empty
+    @endforelse
+</div>
             </div>
 
             <div class="expert-right">
