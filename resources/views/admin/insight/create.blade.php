@@ -3,7 +3,7 @@
 @section('content')
 @php
 $articleRows = old('articles', [[
-    'id' => null, 'author_team_id' => '', 'type' => '',
+    'id' => null, 'type' => '',
     'title' => '', 'description' => '', 'read_minutes' => '',
     'published_at' => '', 'image_description' => '', 'social_links' => [],
 ]]);
@@ -59,16 +59,66 @@ $articleRows = old('articles', [[
                                     @error('sort_order')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
 
-                                <div class="col-12" id="authorFieldWrap">
-                                    <label class="form-label">Author Name</label>
-                                    <select id="authorTeamSelect" name="author_team_id" class="form-control">
-                                        <option value="">Select Author</option>
-                                        @foreach($teams as $team)
-                                            <option value="{{ $team->id }}" {{ old('author_team_id') == $team->id ? 'selected' : '' }}>
-                                                {{ $team->first_name }} {{ $team->last_name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
+                                {{-- Team Authors (multiple) --}}
+                                {{-- Author Field Wrap --}}
+<div class="col-12" id="authorFieldWrap">
+    <label class="form-label">Author Name</label>
+    <p class="text-muted small mb-2">Click to select, click again to remove</p>
+    <div class="author-chip-grid d-flex flex-wrap gap-2" id="authorChipGrid">
+        @foreach($teams as $team)
+            @php $isSelected = in_array($team->id, old('author_team_ids', [])); @endphp
+            <div class="author-chip d-flex align-items-center gap-2 rounded-pill px-3 py-2 border {{ $isSelected ? 'chip-selected' : '' }}"
+                 data-id="{{ $team->id }}"
+                 style="cursor:pointer; user-select:none; transition: all 0.15s;">
+                <div class="author-avatar rounded-circle d-flex align-items-center justify-content-center"
+                     style="width:28px;height:28px;font-size:11px;font-weight:500;background:#dee2e6;color:#495057;flex-shrink:0;">
+                    {{ strtoupper(substr($team->first_name,0,1).substr($team->last_name,0,1)) }}
+                </div>
+                <span style="font-size:14px;">{{ $team->first_name }} {{ $team->last_name }}</span>
+                <div class="chip-check" style="width:16px;height:16px;border-radius:50%;background:#185FA5;align-items:center;justify-content:center;flex-shrink:0;">
+                    <svg width="10" height="10" viewBox="0 0 10 10"><polyline points="1.5,5 4,8 8.5,2" stroke="#E6F1FB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <input type="checkbox" name="author_team_ids[]" value="{{ $team->id }}"
+                       {{ $isSelected ? 'checked' : '' }} style="display:none;">
+            </div>
+        @endforeach
+    </div>
+</div>
+
+                                {{-- Outside Authors --}}
+                                <div class="col-12" id="outsideAuthorsWrap">
+                                    <div class="border rounded p-3" style="background:#f8f9fa;">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <label class="form-label fw-bold mb-0 small text-uppercase text-muted">Outside Authors</label>
+                                            <button type="button" class="btn btn-sm btn-outline-secondary" id="addOutsideAuthorBtn">
+                                                <i class="fas fa-plus me-1"></i> Add More
+                                            </button>
+                                        </div>
+                                        <div id="outsideAuthorsWrapper">
+                                            @foreach(old('outside_authors', []) as $oIdx => $oAuthor)
+                                            <div class="outside-author-row border rounded p-3 mb-2 bg-white">
+                                                <div class="row g-2">
+                                                    <div class="col-12">
+                                                        <input type="text" name="outside_authors[{{ $oIdx }}][name]"
+                                                            value="{{ $oAuthor['name'] ?? '' }}"
+                                                            class="form-control form-control-sm" placeholder="Author name">
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <textarea name="outside_authors[{{ $oIdx }}][description]"
+                                                            class="form-control form-control-sm outside-author-editor"
+                                                            id="outsideEditor_{{ $oIdx }}" rows="3"
+                                                            placeholder="Short bio or description...">{{ $oAuthor['description'] ?? '' }}</textarea>
+                                                    </div>
+                                                    <div class="col-12 text-end">
+                                                        <button type="button" class="btn btn-sm btn-outline-danger remove-outside-author">
+                                                            <i class="fas fa-trash me-1"></i> Remove
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="col-12">
@@ -89,19 +139,32 @@ $articleRows = old('articles', [[
                                     @error('description')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
 
+                                {{-- Article Image + Description: visible for Article/Publication --}}
+                                <div class="col-md-8" id="articleImageWrap">
+                                    <label class="form-label">Article Image</label>
+                                    <input type="file" name="article_image" class="form-control" accept="image/*">
+                                    <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 800×600px (max 2MB)</small>
+                                </div>
+                                <div class="col-md-4" id="imageDescWrap">
+                                    <label class="form-label">Image Description</label>
+                                    <input type="text" name="articles[0][image_description]" value="{{ old('articles.0.image_description') }}" class="form-control" placeholder="Category/Label">
+                                </div>
+
                                 <div class="col-md-6">
                                     <label class="form-label">Published At</label>
                                     <input type="datetime-local" name="published_at" value="{{ old('published_at') }}" class="form-control @error('published_at') is-invalid @enderror">
                                     @error('published_at')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
 
-                                <div class="col-md-6">
+                                {{-- Source Name: visible only for Op-Ed/Press --}}
+                                <div class="col-md-6" id="sourceNameFieldWrap">
                                     <label class="form-label">Source Name</label>
-                                    <input type="text" name="source_name" value="{{ old('source_name') }}" class="form-control @error('source_name') is-invalid @enderror">
+                                    <input type="text" name="source_name" value="{{ old('source_name') }}" class="form-control @error('source_name') is-invalid @enderror" placeholder="e.g. Daily Star">
                                     @error('source_name')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
 
-                                <div class="col-md-6">
+                                {{-- Video Link: visible only for Video type --}}
+                                <div class="col-md-6" id="videoLinkFieldWrap">
                                     <label class="form-label">Video Link</label>
                                     <input type="url" name="video_link" value="{{ old('video_link') }}" class="form-control @error('video_link') is-invalid @enderror" placeholder="https://...">
                                     @error('video_link')<div class="invalid-feedback">{{ $message }}</div>@enderror
@@ -113,6 +176,21 @@ $articleRows = old('articles', [[
                                         <input class="form-check-input" type="checkbox" name="active" value="1" id="activeSwitch" @checked(old('active', '1') == '1')>
                                         <label class="form-check-label" for="activeSwitch">Active</label>
                                     </div>
+                                </div>
+
+                                {{-- Social Share Links: visible for Article/Publication --}}
+                                <div class="col-12 p-3 bg-light rounded" id="socialLinksWrap">
+                                    <label class="form-label fw-bold">Social Share Links</label>
+                                    <div id="social-links-wrapper">
+                                        @foreach(old('articles.0.social_links', []) as $sIdx => $link)
+                                        <div class="social-link-row d-flex gap-2 mb-2">
+                                            <input type="text" name="articles[0][social_links][{{ $sIdx }}][name]" class="form-control form-control-sm" placeholder="Platform" value="{{ $link['name'] ?? '' }}" style="width:140px">
+                                            <input type="url" name="articles[0][social_links][{{ $sIdx }}][link]" class="form-control form-control-sm" placeholder="URL" value="{{ $link['link'] ?? '' }}">
+                                            <button type="button" class="btn btn-sm btn-outline-danger remove-social-link">&times;</button>
+                                        </div>
+                                        @endforeach
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-outline-primary mt-2" id="add-social-link-btn">+ Add Social Link</button>
                                 </div>
                             </div>
                         </div>
@@ -129,12 +207,28 @@ $articleRows = old('articles', [[
                                     <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 1200×800px (max 4MB)</small>
                                     @error('image')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
-                                <div class="col-12">
-                                    <label class="form-label">Attachment</label>
+
+                                {{-- Insight Attachment: visible only for Brochures --}}
+                                <div class="col-12" id="insightAttachmentWrap">
+                                    <label class="form-label">
+                                        Insight Attachment
+                                        <span class="badge bg-warning text-dark ms-1" style="font-size:10px;">Brochures</span>
+                                    </label>
                                     <input type="file" name="attachment" class="form-control @error('attachment') is-invalid @enderror"
                                            accept=".pdf,.mp4,.mov,.webm,.avi,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.jpg,.jpeg,.png,.webp,.svg">
                                     <small class="text-muted"><i class="fas fa-info-circle"></i> PDF, video, or document (max 30MB)</small>
                                     @error('attachment')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                </div>
+
+                                {{-- Article Attachment: visible only for Publication --}}
+                                <div class="col-12" id="articleAttachmentWrap">
+                                    <label class="form-label">
+                                        Article Attachment
+                                        <span class="badge bg-primary ms-1" style="font-size:10px;">Publication / Article</span>
+                                    </label>
+                                    <input type="file" name="article_attachments[0]" class="form-control"
+                                           accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.mp4,.mov">
+                                    <small class="text-muted"><i class="fas fa-info-circle"></i> Publication/Article file (max 30MB)</small>
                                 </div>
                             </div>
                         </div>
@@ -170,35 +264,7 @@ $articleRows = old('articles', [[
                                         </div>
                                         <div class="col-12">
                                             <label class="form-label">Description</label>
-                                            <textarea name="articles[{{ $index }}][description]" rows="2" class="form-control" placeholder="Section content...">{{ $article['description'] ?? '' }}</textarea>
-                                        </div>
-                                        <div class="col-md-8">
-                                            <label class="form-label">Article Image</label>
-                                            <input type="file" name="article_images[{{ $index }}]" class="form-control" accept="image/*" data-max-size="2048" data-max-width="800" data-max-height="600">
-                                            <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 800×600px (max 2MB)</small>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label class="form-label">Image Description</label>
-                                            <input type="text" name="articles[{{ $index }}][image_description]" value="{{ $article['image_description'] ?? '' }}" class="form-control" placeholder="Category Label">
-                                        </div>
-                                        <div class="col-12">
-                                            <label class="form-label">File Attachment</label>
-                                            <input type="file" name="article_attachments[{{ $index }}]" class="form-control"
-                                                   accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.mp4,.mov">
-                                        </div>
-                                        <div class="col-12 mt-1 p-3 bg-light rounded">
-                                            <label class="form-label fw-bold">Social Share Links</label>
-                                            <div class="social-links-wrapper" data-idx="{{ $index }}">
-                                                @foreach(old("articles.$index.social_links", $article['social_links'] ?? []) as $sIdx => $link)
-                                                <div class="social-link-row d-flex gap-2 mb-2">
-                                                    <input type="text" name="articles[{{ $index }}][social_links][{{ $sIdx }}][name]" class="form-control form-control-sm" placeholder="Platform" value="{{ $link['name'] ?? '' }}" style="width:140px">
-                                                    <input type="url" name="articles[{{ $index }}][social_links][{{ $sIdx }}][link]" class="form-control form-control-sm" placeholder="URL" value="{{ $link['link'] ?? '' }}">
-                                                    <input type="file" name="social_icon_files[{{ $index }}][{{ $sIdx }}]" class="form-control form-control-sm" accept="image/*" style="width:150px" data-max-size="512" data-max-width="32" data-max-height="32">
-                                                    <button type="button" class="btn btn-sm btn-outline-danger remove-social-link">&times;</button>
-                                                </div>
-                                                @endforeach
-                                            </div>
-                                            <button type="button" class="btn btn-sm btn-outline-primary add-social-link" data-idx="{{ $index }}">+ Add Social Link</button>
+                                            <textarea name="articles[{{ $index }}][description]" rows="2" class="form-control article-section-editor" id="articleSectionEditor_{{ $index }}" placeholder="Section content...">{{ $article['description'] ?? '' }}</textarea>
                                         </div>
                                         <div class="col-12 d-flex justify-content-end">
                                             <button type="button" class="btn btn-sm btn-outline-danger remove-article-row">
@@ -241,32 +307,7 @@ $articleRows = old('articles', [[
             </div>
             <div class="col-12">
                 <label class="form-label">Description</label>
-                <textarea name="__ARTICLE_NAME__[description]" rows="2" class="form-control" placeholder="Section content..."></textarea>
-            </div>
-            <div class="col-md-8">
-                <label class="form-label">Article Image</label>
-                <input type="file" name="article_images[__INDEX__]" class="form-control" accept="image/*" data-max-size="2048" data-max-width="800" data-max-height="600">
-                <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 800×600px (max 2MB)</small>
-            </div>
-            <div class="col-md-4">
-                <label class="form-label">Image Description</label>
-                <input type="text" name="__ARTICLE_NAME__[image_description]" class="form-control" placeholder="Category Label">
-            </div>
-            <div class="col-12">
-                <label class="form-label">File Attachment</label>
-                <input type="file" name="article_attachments[__INDEX__]" class="form-control" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.mp4,.mov">
-            </div>
-            <div class="col-12 mt-1 p-3 bg-light rounded">
-                <label class="form-label fw-bold">Social Share Links</label>
-                <div class="social-links-wrapper" data-idx="__INDEX__">
-                    <div class="social-link-row d-flex gap-2 mb-2">
-                        <input type="text" name="__ARTICLE_NAME__[social_links][0][name]" class="form-control form-control-sm" placeholder="Platform" style="width:140px">
-                        <input type="url" name="__ARTICLE_NAME__[social_links][0][link]" class="form-control form-control-sm" placeholder="URL">
-                        <input type="file" name="social_icon_files[__INDEX__][0]" class="form-control form-control-sm" accept="image/*" style="width:150px" data-max-size="512" data-max-width="32" data-max-height="32">
-                        <button type="button" class="btn btn-sm btn-outline-danger remove-social-link">&times;</button>
-                    </div>
-                </div>
-                <button type="button" class="btn btn-sm btn-outline-primary add-social-link" data-idx="__INDEX__">+ Add Social Link</button>
+                <textarea name="__ARTICLE_NAME__[description]" rows="2" class="form-control article-section-editor" id="articleSectionEditor___INDEX__" placeholder="Section content..."></textarea>
             </div>
             <div class="col-12 d-flex justify-content-end">
                 <button type="button" class="btn btn-sm btn-outline-danger remove-article-row">
@@ -276,94 +317,207 @@ $articleRows = old('articles', [[
         </div>
     </div>
 </template>
+
+<template id="outsideAuthorTemplate">
+    <div class="outside-author-row border rounded p-3 mb-2 bg-white">
+        <div class="row g-2">
+            <div class="col-12">
+                <input type="text" name="outside_authors[__INDEX__][name]"
+                    class="form-control form-control-sm" placeholder="Author name">
+            </div>
+            <div class="col-12">
+                <textarea name="outside_authors[__INDEX__][description]"
+                    class="form-control form-control-sm outside-author-editor"
+                    id="outsideEditor___INDEX__" rows="3"
+                    placeholder="Short bio or description..."></textarea>
+            </div>
+            <div class="col-12 text-end">
+                <button type="button" class="btn btn-sm btn-outline-danger remove-outside-author">
+                    <i class="fas fa-trash me-1"></i> Remove
+                </button>
+            </div>
+        </div>
+    </div>
+</template>
 @endsection
 
+@push('custome-css')
+<style>
+.author-chip { border: 1.5px solid #dee2e6; background: #fff; }
+.author-chip:hover { border-color: #adb5bd; background: #f8f9fa; }
+.author-chip.chip-selected { background: #E6F1FB; border-color: #185FA5; color: #0C447C; }
+.author-chip.chip-selected .author-avatar { background: #185FA5; color: #E6F1FB; }
+.author-chip .chip-check { display: none; }
+.author-chip.chip-selected .chip-check { display: flex; }
+</style>
+
+@endpush
+
 @push('custome-js')
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const typeSelect = document.getElementById('insightTypeSelect');
-    const authorWrap = document.getElementById('authorFieldWrap');
-    const authorSelect = document.getElementById('authorTeamSelect');
-    const articleSectionsWrap = document.getElementById('articleSectionsWrap');
+    const typeSelect       = document.getElementById('insightTypeSelect');
+    const authorWrap       = document.getElementById('authorFieldWrap');
+    const outsideAuthWrap  = document.getElementById('outsideAuthorsWrap');
+    const articleSectWrap  = document.getElementById('articleSectionsWrap');
+    const videoLinkWrap    = document.getElementById('videoLinkFieldWrap');
+    const sourceNameWrap   = document.getElementById('sourceNameFieldWrap');
+    const insightAttWrap   = document.getElementById('insightAttachmentWrap');
+    const articleAttWrap   = document.getElementById('articleAttachmentWrap');
+    const articleImageWrap = document.getElementById('articleImageWrap');
+    const imageDescWrap    = document.getElementById('imageDescWrap');
+    const socialLinksWrap  = document.getElementById('socialLinksWrap');
 
-    function isReadTypeSelected() {
-        if (!typeSelect) return false;
-        const selected = typeSelect.options[typeSelect.selectedIndex];
-        const category = (selected?.dataset?.typeCategory || '').toLowerCase();
-        const optionText = (selected?.text || '').toLowerCase();
-        return ['read', 'article'].includes(category) || optionText.includes('article') || optionText.includes('read');
+    const ckEditors = {};
+
+    function getTypeInfo() {
+        if (!typeSelect || typeSelect.selectedIndex < 0) return { category: '', text: '' };
+        const sel = typeSelect.options[typeSelect.selectedIndex];
+        return {
+            category: (sel?.dataset?.typeCategory || '').toLowerCase(),
+            text: (sel?.text || '').toLowerCase(),
+        };
     }
 
-    function toggleReadOnlyFields() {
-        const showReadFields = isReadTypeSelected();
-        if (authorWrap) authorWrap.style.display = showReadFields ? '' : 'none';
-        if (authorSelect) {
-            authorSelect.required = showReadFields;
-            if (!showReadFields) authorSelect.value = '';
-        }
-        if (articleSectionsWrap) {
-            articleSectionsWrap.style.display = showReadFields ? '' : 'none';
-        }
+    function isArticleType()     { const { category, text } = getTypeInfo(); return ['read','article'].includes(category) || text.includes('article'); }
+    function isPublicationType() { const { text } = getTypeInfo(); return text.includes('publication'); }
+    function isVideoType()       { const { category, text } = getTypeInfo(); return category.includes('video') || category.includes('watch') || text.includes('video'); }
+    function isOpEdType()        { const { category, text } = getTypeInfo(); return category === 'read_on' || text.includes('op-ed') || text.includes('press'); }
+    function isBrochuresType()   { const { category, text } = getTypeInfo(); return category === 'download' || text.includes('brochure'); }
+    function isArticleOrPub()    { return isArticleType() || isPublicationType(); }
+
+    function setVisible(el, show) { if (el) el.style.display = show ? '' : 'none'; }
+
+    function toggleVisibility() {
+        setVisible(authorWrap,       isArticleOrPub());
+        setVisible(outsideAuthWrap,  isArticleOrPub());
+        setVisible(videoLinkWrap,    isVideoType());
+        setVisible(sourceNameWrap,   isOpEdType());
+        setVisible(insightAttWrap,   isBrochuresType());
+        setVisible(articleAttWrap,   isArticleOrPub());
+        setVisible(articleImageWrap, isArticleOrPub());
+        setVisible(imageDescWrap,    isArticleOrPub());
+        setVisible(socialLinksWrap,  isArticleOrPub());
+        setVisible(articleSectWrap,  isArticleOrPub());
     }
 
+    // ===== CKEditor =====
+    function initCKEditor(textarea) {
+        if (!textarea || ckEditors[textarea.id]) return;
+        ClassicEditor.create(textarea, {
+            toolbar: { items: ['bold', 'italic', 'underline', '|', 'bulletedList', 'numberedList', '|', 'link', '|', 'undo', 'redo'] }
+        }).then(editor => { ckEditors[textarea.id] = editor; }).catch(console.error);
+    }
+
+    document.querySelectorAll('textarea.outside-author-editor, textarea.article-section-editor').forEach(initCKEditor);
+
+    // ===== Outside Authors =====
+    const outsideWrapper = document.getElementById('outsideAuthorsWrapper');
+    const addOutsideBtn  = document.getElementById('addOutsideAuthorBtn');
+    const outsideTpl     = document.getElementById('outsideAuthorTemplate');
+
+    function reindexOutside() {
+        outsideWrapper.querySelectorAll('.outside-author-row').forEach((row, idx) => {
+            row.querySelectorAll('input, textarea').forEach(f => {
+                if (f.name) f.name = f.name.replace(/outside_authors\[\d+\]/, `outside_authors[${idx}]`);
+                if (f.tagName === 'TEXTAREA') f.id = `outsideEditor_${idx}`;
+            });
+        });
+    }
+
+    addOutsideBtn.addEventListener('click', () => {
+        const idx = outsideWrapper.querySelectorAll('.outside-author-row').length;
+        outsideWrapper.insertAdjacentHTML('beforeend', outsideTpl.innerHTML.trim().replaceAll('__INDEX__', idx));
+        reindexOutside();
+        setTimeout(() => initCKEditor(document.getElementById(`outsideEditor_${idx}`)), 100);
+    });
+
+    outsideWrapper.addEventListener('click', e => {
+        if (e.target.closest('.remove-outside-author')) {
+            const row = e.target.closest('.outside-author-row');
+            row.querySelectorAll('textarea').forEach(ta => {
+                if (ckEditors[ta.id]) { ckEditors[ta.id].destroy(); delete ckEditors[ta.id]; }
+            });
+            row.remove();
+            reindexOutside();
+        }
+    });
+
+    // ===== Article Sections =====
     const wrapper = document.getElementById('articlesWrapper');
-    const btn = document.getElementById('addArticleRow');
-    const tpl = document.getElementById('articleRowTemplate');
+    const btn     = document.getElementById('addArticleRow');
+    const tpl     = document.getElementById('articleRowTemplate');
 
     function reindex() {
         wrapper.querySelectorAll('.article-row').forEach((row, idx) => {
-            row.querySelectorAll('input, textarea').forEach(field => {
-                if (field.name) field.name = field.name.replace(/articles\[\d+\]/, `articles[${idx}]`);
+            row.querySelectorAll('input, textarea').forEach(f => {
+                if (f.name) f.name = f.name.replace(/articles\[\d+\]/, `articles[${idx}]`);
             });
-            row.querySelectorAll('input[type="file"]').forEach(field => {
-                if (field.name.startsWith('article_images[')) field.name = `article_images[${idx}]`;
-                if (field.name.startsWith('article_attachments[')) field.name = `article_attachments[${idx}]`;
-            });
-            const sWrap = row.querySelector('.social-links-wrapper');
-            if (sWrap) {
-                sWrap.setAttribute('data-idx', idx);
-                const addBtn = row.querySelector('.add-social-link');
-                if (addBtn) addBtn.setAttribute('data-idx', idx);
-            }
         });
     }
 
     btn.addEventListener('click', () => {
         const idx = wrapper.querySelectorAll('.article-row').length;
-        let html = tpl.innerHTML.trim();
-        html = html.replaceAll('__ARTICLE_NAME__', `articles[${idx}]`).replaceAll('__INDEX__', idx);
+        const html = tpl.innerHTML.trim()
+            .replaceAll('__ARTICLE_NAME__', `articles[${idx}]`)
+            .replaceAll('__INDEX__', idx);
         wrapper.insertAdjacentHTML('beforeend', html);
         reindex();
+        setTimeout(() => initCKEditor(document.getElementById(`articleSectionEditor_${idx}`)), 100);
     });
 
     wrapper.addEventListener('click', e => {
         if (e.target.closest('.remove-article-row')) {
-            e.target.closest('.article-row').remove();
-            reindex();
-            return;
-        }
-        if (e.target.closest('.remove-social-link')) {
-            e.target.closest('.social-link-row').remove();
-            return;
-        }
-        if (e.target.closest('.add-social-link')) {
-            const btnEl = e.target.closest('.add-social-link');
-            const container = btnEl.previousElementSibling;
-            const idx = container.getAttribute('data-idx');
-            const count = container.querySelectorAll('.social-link-row').length;
-            const row = document.createElement('div');
-            row.className = 'social-link-row d-flex gap-2 mb-2';
-            row.innerHTML = `<input type="text" name="articles[${idx}][social_links][${count}][name]" class="form-control form-control-sm" placeholder="Platform" style="width:140px">
-                <input type="url" name="articles[${idx}][social_links][${count}][link]" class="form-control form-control-sm" placeholder="URL">
-                <input type="file" name="social_icon_files[${idx}][${count}]" class="form-control form-control-sm" accept="image/*" style="width:150px">
-                <button type="button" class="btn btn-sm btn-outline-danger remove-social-link">&times;</button>`;
-            container.appendChild(row);
+            const row = e.target.closest('.article-row');
+            row.querySelectorAll('textarea').forEach(ta => {
+                if (ckEditors[ta.id]) { ckEditors[ta.id].destroy(); delete ckEditors[ta.id]; }
+            });
+            row.remove(); reindex();
         }
     });
 
-    if (typeSelect) typeSelect.addEventListener('change', toggleReadOnlyFields);
-    reindex();
-    toggleReadOnlyFields();
+    // ===== Social Links (General Section) =====
+    const socialWrapper = document.getElementById('social-links-wrapper');
+    const socialBtn     = document.getElementById('add-social-link-btn');
+    if (socialWrapper && socialBtn) {
+        socialBtn.addEventListener('click', () => {
+            const count = socialWrapper.querySelectorAll('.social-link-row').length;
+            const row   = document.createElement('div');
+            row.className = 'social-link-row d-flex gap-2 mb-2';
+            row.innerHTML = `<input type="text" name="articles[0][social_links][${count}][name]" class="form-control form-control-sm" placeholder="Platform" style="width:140px">
+                <input type="url" name="articles[0][social_links][${count}][link]" class="form-control form-control-sm" placeholder="URL">
+                <button type="button" class="btn btn-sm btn-outline-danger remove-social-link">&times;</button>`;
+            socialWrapper.appendChild(row);
+        });
+        socialWrapper.addEventListener('click', e => {
+            if (e.target.closest('.remove-social-link')) e.target.closest('.social-link-row').remove();
+        });
+    }
+
+    // ===== Author Chips =====
+document.querySelectorAll('.author-chip').forEach(chip => {
+    chip.addEventListener('click', (e) => {
+        
+        if (e.target.tagName === 'INPUT') return;
+        const cb = chip.querySelector('input[type=checkbox]');
+        chip.classList.toggle('chip-selected');
+        cb.checked = chip.classList.contains('chip-selected');
+    });
 });
+
+    // ===== Sync CKEditor on submit =====
+    document.getElementById('insightForm').addEventListener('submit', function () {
+        Object.values(ckEditors).forEach(editor => {
+            if (editor.sourceElement) editor.sourceElement.value = editor.getData();
+        });
+    });
+
+    if (typeSelect) typeSelect.addEventListener('change', toggleVisibility);
+    reindex();
+    toggleVisibility();
+});
+
+
 </script>
 @endpush

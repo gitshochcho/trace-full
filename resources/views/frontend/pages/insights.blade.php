@@ -197,29 +197,7 @@ $isExternal = false;
     </div>
 </section>
 
-{{-- ==============================
-      SUBSCRIBE SECTION
-============================== --}}
-<section class="subscribe-section py-5" style="border-top: 1px solid #fff; background: #E5E9ED;">
-    <div class="container-fluid px-lg-5 page-align-container py-lg-4">
-        <div class="row align-items-center">
-            <div class="col-lg-7">
-                <div class="d-flex align-items-center gap-2 mb-3" style="font-size: 12px; letter-spacing: 1px; color: #01888C; font-weight: 700;">
-                    <span style="width: 25px; height: 2px; background: #e85d26;"></span>
-                    STAY INFORMED
-                </div>
-                <h2 class="fw-bold text-dark mb-3">Get TRACE insights in your inbox.</h2>
-                <p class="text-muted">Subscribe for our latest op-eds, policy research, and publications — monthly, no spam.</p>
-            </div>
-            <div class="col-lg-5 mt-4 mt-lg-0">
-                <form class="d-flex gap-2">
-                    <input type="email" class="form-control py-2 px-3 border-light bg-light shadow-none" placeholder="Your email address" style="border-radius: 4px;">
-                    <button class="btn btn-dark px-4 fw-bold" style="background: #01354B; color: #fff; border: 2px solid #01354B; border-radius: 4px; box-shadow: 0 10px 24px rgba(1, 53, 75, 0.22);">Subscribe</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</section>
+@include('frontend.layout.cta')
 
 @endsection
 
