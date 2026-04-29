@@ -47,7 +47,7 @@
 
 .hero-tag { 
     color: #F47735; 
-    font-size: 16px; 
+    font-size: 12px; 
     font-weight: 700; 
     letter-spacing: 1px;
     margin-bottom: 15px; 
@@ -115,7 +115,7 @@
 .leader-info .name { font-size: 32px; font-weight: 700; color: #01354B; }
 .leader-info .role { color: #01888C; font-weight: 700; margin-bottom: 2px; }
 .leader-info .company { color: #94A3B8; font-size: 13px; }
-.orange-divider { height: 1px; background: #E5E9ED; margin: 12px -20px 15px; }
+.orange-divider { width: 50px; height: 3px; background: #F47735; margin: 20px 0; }
 .leader-info .bio { color: #475569; font-size: 15px; line-height: 1.7; }
 
 /* Skill Tags */
@@ -739,6 +739,13 @@
                 <div class="orange-divider"></div>
 
                 <p class="bio">{{ $member->short_description ?: \Illuminate\Support\Str::limit(stripPTags($member->description), 150) }}</p>
+
+                <div class="tags">
+                    @forelse($member->experties->take(3) as $expertise)
+                        <span>{{ $expertise->heading }}</span>
+                    @empty
+                    @endforelse
+                </div>
             </div>
 
             <div class="view-profile-box mt-auto">
