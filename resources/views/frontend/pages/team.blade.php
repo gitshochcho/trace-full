@@ -47,7 +47,7 @@
 
 .hero-tag { 
     color: #F47735; 
-    font-size: 12px; 
+    font-size: 16px; 
     font-weight: 700; 
     letter-spacing: 1px;
     margin-bottom: 15px; 
