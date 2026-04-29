@@ -765,11 +765,11 @@
 @endforeach
 
         {{-- Tags --}}
-        <div class="article-tags">
+        {{-- <div class="article-tags">
             @foreach($tags as $tag)
                 <span class="art-pill">{{ $tag }}</span>
             @endforeach
-        </div>
+        </div> --}}
 
     </div>{{-- end article-content --}}
 
