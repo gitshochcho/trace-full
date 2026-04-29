@@ -77,6 +77,7 @@
     line-height: 1.7; 
 }
 
+
 /* Leadership Section */
 .leadership-section { padding: 100px 0; background: #fff; }
 .line-teal { width: 25px; height: 2px; background: #F47735; }
