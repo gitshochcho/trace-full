@@ -109,7 +109,7 @@
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="#" method="POST"> @csrf
+                <form action="{{ route('admin.contact-messages.reply', $message->id) }}" method="POST"> @csrf
                     <div class="modal-body p-4">
                         <div class="mb-3">
                             <label for="to_email" class="form-label fw-bold text-secondary">To:</label>
@@ -136,7 +136,7 @@
                     </div>
                     <div class="modal-footer bg-light border-top-0">
                         <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-success px-5">
+                        <button type="submit" id="replySubmitBtn" class="btn btn-success px-5">
                             <i class="bi bi-send-check-fill me-1"></i> Send Message
                         </button>
                     </div>
@@ -145,3 +145,13 @@
         </div>
     </div>
 @endsection
+
+@push('custome-js')
+<script>
+document.querySelector('#replyMailModal form')?.addEventListener('submit', function () {
+    const btn = document.getElementById('replySubmitBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Sending...';
+});
+</script>
+@endpush

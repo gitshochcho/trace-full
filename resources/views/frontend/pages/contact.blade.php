@@ -318,7 +318,8 @@
                                 <p class="info-secondary">{{ $phone->secondary_text ?? $phone->title }}</p>
                             </div>
                             @if($phone->link_value)
-                            <a href="{{ $phone->link_value }}" class="info-action-btn"><i class="fas fa-phone-alt me-2"></i>Call Now</a>
+                            @php $telHref = Str::startsWith($phone->link_value, 'tel:') ? $phone->link_value : 'tel:'.preg_replace('/\s+/', '', $phone->link_value); @endphp
+                            <a href="{{ $telHref }}" class="info-action-btn"><i class="fas fa-phone-alt me-2"></i>Call Now</a>
                             @endif
                         </div>
                         @endforeach
@@ -336,7 +337,7 @@
                                 <p class="info-secondary">{{ $email->secondary_text ?? $email->title }}</p>
                             </div>
                             @if($email->link_value)
-                            <a href="{{ $email->link_value }}" class="info-action-btn"><i class="fas fa-envelope me-2"></i>Send Email</a>
+                            <a href="mailto:{{ $email->link_value }}" class="info-action-btn"><i class="fas fa-envelope me-2"></i>Send Email</a>
                             @endif
                         </div>
                         @endforeach

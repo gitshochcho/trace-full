@@ -27,6 +27,7 @@ Route::get('/careerdetails/{id}', [App\Http\Controllers\HomeController::class, '
 Route::post('/job/apply/{id}', [App\Http\Controllers\HomeController::class, 'applyForJob'])->name('job.apply');
 Route::get('/contact', [App\Http\Controllers\HomeController::class, 'contact'])->name('contact');
 Route::post('/contact', [ContactMessageController::class, 'store'])->name('contact.store');
+Route::post('/career/cv-submit', [\App\Http\Controllers\CvSubmissionController::class, 'store'])->name('cv.submit');
 // Route::get('login', [App\Http\Controllers\HomeController::class, 'login'])->name('login');
 Route::get('login', [App\Http\Controllers\Admin\AdminController::class, 'adminLogin'])->name('login');
 Route::post('validate/login', [App\Http\Controllers\HomeController::class, 'validateLogin'])->name('loginCheck');

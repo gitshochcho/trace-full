@@ -149,15 +149,27 @@
         </div>
     </div>
 
+    @php $isEdit = $currentContent && $currentContent->id; @endphp
+
     <div class="col-md-6">
-        <label class="form-label">Slug</label>
-        <input type="text" id="content_slug" name="slug" value="{{ old('slug', $currentSlug) }}" class="form-control @error('slug') is-invalid @enderror" placeholder="work-with-us">
+        <label class="form-label">
+            Slug
+            @if($isEdit)<span class="badge bg-secondary ms-1" style="font-size:10px;">Read-only</span>@endif
+        </label>
+        <input type="text" id="content_slug" name="slug" value="{{ old('slug', $currentSlug) }}"
+               class="form-control @error('slug') is-invalid @enderror {{ $isEdit ? 'bg-light' : '' }}"
+               placeholder="work-with-us" @if($isEdit) readonly @endif>
         @error('slug')<div class="invalid-feedback">{{ $message }}</div>@enderror
     </div>
 
     <div class="col-md-6">
-        <label class="form-label">Section</label>
-        <input type="text" id="content_section" name="section" value="{{ old('section', $currentSection) }}" class="form-control @error('section') is-invalid @enderror" placeholder="WORK WITH US">
+        <label class="form-label">
+            Section
+            @if($isEdit)<span class="badge bg-secondary ms-1" style="font-size:10px;">Read-only</span>@endif
+        </label>
+        <input type="text" id="content_section" name="section" value="{{ old('section', $currentSection) }}"
+               class="form-control @error('section') is-invalid @enderror {{ $isEdit ? 'bg-light' : '' }}"
+               placeholder="WORK WITH US" @if($isEdit) readonly @endif>
         @error('section')<div class="invalid-feedback">{{ $message }}</div>@enderror
     </div>
 
