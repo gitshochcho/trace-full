@@ -459,7 +459,7 @@
                     </form>
                 </div>
 
-                <div class="mb-5 mt-4">
+                <!-- <div class="mb-5 mt-4">
                     <h2 class="info-heading"><span class="accent-bar"></span> Follow Us</h2>
                     <div class="d-flex flex-wrap gap-3">
                         <a href="#" class="social-pill"><i class="fab fa-linkedin-in text-primary"></i> LinkedIn</a>
@@ -467,7 +467,7 @@
                         <a href="#" class="social-pill"><i class="fab fa-facebook-f text-primary"></i> Facebook</a>
                         <a href="#" class="social-pill"><i class="fab fa-youtube text-danger"></i> Youtube</a>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>

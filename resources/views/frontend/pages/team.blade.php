@@ -308,8 +308,8 @@
 
     .team-content .divider {
         height: 1px;
-        background: #E5E9ED;
-        margin: 12px -20px 15px;
+        background: #f1f5f9;
+        margin-bottom: 15px;
     }
 
     .team-content .bio {
@@ -326,42 +326,54 @@
     overflow: hidden;
 }
 
-/* সোশ্যাল ওভারলে কন্টেইনার */
+/* সোশ্যাল ওভারলে কন্টেইনার - সবসময় দৃশ্যমান */
 .team-social-overlay {
     position: absolute;
-    bottom: 25px; /* নিচ থেকে কতটুকু উপরে থাকবে */
+    bottom: 25px; 
     left: 50%;
-    transform: translateX(-50%) translateY(20px); /* শুরুতে একটু নিচে থাকবে */
+    transform: translateX(-50%) translateY(0); 
     display: flex;
     gap: 12px;
-    opacity: 0; /* শুরুতে দেখা যাবে না */
-    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    opacity: 1; 
     z-index: 5;
 }
 
 .social-icon {
-    width: 40px;
-    height: 40px;
-    background: #fff;
-    -webkit-backdrop-filter: blur(8px);
-    backdrop-filter: blur(8px);
-    border: 0.3px solid rgba(255, 255, 255, 0.3);
-    color: white;
-    border-radius: 8px;
+    width: 42px;
+    height: 42px;
+    
+    /* ১. গ্লাস ইফেক্ট ব্যাকগ্রাউন্ড: সাদা কালার কিন্তু ২০% স্বচ্ছ */
+    background: rgba(255, 255, 255, 0.2); 
+    
+    /* ২. ব্লার ইফেক্ট */
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    
+    /* ৩. গ্লাসের কিনারা বা বর্ডার */
+    border: 1px solid rgba(255, 255, 255, 0.4); 
+    
+    /* ৪. আইকন কালার: সাদা গ্লাসে কালো বা ডার্ক আইকন ভালো ফোটে */
+    color: #1a1a1a; 
+    
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     text-decoration: none;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* হালকা শ্যাডো যাতে গ্লাসটি ভেসে ওঠে */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
-/* মাউস নিলে যা হবে */
+/* মাউস নিলে ইফেক্ট */
 .social-icon:hover {
-    background: #EADDCA;
+    background: #EADDCA; /* আপনার দেওয়া হোভার কালার */
     color: #fff;
     border-color: transparent;
+    transform: translateY(-5px) scale(1.05); /* একটু বড় হবে এবং উপরে উঠবে */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
-
 /* যখন কার্ড হোভার হবে তখন আইকন দেখাবে */
 .team-card:hover .team-social-overlay {
     opacity: 1;
@@ -733,7 +745,7 @@
                 <h4 class="name">{{ $member->fullName() }}</h4>
                 <h5 class="role">{{ $member->designation ?? '' }}</h5>
                 <span class="sub text-muted">{{ $member->headtitle ?? '' }}</span>
-                <div class="divider"></div>
+                <div class="orange-divider"></div>
 
                 <p class="bio">{{ $member->short_description ?: \Illuminate\Support\Str::limit(stripPTags($member->description), 150) }}</p>
 

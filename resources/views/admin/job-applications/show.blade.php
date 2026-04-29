@@ -123,7 +123,7 @@
                         </div>
                     </div>
 
-                    <div class="card card-outline card-warning mt-3">
+                    <!-- <div class="card card-outline card-warning mt-3">
                         <div class="card-header">
                             <h3 class="card-title">Quick Actions</h3>
                         </div>
@@ -135,7 +135,7 @@
                                 <i class="fas fa-phone"></i> Call Applicant
                             </a>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
