@@ -390,12 +390,6 @@
                         Trace Consulting Limited · Dhaka, Bangladesh
                     </p>
 
-                    <div class="team-tags d-flex flex-wrap justify-content-center justify-content-md-start gap-2 mb-4">
-                        @foreach($expertiseItems as $expertise)
-                            <span class="badge-custom">{{ $expertise->heading }}</span>
-                        @endforeach
-                    </div>
-
                     {{-- Social Media & Email Part --}}
                     <div class="team-social d-flex flex-wrap justify-content-center justify-content-md-start gap-3">
                         @foreach($socialItems as $social)
