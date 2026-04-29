@@ -46,7 +46,7 @@
                             <tr>
                                 <th>Slug</th>
                                 <th>Service Name</th>
-                                <th>Content Block</th>
+                                <th>Heading</th>
                                 <th>Details</th>
                                 <th>Solutions</th>
                                 <th>Order</th>
@@ -59,7 +59,7 @@
                                 <tr>
                                     <td data-search="{{ strtolower($service->slug) }}">{{ $service->slug }}</td>
                                     <td data-search="{{ strtolower($service->service_name) }}">{{ $service->service_name }}</td>
-                                    <td>{{ $service->content?->heading ?? '-' }}</td>
+                                    <td>{{ $service->heading ?? '-' }}</td>
                                     <td>{{ $service->details->count() }}</td>
                                     <td>{{ $service->solutions->count() }}</td>
                                     <td>{{ $service->sort_order }}</td>

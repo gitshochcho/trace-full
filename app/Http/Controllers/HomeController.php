@@ -69,29 +69,23 @@ class HomeController extends Controller
         // dd($servicesHero);
 
         $services = Service::query()
-            ->with(['content', 'media', 'solutions'])
+            ->with(['media', 'solutions'])
             ->where('active', true)
             ->orderBy('sort_order')
             ->get();
 
-        $serviceCards = $services->map(function (Service $service, int $index) {
-            $content = $service->content;
-
-            // Get image URL - use asset() if it's just a filename
-            $imageUrl = $service->imageUrl() ?? $content?->imageUrl();
-            if (! $imageUrl) {
-                $imageUrl = asset('assets/img/Trade and Customs.png');
-            }
+        $serviceCards = $services->map(function (Service $service) {
+            $imageUrl = $service->imageUrl() ?? asset('assets/img/Trade and Customs.png');
 
             return [
                 'id'       => $service->id,
                 'img'      => $imageUrl,
-                'tag'      => $content?->section ?? $service->service_name,
-                'title'    => $content?->heading ?? $service->service_name,
-                'desc'     => $content?->description ?? '',
+                'tag'      => $service->section ?: $service->service_name,
+                'title'    => $service->service_name,
+                'desc'     => $service->description ?? '',
                 'products' => $service->solutions->isNotEmpty()
                     ? $service->solutions->count() . ' Solutions'
-                    : ($content?->type ? $content->type : 'View Service'),
+                    : 'View Service',
             ];
         })->values();
 
@@ -103,13 +97,13 @@ class HomeController extends Controller
     public function serviceDetails(Request $request, $id)
     {
         $service = Service::query()
-            ->with(['content', 'details' => function ($q) {$q->orderBy('sort_order');}, 'solutions' => function ($q) {$q->orderBy('sort_order');}, 'media'])
+            ->with(['details' => fn($q) => $q->orderBy('sort_order'), 'solutions' => fn($q) => $q->orderBy('sort_order'), 'media'])
             ->findOrFail($id);
 
         $otherServices = Service::query()
             ->where('active', true)
             ->orderBy('sort_order')
-            ->get(['id', 'service_name']);
+            ->get(['id', 'service_name', 'section']);
 
         return view('frontend.pages.service-details', compact('service', 'otherServices'));
     }

@@ -35,19 +35,32 @@
                             <div class="card-header"><h3 class="card-title">Service Information</h3></div>
                             <div class="card-body">
                                 <div class="row g-3">
-                                    <div class="col-12">
-                                        <label class="form-label">Related Content Block</label>
-                                        <select name="content_id" class="form-select @error('content_id') is-invalid @enderror">
-                                            <option value="">-- Select --</option>
-                                            @foreach($contents as $content)
-                                                <option value="{{ $content->id }}" @selected(old('content_id') == $content->id)>{{ $content->slug }} | {{ $content->heading }}</option>
-                                            @endforeach
-                                        </select>
-                                        @error('content_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                    <div class="col-md-8">
+                                        <label class="form-label">Heading</label>
+                                        <input type="text" name="heading" value="{{ old('heading') }}" class="form-control @error('heading') is-invalid @enderror" placeholder="Trade Facilitation">
+                                        @error('heading')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label class="form-label">Design Word</label>
+                                        <input type="text" name="design_word" value="{{ old('design_word') }}" class="form-control @error('design_word') is-invalid @enderror" placeholder="Facilitation">
+                                        @error('design_word')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label">Section Tag</label>
+                                        <input type="text" name="section" value="{{ old('section') }}" class="form-control @error('section') is-invalid @enderror" placeholder="WHAT WE DO">
+                                        @error('section')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
 
                                     <div class="col-12">
-                                        <label class="form-label">Overview Description</label>
+                                        <label class="form-label">Description <small class="text-muted">(shows on card &amp; hero)</small></label>
+                                        <textarea name="description" class="form-control description-editor @error('description') is-invalid @enderror" rows="5" data-raw="1">{{ old('description') }}</textarea>
+                                        @error('description')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                    </div>
+
+                                    <div class="col-12">
+                                        <label class="form-label">Overview <small class="text-muted">(shows on details page body)</small></label>
                                         <textarea name="overview" class="form-control overview-editor @error('overview') is-invalid @enderror" rows="6">{{ old('overview') }}</textarea>
                                         @error('overview')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
@@ -238,7 +251,7 @@
     }
 
     function initEditors() {
-        document.querySelectorAll('.overview-editor, .detail-editor').forEach(function (el) {
+        document.querySelectorAll('.overview-editor, .detail-editor, .description-editor').forEach(function (el) {
             if (el.dataset.editorReady) return;
             el.dataset.editorReady = '1';
             ClassicEditor.create(el)
@@ -252,7 +265,11 @@
     if (form) {
         form.addEventListener('submit', function () {
             activeEditors.forEach(function (editor, textarea) {
-                textarea.value = normalizeEditorHtml(editor.getData());
+                if (textarea.dataset.raw) {
+                    textarea.value = editor.getData();
+                } else {
+                    textarea.value = normalizeEditorHtml(editor.getData());
+                }
             });
         });
     }

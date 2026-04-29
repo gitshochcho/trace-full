@@ -13,9 +13,12 @@ class Service extends Model implements HasMedia
     use HasFactory, InteractsWithMedia;
 
     protected $fillable = [
-        'content_id',
         'slug',
         'service_name',
+        'section',
+        'heading',
+        'design_word',
+        'description',
         'overview',
         'sort_order',
         'active',

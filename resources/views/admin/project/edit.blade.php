@@ -130,7 +130,7 @@
                                         <input type="text" id="projectServiceSearch" class="form-control mb-2" placeholder="Search services...">
                                         <select name="services[]" class="form-select @error('services') is-invalid @enderror" multiple size="7">
                                             @foreach($services as $service)
-                                                <option value="{{ $service->id }}" data-service-label="{{ strtolower($service->service_name) }}" @selected(in_array($service->id, $selectedServices))>{{ $service->service_name }} ({{ $service->projects_count }})</option>
+                                                <option value="{{ $service->id }}" data-service-label="{{ strtolower($service->section ?: $service->service_name) }}" @selected(in_array($service->id, $selectedServices))>{{ $service->section ?: $service->service_name }} ({{ $service->projects_count }})</option>
                                             @endforeach
                                         </select>
                                         @error('services')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror

@@ -15,7 +15,7 @@
 ========================================= */
 .hero {
     width: 100%;
-    height: 100vh;
+    height: 70vh;
     min-height: 500px;
     position: relative;
     overflow: hidden;
@@ -168,7 +168,7 @@
     /* Tag with Orange Line */
     
     .about-tag {
-        color: #e85d26;
+        color: #01888C;
         font-size: 13px;
         font-weight: 700;
         letter-spacing: 1px;
@@ -828,11 +828,10 @@
 
 @forelse($homeServices as $service)
 @php
-    $content  = $service->content;
-    $imageUrl = $service->imageUrl() ?? $content?->imageUrl() ?? '';
-    $tag      = $content?->section   ?? $service->service_name ?? '';
-    $title    = $content?->heading   ?? $service->service_name ?? '';
-    $desc     = strip_tags($content?->description ?? '');
+    $imageUrl = $service->imageUrl() ?? '';
+    $tag      = $service->section ?? $service->service_name ?? '';
+    $title    = $service->service_name ?? '';
+    $desc     = strip_tags($service->description ?? '');
 @endphp
 <div class="col-12 col-sm-6 col-lg-4">
     <div class="service-card h-100 shadow-sm">
@@ -841,8 +840,8 @@
         </div>
         <div class="card-body">
             <span class="card-cat d-inline-block mb-2">{{ $tag }}</span>
-            <h3 class="card-title-text h5 fw-bold mb-2">{{ $title }}</h3>
             <div class="animated-line mb-3"></div>
+            <h3 class="card-title-text h5 fw-bold mb-2">{{ $title }}</h3>
             <p class="card-text-desc text-muted">{{ Str::limit($desc, 120) }}</p>
             <a href="{{ route('serviceDetails', $service->id) }}" class="read-more-btn">Read More ›</a>
         </div>
@@ -896,7 +895,8 @@
            @forelse($homeProjects as $project)
 @php
     $pImg    = $project->imageUrl() ?? '';
-    $pCat    = $project->services->first()?->service_name ?? '';
+    $pSvc    = $project->services->first();
+    $pCat    = $pSvc?->section ?: ($pSvc?->service_name ?? '');
     $pClient = abbreviateClientName($project->client) ?? '';
 @endphp
 <div class="col-12 col-md-6 col-lg-4">

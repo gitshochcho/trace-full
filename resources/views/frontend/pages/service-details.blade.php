@@ -424,6 +424,18 @@
     .cta-section .cta-title { font-size: 22px; }
 }
 
+.service-breadcrumb {
+    background: #F8F9FB;
+    min-height: 43px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #E5E9ED;
+}
+.service-breadcrumb .breadcrumb-links { font-size: 13px; color: #64748B; }
+.service-breadcrumb .breadcrumb-links a { color: #64748B; text-decoration: none; }
+.service-breadcrumb .breadcrumb-links .sep { margin: 0 10px; color: #CBD5E1; }
+.service-breadcrumb .breadcrumb-links .active { color: #01354B; font-weight: 600; }
+
 </style>
 @endpush
 
@@ -431,20 +443,33 @@
 @php
     use Illuminate\Support\Str;
 
-    $serviceContent = $service->content;
-    $heroImage       = $service->imageUrl() ?? $serviceContent?->imageUrl() ?? '';
-    $heroTitle       = $serviceContent?->heading ?? $service->service_name ?? '';
-    $heroDesignWord  = $serviceContent?->design_word ?? '';
-    $heroDescription = $serviceContent?->description ?? '';
+    $heroImage       = $service->imageUrl() ?? '';
+    $heroTitle       = $service->heading ?: $service->service_name;
+    $heroDesignWord  = $service->design_word ?? '';
+    $heroDescription = $service->description ?? '';
 
-    $overviewText      = $service->overview ?? $serviceContent?->description ?? '';
-    $overviewPlainText = trim(strip_tags((string) $overviewText));
+    $overviewPlainText = trim((string) ($service->overview ?? ''));
 
     $includeItems  = $service->details;
     $solutionItems = $service->solutions;
 
     $sidebarServices = $otherServices;
 @endphp
+
+{{-- ==============================
+     BREADCRUMB
+============================== --}}
+<nav class="service-breadcrumb">
+    <div class="page-align-container" style="padding: 0 24px;">
+        <div class="breadcrumb-links">
+            <a href="{{ route('home') }}">Home</a>
+            <span class="sep">›</span>
+            <a href="{{ route('services') }}">Services</a>
+            <span class="sep">›</span>
+            <span class="active">{{ $heroTitle }}</span>
+        </div>
+    </div>
+</nav>
 
 {{-- ==============================
      HERO
@@ -516,7 +541,7 @@
                 <div class="service-box">
                     <h3>Products & Solutions</h3>
                     <p class="product-sub">
-                        {{ $serviceContent?->sub_heading ?? '' }}
+                        {{ $service->sub_heading ?? '' }}
                     </p>
 
                     <div class="row g-3">
@@ -552,7 +577,7 @@
                     @forelse($sidebarServices as $svc)
                     <a href="{{ route('serviceDetails', ['id' => $svc->id]) }}" class="other-item">
                         <span class="item-left">
-                            <span>{{ $svc->service_name }}</span>
+                            <span>{{ $svc->section ?: $svc->service_name }}</span>
                         </span>
                         <span class="arrow-right">›</span>
                     </a>

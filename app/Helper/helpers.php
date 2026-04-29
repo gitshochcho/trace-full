@@ -236,26 +236,6 @@ if (! function_exists('abbreviateClientName')) {
      */
     function abbreviateClientName(?string $clientName): ?string
     {
-        if (empty($clientName)) {
-            return $clientName;
-        }
-
-        $clientName = trim($clientName);
-        $words = preg_split('/\s+/', $clientName);
-
-        // If 3 words or fewer, show as-is
-        if (count($words) <= 3) {
-            return $clientName;
-        }
-
-        // If more than 3 words, take first letter of each word
-        $acronym = '';
-        foreach ($words as $word) {
-            if (!empty($word)) {
-                $acronym .= strtoupper($word[0]);
-            }
-        }
-
-        return $acronym;
+        return $clientName ? trim($clientName) : $clientName;
     }
 }

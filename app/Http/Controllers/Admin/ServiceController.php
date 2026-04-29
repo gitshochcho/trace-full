@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Content;
 use App\Models\Service;
 use App\Models\ServiceDetail;
 use App\Models\ServiceProductSolution;
@@ -14,25 +13,25 @@ class ServiceController extends Controller
 {
     public function index()
     {
-        $services = Service::with(['content', 'media', 'details', 'solutions'])->latest()->get();
-        $contents = Content::orderBy('heading')->get();
+        $services = Service::with(['media', 'details', 'solutions'])->latest()->get();
 
-        return view('admin.service.index', compact('services', 'contents'));
+        return view('admin.service.index', compact('services'));
     }
 
     public function create()
     {
-        $contents = Content::orderBy('heading')->get();
-
-        return view('admin.service.create', compact('contents'));
+        return view('admin.service.create');
     }
 
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'content_id'          => ['nullable', 'exists:contents,id'],
             'slug'                => ['required', 'string', 'max:255', 'unique:services,slug'],
             'service_name'        => ['required', 'string', 'max:255'],
+            'section'             => ['nullable', 'string', 'max:255'],
+            'heading'             => ['nullable', 'string', 'max:255'],
+            'design_word'         => ['nullable', 'string', 'max:255'],
+            'description'         => ['nullable', 'string'],
             'sort_order'          => ['nullable', 'integer', 'min:0'],
             'active'              => ['nullable', 'boolean'],
             'overview'            => ['nullable', 'string'],
@@ -50,9 +49,12 @@ class ServiceController extends Controller
         ]);
 
         $service = Service::create([
-            'content_id'   => $validated['content_id'] ?? null,
             'slug'         => $validated['slug'],
             'service_name' => $validated['service_name'],
+            'section'      => $validated['section'] ?? null,
+            'heading'      => $validated['heading'] ?? null,
+            'design_word'  => $validated['design_word'] ?? null,
+            'description'  => $validated['description'] ?? null,
             'overview'     => $this->normalizeEditorText($validated['overview'] ?? null),
             'sort_order'   => $validated['sort_order'] ?? 0,
             'active'       => $request->boolean('active', true),
@@ -79,43 +81,48 @@ class ServiceController extends Controller
 
     public function edit(Service $service)
     {
-        $service->load(['content', 'media', 'details.media', 'solutions']);
-        $services = Service::with(['content', 'media'])->latest()->get();
-        $contents = Content::orderBy('heading')->get();
+        $service->load(['media', 'details.media', 'solutions']);
+        $services = Service::with(['media'])->latest()->get();
 
-        return view('admin.service.edit', compact('service', 'services', 'contents'));
+        return view('admin.service.edit', compact('service', 'services'));
     }
 
     public function update(Request $request, Service $service): RedirectResponse
     {
         $validated = $request->validate([
-            'content_id' => ['nullable', 'exists:contents,id'],
-            'slug' => ['required', 'string', 'max:255', 'unique:services,slug,' . $service->id],
-            'service_name' => ['required', 'string', 'max:255'],
-            'sort_order' => ['nullable', 'integer', 'min:0'],
-            'active' => ['nullable', 'boolean'],
-            'overview' => ['nullable', 'string'],
-            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:4096'],
-            'icon' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:2048'],
-            'details' => ['nullable', 'array'],
-            'details.*.id' => ['nullable', 'integer'],
-            'details.*.text' => ['nullable', 'string'],
+            'slug'                => ['required', 'string', 'max:255', 'unique:services,slug,' . $service->id],
+            'service_name'        => ['required', 'string', 'max:255'],
+            'section'             => ['nullable', 'string', 'max:255'],
+            'heading'             => ['nullable', 'string', 'max:255'],
+            'design_word'         => ['nullable', 'string', 'max:255'],
+            'description'         => ['nullable', 'string'],
+            'sort_order'          => ['nullable', 'integer', 'min:0'],
+            'active'              => ['nullable', 'boolean'],
+            'overview'            => ['nullable', 'string'],
+            'image'               => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:4096'],
+            'icon'                => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:2048'],
+            'details'             => ['nullable', 'array'],
+            'details.*.id'        => ['nullable', 'integer'],
+            'details.*.text'      => ['nullable', 'string'],
             'details.*.media_key' => ['nullable', 'string', 'max:50'],
-            'details_icons' => ['nullable', 'array'],
-            'details_icons.*' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:2048'],
-            'solutions' => ['nullable', 'array'],
-            'solutions.*.id' => ['nullable', 'integer'],
-            'solutions.*.heading' => ['nullable', 'string', 'max:255'],
+            'details_icons'       => ['nullable', 'array'],
+            'details_icons.*'     => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:2048'],
+            'solutions'           => ['nullable', 'array'],
+            'solutions.*.id'      => ['nullable', 'integer'],
+            'solutions.*.heading'     => ['nullable', 'string', 'max:255'],
             'solutions.*.sub_heading' => ['nullable', 'string', 'max:255'],
         ]);
 
         $service->fill([
-            'content_id' => $validated['content_id'] ?? null,
-            'slug' => $validated['slug'],
+            'slug'         => $validated['slug'],
             'service_name' => $validated['service_name'],
-            'overview' => $this->normalizeEditorText($validated['overview'] ?? null),
-            'sort_order' => $validated['sort_order'] ?? 0,
-            'active' => $request->boolean('active', true),
+            'section'      => $validated['section'] ?? null,
+            'heading'      => $validated['heading'] ?? null,
+            'design_word'  => $validated['design_word'] ?? null,
+            'description'  => $validated['description'] ?? null,
+            'overview'     => $this->normalizeEditorText($validated['overview'] ?? null),
+            'sort_order'   => $validated['sort_order'] ?? 0,
+            'active'       => $request->boolean('active', true),
         ]);
         $service->save();
 

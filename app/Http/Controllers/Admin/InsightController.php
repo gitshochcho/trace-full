@@ -203,14 +203,14 @@ class InsightController extends Controller
         $keptIds[] = $record->id;
     }
 
-    // ❌ ডিলিট লজিক রিমুভ/কমেন্ট করা হলো - যাতে এডিট করার সময় অন্য টাইপের আর্টিকেল ডিলিট না হয়
-    // if (!empty($rows)) {
-    //     $insight->articles()->whereNotIn('id', $keptIds)->get()->each(function (InsightArticle $article) {
-    //         $article->clearMediaCollection('icon');
-    //         $article->clearMediaCollection('attachment');
-    //         $article->delete();
-    //     });
-    // }
+    $insight->articles()
+        ->whereNotIn('id', array_filter($keptIds))
+        ->get()
+        ->each(function (InsightArticle $article) {
+            $article->clearMediaCollection('icon');
+            $article->clearMediaCollection('attachment');
+            $article->delete();
+        });
 }
 
     private function isReadType(int $typeId): bool

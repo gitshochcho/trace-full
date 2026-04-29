@@ -89,7 +89,7 @@
                 <div class="d-flex gap-2">
                     <div class="input-group input-group-sm border rounded-pill px-2 py-1">
                         <span class="input-group-text bg-transparent border-0"><i class="fas fa-search text-muted"></i></span>
-                        <input type="text" class="form-control border-0 shadow-none" placeholder="Search insights...">
+                        <input type="text" id="insightSearch" class="form-control border-0 shadow-none" placeholder="Search insights...">
                     </div>
                     <select class="form-select form-select-sm border-0 fw-bold shadow-none w-auto" style="font-size: 12px;">
                         <option>Newest First</option>
@@ -223,110 +223,6 @@ $isExternal = false;
 
 @endsection
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const filterLinks = document.querySelectorAll('.filter-link');
-        const insightItems = document.querySelectorAll('.insight-item');
-        const resultCount = document.getElementById('results-count');
-        const loadMoreBtn = document.getElementById('load-more-btn');
-        let activeFilter = 'ALL';
-        let hasExpanded = false;
-
-        function updateResultsCount(count) {
-            if (resultCount) {
-                resultCount.textContent = count;
-            }
-        }
-
-        function updateFilterLinkCounts() {
-            const counts = { ALL: insightItems.length };
-
-            insightItems.forEach(function (item) {
-                const itemTag = item.dataset.tag ? item.dataset.tag.toUpperCase() : '';
-                if (!counts[itemTag]) {
-                    counts[itemTag] = 0;
-                }
-                counts[itemTag] += 1;
-            });
-
-            filterLinks.forEach(function (link) {
-                const filterValue = link.dataset.filter || 'ALL';
-                const span = link.querySelector('span');
-                if (span) {
-                    span.textContent = counts[filterValue] || 0;
-                }
-            });
-        }
-
-        function updateLoadMoreVisibility(visibleCount) {
-            if (!loadMoreBtn) return;
-            loadMoreBtn.style.display = visibleCount > 6 ? 'inline-block' : 'none';
-        }
-
-        function applyFilter(filterValue) {
-            activeFilter = filterValue.toUpperCase();
-            hasExpanded = false;
-            let visibleCount = 0;
-
-            insightItems.forEach(function (item) {
-                const itemTag = item.dataset.tag ? item.dataset.tag.toUpperCase() : '';
-                const matches = activeFilter === 'ALL' || itemTag.includes(activeFilter);
-                item.dataset.visible = matches ? '1' : '0';
-                if (matches) {
-                    visibleCount += 1;
-                }
-            });
-
-            let shown = 0;
-            insightItems.forEach(function (item) {
-                if (item.dataset.visible === '1') {
-                    shown += 1;
-                    item.style.display = shown <= 6 ? '' : 'none';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-
-            updateResultsCount(visibleCount);
-            updateLoadMoreVisibility(visibleCount);
-        }
-
-        function expandItems() {
-            hasExpanded = true;
-            insightItems.forEach(function (item) {
-                if (item.dataset.visible === '1') {
-                    item.style.display = '';
-                }
-            });
-            if (loadMoreBtn) {
-                loadMoreBtn.style.display = 'none';
-            }
-        }
-
-        filterLinks.forEach(function (link) {
-            link.addEventListener('click', function (event) {
-                event.preventDefault();
-                filterLinks.forEach(function (otherLink) { otherLink.classList.remove('active'); });
-                this.classList.add('active');
-                applyFilter(this.dataset.filter || 'ALL');
-            });
-        });
-
-        if (loadMoreBtn) {
-            loadMoreBtn.addEventListener('click', function () {
-                expandItems();
-            });
-        }
-
-        // updateFilterLinkCounts(); // Commented out - counts come from backend
-
-        const activeLink = document.querySelector('.filter-link.active');
-        if (activeLink) {
-            applyFilter(activeLink.dataset.filter || 'ALL');
-        }
-    });
-</script>
-
 @push('custome-css')
 <style>
     .service-breadcrumb {
@@ -387,4 +283,72 @@ $isExternal = false;
     }
 </style>
 
+@endpush
+
+@push('custome-js')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const filterLinks = document.querySelectorAll('.filter-link');
+        const insightItems = document.querySelectorAll('.insight-item');
+        const resultCount = document.getElementById('results-count');
+        const searchInput = document.getElementById('insightSearch');
+        const loadMoreBtn = document.getElementById('load-more-btn');
+        let activeFilter = 'ALL';
+        let activeSearch = '';
+
+        function applyFilterAndSearch() {
+            let visibleCount = 0;
+
+            insightItems.forEach(function (item) {
+                const itemTag = (item.dataset.tag || '').toUpperCase();
+                const itemText = item.textContent.toLowerCase();
+                const matchesFilter = activeFilter === 'ALL' || itemTag === activeFilter;
+                const matchesSearch = activeSearch === '' || itemText.includes(activeSearch);
+                item.dataset.visible = (matchesFilter && matchesSearch) ? '1' : '0';
+                if (matchesFilter && matchesSearch) visibleCount++;
+            });
+
+            let shown = 0;
+            insightItems.forEach(function (item) {
+                if (item.dataset.visible === '1') {
+                    shown++;
+                    item.style.display = shown <= 6 ? '' : 'none';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            if (resultCount) resultCount.textContent = visibleCount;
+            if (loadMoreBtn) loadMoreBtn.style.display = visibleCount > 6 ? 'inline-block' : 'none';
+        }
+
+        filterLinks.forEach(function (link) {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                filterLinks.forEach(function (l) { l.classList.remove('active'); });
+                this.classList.add('active');
+                activeFilter = (this.dataset.filter || 'ALL').toUpperCase();
+                applyFilterAndSearch();
+            });
+        });
+
+        if (searchInput) {
+            searchInput.addEventListener('input', function () {
+                activeSearch = this.value.trim().toLowerCase();
+                applyFilterAndSearch();
+            });
+        }
+
+        if (loadMoreBtn) {
+            loadMoreBtn.addEventListener('click', function () {
+                insightItems.forEach(function (item) {
+                    if (item.dataset.visible === '1') item.style.display = '';
+                });
+                loadMoreBtn.style.display = 'none';
+            });
+        }
+
+        applyFilterAndSearch();
+    });
+</script>
 @endpush
