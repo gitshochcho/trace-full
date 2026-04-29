@@ -145,15 +145,16 @@
         text-align: center;
         display: inline-block;
         text-decoration: none;
+        cursor: pointer;
     }
     .btn-cv:hover {
         background: #ff8a4d;
         transform: translateY(-2px);
+        color: white;
     }
 
      /* Page Alignment */
-     .container-fluid { padding-left: 15px; padding-right: 15px;
-    }
+    .container-fluid { padding-left: 15px; padding-right: 15px; }
     .page-align-container { max-width: 1072px; margin: 0 auto; }
 
     /* Job Card Styling */
@@ -180,14 +181,14 @@
 
     .btn-apply {
         background-color: var(--dark-navy);
-        color: white !important; /* Force white for anchor tag */
+        color: white !important;
         border-radius: 50px;
         padding: 8px 24px;
         font-size: 14px;
         font-weight: 600;
         border: none;
         transition: 0.3s;
-        text-decoration: none; /* Remove underline */
+        text-decoration: none;
         display: inline-flex;
         align-items: center;
     }
@@ -222,21 +223,36 @@
     }
     .meta-item i { margin-right: 8px; }
 
-    .hero-cta-btn {
-        display: inline-block;
-        background: var(--trace-orange);
-        color: #fff;
-        padding: 13px 30px;
-        border-radius: 6px;
-        font-size: 14px;
-        font-weight: 600;
-        text-decoration: none;
-        transition: background 0.3s;
+    /* --- New Modal Styles --- */
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0, 45, 58, 0.8);
+        backdrop-filter: blur(5px);
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
     }
-    .hero-cta-btn:hover {
-        background: #c94d1a;
-        color: #fff;
+    .modal-content-box {
+        background: #fff;
+        padding: 30px;
+        border-radius: 15px;
+        width: 95%;
+        max-width: 500px;
+        position: relative;
     }
+    .close-modal {
+        position: absolute;
+        top: 15px; right: 20px;
+        font-size: 24px;
+        cursor: pointer;
+        color: #64748b;
+    }
+    .modal-content-box h3 { color: var(--dark-navy); font-weight: 700; margin-bottom: 20px; }
+    .form-group label { font-size: 14px; font-weight: 600; color: var(--text-slate); margin-bottom: 5px; }
+    .form-control { border-radius: 8px; padding: 10px; border: 1px solid #e2e8f0; }
 
     @media (max-width: 991px) {
         .hero-career h1 { font-size: 32px; }
@@ -271,7 +287,6 @@
             @if($cSection)
                 <div class="hero-label">{{ $cSection }}</div> 
             @endif
-            
 
             <h1 class="display-4 fw-bold mb-4">
                 {{ Str::before($cHeading, $cDesignWord) }}
@@ -287,10 +302,6 @@
                 <div class="hero-desc text-white-50 mb-4">
                     {!! $cDesc !!}
                 </div>
-            @endif
-
-            @if($cButton)
-                <!-- <a href="#open-positions" class="hero-cta-btn">{{ $cButton }}</a> -->
             @endif
         </div>
     </section>
@@ -327,7 +338,7 @@
                 <div class="cv-box">
                     <h4>Don't see your role?</h4>
                     <p>Send us your CV and we'll reach out when the right opportunity comes up.</p>
-                    <a href="/contact" class="btn-cv">Send Your CV</a>
+                    <a href="javascript:void(0)" class="btn-cv" id="openCvModal">Send Your CV</a>
                 </div>
             </aside>
 
@@ -356,7 +367,7 @@
                 <div class="text-center py-5">
                     <h4>No job openings available at the moment</h4>
                     <p class="text-muted">Please check back later or send us your CV for future opportunities.</p>
-                    <a href="/contact" class="btn-cv">Send Your CV</a>
+                    <a href="javascript:void(0)" class="btn-cv w-auto px-5" onclick="document.getElementById('cvModal').style.display='flex'">Send Your CV</a>
                 </div>
                 @endforelse
 
@@ -370,9 +381,37 @@
     </div>
 </div>
 
+<div id="cvModal" class="modal-overlay">
+    <div class="modal-content-box shadow-lg">
+        <span class="close-modal" id="closeCvModal">&times;</span>
+        <h3>Send Your CV</h3>
+        <form action="#" method="POST" enctype="multipart/form-data">
+            @csrf
+            <div class="form-group mb-3">
+                <label>Full Name</label>
+                <input type="text" name="name" class="form-control" placeholder="Enter your name" required>
+            </div>
+            <div class="form-group mb-3">
+                <label>Email Address</label>
+                <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
+            </div>
+            <div class="form-group mb-3">
+                <label>Contact Number</label>
+                <input type="tel" name="phone" class="form-control" placeholder="Enter contact number" required>
+            </div>
+            <div class="form-group mb-4">
+                <label>Upload CV (Only PDF)</label>
+                <input type="file" name="cv_pdf" class="form-control" accept=".pdf" required>
+            </div>
+            <button type="submit" class="btn-cv border-0">Submit Application</button>
+        </form>
+    </div>
+</div>
+
 @push('custome-js')
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        // Filter Logic
         const filters = document.querySelectorAll('.filter-item');
         const jobCards = document.querySelectorAll('.job-card[data-type]');
 
@@ -385,6 +424,23 @@
                 });
             });
         });
+
+        // Modal Logic
+        const modal = document.getElementById('cvModal');
+        const openBtn = document.getElementById('openCvModal');
+        const closeBtn = document.getElementById('closeCvModal');
+
+        if(openBtn) {
+            openBtn.onclick = function() { modal.style.display = "flex"; }
+        }
+        
+        if(closeBtn) {
+            closeBtn.onclick = function() { modal.style.display = "none"; }
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) { modal.style.display = "none"; }
+        }
     });
 </script>
 @endpush

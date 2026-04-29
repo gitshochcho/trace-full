@@ -511,17 +511,18 @@
                     $itemYearLabel = $itemYear && $itemYearEnd ? $itemYear . '–' . $itemYearEnd : ($itemYear ?? $itemYearEnd ?? '');
                 @endphp
                 <div class="col-lg-4 col-md-6">
-                    <div class="project-mini-card">
-                        <div class="card-img-wrapper">
-                            <img src="{{ $itemImage }}" alt="{{ $item->project_title }}" class="img-fluid">
+                    <a href="{{ route('projectdetails', $item) }}" class="text-decoration-none">
+                        <div class="project-mini-card">
+                            <div class="card-img-wrapper">
+                                <img src="{{ $itemImage }}" alt="{{ $item->project_title }}" class="img-fluid">
+                            </div>
+                            <div class="card-content">
+                                <span class="client-name text-uppercase">{{ $item->client ?? '' }}</span>
+                                <h4 class="project-mini-title">{{ $item->project_title }}</h4>
+                                <p class="project-mini-meta">{{ $itemSector }} · {{ $itemYearLabel ?: ($item->project_status ?? '') }}</p>
+                            </div>
                         </div>
-                        <div class="card-content">
-                            <span class="client-name text-uppercase">{{ $item->client ?? '' }}</span>
-                            <h4 class="project-mini-title">{{ $item->project_title }}</h4>
-                            <p class="project-mini-meta">{{ $itemSector }} · {{ $itemYearLabel ?: ($item->project_status ?? '') }}</p>
-                            <!-- <a href="{{ route('projectdetails', $item) }}" class="view-link mt-2 d-inline-flex">View Project <i class="fas fa-arrow-right ms-1"></i></a> -->
-                        </div>
-                    </div>
+                    </a>
                 </div>
             @empty
                 <div class="col-12">
