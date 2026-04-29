@@ -3,72 +3,73 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Slider;
+use App\Models\SliderItem;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
 
 class SliderController extends Controller
 {
     public function edit()
     {
-        $slider = Slider::with('media')->first();
-
-        return view('admin.slider', compact('slider'));
+        $items = SliderItem::with('media')->orderBy('sort_order')->orderBy('id')->get();
+        return view('admin.slider', compact('items'));
     }
 
     public function update(Request $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'tagline' => ['nullable', 'string', 'max:255'],
-            'title' => ['nullable', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
-            'design_word' => ['nullable', 'string', 'max:255'],
-            'slider_images' => ['nullable'],
-            'slider_images.*' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:4096'],
-            'removed_image_ids' => ['nullable', 'array'],
-            'removed_image_ids.*' => ['integer'],
+        $request->validate([
+            'items'                  => ['nullable', 'array'],
+            'items.*.id'             => ['nullable', 'integer'],
+            'items.*.title'          => ['nullable', 'string', 'max:255'],
+            'items.*.tagline'        => ['nullable', 'string', 'max:255'],
+            'items.*.description'    => ['nullable', 'string'],
+            'items.*.design_word'    => ['nullable', 'string', 'max:255'],
+            'item_images'            => ['nullable', 'array'],
+            'item_images.*'          => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:4096'],
+            'removed_item_ids'       => ['nullable', 'array'],
+            'removed_item_ids.*'     => ['integer'],
         ]);
 
-        $slider = Slider::with('media')->first() ?? new Slider();
-        $slider->fill([
-            'tagline' => $validated['tagline'] ?? null,
-            'title' => $validated['title'] ?? null,
-            'description' => $validated['description'] ?? null,
-            'design_word' => $validated['design_word'] ?? null,
-        ]);
-        $slider->save();
+        $rows    = $request->input('items', []);
+        $keptIds = [];
 
-        if ($request->hasFile('slider_images')) {
-            $images = Arr::wrap($request->file('slider_images'));
+        foreach (array_values($rows) as $index => $row) {
+            $id   = !empty($row['id']) ? (int) $row['id'] : null;
+            $item = ($id ? SliderItem::find($id) : null) ?? new SliderItem();
 
-            foreach ($images as $image) {
-                if ($image) {
-                    $slider->addMedia($image)->toMediaCollection('slider_images');
-                }
+            $item->fill([
+                'title'       => $row['title']       ?? null,
+                'tagline'     => $row['tagline']      ?? null,
+                'description' => $row['description']  ?? null,
+                'design_word' => $row['design_word']  ?? null,
+                'sort_order'  => $index,
+                'active'      => true,
+            ]);
+            $item->save();
+
+            if ($request->hasFile("item_images.$index")) {
+                $item->clearMediaCollection('image');
+                $item->addMedia($request->file("item_images.$index"))->toMediaCollection('image');
             }
+
+            $keptIds[] = $item->id;
         }
 
-        $removedImageIds = collect($request->input('removed_image_ids', []))
-            ->filter(fn ($id) => is_numeric($id))
-            ->map(fn ($id) => (int) $id)
+        $removedIds = collect($request->input('removed_item_ids', []))
+            ->filter(fn($id) => is_numeric($id))
+            ->map(fn($id) => (int) $id)
             ->values();
 
-        if ($removedImageIds->isNotEmpty()) {
-            $slider->media()
-                ->where('collection_name', 'slider_images')
-                ->whereIn('id', $removedImageIds->all())
-                ->get()
-                ->each(function ($media) {
-                    $media->delete();
-                });
+        if ($removedIds->isNotEmpty()) {
+            SliderItem::whereIn('id', $removedIds->all())->get()->each(function (SliderItem $item) {
+                $item->clearMediaCollection('image');
+                $item->delete();
+            });
         }
 
-        return redirect()
-            ->route('admin.slider.edit')
-            ->with([
-                'message' => 'Slider updated successfully',
-                'alert-type' => 'success',
-            ]);
+        return redirect()->route('admin.slider.edit')->with([
+            'message'    => 'Slider updated successfully',
+            'alert-type' => 'success',
+        ]);
     }
 }
