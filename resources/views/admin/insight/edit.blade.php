@@ -57,7 +57,7 @@ $savedOutsideAuthors = old('outside_authors', $insight->outside_authors ?? []);
 
                             {{-- Team Authors (multiple) --}}
                            {{-- Author Field Wrap --}}
-<div class="col-12" id="authorFieldWrap">
+<div class="col-12" id="editAuthorFieldWrap">
     <label class="form-label">Author Name</label>
     <p class="text-muted small mb-2">Click to select, click again to remove</p>
     <div class="author-chip-grid d-flex flex-wrap gap-2" id="authorChipGrid">
@@ -158,7 +158,7 @@ $savedOutsideAuthors = old('outside_authors', $insight->outside_authors ?? []);
                                     placeholder="e.g. Daily Star">
                             </div>
 
-                            <div class="col-md-8">
+                            <div class="col-md-8" id="editArticleImageWrap">
                                 <label class="form-label">Insight Image</label>
                                 <input type="file" name="article_image" class="form-control" accept="image/*" data-max-size="4096" data-max-width="1200" data-max-height="800">
                                 @if($insight->articleImageUrl() ?? $insight->imageUrl())
@@ -166,7 +166,7 @@ $savedOutsideAuthors = old('outside_authors', $insight->outside_authors ?? []);
                                 @endif
                             </div>
 
-                            <div class="col-md-4">
+                            <div class="col-md-4" id="editImageDescWrap">
                                 <label class="form-label">Image Description</label>
                                 <input type="text" name="articles[0][image_description]" class="form-control"
                                     value="{{ old('articles.0.image_description', $insight->articles->first()?->image_description) }}"
@@ -347,15 +347,17 @@ $savedOutsideAuthors = old('outside_authors', $insight->outside_authors ?? []);
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const editTypeSelect     = document.getElementById('editInsightTypeSelect');
-    const editAuthorWrap     = document.getElementById('editAuthorFieldWrap');
-    const editOutsideWrap    = document.getElementById('editOutsideAuthorsWrap');
+    const editTypeSelect      = document.getElementById('editInsightTypeSelect');
+    const editAuthorWrap      = document.getElementById('editAuthorFieldWrap');
+    const editOutsideWrap     = document.getElementById('editOutsideAuthorsWrap');
     const editArticleSectWrap = document.getElementById('editArticleSectionsWrap');
-    const editVideoLinkWrap  = document.getElementById('editVideoLinkFieldWrap');
-    const editSourceNameWrap = document.getElementById('editSourceNameFieldWrap');
-    const editInsightAttWrap = document.getElementById('editInsightAttachmentWrap');
-    const editArticleAttWrap = document.getElementById('editArticleAttachmentWrap');
+    const editVideoLinkWrap   = document.getElementById('editVideoLinkFieldWrap');
+    const editSourceNameWrap  = document.getElementById('editSourceNameFieldWrap');
+    const editInsightAttWrap  = document.getElementById('editInsightAttachmentWrap');
+    const editArticleAttWrap  = document.getElementById('editArticleAttachmentWrap');
     const editSocialLinksWrap = document.getElementById('editSocialLinksWrap');
+    const editArticleImageWrap = document.getElementById('editArticleImageWrap');
+    const editImageDescWrap   = document.getElementById('editImageDescWrap');
 
     const editors = {};
 
@@ -378,14 +380,16 @@ document.addEventListener('DOMContentLoaded', function () {
     function setVisible(el, show) { if (el) el.style.display = show ? '' : 'none'; }
 
     function toggleVisibility() {
-        setVisible(editAuthorWrap,      isArticleOrPub());
-        setVisible(editOutsideWrap,     isArticleOrPub());
-        setVisible(editVideoLinkWrap,   isVideoType());
-        setVisible(editSourceNameWrap,  isOpEdType());
-        setVisible(editInsightAttWrap,  isBrochuresType());
-        setVisible(editArticleAttWrap,  isArticleOrPub());
-        setVisible(editSocialLinksWrap, isArticleOrPub());
-        setVisible(editArticleSectWrap, isArticleOrPub());
+        setVisible(editAuthorWrap,       isArticleOrPub());
+        setVisible(editOutsideWrap,      isArticleOrPub());
+        setVisible(editVideoLinkWrap,    isVideoType());
+        setVisible(editSourceNameWrap,   isOpEdType());
+        setVisible(editInsightAttWrap,   isBrochuresType());
+        setVisible(editArticleAttWrap,   isArticleOrPub());
+        setVisible(editArticleImageWrap, isArticleOrPub());
+        setVisible(editImageDescWrap,    isArticleOrPub());
+        setVisible(editSocialLinksWrap,  isArticleOrPub());
+        setVisible(editArticleSectWrap,  isArticleOrPub());
     }
 
     // ===== CKEditor =====
