@@ -381,29 +381,49 @@
     </div>
 </div>
 
+@if(session('cv_success'))
+<div style="position:fixed;top:20px;right:20px;z-index:9999;max-width:360px;" class="alert alert-success alert-dismissible shadow">
+    <i class="fas fa-check-circle me-2"></i>{{ session('cv_success') }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+@endif
+
 <div id="cvModal" class="modal-overlay">
     <div class="modal-content-box shadow-lg">
         <span class="close-modal" id="closeCvModal">&times;</span>
         <h3>Send Your CV</h3>
-        <form action="#" method="POST" enctype="multipart/form-data">
+
+        @if($errors->any())
+        <div class="alert alert-danger py-2 mb-3" style="font-size:13px;">
+            <ul class="mb-0 ps-3">@foreach($errors->all() as $e)<li>{{ $e }}</li>@endforeach</ul>
+        </div>
+        @endif
+
+        <form action="{{ route('cv.submit') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="form-group mb-3">
                 <label>Full Name</label>
-                <input type="text" name="name" class="form-control" placeholder="Enter your name" required>
+                <input type="text" name="name" class="form-control" placeholder="Enter your name"
+                       value="{{ old('name') }}" required>
             </div>
             <div class="form-group mb-3">
-                <label>Email Address</label>
-                <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
+                <label>Email Address <span class="text-muted small">(optional)</span></label>
+                <input type="email" name="email" class="form-control" placeholder="Enter your email"
+                       value="{{ old('email') }}">
             </div>
             <div class="form-group mb-3">
-                <label>Contact Number</label>
-                <input type="tel" name="phone" class="form-control" placeholder="Enter contact number" required>
+                <label>Contact Number <span class="text-muted small">(optional)</span></label>
+                <input type="tel" name="phone" class="form-control" placeholder="Enter contact number"
+                       value="{{ old('phone') }}">
             </div>
-            <div class="form-group mb-4">
-                <label>Upload CV (Only PDF)</label>
+            <div class="form-group mb-1">
+                <label>Upload CV <span class="text-danger">(PDF only)</span></label>
                 <input type="file" name="cv_pdf" class="form-control" accept=".pdf" required>
+                <small class="text-muted">Max 5MB · PDF files only</small>
             </div>
-            <button type="submit" class="btn-cv border-0">Submit Application</button>
+            <div class="mt-4">
+                <button type="submit" class="btn-cv border-0 w-100">Submit Application</button>
+            </div>
         </form>
     </div>
 </div>
@@ -433,10 +453,15 @@
         if(openBtn) {
             openBtn.onclick = function() { modal.style.display = "flex"; }
         }
-        
+
         if(closeBtn) {
             closeBtn.onclick = function() { modal.style.display = "none"; }
         }
+
+        // Re-open modal if validation errors exist
+        @if($errors->any())
+        if (modal) modal.style.display = "flex";
+        @endif
 
         window.onclick = function(event) {
             if (event.target == modal) { modal.style.display = "none"; }
