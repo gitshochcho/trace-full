@@ -1,13 +1,13 @@
-<div class="topbar d-none d-lg-block" style="background-color: #004051; color: #fff;">
+<!-- <div class="topbar d-none d-lg-block" style="background-color: #004051; color: #fff;">
     <div class="container-fluid px-5" style="max-width: 1072px; margin: 0 auto;">
         <div class="d-flex justify-content-between align-items-center py-2">
             <div class="topbar-left">
                 <span style="font-size: 11px; opacity: 1;">✉ {{ $siteSettings?->footer_contact_email ?: '' }}</span>
             </div>
             <div class="topbar-right d-flex align-items-center gap-3">
-                <a href="#" class="text-decoration-none" style="font-size: 11px; color: #fff; opacity: 1;">Company news</a>
+                <a href="#" class="text-decoration-none" style="font-size: 11px; color: #fff; opacity: 1;">Company news</a> -->
                 <!-- <a href="#" class="text-decoration-none" style="font-size: 11px; color: #fff; opacity: 1;">Faq</a> -->
-                <span class="text-white" style="opacity: 0.5;">|</span>
+                <!-- <span class="text-white" style="opacity: 0.5;">|</span>
                 <div class="social-icons d-flex gap-3">
                     @foreach(($siteSettings?->socialLinksWithIcons() ?? []) as $socialLink)
                         <a href="{{ $socialLink['link'] ?? '#' }}" target="_blank" rel="noreferrer" style="color: #fff; font-size: 13px; opacity: 1;" aria-label="{{ $socialLink['title'] ?? 'social link' }}">
@@ -20,7 +20,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 
 <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm py-3" style="height: 74px; opacity: 1;">
     <div class="container-fluid px-lg-5 d-flex justify-content-between" style="max-width: 1072px; margin: 0 auto;">

@@ -424,12 +424,21 @@
     .cta-section .cta-title { font-size: 22px; }
 }
 
+/* আপনার স্টাইলশিটে এটি আপডেট করুন */
+.custom-container {
+    max-width: 1072px !important; /* আপনি ১০৭২ চাইলে এটি দিন */
+    margin: 0 auto;
+    padding-left: 15px; /* বাম পাশে হালকা গ্যাপের জন্য */
+    padding-right: 15px;
+}
+
 .service-breadcrumb {
     background: #F8F9FB;
     min-height: 43px;
     display: flex;
     align-items: center;
     border-bottom: 1px solid #E5E9ED;
+    width: 100%;
 }
 .service-breadcrumb .breadcrumb-links { font-size: 13px; color: #64748B; }
 .service-breadcrumb .breadcrumb-links a { color: #64748B; text-decoration: none; }
@@ -460,7 +469,7 @@
      BREADCRUMB
 ============================== --}}
 <nav class="service-breadcrumb">
-    <div class="page-align-container" style="padding: 0 24px;">
+    <div class="container custom-container">
         <div class="breadcrumb-links">
             <a href="{{ route('home') }}">Home</a>
             <span class="sep">›</span>
