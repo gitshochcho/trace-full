@@ -15,8 +15,9 @@
 ========================================= */
 .hero {
     width: 100%;
-    height: 70vh;
-    min-height: 500px;
+    height: 75vh;         
+    min-height: 480px;
+    max-height: 900px;    
     position: relative;
     overflow: hidden;
 }
@@ -48,8 +49,8 @@
 
 .slide img {
     width: 100%;
-    height: 100vh;
-    min-height: 500px;
+    height: 100%;          
+    min-height: 480px;
     object-fit: cover;
     object-position: center;
 }
@@ -66,25 +67,38 @@
     text-align: center;
 }
 
-.hero-tag-box {
+/* .hero-tag-box {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 12px;
     margin-bottom: 20px;
-}
+} */
 .hero-tag-box .tag-line { width: 40px; height: 2px; background: #F47735; display: inline-block; }
-.hero-tag { color: #F47735; font-size: 12px; letter-spacing: 2px; }
+.hero-tag {
+    color: #F47735;
+    font-size: clamp(10px, 0.9vw, 13px);
+    letter-spacing: 2px;
+}
 
-.hero-content h1 { font-size: 64px; line-height: 1.15; color: white; margin-bottom: 20px; }
+.hero-tag-box {
+    margin-bottom: clamp(10px, 1.8vh, 22px);
+}
+
+.hero-content h1 {
+    font-size: clamp(26px, 4.5vw, 68px);
+    line-height: 1.15;
+    color: white;
+    margin-bottom: clamp(10px, 1.5vh, 24px);
+}
 .hero-content h1 span { color: #22c1c3; }
 
 .hero-content .hero-desc {
     max-width: 750px;
-    font-size: 16px;
+    font-size: clamp(13px, 1.3vw, 17px);
     line-height: 1.6;
     color: #e2e8f0;
-    margin: 0 auto 25px;
+    margin: 0 auto clamp(12px, 2vh, 28px);
 }
 
 .hero-content .hero-desc p {
@@ -124,6 +138,12 @@
     transition: .3s;
     text-decoration: none;
 }
+
+.btn-hero-primary,
+.btn-hero-secondary {
+    padding: clamp(9px, 1vh, 13px) clamp(14px, 1.5vw, 24px);
+    font-size: clamp(12px, 1vw, 15px);
+}
 .btn-hero-primary:hover { background: #d9622a; color: white; }
 
 .btn-hero-secondary {
@@ -144,8 +164,8 @@
 .slider-line .ind.active { width: 55px; background: #F47735; }
 
 @media (max-width: 576px) {
-    .hero { height: 360px; min-height: 360px; }
-    .slide img { height: 360px; object-fit: cover; object-position: center top; }
+   .hero { height: 55vw; min-height: 300px; } 
+    .slide img { height: 100%; }
     .hero::after { background: linear-gradient(180deg, rgba(0,0,0,.10) 0%, rgba(0,0,0,.20) 50%, rgba(0,0,0,.45) 100%); }
     .hero-content { top: 52%; }
     .hero-content h1 { font-size: 24px; line-height: 1.3; }
@@ -159,6 +179,12 @@
     .hero-desc { font-size: 14px; }
 }
 
+
+
+/* tablet */
+@media (min-width: 577px) and (max-width: 992px) {
+    .hero { height: 65vh; }
+}
 .container {
     max-width: 1072px !important; /* সব সেকশনের জন্য কার্যকর */
     margin: 0 auto;
@@ -614,12 +640,24 @@
 @php
     use Illuminate\Support\Str;
 
-    $heroTagline    = $slider?->tagline     ?? '';
-    $heroTitle      = $slider?->title       ?? '';
-    $heroDesignWord = $slider?->design_word ?? '';
-    $heroDescription= $slider?->description ?? '';
-    $heroImages     = $slider?->imageUrls() ?? [];
+    $heroSlides = $sliderItems ?? collect();
 
+   // Fallback to old slider if no new items
+if ($heroSlides->isEmpty() && isset($slider)) {
+    $heroSlides = collect([
+        (object)[
+            'tagline'     => $slider?->tagline     ?? '',
+            'title'       => $slider?->title       ?? '',
+            'design_word' => $slider?->design_word ?? '',
+            'description' => $slider?->description ?? '',
+            '_image_url'  => $slider?->imageUrls()[0] ?? null,  
+        ]
+    ]);
+}
+
+    $firstSlide      = $heroSlides->first();
+    $heroDesignWord  = $firstSlide?->design_word ?? '';
+    $heroTitle       = $firstSlide?->title       ?? '';
     $hasDesignWord   = filled($heroDesignWord) && Str::contains($heroTitle, $heroDesignWord);
     $heroTitleBefore = $hasDesignWord ? Str::before($heroTitle, $heroDesignWord) : $heroTitle;
     $heroTitleAfter  = $hasDesignWord ? Str::after($heroTitle, $heroDesignWord)  : '';
@@ -651,9 +689,14 @@
 <section class="hero">
     {{-- SLIDES --}}
     <div class="slides">
-        @foreach($heroImages as $index => $heroImage)
-            <div class="slide {{ $index === 0 ? 'active' : '' }}"><img src="{{ $heroImage }}" alt="Hero {{ $index + 1 }}"></div>
-        @endforeach
+        @foreach($heroSlides as $index => $slide)
+    <div class="slide {{ $index === 0 ? 'active' : '' }}">
+        @php
+            $slideImg = method_exists($slide, 'imageUrl') ? $slide->imageUrl() : ($slide->_image_url ?? '');
+        @endphp
+        <img src="{{ $slideImg }}" alt="Hero {{ $index + 1 }}">
+    </div>
+@endforeach
     </div>
 
     {{-- CONTENT --}}
@@ -662,21 +705,21 @@
         {{-- TAG --}}
         <div class="hero-tag-box">
             <span class="tag-line"></span>
-            <span class="hero-tag">{{ $heroTagline }}</span>
+            <span class="hero-tag" id="heroTagline">{{ $firstSlide?->tagline ?? '' }}</span>
             <span class="tag-line"></span>
         </div>
 
         {{-- TITLE --}}
-        <h1>
+        <h1 id="heroTitle">
             {{ $heroTitleBefore }}
             @if($hasDesignWord)
-                <span>{{ $heroDesignWord }}</span>{{ $heroTitleAfter }}
+                <span id="heroDesignWord">{{ $heroDesignWord }}</span>{{ $heroTitleAfter }}
             @endif
         </h1>
 
         {{-- DESC --}}
-        <div class="hero-desc">
-            {!! $heroDescription !!}
+        <div class="hero-desc" id="heroDesc">
+            {!! $firstSlide?->description ?? '' !!}
         </div>
 
         {{-- BUTTONS --}}
@@ -687,7 +730,7 @@
 
         {{-- SLIDER INDICATOR --}}
         <div class="slider-line">
-            @foreach($heroImages as $index => $heroImage)
+            @foreach($heroSlides as $index => $slide)
                 <span class="ind {{ $index === 0 ? 'active' : '' }}"></span>
             @endforeach
         </div>
@@ -695,6 +738,19 @@
     </div>
 
 </section>
+
+{{-- Slider data for JS text switching --}}
+@php
+    $heroSliderMapped = $heroSlides->map(fn($s) => [
+        'tagline'     => $s->tagline     ?? '',
+        'title'       => $s->title       ?? '',
+        'design_word' => $s->design_word ?? '',
+        'description' => $s->description ?? '',
+    ]);
+@endphp
+<script>
+const heroSliderData = @json($heroSliderMapped);
+</script>
 
 {{-- ==============================
       ABOUT SECTION
@@ -974,9 +1030,35 @@
 <script>
 // ====== HERO SLIDER ======
 (function () {
-    const slides = document.querySelectorAll('.slide');
+    const slides     = document.querySelectorAll('.slide');
     const indicators = document.querySelectorAll('.slider-line .ind');
+    const taglineEl  = document.getElementById('heroTagline');
+    const titleEl    = document.getElementById('heroTitle');
+    const descEl     = document.getElementById('heroDesc');
     let current = 0;
+
+    function updateText(idx) {
+        if (typeof heroSliderData === 'undefined' || !heroSliderData[idx]) return;
+        const d           = heroSliderData[idx];
+        const title       = d.title       || '';
+        const designWord  = d.design_word || '';
+        const tagline     = d.tagline     || '';
+        const description = d.description || '';
+
+        if (taglineEl) taglineEl.textContent = tagline;
+
+        if (titleEl) {
+            if (designWord && title.includes(designWord)) {
+                const before = title.split(designWord)[0];
+                const after  = title.split(designWord).slice(1).join(designWord);
+                titleEl.innerHTML = `${before}<span style="color:#22c1c3">${designWord}</span>${after}`;
+            } else {
+                titleEl.textContent = title;
+            }
+        }
+
+        if (descEl) descEl.innerHTML = description;
+    }
 
     function goTo(n) {
         slides[current].classList.remove('active');
@@ -984,6 +1066,7 @@
         current = (n + slides.length) % slides.length;
         slides[current].classList.add('active');
         indicators[current]?.classList.add('active');
+        updateText(current);
     }
 
     // Auto-advance every 4s

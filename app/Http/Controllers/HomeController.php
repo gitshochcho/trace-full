@@ -13,6 +13,7 @@ use App\Models\Partner;
 use App\Models\Project;
 use App\Models\Service;
 use App\Models\Slider;
+use App\Models\SliderItem;
 use App\Models\Team;
 use App\Models\User;
 use App\Models\UserDetail;
@@ -39,6 +40,7 @@ class HomeController extends Controller
         $homeAboutTraceThree = contentBlock('home_about_trace_three');
         $homeYearsExpertise  = contentBlock('home_years_of_expertise');
         $slider              = Slider::with('media')->first();
+        $sliderItems         = SliderItem::with('media')->where('active', true)->orderBy('sort_order')->orderBy('id')->get();
 
         $homeServices = Service::query()
             ->with(['content', 'media', 'solutions'])
@@ -57,7 +59,7 @@ class HomeController extends Controller
 
              $partners = Partner::with('media')->latest()->get(); 
 
-        return view('frontend.pages.home', compact('slider', 'homeServices', 'homeProjects', 'homeAboutTrace', 'homeAboutTraceOne', 'homeAboutTraceTwo', 'homeAboutTraceThree', 'homeYearsExpertise', 'partners'));
+        return view('frontend.pages.home', compact('slider', 'sliderItems', 'homeServices', 'homeProjects', 'homeAboutTrace', 'homeAboutTraceOne', 'homeAboutTraceTwo', 'homeAboutTraceThree', 'homeYearsExpertise', 'partners'));
     }
 
     public function services(Request $request)
