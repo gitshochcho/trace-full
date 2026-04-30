@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\TeamController;
 use App\Http\Controllers\Admin\PartnerController;
+use App\Http\Controllers\Admin\CvSubmissionController;
 use App\Http\Controllers\Admin\InsightTypeController;
 
 
@@ -115,7 +116,14 @@ Route::prefix('admin')->group(function () {
         Route::controller(ContactMessageController::class)->group(function () {
             Route::get('contact-messages', 'index')->name('admin.contact-messages.index');
             Route::get('contact-messages/{id}', 'show')->name('admin.contact-messages.show');
+            Route::post('contact-messages/{id}/reply', 'reply')->name('admin.contact-messages.reply');
             Route::delete('contact-messages/{id}', 'destroy')->name('admin.contact-messages.destroy');
+        });
+
+        Route::controller(CvSubmissionController::class)->group(function () {
+            Route::get('cv-submissions', 'index')->name('admin.cv-submissions.index');
+            Route::get('cv-submissions/{cvSubmission}', 'show')->name('admin.cv-submissions.show');
+            Route::delete('cv-submissions/{cvSubmission}', 'destroy')->name('admin.cv-submissions.destroy');
         });
 
         Route::controller(ContactInfoController::class)->group(function () {

@@ -1337,6 +1337,8 @@
             @forelse($aboutProjects as $project)
                 @php
                     $projectImage  = $project->imageUrl() ?? '';
+                     $firstSvc         = $project->services->first();
+                      $projectCategory  = $firstSvc?->section ?? $firstSvc?->service_name ?? 
                     $projectBadge  = strtoupper($project->services->first()?->service_name ?? $project->project_standard ?? '');
                     $projectClient = $project->client ?? '';
                 @endphp
@@ -1345,7 +1347,7 @@
                     <div class="project-card">
                         <img src="{{ $projectImage }}" alt="{{ $project->project_title }}">
                         <div class="project-overlay">
-                            <span class="project-badge">{{ $projectBadge }}</span>
+                            <span class="project-badge">{{ $projectCategory }}</span>
                             <h3 class="project-h">{{ $project->project_title }}</h3>
                             <div class="project-meta">
                                 <span class="meta-line"></span>

@@ -13,6 +13,7 @@ use App\Models\Partner;
 use App\Models\Project;
 use App\Models\Service;
 use App\Models\Slider;
+use App\Models\SliderItem;
 use App\Models\Team;
 use App\Models\User;
 use App\Models\UserDetail;
@@ -39,6 +40,7 @@ class HomeController extends Controller
         $homeAboutTraceThree = contentBlock('home_about_trace_three');
         $homeYearsExpertise  = contentBlock('home_years_of_expertise');
         $slider              = Slider::with('media')->first();
+        $sliderItems         = SliderItem::with('media')->where('active', true)->orderBy('sort_order')->orderBy('id')->get();
 
         $homeServices = Service::query()
             ->with(['content', 'media', 'solutions'])
@@ -57,7 +59,7 @@ class HomeController extends Controller
 
              $partners = Partner::with('media')->latest()->get(); 
 
-        return view('frontend.pages.home', compact('slider', 'homeServices', 'homeProjects', 'homeAboutTrace', 'homeAboutTraceOne', 'homeAboutTraceTwo', 'homeAboutTraceThree', 'homeYearsExpertise', 'partners'));
+        return view('frontend.pages.home', compact('slider', 'sliderItems', 'homeServices', 'homeProjects', 'homeAboutTrace', 'homeAboutTraceOne', 'homeAboutTraceTwo', 'homeAboutTraceThree', 'homeYearsExpertise', 'partners'));
     }
 
     public function services(Request $request)
@@ -69,29 +71,23 @@ class HomeController extends Controller
         // dd($servicesHero);
 
         $services = Service::query()
-            ->with(['content', 'media', 'solutions'])
+            ->with(['media', 'solutions'])
             ->where('active', true)
             ->orderBy('sort_order')
             ->get();
 
-        $serviceCards = $services->map(function (Service $service, int $index) {
-            $content = $service->content;
-
-            // Get image URL - use asset() if it's just a filename
-            $imageUrl = $service->imageUrl() ?? $content?->imageUrl();
-            if (! $imageUrl) {
-                $imageUrl = asset('assets/img/Trade and Customs.png');
-            }
+        $serviceCards = $services->map(function (Service $service) {
+            $imageUrl = $service->imageUrl() ?? asset('assets/img/Trade and Customs.png');
 
             return [
                 'id'       => $service->id,
                 'img'      => $imageUrl,
-                'tag'      => $content?->section ?? $service->service_name,
-                'title'    => $content?->heading ?? $service->service_name,
-                'desc'     => $content?->description ?? '',
+                'tag'      => $service->section ?: $service->service_name,
+                'title'    => $service->service_name,
+                'desc'     => $service->description ?? '',
                 'products' => $service->solutions->isNotEmpty()
                     ? $service->solutions->count() . ' Solutions'
-                    : ($content?->type ? $content->type : 'View Service'),
+                    : 'View Service',
             ];
         })->values();
 
@@ -103,13 +99,13 @@ class HomeController extends Controller
     public function serviceDetails(Request $request, $id)
     {
         $service = Service::query()
-            ->with(['content', 'details' => function ($q) {$q->orderBy('sort_order');}, 'solutions' => function ($q) {$q->orderBy('sort_order');}, 'media'])
+            ->with(['details' => fn($q) => $q->orderBy('sort_order'), 'solutions' => fn($q) => $q->orderBy('sort_order'), 'media'])
             ->findOrFail($id);
 
         $otherServices = Service::query()
             ->where('active', true)
             ->orderBy('sort_order')
-            ->get(['id', 'service_name']);
+            ->get(['id', 'service_name', 'section']);
 
         return view('frontend.pages.service-details', compact('service', 'otherServices'));
     }

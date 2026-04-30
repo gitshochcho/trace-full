@@ -318,7 +318,8 @@
                                 <p class="info-secondary">{{ $phone->secondary_text ?? $phone->title }}</p>
                             </div>
                             @if($phone->link_value)
-                            <a href="{{ $phone->link_value }}" class="info-action-btn"><i class="fas fa-phone-alt me-2"></i>Call Now</a>
+                            @php $telHref = Str::startsWith($phone->link_value, 'tel:') ? $phone->link_value : 'tel:'.preg_replace('/\s+/', '', $phone->link_value); @endphp
+                            <a href="{{ $telHref }}" class="info-action-btn"><i class="fas fa-phone-alt me-2"></i>Call Now</a>
                             @endif
                         </div>
                         @endforeach
@@ -336,7 +337,7 @@
                                 <p class="info-secondary">{{ $email->secondary_text ?? $email->title }}</p>
                             </div>
                             @if($email->link_value)
-                            <a href="{{ $email->link_value }}" class="info-action-btn"><i class="fas fa-envelope me-2"></i>Send Email</a>
+                            <a href="mailto:{{ $email->link_value }}" class="info-action-btn"><i class="fas fa-envelope me-2"></i>Send Email</a>
                             @endif
                         </div>
                         @endforeach
@@ -459,7 +460,7 @@
                     </form>
                 </div>
 
-                <div class="mb-5 mt-4">
+                <!-- <div class="mb-5 mt-4">
                     <h2 class="info-heading"><span class="accent-bar"></span> Follow Us</h2>
                     <div class="d-flex flex-wrap gap-3">
                         <a href="#" class="social-pill"><i class="fab fa-linkedin-in text-primary"></i> LinkedIn</a>
@@ -467,7 +468,7 @@
                         <a href="#" class="social-pill"><i class="fab fa-facebook-f text-primary"></i> Facebook</a>
                         <a href="#" class="social-pill"><i class="fab fa-youtube text-danger"></i> Youtube</a>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>

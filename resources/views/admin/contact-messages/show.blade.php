@@ -88,9 +88,10 @@
                                         <i class="bi bi-trash"></i> Delete Message
                                     </button>
                                 </form>
-                                <a href="mailto:{{ $message->email }}" class="btn btn-success">
+                                
+                                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#replyMailModal">
                                     <i class="bi bi-envelope"></i> Reply via Email
-                                </a>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -98,4 +99,59 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="replyMailModal" tabindex="-1" aria-labelledby="replyMailModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg border-0">
+            <div class="modal-content shadow-lg">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="replyMailModalLabel">
+                        <i class="bi bi-reply-all-fill me-2"></i>Compose Reply
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('admin.contact-messages.reply', $message->id) }}" method="POST"> @csrf
+                    <div class="modal-body p-4">
+                        <div class="mb-3">
+                            <label for="to_email" class="form-label fw-bold text-secondary">To:</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="bi bi-person"></i></span>
+                                <input type="email" name="to_email" class="form-control bg-light" id="to_email" value="{{ $message->email }}" readonly>
+                            </div>
+                            <small class="text-muted italic">Replying to {{ $message->first_name }} {{ $message->last_name }}</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="subject" class="form-label fw-bold text-secondary">Subject:</label>
+                            <input type="text" name="subject" class="form-control" id="subject" value="Re: {{ $message->subject }}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="reply_message" class="form-label fw-bold text-secondary">Message Body:</label>
+                            <textarea name="reply_message" class="form-control" id="reply_message" rows="10" placeholder="Type your reply here..." required style="resize: none;"></textarea>
+                        </div>
+                        
+                        <div class="alert alert-info py-2" style="font-size: 0.85rem;">
+                            <i class="bi bi-info-circle me-1"></i> This message will be sent directly to the sender's email address.
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light border-top-0">
+                        <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" id="replySubmitBtn" class="btn btn-success px-5">
+                            <i class="bi bi-send-check-fill me-1"></i> Send Message
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
+
+@push('custome-js')
+<script>
+document.querySelector('#replyMailModal form')?.addEventListener('submit', function () {
+    const btn = document.getElementById('replySubmitBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Sending...';
+});
+</script>
+@endpush

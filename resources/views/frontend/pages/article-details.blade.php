@@ -635,11 +635,24 @@
     $articleTypeLabel = strtoupper($article->insightType?->type ?: 'READ');
     $categoryLabel = $article->insight?->sub_heading ?: 'Insight';
     $articleTitle = $article->insight?->heading ?: 'Insight Article';
-    $author = $article->author;
-    $authorName = $author?->fullName() ?: 'TRACE Research Desk';
-    $authorRole = $author?->designation ?: 'Author';
+    // Team authors (multiple) — from insight level
+    $authorTeamIds = $article->insight?->author_team_ids ?? [];
+    $authorTeams   = !empty($authorTeamIds)
+        ? \App\Models\Team::whereIn('id', $authorTeamIds)->get()
+        : collect();
+    // Fall back to article-level single author if insight has none
+    if ($authorTeams->isEmpty() && $article->author) {
+        $authorTeams = collect([$article->author]);
+    }
+    $primaryAuthor   = $authorTeams->first();
+    $authorName      = $primaryAuthor?->fullName() ?: 'TRACE Research Desk';
+    $authorRole      = $primaryAuthor?->designation ?: 'Author';
     $authorInitials  = collect(explode(' ', $authorName))->filter()->map(fn ($word) => strtoupper(substr($word, 0, 1)))->take(2)->implode('');
-    $authorImageUrl  = $author?->imageUrl();
+    $authorImageUrl  = $primaryAuthor?->imageUrl();
+
+    // Outside authors
+    $outsideAuthors  = $article->insight?->outside_authors ?? [];
+
     $publishedLabel = optional($article->published_at)->format('F Y') ?: 'Recent';
     $readMinutes = $article->read_minutes ?: 8;
     $viewCount = max(120, ($readMinutes * 90));
@@ -681,15 +694,23 @@
 
         <h1 class="article-title">{{ $articleTitle }}</h1>
 
-        <div class="article-byline">
-            <div class="author-avatar-sm" style="{{ $authorImageUrl ? 'overflow:hidden; padding:0;' : 'background:#1a9e75;' }}">
-                @if($authorImageUrl)
-                    <img src="{{ $authorImageUrl }}" alt="{{ $authorName }}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
+        <div class="article-byline flex-wrap">
+            @foreach($authorTeams as $teamAuthor)
+            @php
+                $tName     = $teamAuthor->fullName() ?: 'Author';
+                $tInitials = collect(explode(' ', $tName))->filter()->map(fn ($w) => strtoupper(substr($w, 0, 1)))->take(2)->implode('');
+                $tImgUrl   = $teamAuthor->imageUrl();
+            @endphp
+            <div class="author-avatar-sm" style="{{ $tImgUrl ? 'overflow:hidden; padding:0;' : 'background:#1a9e75;' }}">
+                @if($tImgUrl)
+                    <img src="{{ $tImgUrl }}" alt="{{ $tName }}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
                 @else
-                    {{ $authorInitials }}
+                    {{ $tInitials }}
                 @endif
             </div>
-            <span class="byline-name">{{ $authorName }}</span>
+            <span class="byline-name">{{ $tName }}</span>
+            @if(!$loop->last)<span class="byline-sep">&amp;</span>@endif
+            @endforeach
             <span class="byline-sep">·</span>
             <span class="byline-meta"><i class="far fa-calendar"></i> {{ $publishedLabel }}</span>
             <span class="byline-sep">·</span>
@@ -744,11 +765,11 @@
 @endforeach
 
         {{-- Tags --}}
-        <div class="article-tags">
+        {{-- <div class="article-tags">
             @foreach($tags as $tag)
                 <span class="art-pill">{{ $tag }}</span>
             @endforeach
-        </div>
+        </div> --}}
 
     </div>{{-- end article-content --}}
 
@@ -777,23 +798,53 @@
             <a href="{{ $downloadUrl }}" class="dl-btn" target="_blank" rel="noopener"><i class="fas fa-download"></i> Download File</a>
         </div>
 
-        {{-- Author --}}
+        {{-- Authors --}}
         <div class="sidebar-card author-card">
-            <h4 class="sidebar-heading">AUTHOR</h4>
-            <div class="author-info">
-                <div class="author-avatar-lg" style="{{ $authorImageUrl ? 'overflow:hidden; padding:0;' : 'background:#1a9e75;' }}">
-                    @if($authorImageUrl)
-                        <img src="{{ $authorImageUrl }}" alt="{{ $authorName }}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
+            <h4 class="sidebar-heading">{{ $authorTeams->count() + count($outsideAuthors) > 1 ? 'AUTHORS' : 'AUTHOR' }}</h4>
+
+            {{-- Team Authors --}}
+            @foreach($authorTeams as $teamAuthor)
+            @php
+                $tName     = $teamAuthor->fullName() ?: 'Author';
+                $tRole     = $teamAuthor->designation ?: 'Author';
+                $tInitials = collect(explode(' ', $tName))->filter()->map(fn ($w) => strtoupper(substr($w, 0, 1)))->take(2)->implode('');
+                $tImgUrl   = $teamAuthor->imageUrl();
+            @endphp
+            <div class="author-info {{ !$loop->first ? 'mt-3 pt-3 border-top' : '' }}">
+                <div class="author-avatar-lg" style="{{ $tImgUrl ? 'overflow:hidden; padding:0;' : 'background:#1a9e75;' }}">
+                    @if($tImgUrl)
+                        <img src="{{ $tImgUrl }}" alt="{{ $tName }}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
                     @else
-                        {{ $authorInitials }}
+                        {{ $tInitials }}
                     @endif
                 </div>
                 <div>
-                    <p class="author-full-name">{{ $authorName }}</p>
-                    <p class="author-role">{{ $authorRole }}</p>
+                    <p class="author-full-name">{{ $tName }}</p>
+                    <p class="author-role">{{ $tRole }}</p>
                 </div>
             </div>
-            <p class="author-bio">{{ \Illuminate\Support\Str::limit(stripPTags($author?->description), 150) }}</p>
+            <p class="author-bio">{{ \Illuminate\Support\Str::limit(stripPTags($teamAuthor->description ?? ''), 150) }}</p>
+            @endforeach
+
+            {{-- Outside Authors (separate section) --}}
+            @if(!empty($outsideAuthors))
+                <div class="mt-3 pt-3 border-top">
+                    <p class="sidebar-heading mb-2" style="font-size:10px;">CONTRIBUTING AUTHORS</p>
+                    @foreach($outsideAuthors as $outside)
+                    @php $oInitials = collect(explode(' ', $outside['name'] ?? 'A'))->filter()->map(fn ($w) => strtoupper(substr($w, 0, 1)))->take(2)->implode(''); @endphp
+                    <div class="author-info {{ !$loop->first ? 'mt-3 pt-2 border-top' : '' }}">
+                        <div class="author-avatar-lg" style="background:#e85d26;">{{ $oInitials }}</div>
+                        <div>
+                            <p class="author-full-name">{{ $outside['name'] ?? '' }}</p>
+                            <p class="author-role">Contributing Author</p>
+                        </div>
+                    </div>
+                    @if(!empty($outside['description']))
+                        <p class="author-bio">{!! \Illuminate\Support\Str::limit(strip_tags($outside['description']), 150) !!}</p>
+                    @endif
+                    @endforeach
+                </div>
+            @endif
         </div>
 
         {{-- Related Insights --}}

@@ -23,11 +23,15 @@ class Insight extends Model implements HasMedia
         'active',
         'published_at',
         'source_name',
+        'author_team_ids',
+        'outside_authors',
     ];
 
     protected $casts = [
         'active' => 'boolean',
         'published_at' => 'datetime',
+        'author_team_ids' => 'array',
+        'outside_authors' => 'array',
     ];
 
     public function videoUrl(): ?string

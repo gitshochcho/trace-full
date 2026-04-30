@@ -260,14 +260,15 @@
 @section('content')
 @php
     $heroImage = $project->imageUrl() ?? '';
-    $heroBadge = $project->services->first()?->service_name ?? $project->project_standard ?? '';
+    $firstService = $project->services->first();
+    $heroBadge = $firstService?->section ?? $firstService?->service_name ?? $project->project_standard ?? '';
     $galleryImages = $project->galleryImageUrls();
     $galleryMain = $galleryImages[0]['url'] ?? $heroImage;
     $gallerySideOne = $galleryImages[1]['url'] ?? $galleryMain;
     $gallerySideTwo = $galleryImages[2]['url'] ?? $gallerySideOne;
     $locationSummary = $project->locations->first()?->location;
     $locationSummary = $locationSummary ? strip_tags($locationSummary) : 'Location available inside the project brief';
-    $serviceNames = $project->services->pluck('service_name')->filter()->values();
+    $serviceNames = $project->services->map(fn($s) => $s->section ?: $s->service_name)->filter()->values();
 
     $locationSectionContent = contentBlock('project-location-section');
     $phaseSectionContent = contentBlock('project-phase-section');
@@ -503,23 +504,25 @@
             @forelse($relatedProjects as $item)
                 @php
                     $itemImage     = $item->imageUrl() ?? '';
-                    $itemSector    = $item->services->first()?->service_name ?? $item->project_standard ?? '';
+                    $itemSvc       = $item->services->first();
+                    $itemSector    = $itemSvc?->section ?? $itemSvc?->service_name ?? $item->project_standard ?? '';
                     $itemYear      = $item->start_date?->format('Y');
                     $itemYearEnd   = $item->end_date?->format('Y');
                     $itemYearLabel = $itemYear && $itemYearEnd ? $itemYear . '–' . $itemYearEnd : ($itemYear ?? $itemYearEnd ?? '');
                 @endphp
                 <div class="col-lg-4 col-md-6">
-                    <div class="project-mini-card">
-                        <div class="card-img-wrapper">
-                            <img src="{{ $itemImage }}" alt="{{ $item->project_title }}" class="img-fluid">
+                    <a href="{{ route('projectdetails', $item) }}" class="text-decoration-none">
+                        <div class="project-mini-card">
+                            <div class="card-img-wrapper">
+                                <img src="{{ $itemImage }}" alt="{{ $item->project_title }}" class="img-fluid">
+                            </div>
+                            <div class="card-content">
+                                <span class="client-name text-uppercase">{{ $item->client ?? '' }}</span>
+                                <h4 class="project-mini-title">{{ $item->project_title }}</h4>
+                                <p class="project-mini-meta">{{ $itemSector }} · {{ $itemYearLabel ?: ($item->project_status ?? '') }}</p>
+                            </div>
                         </div>
-                        <div class="card-content">
-                            <span class="client-name text-uppercase">{{ abbreviateClientName($item->client) ?? '' }}</span>
-                            <h4 class="project-mini-title">{{ $item->project_title }}</h4>
-                            <p class="project-mini-meta">{{ $itemSector }} · {{ $itemYearLabel ?: ($item->project_status ?? '') }}</p>
-                            <!-- <a href="{{ route('projectdetails', $item) }}" class="view-link mt-2 d-inline-flex">View Project <i class="fas fa-arrow-right ms-1"></i></a> -->
-                        </div>
-                    </div>
+                    </a>
                 </div>
             @empty
                 <div class="col-12">

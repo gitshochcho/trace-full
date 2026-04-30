@@ -374,7 +374,7 @@
                 @foreach($services as $service)
                     <li class="nav-item">
                         <a class="nav-link {{ (int) $selectedService === (int) $service->id ? 'active' : '' }}" href="{{ route('projects', ['service' => $service->id]) }}">
-                            {{ $service->service_name }} <span class="badge-count">{{ $service->projects_count }}</span>
+                            {{ $service->section ?: $service->service_name }} <span class="badge-count">{{ $service->projects_count }}</span>
                         </a>
                     </li>
                 @endforeach
@@ -432,7 +432,8 @@
                     $projectYear      = $project->start_date?->format('Y');
                     $projectYearEnd   = $project->end_date?->format('Y');
                     $projectYearLabel = $projectYear && $projectYearEnd ? $projectYear . '-' . $projectYearEnd : ($projectYear ?? $projectYearEnd ?? '');
-                    $projectCategory  = $project->services->first()?->service_name ?? $project->project_standard ?? '';
+                    $firstSvc         = $project->services->first();
+                    $projectCategory  = $firstSvc?->section ?? $firstSvc?->service_name ?? $project->project_standard ?? '';
                     $projectTags      = $project->services->take(3);
                     $projectDesc      = stripPTags($project->overview) ?? '';
                 @endphp
@@ -452,7 +453,7 @@
 
                             <div class="project-tags">
                                 @forelse($projectTags as $tag)
-                                    <span>{{ $tag->service_name }}</span>
+                                    <span>{{ $tag->section ?: $tag->service_name }}</span>
                                 @empty
                                     <span>{{ $project->project_standard ?: $project->project_status }}</span>
                                 @endforelse

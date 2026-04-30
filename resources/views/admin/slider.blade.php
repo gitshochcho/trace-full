@@ -1,242 +1,275 @@
 @extends('layouts.app')
 
 @section('content')
-    @php
-        $sliderMedias = $slider?->getMedia('slider_images') ?? collect();
-    @endphp
-
-    {{-- ... header and breadcrumb sections remain same ... --}}
-
-    <div class="app-content">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-12 col-xl-10">
-                    <div class="card card-primary card-outline">
-                        <div class="card-header">
-                            <h3 class="card-title">Home Hero Slider Content</h3>
-                        </div>
-                        <form action="{{ route('admin.slider.update') }}" method="POST" enctype="multipart/form-data">
-                            @csrf
-                            <div class="card-body">
-                                <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <label class="form-label">Tagline</label>
-                                        {{-- Default text সরানো হয়েছে --}}
-                                        <input type="text" name="tagline" value="{{ old('tagline', $slider->tagline ?? '') }}" 
-                                               placeholder="Enter tagline..."
-                                               class="form-control @error('tagline') is-invalid @enderror">
-                                        @error('tagline')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <label class="form-label">Design Word (Span Text)</label>
-                                        {{-- Default text সরানো হয়েছে --}}
-                                        <input type="text" name="design_word" value="{{ old('design_word', $slider->design_word ?? '') }}" 
-                                               placeholder="e.g. Insightful"
-                                               class="form-control @error('design_word') is-invalid @enderror">
-                                        @error('design_word')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                                    </div>
-
-                                    <div class="col-12">
-                                        <label class="form-label">Title</label>
-                                        {{-- Default text সরানো হয়েছে --}}
-                                        <input type="text" name="title" value="{{ old('title', $slider->title ?? '') }}" 
-                                               placeholder="Enter slider title..."
-                                               class="form-control @error('title') is-invalid @enderror">
-                                        @error('title')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                                        <div class="form-text">`design_word` will be highlighted in the title automatically.</div>
-                                    </div>
-
-                                    <div class="col-12">
-                                        <label class="form-label">Description</label>
-                                        {{-- Default text সরানো হয়েছে --}}
-                                        <textarea id="slider_description" name="description" rows="6" 
-                                                  class="form-control @error('description') is-invalid @enderror">{{ old('description', $slider->description ?? '') }}</textarea>
-                                        @error('description')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                                    </div>
-
-                                    {{-- ... Slider images logic and JS remains the same as before ... --}}
-                                    <div class="col-12">
-                                        <label class="form-label">Slider Images (Multiple)</label>
-                                        <input id="slider_images_input" type="file" name="slider_images[]" multiple class="form-control @error('slider_images') is-invalid @enderror" accept="image/*" data-max-size="4096" data-max-width="1920" data-max-height="800">
-                                        <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 1920×800px wide banner (max 4MB each)</small>
-                                    </div>
-                                    
-                                    <div class="col-12">
-                                        <div id="removedImageIdsContainer"></div>
-                                        <div id="existingImagesGrid" class="slider-images-grid mb-3">
-                                            @foreach($sliderMedias as $media)
-                                                <div class="slider-image-card" data-existing-media-id="{{ $media->id }}">
-                                                    <img src="{{ $media->getUrl() }}" class="slider-image-thumb">
-                                                    <div class="slider-image-overlay">
-                                                        <button type="button" class="btn btn-sm btn-light add-more-on-card">+ Add</button>
-                                                        <button type="button" class="btn btn-sm btn-danger remove-existing-image">Delete</button>
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                        <div id="newImagesGrid" class="slider-images-grid"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-footer d-flex justify-content-end">
-                                <button type="submit" class="btn btn-primary">Save Slider</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+<div class="app-content-header">
+    <div class="container-fluid">
+        <div class="row align-items-center">
+            <div class="col-sm-6"><h3 class="mb-0">Home Hero Slider</h3></div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end mb-0">
+                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Hero Slider</li>
+                </ol>
             </div>
         </div>
     </div>
+</div>
+
+<div class="app-content">
+    <div class="container-fluid">
+        <form action="{{ route('admin.slider.update') }}" method="POST" enctype="multipart/form-data" id="sliderForm">
+            @csrf
+            <div id="removedItemIdsContainer"></div>
+
+            <div class="card card-outline card-primary">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="card-title mb-0">Slider Items</h3>
+                    <button type="button" class="btn btn-sm btn-outline-primary" id="addSliderItemBtn">
+                        <i class="fas fa-plus me-1"></i> Add More Slide
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div id="sliderItemsWrapper" class="d-grid gap-4">
+
+                        @forelse($items as $index => $item)
+                        <div class="slider-item-row border rounded-3 p-4 bg-white shadow-sm" data-index="{{ $index }}">
+                            <input type="hidden" name="items[{{ $index }}][id]" value="{{ $item->id }}">
+
+                            <div class="row g-3">
+                                {{-- Image --}}
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold">Slide Image</label>
+                                    <div class="image-preview-wrap mb-2">
+                                        @if($item->imageUrl())
+                                            <img src="{{ $item->imageUrl() }}" class="img-thumbnail w-100 slide-preview-img" style="height:160px;object-fit:cover;" alt="Slide">
+                                        @else
+                                            <div class="img-thumbnail w-100 d-flex align-items-center justify-content-center text-muted slide-preview-img" style="height:160px;background:#f8f9fa;font-size:13px;">No image</div>
+                                        @endif
+                                    </div>
+                                    <input type="file" name="item_images[{{ $index }}]" class="form-control form-control-sm item-image-input"
+                                           accept="image/jpeg,image/png,image/webp,image/svg+xml">
+                                    <small class="text-muted">1920×800px recommended (max 4MB)</small>
+                                </div>
+
+                                {{-- Text Fields --}}
+                                <div class="col-md-8">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Tagline</label>
+                                            <input type="text" name="items[{{ $index }}][tagline]"
+                                                   value="{{ old("items.$index.tagline", $item->tagline) }}"
+                                                   class="form-control" placeholder="e.g. INSIGHTS & ANALYTICS">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Design Word <span class="text-muted small">(highlighted in title)</span></label>
+                                            <input type="text" name="items[{{ $index }}][design_word]"
+                                                   value="{{ old("items.$index.design_word", $item->design_word) }}"
+                                                   class="form-control" placeholder="e.g. Insightful">
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label">Title</label>
+                                            <input type="text" name="items[{{ $index }}][title]"
+                                                   value="{{ old("items.$index.title", $item->title) }}"
+                                                   class="form-control" placeholder="Slide title...">
+                                            <small class="text-muted">The Design Word inside the title will be highlighted automatically.</small>
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label">Description</label>
+                                            <textarea name="items[{{ $index }}][description]"
+                                                      class="form-control item-description-editor"
+                                                      id="itemDesc_{{ $index }}"
+                                                      rows="3">{{ old("items.$index.description", $item->description) }}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 d-flex justify-content-end">
+                                    <button type="button" class="btn btn-sm btn-outline-danger remove-slider-item">
+                                        <i class="fas fa-trash me-1"></i> Remove Slide
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        @empty
+                        <div class="text-muted text-center py-4" id="emptyNotice">
+                            No slides yet. Click <strong>Add More Slide</strong> to add your first slide.
+                        </div>
+                        @endforelse
+
+                    </div>
+                </div>
+                <div class="card-footer d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-outline-primary" id="addSliderItemBtnFooter">
+                        <i class="fas fa-plus me-1"></i> Add More Slide
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-1"></i> Save All Slides
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<template id="sliderItemTemplate">
+    <div class="slider-item-row border rounded-3 p-4 bg-white shadow-sm" data-index="__INDEX__">
+        <input type="hidden" name="items[__INDEX__][id]" value="">
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label fw-bold">Slide Image</label>
+                <div class="image-preview-wrap mb-2">
+                    <div class="img-thumbnail w-100 d-flex align-items-center justify-content-center text-muted slide-preview-img" style="height:160px;background:#f8f9fa;font-size:13px;">No image</div>
+                </div>
+                <input type="file" name="item_images[__INDEX__]" class="form-control form-control-sm item-image-input"
+                       accept="image/jpeg,image/png,image/webp,image/svg+xml">
+                <small class="text-muted">1920×800px recommended (max 4MB)</small>
+            </div>
+            <div class="col-md-8">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Tagline</label>
+                        <input type="text" name="items[__INDEX__][tagline]" class="form-control" placeholder="e.g. INSIGHTS & ANALYTICS">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Design Word <span class="text-muted small">(highlighted in title)</span></label>
+                        <input type="text" name="items[__INDEX__][design_word]" class="form-control" placeholder="e.g. Insightful">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Title</label>
+                        <input type="text" name="items[__INDEX__][title]" class="form-control" placeholder="Slide title...">
+                        <small class="text-muted">The Design Word inside the title will be highlighted automatically.</small>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Description</label>
+                        <textarea name="items[__INDEX__][description]" class="form-control item-description-editor"
+                                  id="itemDesc___INDEX__" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 d-flex justify-content-end">
+                <button type="button" class="btn btn-sm btn-outline-danger remove-slider-item">
+                    <i class="fas fa-trash me-1"></i> Remove Slide
+                </button>
+            </div>
+        </div>
+    </div>
+</template>
 @endsection
 
+@push('custome-css')
+<style>
+.slider-item-row { border-left: 4px solid #0d6efd !important; }
+.slider-item-row:nth-child(2n) { border-left-color: #0f766e !important; }
+</style>
+@endpush
 
 @push('custome-js')
 <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
 <script>
-    (function () {
-        const descriptionField = document.querySelector('#slider_description');
-        const fileInput = document.querySelector('#slider_images_input');
-        const existingImagesGrid = document.querySelector('#existingImagesGrid');
-        const newImagesGrid = document.querySelector('#newImagesGrid');
-        const removedImageIdsContainer = document.querySelector('#removedImageIdsContainer');
-        let selectedFiles = [];
+document.addEventListener('DOMContentLoaded', function () {
+    const wrapper          = document.getElementById('sliderItemsWrapper');
+    const tpl              = document.getElementById('sliderItemTemplate');
+    const removedContainer = document.getElementById('removedItemIdsContainer');
+    const emptyNotice      = document.getElementById('emptyNotice');
+    const form             = document.getElementById('sliderForm');
+    const ckEditors        = {};
 
-        // CKEditor Initialization
-        if (descriptionField) {
-            ClassicEditor.create(descriptionField).catch(error => console.error(error));
-        }
+    function getNextIndex() {
+        const rows = wrapper.querySelectorAll('.slider-item-row');
+        return rows.length;
+    }
 
-        // Sync File Input with JavaScript Array
-        function syncFileInput() {
-            const dt = new DataTransfer();
-            selectedFiles.forEach(file => dt.items.add(file));
-            fileInput.files = dt.files;
-        }
-
-        function createFileKey(file) {
-            return [file.name, file.size, file.lastModified].join('__');
-        }
-
-        // Render Preview for New Files
-        function renderNewImagesPreview() {
-            newImagesGrid.innerHTML = '';
-            selectedFiles.forEach((file, index) => {
-                const card = document.createElement('div');
-                card.className = 'slider-image-card';
-                
-                const img = document.createElement('img');
-                img.className = 'slider-image-thumb';
-                img.src = URL.createObjectURL(file);
-
-                const overlay = document.createElement('div');
-                overlay.className = 'slider-image-overlay';
-
-                const addBtn = document.createElement('button');
-                addBtn.type = 'button';
-                addBtn.className = 'btn btn-sm btn-light add-more-on-card';
-                addBtn.textContent = '+ Add';
-
-                const removeBtn = document.createElement('button');
-                removeBtn.type = 'button';
-                removeBtn.className = 'btn btn-sm btn-danger remove-new-image';
-                removeBtn.dataset.index = index;
-                removeBtn.textContent = 'Cancel';
-
-                overlay.appendChild(addBtn);
-                overlay.appendChild(removeBtn);
-                card.appendChild(img);
-                card.appendChild(overlay);
-                newImagesGrid.appendChild(card);
-            });
-        }
-
-        // Handle File Selection
-        fileInput.addEventListener('change', function (e) {
-            const files = Array.from(e.target.files);
-            const existingKeys = new Set(selectedFiles.map(createFileKey));
-
-            files.forEach(file => {
-                const key = createFileKey(file);
-                if (!existingKeys.has(key)) {
-                    selectedFiles.push(file);
+    function reindex() {
+        wrapper.querySelectorAll('.slider-item-row').forEach((row, idx) => {
+            row.dataset.index = idx;
+            row.querySelectorAll('input, textarea').forEach(f => {
+                if (f.name) {
+                    f.name = f.name.replace(/items\[\d+\]/, `items[${idx}]`);
+                    f.name = f.name.replace(/item_images\[\d+\]/, `item_images[${idx}]`);
+                }
+                if (f.tagName === 'TEXTAREA') {
+                    const oldId = f.id;
+                    f.id = `itemDesc_${idx}`;
+                    if (ckEditors[oldId]) {
+                        ckEditors[`itemDesc_${idx}`] = ckEditors[oldId];
+                        delete ckEditors[oldId];
+                    }
                 }
             });
-
-            syncFileInput();
-            renderNewImagesPreview();
         });
+        if (emptyNotice) emptyNotice.style.display = wrapper.querySelectorAll('.slider-item-row').length ? 'none' : '';
+    }
 
-        // Event Delegation for All Buttons
-        document.addEventListener('click', function (e) {
-            // 1. Add More Button (Trigger file input)
-            if (e.target.classList.contains('add-more-on-card')) {
-                fileInput.click();
+    function initCKEditor(textarea) {
+        if (!textarea || ckEditors[textarea.id]) return;
+        ClassicEditor.create(textarea, {
+            toolbar: { items: ['bold', 'italic', 'underline', '|', 'bulletedList', 'numberedList', '|', 'link', '|', 'undo', 'redo'] }
+        }).then(editor => {
+            ckEditors[textarea.id] = editor;
+        }).catch(console.error);
+    }
+
+    // Init CKEditor on existing rows
+    document.querySelectorAll('textarea.item-description-editor').forEach(initCKEditor);
+
+    // Image preview on file change
+    wrapper.addEventListener('change', function (e) {
+        if (e.target.classList.contains('item-image-input')) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const wrap = e.target.closest('.slider-item-row').querySelector('.image-preview-wrap');
+            const reader = new FileReader();
+            reader.onload = ev => {
+                wrap.innerHTML = `<img src="${ev.target.result}" class="img-thumbnail w-100 slide-preview-img" style="height:160px;object-fit:cover;" alt="Preview">`;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    function addRow() {
+        const idx = getNextIndex();
+        const html = tpl.innerHTML.replaceAll('__INDEX__', idx);
+        if (emptyNotice) emptyNotice.style.display = 'none';
+        wrapper.insertAdjacentHTML('beforeend', html);
+        reindex();
+        const ta = document.getElementById(`itemDesc_${idx}`);
+        setTimeout(() => initCKEditor(ta), 100);
+    }
+
+    document.getElementById('addSliderItemBtn').addEventListener('click', addRow);
+    document.getElementById('addSliderItemBtnFooter').addEventListener('click', addRow);
+
+    wrapper.addEventListener('click', function (e) {
+        if (e.target.closest('.remove-slider-item')) {
+            const row = e.target.closest('.slider-item-row');
+            const idInput = row.querySelector('input[type="hidden"]');
+            const existingId = idInput?.value;
+
+            if (existingId) {
+                const hidden = document.createElement('input');
+                hidden.type = 'hidden';
+                hidden.name = 'removed_item_ids[]';
+                hidden.value = existingId;
+                removedContainer.appendChild(hidden);
             }
 
-            // 2. Remove Existing Image (From Server/Database)
-            if (e.target.classList.contains('remove-existing-image')) {
-                const card = e.target.closest('.slider-image-card');
-                const mediaId = card.dataset.existingMediaId;
-
-                if (mediaId) {
-                    const hidden = document.createElement('input');
-                    hidden.type = 'hidden';
-                    hidden.name = 'removed_image_ids[]';
-                    hidden.value = mediaId;
-                    removedImageIdsContainer.appendChild(hidden);
-                    card.remove();
-                }
+            const ta = row.querySelector('textarea.item-description-editor');
+            if (ta && ckEditors[ta.id]) {
+                ckEditors[ta.id].destroy();
+                delete ckEditors[ta.id];
             }
 
-            // 3. Remove Newly Selected Image (Before Upload)
-            if (e.target.classList.contains('remove-new-image')) {
-                const index = e.target.dataset.index;
-                selectedFiles.splice(index, 1);
-                syncFileInput();
-                renderNewImagesPreview();
-            }
+            row.remove();
+            reindex();
+        }
+    });
+
+    // Sync CKEditor data before submit
+    form.addEventListener('submit', function () {
+        Object.values(ckEditors).forEach(editor => {
+            if (editor.sourceElement) editor.sourceElement.value = editor.getData();
         });
-
-    })();
+    });
+});
 </script>
-
-<style>
-    .slider-images-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-        gap: 12px;
-    }
-
-    .slider-image-card {
-        position: relative;
-        border-radius: 10px;
-        overflow: hidden;
-        border: 1px solid #e5e7eb;
-        height: 120px;
-        background: #f8fafc;
-    }
-
-    .slider-image-thumb {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .slider-image-overlay {
-        position: absolute;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.45);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        opacity: 0;
-        transition: opacity .2s ease;
-    }
-
-    .slider-image-card:hover .slider-image-overlay {
-        opacity: 1;
-    }
-</style>
 @endpush

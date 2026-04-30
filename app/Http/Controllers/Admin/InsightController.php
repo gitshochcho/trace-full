@@ -7,7 +7,6 @@ use App\Models\Team;
 use App\Models\InsightType;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 
 class InsightController extends Controller
 {
@@ -38,6 +37,7 @@ class InsightController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $this->validateInsightRequest($request);
+        $authorTeamIds = array_values(array_filter(array_map('intval', $validated['author_team_ids'] ?? [])));
         $insight = Insight::create([
             'type' => $validated['type'],
             'video_link' => $validated['video_link'] ?? null,
@@ -48,14 +48,12 @@ class InsightController extends Controller
             'active' => (bool) ($validated['active'] ?? true),
             'published_at' => $validated['published_at'] ?? null,
             'source_name' => $validated['source_name'] ?? null,
-            // 'read_minutes' => $validated['read_minutes'] ?? null,
-            // 'image_description' => $validated['image_description'] ?? null,
-            // 'social_links' => $validated['social_links'] ?? [],
+            'author_team_ids' => $authorTeamIds,
+            'outside_authors' => $validated['outside_authors'] ?? [],
         ]);
 
         $this->handleInsightMedia($insight, $request);
-        $authorTeamId = !empty($validated['author_team_id']) ? (int) $validated['author_team_id'] : null;
-        $this->syncArticles($insight, $validated['articles'] ?? [], [], [], $authorTeamId);
+        $this->syncArticles($insight, $validated['articles'] ?? [], [], [], $authorTeamIds[0] ?? null);
 
         return redirect()->route('admin.insights.index')->with(['message' => 'Insight created successfully', 'alert-type' => 'success']);
     }
@@ -72,6 +70,7 @@ class InsightController extends Controller
     public function update(Request $request, Insight $insight): RedirectResponse
     {
         $validated = $this->validateInsightRequest($request, true);
+        $authorTeamIds = array_values(array_filter(array_map('intval', $validated['author_team_ids'] ?? [])));
         $insight->fill([
             'type' => $validated['type'],
             'type_id' => $validated['type'],
@@ -83,15 +82,13 @@ class InsightController extends Controller
             'active' => (bool) ($validated['active'] ?? true),
             'published_at' => $validated['published_at'] ?? null,
             'source_name' => $validated['source_name'] ?? null,
-            // 'read_minutes' => $validated['read_minutes'] ?? null,
-            // 'image_description' => $validated['image_description'] ?? null,
-            // 'social_links' => $validated['social_links'] ?? [],
+            'author_team_ids' => $authorTeamIds,
+            'outside_authors' => $validated['outside_authors'] ?? [],
         ]);
         $insight->save();
 
         $this->handleInsightMedia($insight, $request, true);
-        $authorTeamId = !empty($validated['author_team_id']) ? (int) $validated['author_team_id'] : null;
-        $this->syncArticles($insight, $validated['articles'] ?? [], [], [], $authorTeamId);
+        $this->syncArticles($insight, $validated['articles'] ?? [], [], [], $authorTeamIds[0] ?? null);
 
         return redirect()->route('admin.insights.index')->with(['message' => 'Insight updated successfully', 'alert-type' => 'success']);
     }
@@ -109,12 +106,11 @@ class InsightController extends Controller
         return $request->validate([
             // Root Level
             'type' => ['required', 'integer', 'exists:insight_types,id'],
-            'author_team_id' => [
-                'nullable',
-                'integer',
-                'exists:teams,id',
-                Rule::requiredIf(fn () => $this->isReadType((int) $request->input('type'))),
-            ],
+            'author_team_ids' => ['nullable', 'array'],
+            'author_team_ids.*' => ['nullable', 'integer', 'exists:teams,id'],
+            'outside_authors' => ['nullable', 'array'],
+            'outside_authors.*.name' => ['nullable', 'string', 'max:255'],
+            'outside_authors.*.description' => ['nullable', 'string'],
             'heading' => ['required', 'string', 'max:255'],
             'sub_heading' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
@@ -203,14 +199,14 @@ class InsightController extends Controller
         $keptIds[] = $record->id;
     }
 
-    // ❌ ডিলিট লজিক রিমুভ/কমেন্ট করা হলো - যাতে এডিট করার সময় অন্য টাইপের আর্টিকেল ডিলিট না হয়
-    // if (!empty($rows)) {
-    //     $insight->articles()->whereNotIn('id', $keptIds)->get()->each(function (InsightArticle $article) {
-    //         $article->clearMediaCollection('icon');
-    //         $article->clearMediaCollection('attachment');
-    //         $article->delete();
-    //     });
-    // }
+    $insight->articles()
+        ->whereNotIn('id', array_filter($keptIds))
+        ->get()
+        ->each(function (InsightArticle $article) {
+            $article->clearMediaCollection('icon');
+            $article->clearMediaCollection('attachment');
+            $article->delete();
+        });
 }
 
     private function isReadType(int $typeId): bool

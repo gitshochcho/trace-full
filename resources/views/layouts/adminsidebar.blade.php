@@ -117,6 +117,13 @@
                 </li>
 
                 <li class="nav-item">
+                    <a href="{{ route('admin.cv-submissions.index') }}" class="nav-link {{ request()->routeIs('admin.cv-submissions.*') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-file-earmark-person"></i>
+                        <p>CV Submissions</p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
     <a href="#" class="nav-link {{ request()->is('admin/partners*') ? 'active' : '' }}">
         <i class="nav-icon bi bi-people"></i>
         <p>
