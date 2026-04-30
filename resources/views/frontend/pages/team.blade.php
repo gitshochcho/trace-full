@@ -630,15 +630,28 @@
     </div>
 </section>
 
+@php
+    $leadershipTag        = $leadershipContent?->section     ?? '';
+    $leadershipHeadingRaw = $leadershipContent?->heading     ?? '';
+    $leadershipDesignWord = $leadershipContent?->design_word ?? '';
+    $leadershipDesc       = $leadershipContent?->description ?? "";
+    $leadershipBadge      = $leadershipContent?->sub_heading ?? '';
+
+    if (!empty($leadershipDesignWord) && str_contains($leadershipHeadingRaw, $leadershipDesignWord)) {
+        $leadershipHeading = str_replace($leadershipDesignWord, '<span>' . e($leadershipDesignWord) . '</span>', e($leadershipHeadingRaw));
+    } else {
+        $leadershipHeading = e($leadershipHeadingRaw) . (!empty($leadershipDesignWord) ? ' <span>' . e($leadershipDesignWord) . '</span>' : '');
+    }
+@endphp
 <section class="leadership-section">
     <div class="custom-container">
         <div class="leadership-header mb-5">
             <div class="d-flex align-items-center gap-2 mb-2">
                 <span class="line-teal"></span>
-                <span class="tag-text">LEADERSHIP</span>
+                <span class="tag-text">{{ $leadershipTag }}</span>
             </div>
-            <h2 class="title">Managing <span>Director</span></h2>
-            <p class="desc">Leading TRACE's vision of practical, high-impact consulting for governments and development partners.</p>
+            <h2 class="title">{!! $leadershipHeading !!}</h2>
+            <p class="desc">{{ strip_tags($leadershipDesc) }}</p>
         </div>
 
         <div class="leader-card">
@@ -646,7 +659,7 @@
                 <div class="col-lg-5 position-relative">
                     <div class="leader-img-box">
                         <img src="{{ $leaderImage }}" alt="{{ $leaderName }}">
-                        <span class="leader-badge">MD & CEO</span>
+                        <span class="leader-badge">{{ $leadershipBadge }}</span>
                     </div>
                 </div>
                 <div class="col-lg-7">
@@ -697,15 +710,27 @@
     </div>
 </section>
          
+@php
+    $coreTeamTag        = $coreTeamContent?->section     ?? '';
+    $coreTeamHeadingRaw = $coreTeamContent?->heading     ?? '';
+    $coreTeamDesignWord = $coreTeamContent?->design_word ?? '';
+    $coreTeamDesc       = $coreTeamContent?->description ?? '';
+
+    if (!empty($coreTeamDesignWord) && str_contains($coreTeamHeadingRaw, $coreTeamDesignWord)) {
+        $coreTeamHeading = str_replace($coreTeamDesignWord, '<span>' . e($coreTeamDesignWord) . '</span>', e($coreTeamHeadingRaw));
+    } else {
+        $coreTeamHeading = e($coreTeamHeadingRaw) . (!empty($coreTeamDesignWord) ? ' <span>' . e($coreTeamDesignWord) . '</span>' : '');
+    }
+@endphp
 <section class="team-section py-5">
     <div class="custom-container">
         <div class="team-header mb-5">
             <div class="d-flex align-items-center gap-2 mb-2">
                 <span class="line-orange"></span>
-                <span class="tag-text">CORE TEAM</span>
+                <span class="tag-text">{{ $coreTeamTag }}</span>
             </div>
-            <h2 class="title">Our <span>in-house specialists</span></h2>
-            <p class="desc">Full-time TRACE staff with deep expertise across our nine service areas — the engine that runs every project.</p>
+            <h2 class="title">{!! $coreTeamHeading !!}</h2>
+            <p class="desc">{{ strip_tags($coreTeamDesc) }}</p>
         </div>
 
         <div class="row g-4">
@@ -764,20 +789,28 @@
     </div>
 </section>
 
+@php
+    $expertsTag         = $expertsContent?->section     ?? '';
+    $expertsHeadingRaw  = $expertsContent?->heading     ?? '';
+    $expertsDesignWord  = $expertsContent?->design_word ?? '';
+    $expertsDesc        = $expertsContent?->description ?? '';
+
+    if (!empty($expertsDesignWord) && str_contains($expertsHeadingRaw, $expertsDesignWord)) {
+        $expertsHeading = str_replace($expertsDesignWord, '<span>' . e($expertsDesignWord) . '</span>', e($expertsHeadingRaw));
+    } else {
+        $expertsHeading = e($expertsHeadingRaw) . (!empty($expertsDesignWord) ? ' <span>' . e($expertsDesignWord) . '</span>' : '');
+    }
+@endphp
 <section class="experts-section">
     <div class="container experts-container">
-        
+
         <div class="experts-top">
             <div class="experts-tag">
                 <span class="line"></span>
-                OUR EXPERTS
+                {{ $expertsTag }}
             </div>
-            <h2>The right expert, <span>for the right problem</span></h2>
-            <p>
-                TRACE works with a network of senior domain experts — professors, former government officials, 
-                international trade lawyers, and sector specialists — who we bring in their knowledge 
-                when a project demands their specific depth.
-            </p>
+            <h2>{!! $expertsHeading !!}</h2>
+            <p>{{ strip_tags($expertsDesc) }}</p>
         </div>
 
        <div class="row g-4 experts-grid">

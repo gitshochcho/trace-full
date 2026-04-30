@@ -372,8 +372,7 @@
                 <div>
                     <h2 class="info-heading"><span class="accent-bar"></span> Find Us</h2>
                     <div class="rounded-4 overflow-hidden border">
-                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3650.091001594771!2d90.4233668114383!3d23.815347886470062!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755c64c103a8757%3A0x4b6e589e81bc5c43!2sBashundhara%20R%2FA%2C%20Dhaka!5e0!3m2!1sen!2sbd!4v1713240000000!5m2!1sen!2sbd" 
-                            width="100%" height="350" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d912.7376598098944!2d90.392688!3d23.784772!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755c78ec6d80eb7%3A0x7c6f4169be0c1efc!2sTRACE%20Consulting!5e0!3m2!1sen!2sus!4v1777529722708!5m2!1sen!2sus" width="100%" height="350" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                     </div>
                 </div>
             </div>
