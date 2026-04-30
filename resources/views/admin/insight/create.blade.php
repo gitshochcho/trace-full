@@ -203,7 +203,11 @@ $articleRows = old('articles', [[
                             <div class="row g-3">
                                 <div class="col-12">
                                     <label class="form-label">Insight Image</label>
-                                    <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" accept="image/*" data-max-size="4096" data-max-width="1200" data-max-height="800">
+                                    <input type="file" id="insightImageInput" name="image" class="form-control @error('image') is-invalid @enderror" accept="image/*" data-max-size="4096" data-max-width="1200" data-max-height="800">
+                                    <div id="insightImagePreviewWrap" class="mt-2 d-none position-relative d-inline-block w-100">
+                                        <img id="insightImagePreview" src="" alt="Selected insight image" class="img-fluid rounded border" style="max-height:160px;width:100%;object-fit:cover;">
+                                        <button type="button" id="clearInsightImageBtn" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:26px;height:26px;font-size:14px;" title="Remove selected image">&times;</button>
+                                    </div>
                                     <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 1200×800px (max 4MB)</small>
                                     @error('image')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
@@ -368,6 +372,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const articleImageWrap = document.getElementById('articleImageWrap');
     const imageDescWrap    = document.getElementById('imageDescWrap');
     const socialLinksWrap  = document.getElementById('socialLinksWrap');
+    const insightImageInput = document.getElementById('insightImageInput');
+    const insightImagePreviewWrap = document.getElementById('insightImagePreviewWrap');
+    const insightImagePreview = document.getElementById('insightImagePreview');
+    const clearInsightImageBtn = document.getElementById('clearInsightImageBtn');
 
     const ckEditors = {};
 
@@ -388,6 +396,31 @@ document.addEventListener('DOMContentLoaded', function () {
     function isArticleOrPub()    { return isArticleType() || isPublicationType(); }
 
     function setVisible(el, show) { if (el) el.style.display = show ? '' : 'none'; }
+
+    function renderInsightImagePreview() {
+        if (!insightImageInput || !insightImagePreviewWrap || !insightImagePreview) return;
+
+        if (!insightImageInput.files || insightImageInput.files.length === 0) {
+            insightImagePreviewWrap.classList.add('d-none');
+            insightImagePreview.src = '';
+            return;
+        }
+
+        insightImagePreview.src = URL.createObjectURL(insightImageInput.files[0]);
+        insightImagePreviewWrap.classList.remove('d-none');
+    }
+
+    if (insightImageInput) {
+        insightImageInput.addEventListener('change', renderInsightImagePreview);
+    }
+
+    if (clearInsightImageBtn) {
+        clearInsightImageBtn.addEventListener('click', function () {
+            insightImageInput.value = '';
+            insightImagePreviewWrap.classList.add('d-none');
+            insightImagePreview.src = '';
+        });
+    }
 
     function toggleVisibility() {
         setVisible(authorWrap,       isArticleOrPub());

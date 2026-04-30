@@ -263,7 +263,7 @@
 </style>
 <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
 <script>
-    (function () {
+document.addEventListener('DOMContentLoaded', function () {
         const field = document.getElementById('content_description');
         const teamPagePresetBtn = document.getElementById('applyTeamPagePreset');
         const servicesPagePresetBtn = document.getElementById('applyServicesPagePreset');
@@ -835,6 +835,6 @@ if (partnersBtn) {
             });
         });
 
-    })();
+});
 </script>
 @endpush

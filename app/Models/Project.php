@@ -55,6 +55,17 @@ class Project extends Model implements HasMedia
         return $this->belongsToMany(Team::class, 'team_project_table');
     }
 
+    public function heroImageUrl(): ?string
+    {
+        $url = $this->getFirstMediaUrl('hero');
+
+        if ($url !== '') {
+            return $url;
+        }
+
+        return $this->imageUrl();
+    }
+
     public function imageUrl(): ?string
     {
         $url = $this->getFirstMediaUrl('images');

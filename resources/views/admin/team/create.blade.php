@@ -91,12 +91,21 @@
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label">Related Projects</label>
-                                        <select name="projects[]" class="form-select" multiple size="7">
+                                        <div id="projectsTagContainer" class="d-flex flex-wrap gap-2 p-2 border rounded" style="min-height:48px;">
                                             @foreach($projects as $project)
-                                                <option value="{{ $project->id }}" @selected(in_array($project->id, $selectedProjects))>{{ $project->project_title }}</option>
+                                                <span class="project-tag badge rounded-pill px-3 py-2 {{ in_array($project->id, $selectedProjects) ? 'bg-primary' : 'bg-secondary' }}"
+                                                      data-id="{{ $project->id }}"
+                                                      style="cursor:pointer;font-size:13px;user-select:none;">
+                                                    {{ $project->project_title }}
+                                                </span>
                                             @endforeach
-                                        </select>
-                                        <small class="text-muted mt-1 d-block">Hold Ctrl/Cmd to select multiple</small>
+                                        </div>
+                                        <div id="projectsHiddenInputs">
+                                            @foreach($selectedProjects as $projectId)
+                                                <input type="hidden" name="projects[]" value="{{ $projectId }}">
+                                            @endforeach
+                                        </div>
+                                        <small class="text-muted mt-1 d-block">Click to select / deselect projects</small>
                                     </div>
                                 </div>
                             </div>
@@ -241,22 +250,10 @@
 @push('custome-js')
 <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
 <script>
-(function () {
+document.addEventListener('DOMContentLoaded', function () {
     // ── CKEditor for description ─────────────────────────────────────
     const descEditorEl = document.querySelector('.team-description-editor');
     let descEditor = null;
-
-    function normalizeEditorHtml(html) {
-        if (!html) return '';
-        let text = html;
-        text = text.replace(/<p[^>]*>/gi, '');
-        text = text.replace(/<\/p>/gi, "\n");
-        text = text.replace(/<br\s*\/?>/gi, "\n");
-        text = text.replace(/&nbsp;/gi, ' ');
-        text = text.replace(/<[^>]*>/g, '');
-        text = text.replace(/\n{3,}/g, "\n\n");
-        return text.trim();
-    }
 
     if (descEditorEl) {
         ClassicEditor.create(descEditorEl)
@@ -267,31 +264,64 @@
         if (teamForm) {
             teamForm.addEventListener('submit', function () {
                 if (descEditor) {
-                    descEditorEl.value = normalizeEditorHtml(descEditor.getData());
+                    descEditorEl.value = descEditor.getData();
+                }
+            });
+        }
+
+        const projectsTagContainer = document.getElementById('projectsTagContainer');
+        const projectsHiddenInputs = document.getElementById('projectsHiddenInputs');
+
+        if (projectsTagContainer && projectsHiddenInputs) {
+            projectsTagContainer.addEventListener('click', function (event) {
+                const tag = event.target.closest('.project-tag');
+                if (!tag) return;
+
+                const id = tag.dataset.id;
+                const isActive = tag.classList.contains('bg-primary');
+
+                if (isActive) {
+                    tag.classList.replace('bg-primary', 'bg-secondary');
+                    const input = projectsHiddenInputs.querySelector('input[value="' + id + '"]');
+                    if (input) input.remove();
+                } else {
+                    tag.classList.replace('bg-secondary', 'bg-primary');
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'projects[]';
+                    input.value = id;
+                    projectsHiddenInputs.appendChild(input);
                 }
             });
         }
     }
 
     // ── Image upload preview ─────────────────────────────────────────
-    const imageInput  = document.getElementById('teamImageInput');
-    const addImageBtn = document.getElementById('addTeamImageRow');
-    const imageQueue  = document.getElementById('teamImageQueue');
+        const imageInput  = document.getElementById('teamImageInput');
+        const addImageBtn = document.getElementById('addTeamImageRow');
+        const imageQueue  = document.getElementById('teamImageQueue');
 
     function renderImageQueue() {
-        imageQueue.innerHTML = '';
-        if (!imageInput.files || imageInput.files.length === 0) return;
-        const file = imageInput.files[0];
-        const card = document.createElement('div');
-        card.className = 'border rounded p-2 d-flex justify-content-between align-items-center';
-        card.innerHTML =
-            '<div><strong>' + file.name + '</strong><div class="small text-muted">' + (file.size / 1024).toFixed(1) + ' KB</div></div>' +
-            '<button type="button" class="btn btn-sm btn-outline-danger" id="removeTeamImage">Remove</button>';
-        imageQueue.appendChild(card);
-        document.getElementById('removeTeamImage').addEventListener('click', function () {
-            imageInput.value = '';
-            renderImageQueue();
-        });
+            imageQueue.innerHTML = '';
+            if (!imageInput.files || imageInput.files.length === 0) return;
+
+            const file = imageInput.files[0];
+            const objectUrl = URL.createObjectURL(file);
+            const card = document.createElement('div');
+            card.className = 'border rounded p-2 position-relative';
+            card.innerHTML =
+                '<img src="' + objectUrl + '" alt="Selected image" class="img-fluid rounded border" style="width:100%;max-height:160px;object-fit:cover;">' +
+                '<button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 rounded-circle p-0 d-flex align-items-center justify-content-center" data-remove-team-image="1" style="width:26px;height:26px;font-size:14px;">&times;</button>';
+            imageQueue.appendChild(card);
+
+            const removeBtn = card.querySelector('[data-remove-team-image="1"]');
+            if (removeBtn) {
+                removeBtn.addEventListener('click', function () {
+                    imageInput.value = '';
+                    imageQueue.innerHTML = '';
+                    URL.revokeObjectURL(objectUrl);
+                });
+            }
     }
 
     if (addImageBtn) addImageBtn.addEventListener('click', function () { imageInput.click(); });
@@ -361,6 +391,6 @@
 
     reindexExpertiseRows();
     reindexSocialRows();
-})();
+});
 </script>
 @endpush

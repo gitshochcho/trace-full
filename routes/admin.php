@@ -76,6 +76,7 @@ Route::prefix('admin')->group(function () {
             Route::get('projects-manager/{project}/edit', 'edit')->name('admin.projects.edit');
             Route::put('projects-manager/{project}', 'update')->name('admin.projects.update');
             Route::delete('projects-manager/{project}', 'destroy')->name('admin.projects.destroy');
+            Route::delete('projects-manager/{project}/images/{mediaId}', 'destroyImage')->name('admin.projects.images.destroy');
         });
 
         Route::controller(TeamController::class)->group(function () {
