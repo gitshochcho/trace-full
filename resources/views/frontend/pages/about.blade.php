@@ -29,7 +29,7 @@
 /* --- Hero Section --- */
 .about-hero {
     position: relative;
-    height: 600px;
+    height: 70vh;
     width: 100%;
     overflow: hidden;
 }
