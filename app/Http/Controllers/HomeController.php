@@ -375,7 +375,10 @@ class HomeController extends Controller
 
     public function team(Request $request)
     {
-        $teamPageContent = contentBlock('team-page');
+        $teamPageContent   = contentBlock('team-page');
+        $leadershipContent = contentBlock('team-leadership');
+        $coreTeamContent   = contentBlock('team-core');
+        $expertsContent    = contentBlock('team-experts');
 
         $advisors = Team::query()
             ->with(['projects', 'experties.media', 'socialMedia.media', 'media'])
@@ -396,7 +399,7 @@ class HomeController extends Controller
             return ! $leadTeam || $member->id !== $leadTeam->id;
         })->values();
 
-        return view('frontend.pages.team', compact('teamPageContent', 'teams', 'leadTeam', 'coreTeams', 'advisors'));
+        return view('frontend.pages.team', compact('teamPageContent', 'leadershipContent', 'coreTeamContent', 'expertsContent', 'teams', 'leadTeam', 'coreTeams', 'advisors'));
     }
 
     public function teamdetails(Request $request, ?Team $team = null)

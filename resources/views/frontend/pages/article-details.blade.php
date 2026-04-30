@@ -711,12 +711,12 @@
             <span class="byline-name">{{ $tName }}</span>
             @if(!$loop->last)<span class="byline-sep">&amp;</span>@endif
             @endforeach
-            <span class="byline-sep">·</span>
+            <!-- <span class="byline-sep">·</span>
             <span class="byline-meta"><i class="far fa-calendar"></i> {{ $publishedLabel }}</span>
             <span class="byline-sep">·</span>
             <span class="byline-meta"><i class="far fa-clock"></i> {{ $readMinutes }} min read</span>
             <span class="byline-sep">·</span>
-            <span class="byline-meta"><i class="far fa-eye"></i> {{ number_format($viewCount) }} views</span>
+            <span class="byline-meta"><i class="far fa-eye"></i> {{ number_format($viewCount) }} views</span> -->
         </div>
 
     </div>

@@ -31,6 +31,9 @@
                             <button type="button" id="applyServicesPagePreset" class="btn btn-sm btn-outline-primary preset-btn">Services Page</button>
                             <button type="button" id="applyContactPagePreset" class="btn btn-sm btn-outline-primary preset-btn">Contact Page</button>
                             <button type="button" id="applyTeamPagePreset" class="btn btn-sm btn-outline-primary preset-btn">Team Page</button>
+                            <button type="button" id="applyTeamLeadershipPreset" class="btn btn-sm btn-outline-primary preset-btn">Team Leadership</button>
+                            <button type="button" id="applyTeamCorePreset" class="btn btn-sm btn-outline-primary preset-btn">Team Core</button>
+                            <button type="button" id="applyTeamExpertsPreset" class="btn btn-sm btn-outline-primary preset-btn">Team Experts</button>
                             <button type="button" id="applyInsightsPagePreset" class="btn btn-sm btn-outline-primary preset-btn">Insights Page</button>
                             <button type="button" id="applyProjectsPagePreset" class="btn btn-sm btn-outline-primary preset-btn">Projects Page</button>
                             <button type="button" id="applyCareerPagePreset" class="btn btn-sm btn-outline-primary preset-btn">Career Page</button>
@@ -264,6 +267,9 @@
         const field = document.getElementById('content_description');
         const teamPagePresetBtn = document.getElementById('applyTeamPagePreset');
         const servicesPagePresetBtn = document.getElementById('applyServicesPagePreset');
+        const teamLeadershipPresetBtn = document.getElementById('applyTeamLeadershipPreset');
+        const teamCorePresetBtn       = document.getElementById('applyTeamCorePreset');
+        const teamExpertsPresetBtn    = document.getElementById('applyTeamExpertsPreset');
         const insightsPagePresetBtn = document.getElementById('applyInsightsPagePreset');
         const projectsPagePresetBtn = document.getElementById('applyProjectsPagePreset');
         const careerPagePresetBtn   = document.getElementById('applyCareerPagePreset');
@@ -419,6 +425,42 @@ if (removeIconBtn) {
                 if (designWordField) designWordField.value = 'drive change.';
                 if (typeField) typeField.value = 'Hero';
                 setDescriptionValue('TRACE brings together a permanent core team of trade specialists, researchers, and technologists - supported by a network of domain experts engaged on specific projects and engagements.');
+            });
+        }
+
+        if (teamLeadershipPresetBtn) {
+            teamLeadershipPresetBtn.addEventListener('click', function () {
+                if (slugField) slugField.value = 'team-leadership';
+                if (sectionField) sectionField.value = 'LEADERSHIP';
+                if (headingField) headingField.value = 'Managing';
+                if (subHeadingField) subHeadingField.value = 'MD & CEO';
+                if (designWordField) designWordField.value = 'Director';
+                if (typeField) typeField.value = 'Section';
+                setDescriptionValue("Leading TRACE's vision of practical, high-impact consulting for governments and development partners.");
+            });
+        }
+
+        if (teamCorePresetBtn) {
+            teamCorePresetBtn.addEventListener('click', function () {
+                if (slugField) slugField.value = 'team-core';
+                if (sectionField) sectionField.value = 'CORE TEAM';
+                if (headingField) headingField.value = 'Our';
+                if (subHeadingField) subHeadingField.value = '';
+                if (designWordField) designWordField.value = 'in-house specialists';
+                if (typeField) typeField.value = 'Section';
+                setDescriptionValue('Full-time TRACE staff with deep expertise across our nine service areas — the engine that runs every project.');
+            });
+        }
+
+        if (teamExpertsPresetBtn) {
+            teamExpertsPresetBtn.addEventListener('click', function () {
+                if (slugField) slugField.value = 'team-experts';
+                if (sectionField) sectionField.value = 'OUR EXPERTS';
+                if (headingField) headingField.value = 'The right expert,';
+                if (subHeadingField) subHeadingField.value = '';
+                if (designWordField) designWordField.value = 'for the right problem';
+                if (typeField) typeField.value = 'Section';
+                setDescriptionValue('TRACE works with a network of senior domain experts — professors, former government officials, international trade lawyers, and sector specialists — who we bring in their knowledge when a project demands their specific depth.');
             });
         }
 
