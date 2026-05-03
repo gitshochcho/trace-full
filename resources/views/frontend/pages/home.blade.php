@@ -835,8 +835,7 @@ const heroSliderData = @json($heroSliderMapped);
                 <div style="max-width:540px;">
                     <h2 class="section-title mb-2">Our <span class="text-teal">Core Services</span></h2>
                     <p class="section-desc mb-0">
-                        Deep expertise across six domains — helping institutions modernise,
-                        improve transparency, and deliver lasting outcomes.
+                        TRACE delivers consultancy, research, and advocacy services to support governments and businesses in advancing policy and regulatory reform.
                     </p>
                 </div>
                 <a href="/services" class="all-link text-decoration-none">
@@ -934,8 +933,7 @@ const heroSliderData = @json($heroSliderMapped);
                 <div style="max-width:520px;">
                     <h2 class="section-title mb-2">Our <span class="text-teal">Projects</span></h2>
                     <p class="section-desc mb-0">
-                        From laboratory accreditation to digital infrastructure — built to
-                        deliver measurable, lasting results.
+                        TRACE has delivered trade facilitation reform, laboratory accreditation, digital systems, and policy advisory projects across South Asia — for governments, development banks, and regulatory bodies.
                     </p>
                 </div>
                 <a href="/projects" class="all-link text-decoration-none">

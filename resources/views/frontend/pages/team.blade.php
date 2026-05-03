@@ -597,8 +597,8 @@
     $leaderSocials = $leader?->socialMedia ?? collect();
     $leaderExpertise = $leader?->experties ?? collect();
 
-    $coreTeamMembers = ($coreTeams ?? collect())->take(8);
-    $expertTeams = ($teams ?? collect())->take(6);
+    $coreTeamMembers = ($coreTeams ?? collect())->take(100);
+    $expertTeams = ($teams ?? collect())->take(100);
 
     $badgeClasses = ['badge-advisory', 'badge-technical', 'badge-research'];
     $expertLabels = ['ADVISORY', 'TECHNICAL EXPERT', 'RESEARCH EXPERT'];
@@ -841,7 +841,8 @@
             </div>
 
             <div class="expert-right">
-                <span class="expert-badge {{ $badgeClasses[$index % count($badgeClasses)] }}">{{ $expertLabels[$index % count($expertLabels)] }}</span>
+                <!-- <span class="expert-badge {{ $badgeClasses[$index % count($badgeClasses)] }}">{{ $expertLabels[$index % count($expertLabels)] }}</span> -->
+                <span class="expert-badge {{ $badgeClasses[$index % count($badgeClasses)] }}">{{ $expert?->expertise_label ?? ''}}</span>
                 <h4>{{ $expert->fullName() }}</h4>
                 <p class="role">{{ $expert->designation ?? '' }}</p>
                 <p class="desc">{{ $expert->short_description ?: \Illuminate\Support\Str::limit(stripPTags($expert->description), 110) }}</p>

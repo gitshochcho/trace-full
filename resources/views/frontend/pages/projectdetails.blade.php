@@ -413,20 +413,21 @@
                 </div>
                 @endif
 
-                {{-- <div class="mb-5">
+                 <div class="mb-5">
                     <h3 class="section-title-accent">{{ $phaseHeading }}</h3>
+                   
                     @if(!empty($phaseDescription))
-                        <p class="mt-3">{{ strip_tags($phaseDescription) }}</p>
+                        <p class="mt-3">{!! $phaseDescription !!}</p>
                     @endif
                     <div class="d-grid gap-3 mt-4">
                         @forelse($project->phaseDetails as $phase)
                             <div class="border rounded-3 bg-white p-4 shadow-sm">
                                 <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
                                     <div class="flex-grow-1">
-                                        <div>{!! nl2br(e(strip_tags($phase->phase_description))) !!}</div>
+                                        <div>{!! $phase->phase_description !!}</div>
                                     </div>
                                     @if($phase->attachmentUrl())
-                                        <a href="{{ $phase->attachmentUrl() }}" target="_blank" class="view-link text-nowrap">
+                                        <a href="{{ $phase->attachmentUrl() }}" target="_blank" class="view-link text-decoration-none text-primary">
                                             PDF Attachment <i class="fas fa-file-pdf"></i>
                                         </a>
                                     @endif
@@ -438,7 +439,7 @@
                             </div>
                         @endforelse
                     </div>
-                </div> --}}
+                </div>
 
                 <div class="outcomes-content">
                     <h3 class="section-title-accent">{{ $outcomeHeading }}Key Outcomes</h3>
