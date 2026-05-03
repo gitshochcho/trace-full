@@ -798,6 +798,35 @@
             <a href="{{ $downloadUrl }}" class="dl-btn" target="_blank" rel="noopener"><i class="fas fa-download"></i> Download File</a>
         </div>
 
+        {{-- Publish Share Links --}}
+        @php $publishLinks = array_filter($article->insight?->publish_links ?? [], fn($p) => !empty($p['link'])); @endphp
+        @if(!empty($publishLinks))
+        <div class="sidebar-card" style="border: 1px solid #b2e8e8; border-radius: 12px; padding: 20px;">
+            
+            <p class="dl-text" style="color: #0f172a; margin-bottom: 4px; text-align:center;">View the Publication</p>
+            <p class="dl-sub" style="color: #64748b; margin-bottom: 16px; text-align:center;">View the published version of this report.</p>
+            <div class="d-flex flex-column gap-2">
+                @foreach($publishLinks as $plink)
+                @php $plUrl = $plink['link']; $plName = $plink['name'] ?: 'View Publication'; @endphp
+                <div class="d-flex align-items-center gap-2">
+                    <a href="{{ $plUrl }}" class="dl-btn flex-grow-1"
+                       style="background: #01888C; font-size: 12px; padding: 9px 12px;"
+                       target="_blank" rel="noopener">
+                        <i class="fas fa-external-link-alt"></i> {{ $plName }}
+                    </a>
+                    <button type="button"
+                        onclick="navigator.clipboard.writeText('{{ $plUrl }}'); const b=this; b.innerHTML='<i class=\'fas fa-check\'></i>'; setTimeout(()=>b.innerHTML='<i class=\'far fa-copy\'></i>',2000);"
+                        class="btn btn-sm"
+                        style="width:34px;height:34px;padding:0;border:1px solid #b2e8e8;border-radius:6px;color:#01888C;background:#eef9f9;flex-shrink:0;"
+                        title="Copy link">
+                        <i class="far fa-copy"></i>
+                    </button>
+                </div>
+                @endforeach
+            </div>
+        </div>
+        @endif
+
         {{-- Authors --}}
         <div class="sidebar-card author-card">
             <h4 class="sidebar-heading">{{ $authorTeams->count() + count($outsideAuthors) > 1 ? 'AUTHORS' : 'AUTHOR' }}</h4>

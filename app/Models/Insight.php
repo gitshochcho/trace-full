@@ -25,6 +25,7 @@ class Insight extends Model implements HasMedia
         'source_name',
         'author_team_ids',
         'outside_authors',
+        'publish_links',
     ];
 
     protected $casts = [
@@ -32,6 +33,7 @@ class Insight extends Model implements HasMedia
         'published_at' => 'datetime',
         'author_team_ids' => 'array',
         'outside_authors' => 'array',
+        'publish_links' => 'array',
     ];
 
     public function videoUrl(): ?string

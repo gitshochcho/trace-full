@@ -48,6 +48,7 @@ class InsightController extends Controller
             'active' => (bool) ($validated['active'] ?? true),
             'published_at' => $validated['published_at'] ?? null,
             'source_name' => $validated['source_name'] ?? null,
+            'publish_links' => $validated['publish_links'] ?? [],
             'author_team_ids' => $authorTeamIds,
             'outside_authors' => $validated['outside_authors'] ?? [],
         ]);
@@ -83,6 +84,7 @@ class InsightController extends Controller
             'active' => (bool) ($validated['active'] ?? true),
             'published_at' => $validated['published_at'] ?? null,
             'source_name' => $validated['source_name'] ?? null,
+            'publish_links' => $validated['publish_links'] ?? [],
             'author_team_ids' => $authorTeamIds,
             'outside_authors' => $validated['outside_authors'] ?? [],
         ]);
@@ -142,6 +144,9 @@ class InsightController extends Controller
             'articles.*.social_links.*.name' => ['nullable',            'string'],           
             'articles.*.social_links.*.link' => ['nullable', 'string'], 
             'source_name' => ['nullable', 'string', 'max:255'],
+            'publish_links' => ['nullable', 'array'],
+            'publish_links.*.name' => ['nullable', 'string', 'max:255'],
+            'publish_links.*.link' => ['nullable', 'string', 'max:500'],
         ]);
     }
 
