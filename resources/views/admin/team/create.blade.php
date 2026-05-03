@@ -46,6 +46,12 @@
                                         <input type="text" name="last_name" value="{{ old('last_name') }}" class="form-control @error('last_name') is-invalid @enderror">
                                         @error('last_name')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label">Expertise Label</label>
+                                        <input type="text" name="expertise_label" value="{{ old('expertise_label') }}" class="form-control @error('expertise_label') is-invalid @enderror">
+                                        @error('expertise_label')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                    </div>
                                     <div class="col-md-6">
                                         <label class="form-label">Type</label>
                                         <select name="type" class="form-select">

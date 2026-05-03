@@ -47,6 +47,7 @@ class TeamController extends Controller
             'sort_order' => $validated['sort_order'] ?? 0,
             'type' => $validated['type'] ?? 1,
             'headtitle' => $validated['headtitle'] ?? null,
+            'expertise_label' => $validated['expertise_label'] ?? null,
         ]);
 
         if ($request->hasFile('image')) {
@@ -96,6 +97,7 @@ class TeamController extends Controller
             'sort_order' => $validated['sort_order'] ?? 0,
             'type' => $validated['type'],
             'headtitle' => $validated['headtitle'] ?? null,
+            'expertise_label' => $validated['expertise_label'] ?? null,
         ]);
         $team->save();
 
@@ -151,6 +153,7 @@ class TeamController extends Controller
         return $request->validate([
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['nullable', 'string', 'max:255'],
+            'expertise_label' => ['nullable', 'string'],
             'designation' => ['nullable', 'string', 'max:255'],
             'short_description' => ['nullable', 'string', 'max:500'],
             'description' => ['nullable', 'string'],

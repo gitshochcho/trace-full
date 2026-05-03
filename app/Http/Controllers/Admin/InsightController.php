@@ -69,6 +69,7 @@ class InsightController extends Controller
 
     public function update(Request $request, Insight $insight): RedirectResponse
     {
+        
         $validated = $this->validateInsightRequest($request, true);
         $authorTeamIds = array_values(array_filter(array_map('intval', $validated['author_team_ids'] ?? [])));
         $insight->fill([

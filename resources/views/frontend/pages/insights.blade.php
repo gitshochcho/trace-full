@@ -135,7 +135,7 @@
 };
     $cardImage = $insight->imageUrl() ?: $insight->articleImageUrl() ?: asset('assets/img/Op-Ed.png');
     $leadArticle = $insight->articles->first();
-    $description = \Illuminate\Support\Str::limit($insight->description ?: ($leadArticle?->description ?: ''), 120);
+    $description = \Illuminate\Support\Str::limit($insight->description ?? ($leadArticle?->description ?? ''), 120);
 $typeCategory = strtolower(str_replace(' ', '_', $insight->insightType?->type_category ?? ''));
 
 if ($typeCategory === 'download') {
@@ -166,7 +166,17 @@ $isExternal = false;
                     <div class="card-body p-4">
                         <small class="fw-bold mb-2 d-block" style="font-size: 11px; color: #00898e; letter-spacing: 0.5px;">{{ $category }}</small>
                         <h5 class="card-title fw-bold text-dark mb-2" style="font-size: 16px; line-height: 1.4;">{{ $title }}</h5>
-                        <p class="card-text text-muted small mb-0">{{ $description }}</p>
+                        @if(!empty($insight?->description))
+                       
+                        <p class="card-text text-muted small mb-0">{{$insight?->description}}</p>
+                        @else
+                      
+                        <p class="card-text text-muted small mb-0">
+                            {{ \Illuminate\Support\Str::limit(strip_tags($insight->articles->first()?->description), 120) }}
+                        </p>
+                        
+                        
+                        @endif
                     </div>
                     <div class="insight-card-footer">
                         <span class="text-muted" style="font-size: 12px;"><i class="far fa-calendar-alt me-1"></i> {{ $metaDate }} · {{ $metaDuration }}</span>
