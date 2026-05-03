@@ -233,6 +233,25 @@ $currentInsightImageRemoveField = $insight->articleImageUrl() ? 'remove_article_
                                 </div>
                             </div>
 
+                            {{-- Publish Share Links --}}
+                            <div class="col-12 mt-2 p-3 rounded" id="editPublishLinkWrap" style="background: #eef9f9; border: 1px solid #b2e8e8;">
+                                <label class="form-label fw-bold" style="color: #01888C;">Publish Share Links</label>
+                                <div id="edit-publish-links-wrapper">
+                                    @foreach(old('publish_links', $insight->publish_links ?? []) as $pIdx => $plink)
+                                    <div class="publish-link-row d-flex gap-2 mb-2">
+                                        <input type="text" name="publish_links[{{ $pIdx }}][name]"
+                                            class="form-control form-control-sm" placeholder="Label (e.g. ResearchGate)"
+                                            value="{{ $plink['name'] ?? '' }}" style="width:160px">
+                                        <input type="text" name="publish_links[{{ $pIdx }}][link]"
+                                            class="form-control form-control-sm" placeholder="URL"
+                                            value="{{ $plink['link'] ?? '' }}">
+                                        <button type="button" class="btn btn-sm btn-outline-danger remove-publish-link">&times;</button>
+                                    </div>
+                                    @endforeach
+                                </div>
+                                <button type="button" class="btn btn-sm mt-2" id="edit-add-publish-link-btn" style="background: #01888C; color: #fff;">+ Add Publish Link</button>
+                            </div>
+
                             {{-- Social Share Links: visible only for Article / Publication --}}
                             <div class="col-12 mt-2 p-3 bg-light rounded" id="editSocialLinksWrap">
                                 <label class="form-label fw-bold">Social Share Links</label>
@@ -366,6 +385,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const editInsightAttWrap  = document.getElementById('editInsightAttachmentWrap');
     const editArticleAttWrap  = document.getElementById('editArticleAttachmentWrap');
     const editSocialLinksWrap = document.getElementById('editSocialLinksWrap');
+    const editPublishLinkWrap = document.getElementById('editPublishLinkWrap');
     const editArticleImageWrap = document.getElementById('editArticleImageWrap');
     const editImageDescWrap   = document.getElementById('editImageDescWrap');
     const insightImageInput = document.getElementById('insightImageInput');
@@ -443,6 +463,7 @@ document.addEventListener('DOMContentLoaded', function () {
         setVisible(editArticleImageWrap, isArticleOrPub());
         setVisible(editImageDescWrap,    isArticleOrPub());
         setVisible(editSocialLinksWrap,  isArticleOrPub());
+        setVisible(editPublishLinkWrap,  isArticleOrPub());
         setVisible(editArticleSectWrap,  isArticleOrPub());
     }
 
@@ -532,6 +553,24 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         reindex();
+    }
+
+    // ===== Publish Links =====
+    const publishWrapper = document.getElementById('edit-publish-links-wrapper');
+    const publishBtn     = document.getElementById('edit-add-publish-link-btn');
+    if (publishWrapper && publishBtn) {
+        publishBtn.addEventListener('click', () => {
+            const count = publishWrapper.querySelectorAll('.publish-link-row').length;
+            const row   = document.createElement('div');
+            row.className = 'publish-link-row d-flex gap-2 mb-2';
+            row.innerHTML = `<input type="text" name="publish_links[${count}][name]" class="form-control form-control-sm" placeholder="Label (e.g. ResearchGate)" style="width:160px">
+                <input type="text" name="publish_links[${count}][link]" class="form-control form-control-sm" placeholder="URL">
+                <button type="button" class="btn btn-sm btn-outline-danger remove-publish-link">&times;</button>`;
+            publishWrapper.appendChild(row);
+        });
+        publishWrapper.addEventListener('click', e => {
+            if (e.target.closest('.remove-publish-link')) e.target.closest('.publish-link-row').remove();
+        });
     }
 
     // ===== Social Links =====

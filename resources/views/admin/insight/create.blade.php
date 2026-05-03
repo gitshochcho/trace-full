@@ -178,6 +178,21 @@ $articleRows = old('articles', [[
                                     </div>
                                 </div>
 
+                                {{-- Publish Share Links --}}
+                                <div class="col-12 p-3 rounded" id="publishLinkWrap" style="background: #eef9f9; border: 1px solid #b2e8e8;">
+                                    <label class="form-label fw-bold" style="color: #01888C;">Publish Share Links</label>
+                                    <div id="publish-links-wrapper">
+                                        @foreach(old('publish_links', []) as $pIdx => $plink)
+                                        <div class="publish-link-row d-flex gap-2 mb-2">
+                                            <input type="text" name="publish_links[{{ $pIdx }}][name]" class="form-control form-control-sm" placeholder="Label (e.g. ResearchGate)" value="{{ $plink['name'] ?? '' }}" style="width:160px">
+                                            <input type="text" name="publish_links[{{ $pIdx }}][link]" class="form-control form-control-sm" placeholder="URL" value="{{ $plink['link'] ?? '' }}">
+                                            <button type="button" class="btn btn-sm btn-outline-danger remove-publish-link">&times;</button>
+                                        </div>
+                                        @endforeach
+                                    </div>
+                                    <button type="button" class="btn btn-sm mt-2" id="add-publish-link-btn" style="background: #01888C; color: #fff;">+ Add Publish Link</button>
+                                </div>
+
                                 {{-- Social Share Links: visible for Article/Publication --}}
                                 <div class="col-12 p-3 bg-light rounded" id="socialLinksWrap">
                                     <label class="form-label fw-bold">Social Share Links</label>
@@ -372,6 +387,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const articleImageWrap = document.getElementById('articleImageWrap');
     const imageDescWrap    = document.getElementById('imageDescWrap');
     const socialLinksWrap  = document.getElementById('socialLinksWrap');
+    const publishLinkWrap  = document.getElementById('publishLinkWrap');
     const insightImageInput = document.getElementById('insightImageInput');
     const insightImagePreviewWrap = document.getElementById('insightImagePreviewWrap');
     const insightImagePreview = document.getElementById('insightImagePreview');
@@ -432,6 +448,7 @@ document.addEventListener('DOMContentLoaded', function () {
         setVisible(articleImageWrap, isArticleOrPub());
         setVisible(imageDescWrap,    isArticleOrPub());
         setVisible(socialLinksWrap,  isArticleOrPub());
+        setVisible(publishLinkWrap,  isArticleOrPub());
         setVisible(articleSectWrap,  isArticleOrPub());
     }
 
@@ -509,6 +526,24 @@ document.addEventListener('DOMContentLoaded', function () {
             row.remove(); reindex();
         }
     });
+
+    // ===== Publish Links =====
+    const publishWrapper = document.getElementById('publish-links-wrapper');
+    const publishBtn     = document.getElementById('add-publish-link-btn');
+    if (publishWrapper && publishBtn) {
+        publishBtn.addEventListener('click', () => {
+            const count = publishWrapper.querySelectorAll('.publish-link-row').length;
+            const row   = document.createElement('div');
+            row.className = 'publish-link-row d-flex gap-2 mb-2';
+            row.innerHTML = `<input type="text" name="publish_links[${count}][name]" class="form-control form-control-sm" placeholder="Label (e.g. ResearchGate)" style="width:160px">
+                <input type="text" name="publish_links[${count}][link]" class="form-control form-control-sm" placeholder="URL">
+                <button type="button" class="btn btn-sm btn-outline-danger remove-publish-link">&times;</button>`;
+            publishWrapper.appendChild(row);
+        });
+        publishWrapper.addEventListener('click', e => {
+            if (e.target.closest('.remove-publish-link')) e.target.closest('.publish-link-row').remove();
+        });
+    }
 
     // ===== Social Links (General Section) =====
     const socialWrapper = document.getElementById('social-links-wrapper');
