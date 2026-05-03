@@ -43,7 +43,7 @@ class TeamController extends Controller
             'last_name' => $validated['last_name'] ?? null,
             'designation' => $validated['designation'] ?? null,
             'short_description' => $validated['short_description'] ?? null,
-            'description' => $this->normalizeEditorText($validated['description'] ?? null),
+            'description' => $validated['description'] ?? null,
             'sort_order' => $validated['sort_order'] ?? 0,
             'type' => $validated['type'] ?? 1,
             'headtitle' => $validated['headtitle'] ?? null,
@@ -92,7 +92,7 @@ class TeamController extends Controller
             'last_name' => $validated['last_name'] ?? null,
             'designation' => $validated['designation'] ?? null,
             'short_description' => $validated['short_description'] ?? null,
-            'description' => $this->normalizeEditorText($validated['description'] ?? null),
+            'description' => $validated['description'] ?? null,
             'sort_order' => $validated['sort_order'] ?? 0,
             'type' => $validated['type'],
             'headtitle' => $validated['headtitle'] ?? null,
@@ -189,7 +189,7 @@ class TeamController extends Controller
         foreach (array_values($rows) as $index => $item) {
             $rowId = ! empty($item['id']) ? (int) $item['id'] : null;
             $heading = trim((string) ($item['heading'] ?? ''));
-            $description = $this->normalizeEditorText($item['description'] ?? null) ?? '';
+            $description = $item['description'] ?? null;
             $icon = $icons[$index] ?? null;
 
             if ($heading === '' && $description === '' && ! $icon && $rowId === null) {

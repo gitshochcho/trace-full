@@ -92,8 +92,12 @@
 
                                     <div class="col-md-6">
                                         <label class="form-label">Service Image</label>
-                                        <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" accept="image/*" data-max-size="4096" data-max-width="800" data-max-height="600">
-                                        <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 800×600px (max 4MB)</small>
+                                        <input type="file" id="serviceImageInput" name="image" class="form-control @error('image') is-invalid @enderror" accept="image/*" data-max-size="4096" data-max-width="800" data-max-height="600">
+                                        <div id="serviceImagePreviewWrap" class="mt-2 d-none position-relative d-inline-block w-100">
+                                            <img id="serviceImagePreview" src="" alt="Selected service image" class="img-fluid rounded border" style="max-height:160px;width:100%;object-fit:cover;">
+                                            <button type="button" id="clearServiceImageBtn" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:26px;height:26px;font-size:14px;" title="Remove selected image">&times;</button>
+                                        </div>
+                                        <small class="text-muted d-block mt-2"><i class="fas fa-info-circle"></i> Recommended: 800×600px (max 4MB)</small>
                                         @error('image')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
 
@@ -230,24 +234,44 @@
 @push('custome-js')
 <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
 <script>
-(function () {
+document.addEventListener('DOMContentLoaded', function () {
     const activeEditors  = new Map();
     const form           = document.querySelector('form');
     const detailWrapper  = document.getElementById('detailsWrapper');
     const solutionWrapper = document.getElementById('solutionsWrapper');
     const detailTemplate  = document.getElementById('detailRowTemplate');
     const solutionTemplate = document.getElementById('solutionRowTemplate');
+    const serviceImageInput = document.getElementById('serviceImageInput');
+    const serviceImagePreviewWrap = document.getElementById('serviceImagePreviewWrap');
+    const serviceImagePreview = document.getElementById('serviceImagePreview');
+    const clearServiceImageBtn = document.getElementById('clearServiceImageBtn');
 
-    function normalizeEditorHtml(html) {
-        if (!html) return '';
-        let text = html;
-        text = text.replace(/<p[^>]*>/gi, '');
-        text = text.replace(/<\/p>/gi, "\n");
-        text = text.replace(/<br\s*\/?>/gi, "\n");
-        text = text.replace(/&nbsp;/gi, ' ');
-        text = text.replace(/<[^>]*>/g, '');
-        text = text.replace(/\n{3,}/g, "\n\n");
-        return text.trim();
+    function renderServiceImagePreview() {
+        if (!serviceImageInput || !serviceImagePreviewWrap || !serviceImagePreview) return;
+
+        if (!serviceImageInput.files || serviceImageInput.files.length === 0) {
+            serviceImagePreviewWrap.classList.add('d-none');
+            serviceImagePreview.src = '';
+            return;
+        }
+
+        const file = serviceImageInput.files[0];
+        const objectUrl = URL.createObjectURL(file);
+        serviceImagePreview.src = objectUrl;
+        serviceImagePreviewWrap.classList.remove('d-none');
+
+        if (clearServiceImageBtn && !clearServiceImageBtn.dataset.bound) {
+            clearServiceImageBtn.dataset.bound = '1';
+            clearServiceImageBtn.addEventListener('click', function () {
+                serviceImageInput.value = '';
+                serviceImagePreviewWrap.classList.add('d-none');
+                serviceImagePreview.src = '';
+            });
+        }
+    }
+
+    if (serviceImageInput) {
+        serviceImageInput.addEventListener('change', renderServiceImagePreview);
     }
 
     function initEditors() {
@@ -265,11 +289,7 @@
     if (form) {
         form.addEventListener('submit', function () {
             activeEditors.forEach(function (editor, textarea) {
-                if (textarea.dataset.raw) {
-                    textarea.value = editor.getData();
-                } else {
-                    textarea.value = normalizeEditorHtml(editor.getData());
-                }
+                textarea.value = editor.getData();
             });
         });
     }
@@ -305,6 +325,6 @@
             e.target.closest('.solution-row').remove();
         }
     });
-})();
+});
 </script>
 @endpush

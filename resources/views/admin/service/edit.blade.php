@@ -110,12 +110,20 @@
 
                                     <div class="col-md-6">
                                         <label class="form-label">Service Image</label>
-                                        <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" accept="image/*" data-max-size="4096" data-max-width="800" data-max-height="600">
-                                        <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 800×600px (max 4MB)</small>
-                                        @error('image')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                        <input type="hidden" name="remove_image" value="0" id="serviceRemoveImageInput">
+                                        <input type="file" id="serviceImageInput" name="image" class="form-control @error('image') is-invalid @enderror" accept="image/*" data-max-size="4096" data-max-width="800" data-max-height="600">
                                         @if($service->imageUrl())
-                                            <img src="{{ $service->imageUrl() }}" alt="image" class="img-fluid mt-2 rounded" style="max-height: 90px; object-fit: cover;">
+                                            <div id="existingServiceImageWrap" class="mt-2 position-relative d-inline-block w-100">
+                                                <img src="{{ $service->imageUrl() }}" alt="current service image" class="img-fluid rounded border" style="max-height:160px;width:100%;object-fit:cover;">
+                                                <button type="button" id="removeServiceImageBtn" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:26px;height:26px;font-size:14px;" title="Remove current image">&times;</button>
+                                            </div>
                                         @endif
+                                        <div id="serviceImagePreviewWrap" class="mt-2 d-none position-relative d-inline-block w-100">
+                                            <img id="serviceImagePreview" src="" alt="Selected service image" class="img-fluid rounded border" style="max-height:160px;width:100%;object-fit:cover;">
+                                            <button type="button" id="clearServiceImageBtn" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:26px;height:26px;font-size:14px;" title="Remove selected image">&times;</button>
+                                        </div>
+                                        <small class="text-muted d-block mt-2"><i class="fas fa-info-circle"></i> Recommended: 800×600px (max 4MB)</small>
+                                        @error('image')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
 
                                     <div class="col-md-6">
@@ -251,24 +259,53 @@
 @push('custome-js')
 <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
 <script>
-    (function () {
+document.addEventListener('DOMContentLoaded', function () {
         const activeEditors = new Map();
         const form = document.querySelector('form[action*="admin/services-manager"]');
+        const serviceImageInput = document.getElementById('serviceImageInput');
+        const serviceImagePreviewWrap = document.getElementById('serviceImagePreviewWrap');
+        const serviceImagePreview = document.getElementById('serviceImagePreview');
+        const clearServiceImageBtn = document.getElementById('clearServiceImageBtn');
+        const removeServiceImageBtn = document.getElementById('removeServiceImageBtn');
+        const serviceRemoveImageInput = document.getElementById('serviceRemoveImageInput');
 
-        function normalizeEditorHtml(html) {
-            if (!html) {
-                return '';
+        function renderServiceImagePreview() {
+            if (!serviceImageInput || !serviceImagePreviewWrap || !serviceImagePreview) return;
+            const existingWrap = document.getElementById('existingServiceImageWrap');
+
+            if (!serviceImageInput.files || serviceImageInput.files.length === 0) {
+                serviceImagePreviewWrap.classList.add('d-none');
+                serviceImagePreview.src = '';
+                if (existingWrap) existingWrap.classList.remove('d-none');
+                return;
             }
 
-            let text = html;
-            text = text.replace(/<p[^>]*>/gi, '');
-            text = text.replace(/<\/p>/gi, "\n");
-            text = text.replace(/<br\s*\/?>/gi, "\n");
-            text = text.replace(/&nbsp;/gi, ' ');
-            text = text.replace(/<[^>]*>/g, '');
-            text = text.replace(/\n{3,}/g, "\n\n");
+            const file = serviceImageInput.files[0];
+            serviceImagePreview.src = URL.createObjectURL(file);
+            serviceImagePreviewWrap.classList.remove('d-none');
+            if (existingWrap) existingWrap.classList.add('d-none');
+        }
 
-            return text.trim();
+        if (serviceImageInput) {
+            serviceImageInput.addEventListener('change', renderServiceImagePreview);
+        }
+
+        if (clearServiceImageBtn) {
+            clearServiceImageBtn.addEventListener('click', function () {
+                serviceImageInput.value = '';
+                serviceImagePreviewWrap.classList.add('d-none');
+                serviceImagePreview.src = '';
+                const existingWrap = document.getElementById('existingServiceImageWrap');
+                if (existingWrap) existingWrap.classList.remove('d-none');
+            });
+        }
+
+        if (removeServiceImageBtn && serviceRemoveImageInput) {
+            removeServiceImageBtn.addEventListener('click', function () {
+                serviceRemoveImageInput.value = '1';
+                const wrap = document.getElementById('existingServiceImageWrap');
+                if (wrap) wrap.remove();
+            });
         }
 
         function initEditors() {
@@ -290,11 +327,7 @@
         if (form) {
             form.addEventListener('submit', function () {
                 activeEditors.forEach(function (editor, textarea) {
-                    if (textarea.dataset.raw) {
-                        textarea.value = editor.getData();
-                    } else {
-                        textarea.value = normalizeEditorHtml(editor.getData());
-                    }
+                    textarea.value = editor.getData();
                 });
             });
         }
@@ -337,6 +370,6 @@
                 event.target.closest('.solution-row').remove();
             }
         });
-    })();
+});
 </script>
 @endpush

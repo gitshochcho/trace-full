@@ -43,7 +43,7 @@ class InsightController extends Controller
             'video_link' => $validated['video_link'] ?? null,
             'heading' => $validated['heading'],
             'sub_heading' => $validated['sub_heading'] ?? null,
-            'description' => $this->normalizeEditorText($validated['description'] ?? null),
+            'description' => $validated['description'] ?? null,
             'sort_order' => $validated['sort_order'] ?? 0,
             'active' => (bool) ($validated['active'] ?? true),
             'published_at' => $validated['published_at'] ?? null,
@@ -77,7 +77,7 @@ class InsightController extends Controller
             'heading' => $validated['heading'],
             'video_link' => $validated['video_link'] ?? $insight->video_link,
             'sub_heading' => $validated['sub_heading'] ?? null,
-            'description' => $this->normalizeEditorText($validated['description'] ?? null),
+            'description' => $validated['description'] ?? null,
             'sort_order' => $validated['sort_order'] ?? 0,
             'active' => (bool) ($validated['active'] ?? true),
             'published_at' => $validated['published_at'] ?? null,
@@ -119,6 +119,7 @@ class InsightController extends Controller
             'published_at' => ['nullable', 'date'],
             'video_link' => ['nullable', 'url'],
             'remove_image' => ['nullable', 'boolean'],
+            'remove_article_image' => ['nullable', 'boolean'],
             'remove_attachment' => ['nullable', 'boolean'],
 
             // Media
@@ -146,6 +147,7 @@ class InsightController extends Controller
     private function handleInsightMedia(Insight $insight, Request $request, bool $isUpdate = false): void
     {
         if ($isUpdate && $request->boolean('remove_image')) $insight->clearMediaCollection('image');
+        if ($isUpdate && $request->boolean('remove_article_image')) $insight->clearMediaCollection('article_image');
         if ($isUpdate && $request->boolean('remove_attachment')) $insight->clearMediaCollection('attachment');
 
         if ($request->hasFile('image')) { $insight->clearMediaCollection('image'); $insight->addMedia($request->file('image'))->toMediaCollection('image'); }

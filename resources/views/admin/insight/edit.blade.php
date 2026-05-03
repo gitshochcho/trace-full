@@ -13,6 +13,8 @@ if (empty($articleRows)) $articleRows = [['id' => null, 'title' => '', 'descript
 
 $savedAuthorTeamIds  = old('author_team_ids', $insight->author_team_ids ?? []);
 $savedOutsideAuthors = old('outside_authors', $insight->outside_authors ?? []);
+$currentInsightImageUrl = $insight->articleImageUrl() ?: $insight->imageUrl();
+$currentInsightImageRemoveField = $insight->articleImageUrl() ? 'remove_article_image' : 'remove_image';
 @endphp
 
 <div class="app-content-header">
@@ -160,10 +162,18 @@ $savedOutsideAuthors = old('outside_authors', $insight->outside_authors ?? []);
 
                             <div class="col-md-8" id="editArticleImageWrap">
                                 <label class="form-label">Insight Image</label>
-                                <input type="file" name="article_image" class="form-control" accept="image/*" data-max-size="4096" data-max-width="1200" data-max-height="800">
-                                @if($insight->articleImageUrl() ?? $insight->imageUrl())
-                                    <small class="text-muted">Current: <a href="{{ $insight->articleImageUrl() ?? $insight->imageUrl() }}" target="_blank">View image</a></small>
+                                <input type="hidden" name="{{ $currentInsightImageRemoveField }}" value="0" id="removeInsightImageInput">
+                                <input type="file" id="insightImageInput" name="article_image" class="form-control" accept="image/*" data-max-size="4096" data-max-width="1200" data-max-height="800">
+                                @if($currentInsightImageUrl)
+                                    <div id="existingInsightImageWrap" class="mt-2 position-relative d-inline-block w-100">
+                                        <img src="{{ $currentInsightImageUrl }}" alt="current insight image" class="img-fluid rounded border" style="max-height:160px;width:100%;object-fit:cover;">
+                                        <button type="button" id="removeInsightImageBtn" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:26px;height:26px;font-size:14px;" title="Remove current image">&times;</button>
+                                    </div>
                                 @endif
+                                <div id="insightImagePreviewWrap" class="mt-2 d-none position-relative d-inline-block w-100">
+                                    <img id="insightImagePreview" src="" alt="Selected insight image" class="img-fluid rounded border" style="max-height:160px;width:100%;object-fit:cover;">
+                                    <button type="button" id="clearInsightImageBtn" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:26px;height:26px;font-size:14px;" title="Remove selected image">&times;</button>
+                                </div>
                             </div>
 
                             <div class="col-md-4" id="editImageDescWrap">
@@ -358,6 +368,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const editSocialLinksWrap = document.getElementById('editSocialLinksWrap');
     const editArticleImageWrap = document.getElementById('editArticleImageWrap');
     const editImageDescWrap   = document.getElementById('editImageDescWrap');
+    const insightImageInput = document.getElementById('insightImageInput');
+    const insightImagePreviewWrap = document.getElementById('insightImagePreviewWrap');
+    const insightImagePreview = document.getElementById('insightImagePreview');
+    const clearInsightImageBtn = document.getElementById('clearInsightImageBtn');
+    const removeInsightImageBtn = document.getElementById('removeInsightImageBtn');
+    const removeInsightImageInput = document.getElementById('removeInsightImageInput');
 
     const editors = {};
 
@@ -378,6 +394,44 @@ document.addEventListener('DOMContentLoaded', function () {
     function isArticleOrPub()    { return isArticleType() || isPublicationType(); }
 
     function setVisible(el, show) { if (el) el.style.display = show ? '' : 'none'; }
+
+    function renderInsightImagePreview() {
+        if (!insightImageInput || !insightImagePreviewWrap || !insightImagePreview) return;
+        const existingWrap = document.getElementById('existingInsightImageWrap');
+
+        if (!insightImageInput.files || insightImageInput.files.length === 0) {
+            insightImagePreviewWrap.classList.add('d-none');
+            insightImagePreview.src = '';
+            if (existingWrap) existingWrap.classList.remove('d-none');
+            return;
+        }
+
+        insightImagePreview.src = URL.createObjectURL(insightImageInput.files[0]);
+        insightImagePreviewWrap.classList.remove('d-none');
+        if (existingWrap) existingWrap.classList.add('d-none');
+    }
+
+    if (insightImageInput) {
+        insightImageInput.addEventListener('change', renderInsightImagePreview);
+    }
+
+    if (clearInsightImageBtn) {
+        clearInsightImageBtn.addEventListener('click', function () {
+            insightImageInput.value = '';
+            insightImagePreviewWrap.classList.add('d-none');
+            insightImagePreview.src = '';
+            const existingWrap = document.getElementById('existingInsightImageWrap');
+            if (existingWrap) existingWrap.classList.remove('d-none');
+        });
+    }
+
+    if (removeInsightImageBtn && removeInsightImageInput) {
+        removeInsightImageBtn.addEventListener('click', function () {
+            removeInsightImageInput.value = '1';
+            const wrap = document.getElementById('existingInsightImageWrap');
+            if (wrap) wrap.remove();
+        });
+    }
 
     function toggleVisibility() {
         setVisible(editAuthorWrap,       isArticleOrPub());

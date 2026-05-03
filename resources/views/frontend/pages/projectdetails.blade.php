@@ -259,13 +259,14 @@
 
 @section('content')
 @php
-    $heroImage = $project->imageUrl() ?? '';
+    $heroImage = $project->heroImageUrl() ?? '';
     $firstService = $project->services->first();
     $heroBadge = $firstService?->section ?? $firstService?->service_name ?? $project->project_standard ?? '';
     $galleryImages = $project->galleryImageUrls();
-    $galleryMain = $galleryImages[0]['url'] ?? $heroImage;
-    $gallerySideOne = $galleryImages[1]['url'] ?? $galleryMain;
-    $gallerySideTwo = $galleryImages[2]['url'] ?? $gallerySideOne;
+    $galleryCount = count($galleryImages);
+    $galleryMain    = $galleryImages[0]['url'] ?? null;
+    $gallerySideOne = $galleryImages[1]['url'] ?? null;
+    $gallerySideTwo = $galleryImages[2]['url'] ?? null;
     $locationSummary = $project->locations->first()?->location;
     $locationSummary = $locationSummary ? strip_tags($locationSummary) : 'Location available inside the project brief';
     $serviceNames = $project->services->map(fn($s) => $s->section ?: $s->service_name)->filter()->values();
@@ -371,13 +372,32 @@
                     </div>
                 </div> --}}
 
-                <div class="row g-3 mb-5 project-gallery-wrapper" style="width: 676px;">
+                @if($galleryCount >= 1)
+                <div class="mb-5 project-gallery-wrapper" style="width:676px;max-width:100%;">
+
+                    @if($galleryCount === 1)
+                    {{-- 1 image: full width --}}
+                    <img src="{{ $galleryMain }}"
+                         class="gallery-img-main"
+                         style="width:100%;height:372px;object-fit:cover;border-radius:12px;"
+                         alt="{{ $project->project_title }}">
+
+                    @elseif($galleryCount === 2)
+                    {{-- 2 images: direct flex children so the outer gap:12px splits them evenly --}}
+                    <img src="{{ $galleryMain }}"
+                         style="flex:1;min-width:0;height:372px;object-fit:cover;border-radius:12px;"
+                         alt="{{ $project->project_title }}">
+                    <img src="{{ $gallerySideOne }}"
+                         style="flex:1;min-width:0;height:372px;object-fit:cover;border-radius:12px;"
+                         alt="{{ $project->project_title }}">
+
+                    @else
+                    {{-- 3 images: 1 big left + 2 small stacked right --}}
                     <div class="col-gallery-main">
                         <img src="{{ $galleryMain }}"
                              class="img-fluid gallery-img-main"
                              alt="{{ $project->project_title }}">
                     </div>
-
                     <div class="col-gallery-side">
                         <div class="d-flex flex-column gap-custom">
                             <img src="{{ $gallerySideOne }}"
@@ -388,7 +408,10 @@
                                  alt="{{ $project->project_title }}">
                         </div>
                     </div>
+                    @endif
+
                 </div>
+                @endif
 
                 {{-- <div class="mb-5">
                     <h3 class="section-title-accent">{{ $phaseHeading }}</h3>
@@ -425,7 +448,16 @@
                     <ul class="outcomes-list list-unstyled mt-4">
                         @forelse($project->outcomes as $outcome)
                             <li>
-                                <i class="{{ $outcome->icon ?? 'fas fa-check-circle' }} me-2"></i>
+                                @if(!empty($outcome->icon) && str_starts_with($outcome->icon, 'projects/'))
+                                    <img src="{{ Storage::url($outcome->icon) }}"
+                                         alt="outcome icon"
+                                         class="me-2 flex-shrink-0"
+                                         style="width:22px;height:22px;object-fit:contain;margin-top:2px;">
+                                @elseif(!empty($outcome->icon))
+                                    <i class="{{ $outcome->icon }} me-2"></i>
+                                @else
+                                    <i class="fas fa-check-circle me-2"></i>
+                                @endif
                                 <span>{!! nl2br(e(strip_tags($outcome->text))) !!}</span>
                             </li>
                         @empty
@@ -503,7 +535,7 @@
         <div class="row g-4">
             @forelse($relatedProjects as $item)
                 @php
-                    $itemImage     = $item->imageUrl() ?? '';
+                    $itemImage     = $item->heroImageUrl() ?? '';
                     $itemSvc       = $item->services->first();
                     $itemSector    = $itemSvc?->section ?? $itemSvc?->service_name ?? $item->project_standard ?? '';
                     $itemYear      = $item->start_date?->format('Y');

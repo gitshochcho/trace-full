@@ -8,6 +8,7 @@ use App\Models\ProjectLocation;
 use App\Models\ProjectOutcome;
 use App\Models\ProjectPhaseDetail;
 use App\Models\Service;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -50,7 +51,8 @@ class ProjectController extends Controller
             'sort_order' => ['nullable', 'integer', 'min:0'],
             'services' => ['nullable', 'array'],
             'services.*' => ['nullable', 'integer', 'exists:services,id'],
-            'images' => ['nullable', 'array'],
+            'hero_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:4096'],
+            'images' => ['nullable', 'array', 'max:3'],
             'images.*' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:4096'],
             'locations' => ['nullable', 'array'],
             'locations.*.id' => ['nullable', 'integer'],
@@ -61,7 +63,7 @@ class ProjectController extends Controller
             'phases.*.attachment' => ['nullable', 'file', 'mimes:pdf', 'max:10240'],
             'outcomes' => ['nullable', 'array'],
             'outcomes.*.id' => ['nullable', 'integer'],
-            'outcomes.*.icon' => ['nullable', 'string', 'max:255'],
+            'outcomes.*.icon_image' => ['nullable', 'file', 'image', 'mimes:jpg,jpeg,png,webp,svg,gif', 'max:1024'],
             'outcomes.*.text' => ['nullable', 'string'],
         ]);
 
@@ -69,7 +71,7 @@ class ProjectController extends Controller
             'project_title' => $validated['project_title'],
             'client' => $validated['client'] ?? null,
             'project_standard' => $validated['project_standard'] ?? null,
-            'overview' => $this->normalizeEditorText($validated['overview'] ?? null),
+            'overview' => $validated['overview'] ?? null,
             'start_date' => $validated['start_date'] ?? null,
             'end_date' => $validated['end_date'] ?? null,
             'project_status' => $validated['project_status'],
@@ -77,10 +79,11 @@ class ProjectController extends Controller
         ]);
 
         $this->syncServices($project, $validated['services'] ?? []);
+        $this->syncHeroImage($project, $request->file('hero_image'));
         $this->syncImages($project, $request->file('images', []));
         $this->syncLocations($project, $validated['locations'] ?? []);
         $this->syncPhases($project, $validated['phases'] ?? [], $request->file('phases', []));
-        $this->syncOutcomes($project, $validated['outcomes'] ?? []);
+        $this->syncOutcomes($project, $validated['outcomes'] ?? [], $request->file('outcomes', []));
 
         return redirect()
             ->route('admin.projects.index')
@@ -112,10 +115,9 @@ class ProjectController extends Controller
             'sort_order' => ['nullable', 'integer', 'min:0'],
             'services' => ['nullable', 'array'],
             'services.*' => ['nullable', 'integer', 'exists:services,id'],
-            'images' => ['nullable', 'array'],
+            'hero_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:4096'],
+            'images' => ['nullable', 'array', 'max:3'],
             'images.*' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:4096'],
-            'remove_images' => ['nullable', 'array'],
-            'remove_images.*' => ['nullable', 'integer'],
             'locations' => ['nullable', 'array'],
             'locations.*.id' => ['nullable', 'integer'],
             'locations.*.location' => ['nullable', 'string'],
@@ -125,7 +127,7 @@ class ProjectController extends Controller
             'phases.*.attachment' => ['nullable', 'file', 'mimes:pdf', 'max:10240'],
             'outcomes' => ['nullable', 'array'],
             'outcomes.*.id' => ['nullable', 'integer'],
-            'outcomes.*.icon' => ['nullable', 'string', 'max:255'],
+            'outcomes.*.icon_image' => ['nullable', 'file', 'image', 'mimes:jpg,jpeg,png,webp,svg,gif', 'max:1024'],
             'outcomes.*.text' => ['nullable', 'string'],
         ]);
 
@@ -133,7 +135,7 @@ class ProjectController extends Controller
             'project_title' => $validated['project_title'],
             'client' => $validated['client'] ?? null,
             'project_standard' => $validated['project_standard'] ?? null,
-            'overview' => $this->normalizeEditorText($validated['overview'] ?? null),
+            'overview' => $validated['overview'] ?? null,
             'start_date' => $validated['start_date'] ?? null,
             'end_date' => $validated['end_date'] ?? null,
             'project_status' => $validated['project_status'],
@@ -142,11 +144,11 @@ class ProjectController extends Controller
         $project->save();
 
         $this->syncServices($project, $validated['services'] ?? []);
-        $this->removeImages($project, $request->input('remove_images', []));
+        $this->syncHeroImage($project, $request->file('hero_image'));
         $this->syncImages($project, $request->file('images', []));
         $this->syncLocations($project, $validated['locations'] ?? []);
         $this->syncPhases($project, $validated['phases'] ?? [], $request->file('phases', []));
-        $this->syncOutcomes($project, $validated['outcomes'] ?? []);
+        $this->syncOutcomes($project, $validated['outcomes'] ?? [], $request->file('outcomes', []));
 
         return redirect()
             ->route('admin.projects.index')
@@ -171,7 +173,14 @@ class ProjectController extends Controller
             $phase->delete();
         });
 
-        $project->outcomes()->delete();
+        $project->outcomes->each(function (ProjectOutcome $outcome) {
+            if ($outcome->icon && str_starts_with($outcome->icon, 'projects/')) {
+                Storage::disk('public')->delete($outcome->icon);
+            }
+            $outcome->delete();
+        });
+
+        $project->clearMediaCollection('hero');
         $project->clearMediaCollection('images');
         $project->delete();
 
@@ -183,33 +192,51 @@ class ProjectController extends Controller
             ]);
     }
 
+    public function destroyImage(Project $project, int $mediaId): JsonResponse
+    {
+        $media = $project->getMedia('images')->firstWhere('id', $mediaId)
+            ?? $project->getMedia('hero')->firstWhere('id', $mediaId);
+
+        if (! $media) {
+            return response()->json(['error' => 'Image not found'], 404);
+        }
+
+        $media->delete();
+
+        return response()->json(['success' => true]);
+    }
+
     private function syncServices(Project $project, array $serviceIds): void
     {
         $project->services()->sync(array_filter(array_map('intval', $serviceIds)));
     }
 
-    private function syncImages(Project $project, array $images): void
+    private function syncHeroImage(Project $project, $file): void
     {
-        foreach ($images as $image) {
-            if ($image) {
-                $project->addMedia($image)->toMediaCollection('images');
-            }
-        }
-    }
-
-    private function removeImages(Project $project, array $mediaIds): void
-    {
-        $mediaIds = array_filter(array_map('intval', $mediaIds));
-
-        if (empty($mediaIds)) {
+        if (! $file) {
             return;
         }
 
-        $project->getMedia('images')
-            ->whereIn('id', $mediaIds)
-            ->each(function ($media) {
-                $media->delete();
-            });
+        $project->clearMediaCollection('hero');
+        $project->addMedia($file)->toMediaCollection('hero');
+    }
+
+    private function syncImages(Project $project, array $images): void
+    {
+        $existing = $project->getMedia('images')->count();
+
+        foreach ($images as $image) {
+            if (! $image) {
+                continue;
+            }
+
+            if ($existing >= 3) {
+                break;
+            }
+
+            $project->addMedia($image)->toMediaCollection('images');
+            $existing++;
+        }
     }
 
     private function syncLocations(Project $project, array $locations): void
@@ -217,7 +244,7 @@ class ProjectController extends Controller
         $keptIds = [];
 
         foreach (array_values($locations) as $index => $item) {
-            $location = $this->normalizeEditorText($item['location'] ?? null) ?? '';
+            $location = $item['location'] ?? null;
             $locationId = ! empty($item['id']) ? (int) $item['id'] : null;
 
             if ($location === '' && $locationId === null) {
@@ -247,7 +274,7 @@ class ProjectController extends Controller
         $keptIds = [];
 
         foreach (array_values($phases) as $index => $item) {
-            $description = $this->normalizeEditorText($item['phase_description'] ?? null) ?? '';
+            $description = $item['phase_description'] ?? null;
             $phaseId = ! empty($item['id']) ? (int) $item['id'] : null;
             $attachment = $phaseFiles[$index]['attachment'] ?? null;
 
@@ -287,16 +314,16 @@ class ProjectController extends Controller
             });
     }
 
-    private function syncOutcomes(Project $project, array $outcomes): void
+    private function syncOutcomes(Project $project, array $outcomes, array $outcomeFiles = []): void
     {
         $keptIds = [];
 
         foreach (array_values($outcomes) as $index => $item) {
-            $text = $this->normalizeEditorText($item['text'] ?? null) ?? '';
-            $icon = trim((string) ($item['icon'] ?? ''));
+            $text = $item['text'] ?? null;
             $outcomeId = ! empty($item['id']) ? (int) $item['id'] : null;
+            $iconFile = $outcomeFiles[$index]['icon_image'] ?? null;
 
-            if ($text === '' && $icon === '' && $outcomeId === null) {
+            if ($text === '' && ! $iconFile && $outcomeId === null) {
                 continue;
             }
 
@@ -305,9 +332,16 @@ class ProjectController extends Controller
                 : new ProjectOutcome(['project_id' => $project->id]);
 
             $record->project_id = $project->id;
-            $record->icon = $icon;
             $record->text = $text;
             $record->sort_order = $index;
+
+            if ($iconFile) {
+                if ($record->icon && str_starts_with($record->icon, 'projects/')) {
+                    Storage::disk('public')->delete($record->icon);
+                }
+                $record->icon = $iconFile->store('projects/outcomes', 'public');
+            }
+
             $record->save();
 
             $keptIds[] = $record->id;
@@ -316,7 +350,12 @@ class ProjectController extends Controller
         $project->outcomes()
             ->whereNotIn('id', $keptIds)
             ->get()
-            ->each->delete();
+            ->each(function (ProjectOutcome $outcome) {
+                if ($outcome->icon && str_starts_with($outcome->icon, 'projects/')) {
+                    Storage::disk('public')->delete($outcome->icon);
+                }
+                $outcome->delete();
+            });
     }
 
     private function normalizeEditorText(?string $value): ?string

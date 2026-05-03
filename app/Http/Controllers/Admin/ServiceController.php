@@ -35,6 +35,7 @@ class ServiceController extends Controller
             'sort_order'          => ['nullable', 'integer', 'min:0'],
             'active'              => ['nullable', 'boolean'],
             'overview'            => ['nullable', 'string'],
+            'remove_image'        => ['nullable', 'boolean'],
             'image'               => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:4096'],
             'icon'                => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:2048'],
             'details'             => ['nullable', 'array'],
@@ -55,7 +56,7 @@ class ServiceController extends Controller
             'heading'      => $validated['heading'] ?? null,
             'design_word'  => $validated['design_word'] ?? null,
             'description'  => $validated['description'] ?? null,
-            'overview'     => $this->normalizeEditorText($validated['overview'] ?? null),
+            'overview'     => $validated['overview'] ?? null,
             'sort_order'   => $validated['sort_order'] ?? 0,
             'active'       => $request->boolean('active', true),
         ]);
@@ -99,6 +100,7 @@ class ServiceController extends Controller
             'sort_order'          => ['nullable', 'integer', 'min:0'],
             'active'              => ['nullable', 'boolean'],
             'overview'            => ['nullable', 'string'],
+            'remove_image'        => ['nullable', 'boolean'],
             'image'               => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:4096'],
             'icon'                => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:2048'],
             'details'             => ['nullable', 'array'],
@@ -120,11 +122,15 @@ class ServiceController extends Controller
             'heading'      => $validated['heading'] ?? null,
             'design_word'  => $validated['design_word'] ?? null,
             'description'  => $validated['description'] ?? null,
-            'overview'     => $this->normalizeEditorText($validated['overview'] ?? null),
+            'overview'     => $validated['overview'] ?? null,
             'sort_order'   => $validated['sort_order'] ?? 0,
             'active'       => $request->boolean('active', true),
         ]);
         $service->save();
+
+        if ($request->boolean('remove_image')) {
+            $service->clearMediaCollection('image');
+        }
 
         if ($request->hasFile('image')) {
             $service->clearMediaCollection('image');
@@ -173,7 +179,7 @@ class ServiceController extends Controller
         $keptIds = [];
 
         foreach (array_values($details) as $index => $item) {
-            $text = $this->normalizeEditorText($item['text'] ?? null) ?? '';
+            $text = $item['text'] ?? null;
             $detailId = ! empty($item['id']) ? (int) $item['id'] : null;
 
             if ($text === '' && ! isset($detailIcons[$index]) && $detailId === null) {

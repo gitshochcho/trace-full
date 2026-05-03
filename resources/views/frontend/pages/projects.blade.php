@@ -428,7 +428,7 @@
         <div class="row g-4">
             @forelse($projects as $project)
                 @php
-                    $projectImage     = $project->imageUrl() ?? '';
+                    $projectImage     = $project->heroImageUrl() ?? '';
                     $projectYear      = $project->start_date?->format('Y');
                     $projectYearEnd   = $project->end_date?->format('Y');
                     $projectYearLabel = $projectYear && $projectYearEnd ? $projectYear . '-' . $projectYearEnd : ($projectYear ?? $projectYearEnd ?? '');

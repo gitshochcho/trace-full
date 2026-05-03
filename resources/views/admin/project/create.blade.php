@@ -40,7 +40,7 @@
                             <div class="card-body">
                                 <div class="row g-3">
                                     <div class="col-12">
-                                        <label class="form-label">Project Title</label>
+                                        <label class="form-label">Project Title <span class="text-danger">*</span></label>
                                         <input type="text" name="project_title" value="{{ old('project_title') }}" class="form-control @error('project_title') is-invalid @enderror" placeholder="Work that changes systems.">
                                         @error('project_title')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
@@ -83,30 +83,68 @@
                                         <input type="number" name="sort_order" value="{{ old('sort_order', 0) }}" class="form-control @error('sort_order') is-invalid @enderror">
                                         @error('sort_order')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
+
+                                    {{-- Related Services: tag-style --}}
                                     <div class="col-12">
                                         <label class="form-label">Related Services</label>
-                                        <input type="text" id="projectServiceSearch" class="form-control mb-2" placeholder="Search services...">
-                                        <select name="services[]" class="form-select @error('services') is-invalid @enderror" multiple size="7">
+                                        <div id="servicesTagContainer" class="d-flex flex-wrap gap-2 p-2 border rounded" style="min-height:48px;">
                                             @foreach($services as $service)
-                                                <option value="{{ $service->id }}" data-service-label="{{ strtolower($service->section ?: $service->service_name) }}" @selected(in_array($service->id, $selectedServices))>{{ $service->section ?: $service->service_name }} ({{ $service->projects_count }})</option>
+                                                @php $sid = $service->id; $label = $service->section ?: $service->service_name; @endphp
+                                                <span class="service-tag badge rounded-pill px-3 py-2 {{ in_array($sid, $selectedServices) ? 'bg-primary' : 'bg-secondary' }}"
+                                                      data-id="{{ $sid }}"
+                                                      style="cursor:pointer;font-size:13px;user-select:none;">
+                                                    {{ $label }}
+                                                </span>
                                             @endforeach
-                                        </select>
-                                        <small class="text-muted mt-1 d-block">Hold Ctrl/Cmd to select multiple</small>
+                                        </div>
+                                        <div id="servicesHiddenInputs">
+                                            @foreach($selectedServices as $sid)
+                                                <input type="hidden" name="services[]" value="{{ $sid }}">
+                                            @endforeach
+                                        </div>
+                                        <small class="text-muted mt-1 d-block">Click to select / deselect services</small>
                                         @error('services')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="card card-outline card-secondary">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <h3 class="card-title mb-0">Project Images</h3>
-                                <button type="button" id="addProjectImageRow" class="btn btn-sm btn-outline-primary">+ Add Image</button>
+                        {{-- Hero Image --}}
+                        <div class="card card-outline card-warning mb-4">
+                            <div class="card-header">
+                                <h3 class="card-title mb-0">Hero Image</h3>
+                                <small class="text-muted d-block mt-1">Shown on project list cards &amp; project page header. Single image.</small>
                             </div>
                             <div class="card-body">
-                                <input type="file" id="projectImageInput" name="images[]" class="d-none" accept="image/*" multiple data-max-size="4096" data-max-width="1600" data-max-height="900">
-                                <div id="projectImageQueue" class="d-grid gap-3"></div>
-                                <small class="text-muted d-block mt-2"><i class="fas fa-info-circle"></i> Recommended: 1600×900px (16:9 aspect ratio, max 4MB each)</small>
+                                <div id="heroPreviewWrap" class="mb-3 d-none">
+                                    <div class="position-relative d-inline-block">
+                                        <img id="heroPreview" src="" alt="Hero preview" class="img-fluid rounded" style="max-height:160px;width:100%;object-fit:cover;">
+                                        <button type="button" id="clearHeroBtn"
+                                            class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 rounded-circle p-0 d-flex align-items-center justify-content-center"
+                                            style="width:26px;height:26px;font-size:14px;" title="Remove">
+                                            &times;
+                                        </button>
+                                    </div>
+                                </div>
+                                <input type="file" id="heroImageInput" name="hero_image" accept="image/*" class="form-control @error('hero_image') is-invalid @enderror">
+                                <small class="text-muted d-block mt-2"><i class="fas fa-info-circle"></i> Recommended: 1600×900px, max 4MB</small>
+                                @error('hero_image')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
+                            </div>
+                        </div>
+
+                        {{-- Gallery Images --}}
+                        <div class="card card-outline card-secondary">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h3 class="card-title mb-0">Gallery Images</h3>
+                                    <small class="text-muted">Shown in the overview section. Max 3 images.</small>
+                                </div>
+                                <button type="button" id="addGalleryImageBtn" class="btn btn-sm btn-outline-primary">+ Add</button>
+                            </div>
+                            <div class="card-body">
+                                <input type="file" id="galleryImageInput" accept="image/*" multiple class="d-none">
+                                <div id="galleryImageQueue" class="row g-2 mb-2"></div>
+                                <div id="galleryCount" class="text-muted small">0 / 3 images selected</div>
                                 @error('images')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
                             </div>
                         </div>
@@ -182,14 +220,17 @@
                                             <div class="row g-3 align-items-start">
                                                 <div class="col-12 col-md-3">
                                                     <input type="hidden" name="outcomes[{{ $index }}][id]" value="{{ $outcome['id'] ?? '' }}">
-                                                    <label class="form-label">Icon Class</label>
-                                                    <input type="text" name="outcomes[{{ $index }}][icon]" value="{{ $outcome['icon'] ?? '' }}" class="form-control" placeholder="fas fa-check-circle">
+                                                    <label class="form-label">Icon Image</label>
+                                                    <input type="file" name="outcomes[{{ $index }}][icon_image]" class="form-control outcome-icon-input" accept="image/*">
+                                                    <div class="outcome-icon-preview mt-2 d-none">
+                                                        <img src="" alt="Icon preview" class="rounded border" style="width:48px;height:48px;object-fit:contain;">
+                                                    </div>
                                                 </div>
                                                 <div class="col-12 col-md-7">
                                                     <label class="form-label">Text</label>
                                                     <textarea name="outcomes[{{ $index }}][text]" class="form-control project-text-editor" rows="4">{{ $outcome['text'] ?? '' }}</textarea>
                                                 </div>
-                                                <div class="col-12 col-md-2 d-grid">
+                                                <div class="col-12 col-md-2 d-grid align-items-end">
                                                     <button type="button" class="btn btn-outline-danger remove-outcome-row">Remove</button>
                                                 </div>
                                             </div>
@@ -254,14 +295,17 @@
             <div class="row g-3 align-items-start">
                 <div class="col-12 col-md-3">
                     <input type="hidden" name="__OUTCOME_NAME__[id]" value="">
-                    <label class="form-label">Icon Class</label>
-                    <input type="text" name="__OUTCOME_NAME__[icon]" class="form-control" placeholder="fas fa-check-circle">
+                    <label class="form-label">Icon Image</label>
+                    <input type="file" name="__OUTCOME_NAME__[icon_image]" class="form-control outcome-icon-input" accept="image/*">
+                    <div class="outcome-icon-preview mt-2 d-none">
+                        <img src="" alt="Icon preview" class="rounded border" style="width:48px;height:48px;object-fit:contain;">
+                    </div>
                 </div>
                 <div class="col-12 col-md-7">
                     <label class="form-label">Text</label>
                     <textarea name="__OUTCOME_NAME__[text]" class="form-control project-text-editor" rows="4"></textarea>
                 </div>
-                <div class="col-12 col-md-2 d-grid">
+                <div class="col-12 col-md-2 d-grid align-items-end">
                     <button type="button" class="btn btn-outline-danger remove-outcome-row">Remove</button>
                 </div>
             </div>
@@ -273,41 +317,26 @@
 @push('custome-js')
 <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
 <script>
-(function () {
-    const activeEditors   = new Map();
-    const form            = document.querySelector('form');
-    const locationWrapper = document.getElementById('locationsWrapper');
-    const phaseWrapper    = document.getElementById('phasesWrapper');
-    const outcomeWrapper  = document.getElementById('outcomesWrapper');
+document.addEventListener('DOMContentLoaded', function () {
+
+    const activeEditors    = new Map();
+    const form             = document.querySelector('form');
+    const locationWrapper  = document.getElementById('locationsWrapper');
+    const phaseWrapper     = document.getElementById('phasesWrapper');
+    const outcomeWrapper   = document.getElementById('outcomesWrapper');
     const locationTemplate = document.getElementById('locationRowTemplate');
     const phaseTemplate    = document.getElementById('phaseRowTemplate');
     const outcomeTemplate  = document.getElementById('outcomeRowTemplate');
-    const serviceSearch   = document.getElementById('projectServiceSearch');
-    const serviceSelect   = document.querySelector('select[name="services[]"]');
-    const addImageBtn     = document.getElementById('addProjectImageRow');
-    const imageInput      = document.getElementById('projectImageInput');
-    const imageQueue      = document.getElementById('projectImageQueue');
-    const selectedImages  = [];
-
-    function normalizeEditorHtml(html) {
-        if (!html) return '';
-        let text = html;
-        text = text.replace(/<p[^>]*>/gi, '');
-        text = text.replace(/<\/p>/gi, "\n");
-        text = text.replace(/<br\s*\/?>/gi, "\n");
-        text = text.replace(/&nbsp;/gi, ' ');
-        text = text.replace(/<[^>]*>/g, '');
-        text = text.replace(/\n{3,}/g, "\n\n");
-        return text.trim();
-    }
 
     function initEditors() {
         document.querySelectorAll('.project-text-editor').forEach(function (el) {
             if (el.dataset.editorReady) return;
             el.dataset.editorReady = '1';
-            ClassicEditor.create(el)
+            ClassicEditor.create(el, {
+                toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|', 'undo', 'redo'],
+            })
                 .then(function (editor) { activeEditors.set(el, editor); })
-                .catch(function (err) { console.error(err); });
+                .catch(function (err) { console.error('CKEditor error:', err); });
         });
     }
 
@@ -324,80 +353,140 @@
     if (form) {
         form.addEventListener('submit', function () {
             activeEditors.forEach(function (editor, textarea) {
-                textarea.value = normalizeEditorHtml(editor.getData());
+                textarea.value = editor.getData();
             });
-            if (imageInput) {
-                const dt = new DataTransfer();
-                selectedImages.forEach(function (file) { dt.items.add(file); });
-                imageInput.files = dt.files;
+            // Sync gallery images into the hidden file inputs
+            const dt = new DataTransfer();
+            galleryFiles.forEach(function (f) { dt.items.add(f); });
+            const galleryInputs = form.querySelectorAll('input[name="images[]"]');
+            galleryInputs.forEach(function (inp) { inp.remove(); });
+            if (galleryFiles.length > 0) {
+                const combined = document.createElement('input');
+                combined.type = 'file';
+                combined.name = 'images[]';
+                combined.multiple = true;
+                combined.classList.add('d-none');
+                combined.files = dt.files;
+                form.appendChild(combined);
             }
         });
     }
 
-    // ── Service search ───────────────────────────────────────────────
-    if (serviceSearch && serviceSelect) {
-        serviceSearch.addEventListener('input', function () {
-            const q = this.value.trim().toLowerCase();
-            Array.from(serviceSelect.options).forEach(function (opt) {
-                opt.hidden = q !== '' && !(opt.dataset.serviceLabel || opt.textContent.toLowerCase()).includes(q);
-            });
+    // ── Related Services Tags ────────────────────────────────────────
+    const tagContainer   = document.getElementById('servicesTagContainer');
+    const hiddenInputs   = document.getElementById('servicesHiddenInputs');
+
+    if (tagContainer && hiddenInputs) {
+        tagContainer.addEventListener('click', function (e) {
+            const tag = e.target.closest('.service-tag');
+            if (!tag) return;
+            const id = tag.dataset.id;
+            const isActive = tag.classList.contains('bg-primary');
+            if (isActive) {
+                tag.classList.replace('bg-primary', 'bg-secondary');
+                const inp = hiddenInputs.querySelector('input[value="' + id + '"]');
+                if (inp) inp.remove();
+            } else {
+                tag.classList.replace('bg-secondary', 'bg-primary');
+                const inp = document.createElement('input');
+                inp.type = 'hidden';
+                inp.name = 'services[]';
+                inp.value = id;
+                hiddenInputs.appendChild(inp);
+            }
         });
     }
 
-    // ── Image queue ──────────────────────────────────────────────────
-    function renderImageQueue() {
-        imageQueue.innerHTML = '';
-        if (!selectedImages.length) {
-            const empty = document.createElement('p');
-            empty.className = 'text-muted small mb-0';
-            empty.textContent = 'No images selected yet.';
-            imageQueue.appendChild(empty);
-            return;
+    // ── Hero Image Preview ───────────────────────────────────────────
+    const heroInput      = document.getElementById('heroImageInput');
+    const heroPreviewWrap = document.getElementById('heroPreviewWrap');
+    const heroPreview    = document.getElementById('heroPreview');
+    const clearHeroBtn   = document.getElementById('clearHeroBtn');
+
+    if (heroInput) {
+        heroInput.addEventListener('change', function () {
+            const file = this.files[0];
+            if (!file) return;
+            heroPreview.src = URL.createObjectURL(file);
+            heroPreviewWrap.classList.remove('d-none');
+        });
+    }
+    if (clearHeroBtn) {
+        clearHeroBtn.addEventListener('click', function () {
+            heroInput.value = '';
+            heroPreviewWrap.classList.add('d-none');
+            heroPreview.src = '';
+        });
+    }
+
+    // ── Gallery Images ───────────────────────────────────────────────
+    const addGalleryBtn   = document.getElementById('addGalleryImageBtn');
+    const galleryInput    = document.getElementById('galleryImageInput');
+    const galleryQueue    = document.getElementById('galleryImageQueue');
+    const galleryCountEl  = document.getElementById('galleryCount');
+    const galleryFiles    = [];
+
+    function renderGallery() {
+        galleryQueue.innerHTML = '';
+        galleryFiles.forEach(function (file, idx) {
+            const col = document.createElement('div');
+            col.className = 'col-6 col-md-4 position-relative';
+            const img = document.createElement('img');
+            img.src = URL.createObjectURL(file);
+            img.className = 'img-fluid rounded border';
+            img.style.cssText = 'width:100%;height:90px;object-fit:cover;';
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.dataset.idx = String(idx);
+            btn.className = 'remove-gallery-item btn btn-danger btn-sm position-absolute top-0 end-0 m-1 rounded-circle p-0 d-flex align-items-center justify-content-center';
+            btn.style.cssText = 'width:22px;height:22px;font-size:13px;';
+            btn.innerHTML = '&times;';
+            col.appendChild(img);
+            col.appendChild(btn);
+            galleryQueue.appendChild(col);
+        });
+        galleryCountEl.textContent = galleryFiles.length + ' / 3 images selected';
+        if (addGalleryBtn) {
+            addGalleryBtn.disabled = galleryFiles.length >= 3;
         }
-        selectedImages.forEach(function (file, index) {
-            const row = document.createElement('div');
-            row.className = 'border rounded p-3 d-flex gap-3 align-items-center image-queue-row';
-            row.dataset.index = String(index);
-            const preview = document.createElement('img');
-            preview.src = URL.createObjectURL(file);
-            preview.style.cssText = 'width:84px;height:64px;object-fit:cover;';
-            preview.className = 'rounded';
-            const meta = document.createElement('div');
-            meta.className = 'flex-grow-1';
-            meta.innerHTML = '<div class="fw-semibold">' + file.name + '</div><div class="text-muted small">' + Math.round(file.size / 1024) + ' KB</div>';
-            const removeBtn = document.createElement('button');
-            removeBtn.type = 'button';
-            removeBtn.className = 'btn btn-sm btn-outline-danger remove-image-row';
-            removeBtn.textContent = 'Remove';
-            row.appendChild(preview);
-            row.appendChild(meta);
-            row.appendChild(removeBtn);
-            imageQueue.appendChild(row);
+    }
+
+    if (addGalleryBtn && galleryInput) {
+        addGalleryBtn.addEventListener('click', function () { galleryInput.click(); });
+        galleryInput.addEventListener('change', function (e) {
+            Array.from(e.target.files || []).forEach(function (f) {
+                if (galleryFiles.length < 3) galleryFiles.push(f);
+            });
+            galleryInput.value = '';
+            renderGallery();
         });
     }
 
-    if (addImageBtn && imageInput) {
-        addImageBtn.addEventListener('click', function () { imageInput.click(); });
-        imageInput.addEventListener('change', function (e) {
-            Array.from(e.target.files || []).forEach(function (f) { selectedImages.push(f); });
-            imageInput.value = '';
-            renderImageQueue();
-        });
-    }
+    galleryQueue && galleryQueue.addEventListener('click', function (e) {
+        const btn = e.target.closest('.remove-gallery-item');
+        if (!btn) return;
+        galleryFiles.splice(Number(btn.dataset.idx), 1);
+        renderGallery();
+    });
 
-    document.addEventListener('click', function (e) {
-        if (e.target.classList.contains('remove-image-row')) {
-            const row = e.target.closest('.image-queue-row');
-            if (row) {
-                selectedImages.splice(Number(row.dataset.index), 1);
-                renderImageQueue();
+    renderGallery();
+
+    // ── Outcome Icon Preview ─────────────────────────────────────────
+    document.addEventListener('change', function (e) {
+        if (e.target.classList.contains('outcome-icon-input')) {
+            const file = e.target.files[0];
+            const preview = e.target.closest('.col-12, .col-md-3').querySelector('.outcome-icon-preview');
+            if (!preview) return;
+            if (file) {
+                preview.querySelector('img').src = URL.createObjectURL(file);
+                preview.classList.remove('d-none');
+            } else {
+                preview.classList.add('d-none');
             }
         }
     });
 
-    renderImageQueue();
-
-    // ── Dynamic rows ─────────────────────────────────────────────────
+    // ── Dynamic Rows ─────────────────────────────────────────────────
     document.getElementById('addLocationRow').addEventListener('click', function () {
         const index = locationWrapper.querySelectorAll('.location-row').length;
         locationWrapper.insertAdjacentHTML('beforeend',
@@ -438,6 +527,6 @@
             if (row) row.remove();
         }
     });
-})();
+});
 </script>
 @endpush

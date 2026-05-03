@@ -102,36 +102,38 @@
                                         <label class="form-label">Team Image</label>
                                         <div class="mb-2 d-flex gap-2 align-items-center flex-wrap">
                                             <button type="button" id="addTeamImageRow" class="btn btn-sm btn-outline-primary">+ Add Image</button>
-                                            @if($team->imageUrl())
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" name="remove_image" value="1" id="removeCurrentImage">
-                                                    <label class="form-check-label" for="removeCurrentImage">Remove current image</label>
-                                                </div>
-                                            @endif
                                         </div>
+                                        <input type="hidden" name="remove_image" value="0" id="teamRemoveImageInput">
                                         <input type="file" id="teamImageInput" name="image" class="d-none" accept="image/*" data-max-size="4096" data-max-width="600" data-max-height="600">
                                         <small class="text-muted d-block mb-2"><i class="fas fa-info-circle"></i> Recommended: 600×600px square portrait (max 4MB)</small>
+                                        @if($team->imageUrl())
+                                            <div id="teamCurrentImageWrap" class="mb-2 position-relative d-inline-block w-100">
+                                                <img src="{{ $team->imageUrl() }}" alt="current image" class="img-fluid rounded border" style="max-height:160px;width:100%;object-fit:cover;">
+                                                <button type="button" id="removeTeamImageBtn" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:26px;height:26px;font-size:14px;" title="Remove current image">&times;</button>
+                                            </div>
+                                        @endif
                                         <div id="teamImageQueue" class="d-grid gap-2 mb-2">
-                                            @if($team->imageUrl())
-                                                <div class="border rounded p-2 d-flex justify-content-between align-items-center">
-                                                    <div>
-                                                        <strong>Current image</strong>
-                                                        <div class="small text-muted">Will remain unless removed or replaced</div>
-                                                    </div>
-                                                    <img src="{{ $team->imageUrl() }}" alt="current image" style="width: 56px; height: 56px; object-fit: cover; border-radius: 8px;">
-                                                </div>
-                                            @endif
                                         </div>
                                         @error('image')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
                                     </div>
 
                                     <div class="col-12">
                                         <label class="form-label">Related Projects</label>
-                                        <select name="projects[]" class="form-select" multiple size="7">
+                                        <div id="projectsTagContainer" class="d-flex flex-wrap gap-2 p-2 border rounded" style="min-height:48px;">
                                             @foreach($projects as $projectItem)
-                                                <option value="{{ $projectItem->id }}" @selected(in_array($projectItem->id, $selectedProjects))>{{ $projectItem->project_title }}</option>
+                                                <span class="project-tag badge rounded-pill px-3 py-2 {{ in_array($projectItem->id, $selectedProjects) ? 'bg-primary' : 'bg-secondary' }}"
+                                                      data-id="{{ $projectItem->id }}"
+                                                      style="cursor:pointer;font-size:13px;user-select:none;">
+                                                    {{ $projectItem->project_title }}
+                                                </span>
                                             @endforeach
-                                        </select>
+                                        </div>
+                                        <div id="projectsHiddenInputs">
+                                            @foreach($selectedProjects as $projectId)
+                                                <input type="hidden" name="projects[]" value="{{ $projectId }}">
+                                            @endforeach
+                                        </div>
+                                        <small class="text-muted mt-1 d-block">Click to select / deselect projects</small>
                                     </div>
                                 </div>
                             </div>
@@ -274,22 +276,10 @@
 @push('custome-js')
 <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
 <script>
-    (function () {
+document.addEventListener('DOMContentLoaded', function () {
         // ── CKEditor for description ─────────────────────────────────
         const descEditorEl = document.querySelector('.team-description-editor');
         let descEditor = null;
-
-        function normalizeEditorHtml(html) {
-            if (!html) return '';
-            let text = html;
-            text = text.replace(/<p[^>]*>/gi, '');
-            text = text.replace(/<\/p>/gi, "\n");
-            text = text.replace(/<br\s*\/?>/gi, "\n");
-            text = text.replace(/&nbsp;/gi, ' ');
-            text = text.replace(/<[^>]*>/g, '');
-            text = text.replace(/\n{3,}/g, "\n\n");
-            return text.trim();
-        }
 
         if (descEditorEl) {
             ClassicEditor.create(descEditorEl)
@@ -300,7 +290,33 @@
             if (teamForm) {
                 teamForm.addEventListener('submit', function () {
                     if (descEditor) {
-                        descEditorEl.value = normalizeEditorHtml(descEditor.getData());
+                        descEditorEl.value = descEditor.getData();
+                    }
+                });
+            }
+
+            const projectsTagContainer = document.getElementById('projectsTagContainer');
+            const projectsHiddenInputs = document.getElementById('projectsHiddenInputs');
+
+            if (projectsTagContainer && projectsHiddenInputs) {
+                projectsTagContainer.addEventListener('click', function (event) {
+                    const tag = event.target.closest('.project-tag');
+                    if (!tag) return;
+
+                    const id = tag.dataset.id;
+                    const isActive = tag.classList.contains('bg-primary');
+
+                    if (isActive) {
+                        tag.classList.replace('bg-primary', 'bg-secondary');
+                        const input = projectsHiddenInputs.querySelector('input[value="' + id + '"]');
+                        if (input) input.remove();
+                    } else {
+                        tag.classList.replace('bg-secondary', 'bg-primary');
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = 'projects[]';
+                        input.value = id;
+                        projectsHiddenInputs.appendChild(input);
                     }
                 });
             }
@@ -317,29 +333,37 @@
         const imageInput = document.getElementById('teamImageInput');
         const addImageBtn = document.getElementById('addTeamImageRow');
         const imageQueue = document.getElementById('teamImageQueue');
+        const removeCurrentImageBtn = document.getElementById('removeTeamImageBtn');
+        const removeImageInput = document.getElementById('teamRemoveImageInput');
 
         function renderImageQueue() {
             if (!imageQueue) return;
 
-            const selectedCard = imageQueue.querySelector('[data-selected-image="1"]');
-            if (selectedCard) selectedCard.remove();
+            imageQueue.innerHTML = '';
+            const currentWrap = document.getElementById('teamCurrentImageWrap');
 
-            if (!imageInput.files || imageInput.files.length === 0) return;
+            if (!imageInput.files || imageInput.files.length === 0) {
+                if (currentWrap) currentWrap.classList.remove('d-none');
+                return;
+            }
+
+            if (currentWrap) currentWrap.classList.add('d-none');
 
             const file = imageInput.files[0];
+            const objectUrl = URL.createObjectURL(file);
             const card = document.createElement('div');
-            card.dataset.selectedImage = '1';
-            card.className = 'border rounded p-2 d-flex justify-content-between align-items-center';
-            const fileSize = (file.size / 1024).toFixed(1) + ' KB';
-            card.innerHTML = '<div><strong>' + file.name + '</strong><div class="small text-muted">' + fileSize + '</div></div>' +
-                '<button type="button" class="btn btn-sm btn-outline-danger" id="removeTeamImage">Remove</button>';
-            imageQueue.prepend(card);
+            card.className = 'border rounded p-2 position-relative';
+            card.innerHTML = '<img src="' + objectUrl + '" alt="Selected image" class="img-fluid rounded border" style="width:100%;max-height:160px;object-fit:cover;">' +
+                '<button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 rounded-circle p-0 d-flex align-items-center justify-content-center" data-remove-team-image="1" style="width:26px;height:26px;font-size:14px;">&times;</button>';
+            imageQueue.appendChild(card);
 
-            const removeBtn = document.getElementById('removeTeamImage');
+            const removeBtn = card.querySelector('[data-remove-team-image="1"]');
             if (removeBtn) {
                 removeBtn.addEventListener('click', function () {
                     imageInput.value = '';
-                    renderImageQueue();
+                    imageQueue.innerHTML = '';
+                    URL.revokeObjectURL(objectUrl);
+                    if (currentWrap) currentWrap.classList.remove('d-none');
                 });
             }
         }
@@ -352,6 +376,14 @@
 
         if (imageInput) {
             imageInput.addEventListener('change', renderImageQueue);
+        }
+
+        if (removeCurrentImageBtn && removeImageInput) {
+            removeCurrentImageBtn.addEventListener('click', function () {
+                removeImageInput.value = '1';
+                const currentWrap = document.getElementById('teamCurrentImageWrap');
+                if (currentWrap) currentWrap.remove();
+            });
         }
 
         function reindexExpertiseRows() {
@@ -408,6 +440,6 @@
 
         reindexExpertiseRows();
         reindexSocialRows();
-    })();
+});
 </script>
 @endpush
