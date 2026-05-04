@@ -76,3 +76,111 @@
     });
 });
 </script>
+
+<script>
+/* ── Global image / file size & dimension validator (hard block) ── */
+(function () {
+    const state = new WeakMap(); // input → { ok: bool|null }
+
+    function fmtMB(bytes) { return (bytes / 1048576).toFixed(1) + ' MB'; }
+
+    function getBox(input) {
+        let el = input.nextElementSibling;
+        while (el) {
+            if (el.classList && el.classList.contains('upload-size-warn')) return el;
+            el = el.nextElementSibling;
+        }
+        const d = document.createElement('div');
+        d.className = 'upload-size-warn';
+        input.insertAdjacentElement('afterend', d);
+        return d;
+    }
+
+    function setOk(input) {
+        state.set(input, { ok: true });
+        getBox(input).innerHTML = '';
+        input.classList.remove('is-invalid');
+    }
+
+    function setError(input, msg) {
+        state.set(input, { ok: false });
+        input.classList.add('is-invalid');
+        getBox(input).innerHTML =
+            '<div class="alert alert-danger py-1 px-2 mt-1 mb-0 small">'
+            + '<i class="fas fa-times-circle me-1"></i>'
+            + '<strong>Upload blocked.</strong> ' + msg
+            + ' <em>It may break your design.</em></div>';
+    }
+
+    function check(input) {
+        const maxKB = parseInt(input.dataset.maxSize  || '0');
+        const maxW  = parseInt(input.dataset.maxWidth  || '0');
+        const maxH  = parseInt(input.dataset.maxHeight || '0');
+        if (!maxKB && !maxW && !maxH) return;
+
+        if (!input.files || !input.files.length) { setOk(input); return; }
+
+        state.set(input, { ok: null }); // pending
+
+        const files = Array.from(input.files);
+        let pending = 0;
+        const errors = [];
+
+        files.forEach(function (file) {
+            if (maxKB && file.size > maxKB * 1024) {
+                errors.push('File is ' + fmtMB(file.size) + ' — max allowed is ' + (maxKB / 1024).toFixed(0) + ' MB.');
+            }
+
+            if (file.type.startsWith('image/') && (maxW || maxH)) {
+                pending++;
+                const url = URL.createObjectURL(file);
+                const img = new Image();
+                img.onload = function () {
+                    URL.revokeObjectURL(url);
+                    const parts = [];
+                    if (maxW && img.naturalWidth  > maxW) parts.push('width '  + img.naturalWidth  + 'px (max ' + maxW  + 'px)');
+                    if (maxH && img.naturalHeight > maxH) parts.push('height ' + img.naturalHeight + 'px (max ' + maxH + 'px)');
+                    if (parts.length) errors.push('Image dimensions too large — ' + parts.join(', ') + '.');
+                    if (--pending === 0) finish();
+                };
+                img.src = url;
+            }
+        });
+
+        if (pending === 0) finish();
+
+        function finish() {
+            if (errors.length) setError(input, errors.join(' '));
+            else setOk(input);
+        }
+    }
+
+    // Validate on file select
+    document.addEventListener('change', function (e) {
+        const t = e.target;
+        if (t.tagName === 'INPUT' && t.type === 'file'
+            && (t.dataset.maxSize || t.dataset.maxWidth || t.dataset.maxHeight)) {
+            check(t);
+        }
+    });
+
+    // Block form submit if any input failed
+    document.addEventListener('submit', function (e) {
+        const inputs = e.target.querySelectorAll('input[type="file"][data-max-size], input[type="file"][data-max-width], input[type="file"][data-max-height]');
+        let blocked = false;
+        inputs.forEach(function (inp) {
+            const s = state.get(inp);
+            if (s && s.ok === false) blocked = true;
+        });
+        if (blocked) {
+            e.preventDefault();
+            if (typeof toastr !== 'undefined') {
+                toastr.error('File upload error — please fix the highlighted fields before saving.');
+            }
+            // Scroll to first error
+            const first = e.target.querySelector('.is-invalid');
+            if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }, true); // capture phase so it runs before other submit handlers
+})();
+</script>

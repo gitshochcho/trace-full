@@ -1,10 +1,13 @@
 <?php
+use App\Models\Setting;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use App\Models\Content;
+use Illuminate\Support\Str;
 use Propaganistas\LaravelPhone\PhoneNumber;
 use Propaganistas\LaravelPhone\Rules\Phone;
 use Carbon\Carbon;
-use App\Jobs\SendSmsJob;
 
 
 if (! function_exists('validationError')) {
@@ -50,7 +53,7 @@ if (! function_exists('validationError')) {
 }
 
 if (! function_exists('validationMobileNumber')) {
-    function validationMobileNumber($mobileNumber,$iso)
+    function validationMobileNumber($mobileNumber,$iso = 'BD')
     {
         $phone = new PhoneNumber($mobileNumber, $iso);
        $generatedPhone =  $phone->formatForMobileDialingInCountry($iso);
@@ -76,7 +79,7 @@ if (! function_exists('validationMobileNumber')) {
                         $user->save();
                         $user->increment('otp_count');
                         $phoneNumber = validationMobileNumber($user->phone);
-                        SendSmsJob::dispatch($phoneNumber, $code);
+                        sendSms($phoneNumber, $code);
                         return true;
 
 
@@ -101,7 +104,7 @@ if (! function_exists('validationMobileNumber')) {
             $user->otp_count = 1;
             $user->save();
             $phoneNumber = validationMobileNumber($user->phone);
-            SendSmsJob::dispatch($phoneNumber, $code);
+            sendSms($phoneNumber, $code);
             return true;
         }
     }
@@ -116,3 +119,123 @@ if (! function_exists('validationMobileNumber')) {
         return true;
     }
    }
+
+if (! function_exists('siteSettings')) {
+    function siteSettings()
+    {
+        return Cache::remember('site_settings', now()->addHour(), function () {
+            return Setting::query()->first();
+        });
+    }
+}
+
+if (! function_exists('siteSetting')) {
+    function siteSetting($key = null, $default = null)
+    {
+        $settings = siteSettings();
+
+        if (! $settings) {
+            return $key === null ? null : $default;
+        }
+
+        if ($key === null) {
+            return $settings;
+        }
+
+        $value = data_get($settings, $key);
+
+        if ($value === null || $value === '') {
+            return $default;
+        }
+
+        return $value;
+    }
+}
+
+if (! function_exists('siteSettingImage')) {
+    function siteSettingImage($path = null, $default = null)
+    {
+        if (! $path) {
+            return $default;
+        }
+
+        return asset('storage/' . ltrim($path, '/'));
+    }
+}
+
+if (! function_exists('contentBlock')) {
+    function contentBlock(string $slug): ?Content
+    {
+        $normalizedSlug = Str::slug($slug);
+        $cacheKey = "content_block_{$normalizedSlug}";
+
+        $cached = Cache::get($cacheKey);
+        if ($cached instanceof Content) {
+            return $cached;
+        }
+
+        $slugVariants = array_values(array_unique([
+            $slug,
+            $normalizedSlug,
+            str_replace('-', ' ', $normalizedSlug),
+            str_replace(' ', '-', trim($slug)),
+            str_replace('_', '-', trim($slug)),
+        ]));
+
+        $content = Content::query()
+            ->with('media')
+            ->whereIn('slug', $slugVariants)
+            ->orWhereIn('section', [
+                strtoupper(str_replace('-', ' ', $normalizedSlug)),
+                strtoupper(trim($slug)),
+            ])
+            ->latest('id')
+            ->first();
+
+        if ($content) {
+            Cache::put($cacheKey, $content, now()->addHour());
+        }
+
+        return $content;
+    }
+}
+
+if (! function_exists('stripPTags')) {
+    /**
+     * Strip <p> tags from HTML content while preserving other formatting
+     * Useful for cleaning CKEditor output when we want plain text with basic formatting
+     *
+     * @param string|null $content
+     * @return string|null
+     */
+    function stripPTags(?string $content): ?string
+    {
+        if (empty($content)) {
+            return $content;
+        }
+
+        // Remove opening <p> and closing </p> tags but keep content inside
+        $content = preg_replace("/<p[^>]*>/", "", $content);
+        $content = preg_replace("/<\\/p>/", "", $content);
+
+        // Clean up extra whitespace but preserve line breaks from other elements
+        $content = trim($content);
+
+        return $content;
+    }
+}
+
+if (! function_exists('abbreviateClientName')) {
+    /**
+     * Abbreviate client name: >3 words → acronym; ≤3 words → as-is
+     * Example: "Plant Research & Training Centre" (4 words) → "PRTC"
+     * Example: "ABC Corp" (2 words) → "ABC Corp"
+     *
+     * @param string|null $clientName
+     * @return string|null
+     */
+    function abbreviateClientName(?string $clientName): ?string
+    {
+        return $clientName ? trim($clientName) : $clientName;
+    }
+}

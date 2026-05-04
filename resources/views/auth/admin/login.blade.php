@@ -3,9 +3,9 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>AdminLTE 4 | Login Page v2</title><!--begin::Primary Meta Tags-->
+    <title>Trace | Login Page</title><!--begin::Primary Meta Tags-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="title" content="AdminLTE 4 | Login Page v2">
+    <meta name="title" content="Trace | Login Page">
     <meta name="author" content="ColorlibHQ">
     <meta name="description" content="AdminLTE is a Free Bootstrap 5 Admin Dashboard, 30 example pages using Vanilla JS.">
     <meta name="keywords" content="bootstrap 5, bootstrap, bootstrap 5 admin dashboard, bootstrap 5 dashboard, bootstrap 5 charts, bootstrap 5 calendar, bootstrap 5 datepicker, bootstrap 5 tables, bootstrap 5 datatable, vanilla js datatable, colorlibhq, colorlibhq dashboard, colorlibhq admin dashboard"><!--end::Primary Meta Tags--><!--begin::Fonts-->
@@ -19,10 +19,16 @@
 <body class="login-page bg-body-secondary">
     <div class="login-box">
         <div class="card card-outline card-primary">
-            <div class="card-header"> <a href="../index2.html" class="link-dark text-center link-offset-2 link-opacity-100 link-opacity-50-hover">
-                    <h1 class="mb-0"> <b>Admin</b>LTE
-                    </h1>
-                </a> </div>
+            <div class="card-header d-flex justify-content-center align-items-center"> <a href="/" class="link-dark text-center link-offset-2 link-opacity-100 link-opacity-50-hover">
+                    <!-- <h1 class="mb-0"> Admin Trace
+                    </h1> -->
+                    <img src="{{ $setting->getFirstMediaUrl('logo_image') }}"
+         alt="{{ $setting->logo_text ?? 'Logo' }}"
+         class="brand-image opacity-75 shadow"
+         style="height: 43px; width: auto; object-fit: contain; content">
+         
+                </a>
+               </div>
             <div class="card-body login-card-body">
                 <p class="login-box-msg">Sign in to start your session</p>
                 <form action="{{route('adminValidateLogin')}}" method="post">
@@ -51,7 +57,7 @@
                         </div> <!-- /.col -->
                     </div> <!--end::Row-->
                 </form>
-                <p class="mb-1"> <a href="{{ route('loadForgetMyPass') }}">I forgot my password</a> </p>
+                <!-- <p class="mb-1"> <a href="{{ route('loadForgetMyPass') }}">I forgot my password</a> </p> -->
             </div> <!-- /.login-card-body -->
         </div>
     </div>
