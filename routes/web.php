@@ -109,3 +109,31 @@ Route::prefix('user')->group(function () {
     // });
 
 });
+Route::get('/link-storage', function () {
+    $target = base_path('storage/app/public');
+    $link   = public_path('storage');
+
+    try {
+        if (!file_exists($link)) {
+            if (symlink($target, $link)) {
+                return "Storage linked successfully!";
+            } else {
+                return "Failed to create symlink.";
+            }
+        } else {
+            return "Link already exists.";
+        }
+    } catch (\Exception $ex) {
+        return "Error: " . $ex->getMessage();
+    }
+});
+
+
+Route::get('/optimize-clear', function () {
+    try {
+        \Artisan::call('optimize:clear');
+        return "Optimize clear executed successfully!";
+    } catch (\Exception $ex) {
+        return "Error: " . $ex->getMessage();
+    }
+});
