@@ -45,8 +45,8 @@
 }
 
 .team-image-box {
-    width: 340px;  
-    height: 440px; 
+    width: 340px;
+    height: 440px;
     border-radius: 16px;
     overflow: hidden;
     position: relative;
@@ -56,7 +56,7 @@
 .team-image-box img {
     width: 100%;
     height: 100%;
-    object-fit: cover; 
+    object-fit: cover;
     display: block;
 }
 
@@ -84,7 +84,7 @@
 
 @media (min-width: 992px) {
     .ps-lg-5 {
-        padding-left: 60px !important; 
+        padding-left: 60px !important;
     }
 }
 
@@ -131,7 +131,7 @@
     transition: all 0.3s ease;
     display: inline-flex;
     align-items: center;
-    box-shadow: none !important; 
+    box-shadow: none !important;
 }
 
 .btn-social {
@@ -273,7 +273,7 @@
 
 .btn-orange:hover {
     background: #d9632a !important;
-    transform: translateY(-2px); 
+    transform: translateY(-2px);
 }
 
 .other-team-card {
@@ -366,7 +366,7 @@
 <section class="team-hero">
     <div class="container custom-container">
         <div class="row align-items-center gap-lg-5">
-            
+
             <div class="col-lg-auto d-flex justify-content-center mb-4 mb-lg-0">
                 <div class="team-image-box">
                     <img src="{{ $teamImage }}" alt="{{ $teamName }}">
@@ -384,9 +384,9 @@
                     </div>
 
                     <h1 class="profile-name fw-bold text-white">{{ $teamName }}</h1>
-                    
+
                     <h5 class="sub-title mb-2">{{ $teamDesignation }}</h5>
-                    
+
                     <p class="team-location mb-4">
                         Trace Consulting Limited · Dhaka, Bangladesh
                     </p>
@@ -403,11 +403,11 @@
                             @php
                                 $title = trim((string)$social->title);
                                 $originalLink = trim((string)$social->social_link);
-                                
+
                                 // ইমেইল কিনা চেক করার লজিক
-                                $isEmail = str_contains(strtolower($title), 'email') || 
+                                $isEmail = str_contains(strtolower($title), 'email') ||
                                            filter_var($originalLink, FILTER_VALIDATE_EMAIL);
-                                
+
                                 // যদি ইমেইল হয় এবং mailto: না থাকে, তবে mailto: যোগ করবে
                                 if ($isEmail && !str_starts_with(strtolower($originalLink), 'mailto:')) {
                                     $socialUrl = 'mailto:' . $originalLink;
@@ -415,16 +415,16 @@
                                     $socialUrl = $originalLink ?: '#';
                                 }
 
-                                $iconPath = $social->iconUrl(); 
+                                $iconPath = $social->iconUrl();
                             @endphp
-                            
+
                             @if(!empty($title) || $iconPath)
-                                <a href="{{ $socialUrl }}" 
-                                   class="{{ $isEmail ? 'btn-email' : 'btn-social' }}" 
-                                   @if(!$isEmail) target="_blank" @endif 
-                                   rel="noopener" 
+                                <a href="{{ $socialUrl }}"
+                                   class="{{ $isEmail ? 'btn-email' : 'btn-social' }}"
+                                   @if(!$isEmail) target="_blank" @endif
+                                   rel="noopener"
                                    style="display: inline-flex; align-items: center; gap: 8px;">
-                                    
+
                                     @if($iconPath)
                                         <img src="{{ $iconPath }}" alt="{{ $title }}" style="width: 18px; height: 18px; object-fit: contain;">
                                     @endif
@@ -450,7 +450,7 @@
                 <div class="about-left-content">
                     <div class="about-title-box mb-4">
                         <span class="orange-line"></span>
-                        <h3 class="fw-bold section-heading">About {{ $team->first_name ?: $teamName }}</h3>
+                        <h3 class="fw-bold section-heading">About {{ rtrim($team->first_name ?: $teamName, '.') }}</h3>
                     </div>
 
                     <div class="about-description">
@@ -464,7 +464,7 @@
                             <span class="orange-line"></span>
                             <h3 class="fw-bold section-heading">Areas of Expertise</h3>
                         </div>
-                        
+
                         <div class="row g-3">
                             @forelse($expertiseItems as $expertise)
                                 <div class="col-md-6">
