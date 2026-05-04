@@ -34,7 +34,7 @@
 }
 
 /* SLIDER */
-.slides, .slide {
+.slides {
     width: 100%;
     height: 100%;
     position: absolute;
@@ -42,24 +42,50 @@
     left: 0;
 }
 
-.slide img {
+.slide {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* ইমেজকে কন্টেইনারের ভেতর ফিট রাখবে */
-    object-position: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    z-index: 0;
+    transition: opacity 1.2s ease;
 }
+
 .slide.active {
     opacity: 1;
     z-index: 1;
-    transform: scale(1);
 }
 
 .slide img {
     width: 100%;
-    height: 100%;          
-   
+    height: 100%;
     object-fit: cover;
     object-position: center;
+    transform: scale(1.04);
+    transition: transform 6s ease;
+}
+
+.slide.active img {
+    transform: scale(1);
+}
+
+/* TEXT TRANSITIONS */
+#heroTagline,
+#heroTitle,
+#heroDesc,
+.hero-btns,
+.slider-line {
+    transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+.hero-text-fading #heroTagline,
+.hero-text-fading #heroTitle,
+.hero-text-fading #heroDesc,
+.hero-text-fading .hero-btns {
+    opacity: 0;
+    transform: translateY(14px);
 }
 
 .hero-content {
@@ -1035,20 +1061,21 @@ const heroSliderData = @json($heroSliderMapped);
 <script>
 // ====== HERO SLIDER ======
 (function () {
-    const slides     = document.querySelectorAll('.slide');
-    const indicators = document.querySelectorAll('.slider-line .ind');
-    const taglineEl  = document.getElementById('heroTagline');
-    const titleEl    = document.getElementById('heroTitle');
-    const descEl     = document.getElementById('heroDesc');
+    const slides      = document.querySelectorAll('.slide');
+    const indicators  = document.querySelectorAll('.slider-line .ind');
+    const heroContent = document.querySelector('.hero-content');
+    const taglineEl   = document.getElementById('heroTagline');
+    const titleEl     = document.getElementById('heroTitle');
+    const descEl      = document.getElementById('heroDesc');
     let current = 0;
+    let animating = false;
 
     function updateText(idx) {
         if (typeof heroSliderData === 'undefined' || !heroSliderData[idx]) return;
-        const d           = heroSliderData[idx];
-        const title       = d.title       || '';
-        const designWord  = d.design_word || '';
-        const tagline     = d.tagline     || '';
-        const description = d.description || '';
+        const d          = heroSliderData[idx];
+        const title      = d.title       || '';
+        const designWord = d.design_word || '';
+        const tagline    = d.tagline     || '';
 
         if (taglineEl) taglineEl.textContent = tagline;
 
@@ -1062,23 +1089,46 @@ const heroSliderData = @json($heroSliderMapped);
             }
         }
 
-        if (descEl) descEl.innerHTML = description;
+        if (descEl) descEl.innerHTML = d.description || '';
     }
 
     function goTo(n) {
-        slides[current].classList.remove('active');
-        indicators[current]?.classList.remove('active');
+        if (animating || slides.length <= 1) return;
+        animating = true;
+
+        const prev = current;
         current = (n + slides.length) % slides.length;
+
+        // Fade out text
+        if (heroContent) heroContent.classList.add('hero-text-fading');
+
+        // Fade images — keep prev visible while next fades in
+        slides[prev].classList.remove('active');
         slides[current].classList.add('active');
+
+        // Update indicators
+        indicators[prev]?.classList.remove('active');
         indicators[current]?.classList.add('active');
-        updateText(current);
+
+        // After text fades out (~450ms), swap content and fade back in
+        setTimeout(() => {
+            updateText(current);
+            if (heroContent) heroContent.classList.remove('hero-text-fading');
+            animating = false;
+        }, 450);
     }
 
-    // Auto-advance every 4s
-    setInterval(() => goTo(current + 1), 4000);
+    // Auto-advance every 5s
+    let timer = setInterval(() => goTo(current + 1), 5000);
 
-    // Click indicators
-    indicators.forEach((ind, i) => ind.addEventListener('click', () => goTo(i)));
+    // Click indicators — reset timer on manual click
+    indicators.forEach((ind, i) => {
+        ind.addEventListener('click', () => {
+            clearInterval(timer);
+            goTo(i);
+            timer = setInterval(() => goTo(current + 1), 5000);
+        });
+    });
 })();
 
 
