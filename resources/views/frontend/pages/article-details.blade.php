@@ -732,7 +732,7 @@
 
         {{-- Share Bar --}}
        <div class="share-bar">
-    <span class="share-label">SHARE</span>
+    <!-- <span class="share-label">SHARE</span>
     @forelse($article->social_links ?? [] as $social)
         <a href="{{ $social['link'] ?? '#' }}" class="share-btn" target="_blank" rel="noopener" title="{{ $social['name'] ?? '' }}">
             <i class="fab fa-{{ strtolower($social['name'] ?? 'link') }}"></i>
@@ -744,7 +744,7 @@
     @endforelse
     <a href="#" class="copy-link-btn" onclick="navigator.clipboard.writeText(window.location.href); return false;">
         <i class="far fa-copy"></i> Copy link
-    </a>
+    </a> -->
 </div>
 
         {{-- Hero Image --}}
@@ -791,12 +791,14 @@
         </div>
 
         {{-- Download --}}
+        @if($downloadUrl && $downloadUrl !== '#')
         <div class="sidebar-card download-card">
             <div class="dl-icon"><i class="far fa-file-alt"></i></div>
             <p class="dl-text">Download Full Publication</p>
             <p class="dl-sub">Get the complete PDF report, data appendices and methodology notes.</p>
             <a href="{{ $downloadUrl }}" class="dl-btn" target="_blank" rel="noopener"><i class="fas fa-download"></i> Download File</a>
         </div>
+        @endif
 
         {{-- Publish Share Links --}}
         @php $publishLinks = array_filter($article->insight?->publish_links ?? [], fn($p) => !empty($p['link'])); @endphp
