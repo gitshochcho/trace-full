@@ -245,8 +245,18 @@ $articleRows = old('articles', [[
                                         Article Attachment
                                         <span class="badge bg-primary ms-1" style="font-size:10px;">Publication / Article</span>
                                     </label>
-                                    <input type="file" name="article_attachments[0]" class="form-control"
-                                           accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.mp4,.mov">
+                                    <div class="d-flex gap-2 align-items-center">
+                                        <input type="file" name="article_attachments[0]" id="articleAttachmentInput" class="form-control"
+                                               accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.mp4,.mov">
+                                        {{-- <button type="button" id="inlineClearArticleAttachmentBtn" class="btn btn-outline-secondary btn-sm d-none" title="Clear selected file">
+                                            <i class="fas fa-times"></i>
+                                        </button> --}}
+                                    </div>
+                                    <div id="articleAttachmentPreviewWrap" class="mt-2 d-none d-flex align-items-center gap-2 p-2 bg-light rounded mb-2">
+                                        <i class="fas fa-paperclip text-primary"></i>
+                                        <span id="articleAttachmentPreviewName" class="small flex-grow-1 text-truncate"></span>
+                                        <button type="button" id="clearArticleAttachmentBtn" class="btn btn-sm btn-danger py-0 px-2" style="font-size:11px; white-space:nowrap;" title="Clear selected file">Remove</button>
+                                    </div>
                                     <small class="text-muted"><i class="fas fa-info-circle"></i> Publication/Article file (max 30MB)</small>
                                 </div>
                             </div>
@@ -393,6 +403,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const insightImagePreview = document.getElementById('insightImagePreview');
     const clearInsightImageBtn = document.getElementById('clearInsightImageBtn');
 
+    // Article attachment preview/clear
+    const articleAttachmentInput = document.getElementById('articleAttachmentInput');
+    const articleAttachmentPreviewWrap = document.getElementById('articleAttachmentPreviewWrap');
+    const articleAttachmentPreviewName = document.getElementById('articleAttachmentPreviewName');
+    const clearArticleAttachmentBtn = document.getElementById('clearArticleAttachmentBtn');
+
     const ckEditors = {};
 
     function getTypeInfo() {
@@ -402,6 +418,27 @@ document.addEventListener('DOMContentLoaded', function () {
             category: (sel?.dataset?.typeCategory || '').toLowerCase(),
             text: (sel?.text || '').toLowerCase(),
         };
+    }
+
+    if (articleAttachmentInput) {
+        articleAttachmentInput.addEventListener('change', () => {
+            if (!articleAttachmentInput.files || articleAttachmentInput.files.length === 0) {
+                articleAttachmentPreviewWrap?.classList.add('d-none');
+                articleAttachmentPreviewName && (articleAttachmentPreviewName.textContent = '');
+                return;
+            }
+            const f = articleAttachmentInput.files[0];
+            articleAttachmentPreviewName && (articleAttachmentPreviewName.textContent = f.name);
+            articleAttachmentPreviewWrap.classList.remove('d-none');
+        });
+    }
+
+    if (clearArticleAttachmentBtn) {
+        clearArticleAttachmentBtn.addEventListener('click', () => {
+            if (articleAttachmentInput) articleAttachmentInput.value = '';
+            articleAttachmentPreviewWrap?.classList.add('d-none');
+            if (articleAttachmentPreviewName) articleAttachmentPreviewName.textContent = '';
+        });
     }
 
     function isArticleType()     { const { category, text } = getTypeInfo(); return ['read','article'].includes(category) || text.includes('article'); }

@@ -450,12 +450,12 @@
                 <div class="about-left-content">
                     <div class="about-title-box mb-4">
                         <span class="orange-line"></span>
-                        <h3 class="fw-bold section-heading">About {{ $team->first_name ?: $teamName }}.</h3>
+                        <h3 class="fw-bold section-heading">About {{ $team->first_name ?: $teamName }}</h3>
                     </div>
 
                     <div class="about-description">
                         @foreach($descriptionParagraphs as $paragraph)
-                            <p>{{ $paragraph }}</p>
+                            <p>{!! $paragraph !!}</p>
                         @endforeach
                     </div>
 
