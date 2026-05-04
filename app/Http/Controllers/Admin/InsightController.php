@@ -155,6 +155,11 @@ class InsightController extends Controller
         if ($isUpdate && $request->boolean('remove_image')) $insight->clearMediaCollection('image');
         if ($isUpdate && $request->boolean('remove_article_image')) $insight->clearMediaCollection('article_image');
         if ($isUpdate && $request->boolean('remove_attachment')) $insight->clearMediaCollection('attachment');
+        // Remove attachment from the first article (when using article_attachments[0])
+        if ($isUpdate && $request->boolean('remove_article_attachment')) {
+            $firstArticle = $insight->articles()->first();
+            if ($firstArticle) $firstArticle->clearMediaCollection('attachment');
+        }
 
         if ($request->hasFile('image')) { $insight->clearMediaCollection('image'); $insight->addMedia($request->file('image'))->toMediaCollection('image'); }
         if ($request->hasFile('attachment')) { $insight->clearMediaCollection('attachment'); $insight->addMedia($request->file('attachment'))->toMediaCollection('attachment'); }

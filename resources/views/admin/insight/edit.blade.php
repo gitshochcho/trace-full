@@ -217,19 +217,34 @@ $currentInsightImageRemoveField = $insight->articleImageUrl() ? 'remove_article_
                                         Article Attachment
                                         <span class="badge bg-primary ms-1" style="font-size:10px;">Publication / Article</span>
                                     </label>
-                                    <small class="text-muted d-block mb-2">Article section এর সাথে যুক্ত file।</small>
+                                    {{-- <small class="text-muted d-block mb-2">Article section এর সাথে যুক্ত file।</small> --}}
 
                                     @if($insight->articles->first()?->attachmentUrl())
-                                        <div class="d-flex align-items-center gap-2 p-2 bg-light rounded mb-2">
+                                        <div id="existingArticleAttachmentWrap" class="d-flex align-items-center gap-2 p-2 bg-light rounded mb-2">
                                             <i class="fas fa-paperclip text-primary"></i>
                                             <a href="{{ $insight->articles->first()->attachmentUrl() }}" target="_blank" class="small flex-grow-1 text-truncate">
                                                 Current file — Click to view
                                             </a>
+                                            <button type="button" class="btn btn-sm btn-danger py-0 px-2" style="font-size:11px; white-space:nowrap;"
+                                                onclick="this.closest('form').insertAdjacentHTML('beforeend', '<input type=\'hidden\' name=\'remove_article_attachment\' value=\'1\'>'); this.closest('.d-flex').remove();">
+                                                <i class="fas fa-trash-alt me-1"></i> Remove
+                                            </button>
                                         </div>
                                     @endif
 
-                                    <input type="file" name="article_attachments[0]" class="form-control form-control-sm"
-                                        accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.mp4,.mov">
+                                    <div class="d-flex gap-2 align-items-center">
+                                        <input type="file" name="article_attachments[0]" id="articleAttachmentInput" class="form-control form-control-sm"
+                                            accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.mp4,.mov">
+                                        {{-- <button type="button" id="inlineClearArticleAttachmentBtn" class="btn btn-outline-secondary btn-sm d-none" title="Clear selected file">
+                                            <i class="fas fa-times"></i>
+                                        </button> --}}
+                                    </div>
+
+                                    <div id="articleAttachmentPreviewWrap" class="mt-2 d-none d-flex align-items-center gap-2 p-2 bg-light rounded mb-2">
+                                        <i class="fas fa-paperclip text-primary"></i>
+                                        <span id="articleAttachmentPreviewName" class="small flex-grow-1 text-truncate"></span>
+                                        <button type="button" id="clearArticleAttachmentBtn" class="btn btn-sm btn-danger py-0 px-2" style="font-size:11px; white-space:nowrap;" title="Clear selected file">Remove</button>
+                                    </div>
                                 </div>
                             </div>
 
@@ -604,6 +619,51 @@ document.querySelectorAll('.author-chip').forEach(chip => {
         cb.checked = chip.classList.contains('chip-selected');
     });
 });
+
+    // ===== Article Attachment Preview & Remove (client-side) =====
+    const articleAttachmentInput = document.getElementById('articleAttachmentInput');
+    const existingArticleAttachmentWrap = document.getElementById('existingArticleAttachmentWrap');
+    const articleAttachmentPreviewWrap = document.getElementById('articleAttachmentPreviewWrap');
+    const articleAttachmentPreviewName = document.getElementById('articleAttachmentPreviewName');
+    const clearArticleAttachmentBtn = document.getElementById('clearArticleAttachmentBtn');
+    const inlineClearArticleAttachmentBtn = document.getElementById('inlineClearArticleAttachmentBtn');
+
+    if (articleAttachmentInput) {
+        articleAttachmentInput.addEventListener('change', () => {
+                if (!articleAttachmentInput.files || articleAttachmentInput.files.length === 0) {
+                    articleAttachmentPreviewWrap?.classList.add('d-none');
+                    articleAttachmentPreviewName && (articleAttachmentPreviewName.textContent = '');
+                    inlineClearArticleAttachmentBtn?.classList.add('d-none');
+                    if (existingArticleAttachmentWrap) existingArticleAttachmentWrap.classList.remove('d-none');
+                    return;
+                }
+                const f = articleAttachmentInput.files[0];
+                articleAttachmentPreviewName && (articleAttachmentPreviewName.textContent = f.name);
+                articleAttachmentPreviewWrap.classList.remove('d-none');
+                inlineClearArticleAttachmentBtn?.classList.remove('d-none');
+                if (existingArticleAttachmentWrap) existingArticleAttachmentWrap.classList.add('d-none');
+        });
+    }
+
+    if (clearArticleAttachmentBtn) {
+        clearArticleAttachmentBtn.addEventListener('click', () => {
+            if (articleAttachmentInput) articleAttachmentInput.value = '';
+            articleAttachmentPreviewWrap?.classList.add('d-none');
+            if (articleAttachmentPreviewName) articleAttachmentPreviewName.textContent = '';
+            if (existingArticleAttachmentWrap) existingArticleAttachmentWrap.classList.remove('d-none');
+                inlineClearArticleAttachmentBtn?.classList.add('d-none');
+        });
+    }
+
+        if (inlineClearArticleAttachmentBtn) {
+            inlineClearArticleAttachmentBtn.addEventListener('click', () => {
+                if (articleAttachmentInput) articleAttachmentInput.value = '';
+                articleAttachmentPreviewWrap?.classList.add('d-none');
+                if (articleAttachmentPreviewName) articleAttachmentPreviewName.textContent = '';
+                inlineClearArticleAttachmentBtn.classList.add('d-none');
+                if (existingArticleAttachmentWrap) existingArticleAttachmentWrap.classList.remove('d-none');
+            });
+        }
 
     // ===== Sync CKEditor on submit =====
     document.getElementById('editInsightForm').addEventListener('submit', function () {
