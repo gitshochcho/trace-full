@@ -490,7 +490,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 items: ['heading','|','bold','italic','underline','strikethrough','|',
                     'bulletedList','numberedList','|','outdent','indent','|','link','|','undo','redo']
             },
-        }).then(editor => { editors[textarea.id] = editor; }).catch(console.error);
+       }).then(editor => {
+            editors[textarea.id] = editor;
+            editor.editing.view.document.on('keydown', function (evt, data) {
+                if (data.domEvent.key === 'Enter' && !data.domEvent.shiftKey) {
+                    evt.stop();
+                    data.preventDefault();
+                    editor.execute('shiftEnter');
+                }
+            }, { priority: 'high' });
+            
+        }).catch(console.error);
     }
 
     document.querySelectorAll('textarea.article-editor, textarea.outside-author-editor').forEach(initCKEditor);

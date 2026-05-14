@@ -289,7 +289,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (descEditorEl) {
             ClassicEditor.create(descEditorEl)
-                .then(function (editor) { descEditor = editor; })
+                .then(function (editor) {
+                    descEditor = editor;
+                    editor.editing.view.document.on('keydown', function (evt, data) {
+                        if (data.domEvent.key === 'Enter' && !data.domEvent.shiftKey) {
+                            evt.stop();
+                            data.preventDefault();
+                            editor.execute('shiftEnter');
+                        }
+                    }, { priority: 'high' });
+                })
+
                 .catch(function (err) { console.error(err); });
 
             const teamForm = document.getElementById('teamForm');

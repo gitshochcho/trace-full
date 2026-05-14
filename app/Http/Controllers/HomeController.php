@@ -228,6 +228,7 @@ class HomeController extends Controller
         ->latest()
         ->take(4)
         ->get();
+        
 
             $dynamicSections = collect();
     for ($i = 1; $i <= 15; $i++) {

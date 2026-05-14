@@ -79,7 +79,7 @@
 
                                     <div class="col-12">
                                         <label class="form-label">Overview <small class="text-muted">(shows on details page body)</small></label>
-                                        <textarea name="overview" class="form-control overview-editor" rows="6">{{ old('overview', $service->overview ?? '') }}</textarea>
+                                        <textarea name="overview" class="form-control overview-editor" rows="6">{!! nl2br(e(old('overview', $service->overview ?? ''))) !!}</textarea>
                                         @error('overview')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
 
@@ -317,6 +317,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 ClassicEditor.create(element)
                     .then(editor => {
                         activeEditors.set(element, editor);
+                        editor.editing.view.document.on('keydown', function (evt, data) {
+                            if (data.domEvent.key === 'Enter' && !data.domEvent.shiftKey) {
+                                evt.stop();
+                                data.preventDefault();
+                                editor.execute('shiftEnter');
+                            }
+                        }, { priority: 'high' });
                     })
                     .catch(function (error) { console.error(error); });
             });

@@ -41,7 +41,7 @@
                 <h1 class="display-4 fw-bolder mb-4" style="line-height: 1.1;">
                     {{ $heroHeading }} <span style="color: #00bfc5;">{{ $heroDesignWord }}</span>
                 </h1>
-                <p class="lead opacity-75 mb-4" style="font-size: 16px; max-width: 550px; color: rgba(255, 255, 255, 0.8);">
+                <p class="lead opacity-75 mb-4" style="font-size: 16px; max-width: 550px; color: rgba(255, 255, 255, 0.8); text-align: justify;">
                     {{ strip_tags($heroDescription) }}
                 </p>
                 <div class="d-flex gap-5 mt-5">
@@ -91,9 +91,9 @@
                         <span class="input-group-text bg-transparent border-0"><i class="fas fa-search text-muted"></i></span>
                         <input type="text" id="insightSearch" class="form-control border-0 shadow-none" placeholder="Search insights...">
                     </div>
-                    <select class="form-select form-select-sm border-0 fw-bold shadow-none w-auto" style="font-size: 12px;">
+                    <!-- <select class="form-select form-select-sm border-0 fw-bold shadow-none w-auto" style="font-size: 12px;">
                         <option>Newest First</option>
-                    </select>
+                    </select> -->
                 </div>
             </div>
         </div>
@@ -157,41 +157,113 @@ $isExternal = false;
     $metaDate = optional($insight->published_at)->format('M Y') ?: 'TBA';
     $metaDuration = $leadArticle?->read_minutes ? $leadArticle->read_minutes . ' min' : 'Quick read';
 @endphp
-            <div class="col-12 col-md-6 col-lg-4 insight-item" data-tag="{{ $tag }}">
-                <div class="insight-card h-100 border-0 shadow-sm rounded-5 overflow-hidden bg-white">
-                    <div class="card-img-position" style="height: 220px; overflow: hidden; position: relative; flex-shrink: 0;">
-                        <img src="{{ $cardImage }}" class="w-100 h-100 object-fit-cover" alt="{{ $title }}">
-                        <span class="badge position-absolute top-0 start-0 m-3 px-3 py-1" style="background: {{ $badgeColor }}; font-size: 10px; border-radius: 4px;">{{ $tag }}</span>
-                    </div>
-                    <div class="card-body p-4">
-                        <small class="fw-bold mb-2 d-block" style="font-size: 11px; color: #00898e; letter-spacing: 0.5px;">{{ $category }}</small>
-                        <h5 class="card-title fw-bold text-dark mb-2" style="font-size: 16px; line-height: 1.4;">{{ $title }}</h5>
-                        @if(!empty($insight?->description))
-                       
-                        <p class="card-text text-muted small mb-0">{{$insight?->description}}</p>
-                        @else
-                      
-                        <p class="card-text text-muted small mb-0">
-                            {{ \Illuminate\Support\Str::limit(strip_tags($insight->articles->first()?->description), 120) }}
-                        </p>
-                        
-                        
-                        @endif
-                    </div>
-                    <div class="insight-card-footer">
-                        <span class="text-muted" style="font-size: 12px;"><i class="far fa-calendar-alt me-1"></i> {{ $metaDate }} · {{ $metaDuration }}</span>
-                        @if($typeCategory === 'download' && $actionLink === '#')
-                            <span class="text-muted" style="font-size: 12px;">No file uploaded</span>
-                        @elseif($typeCategory === 'download')
-                            <a href="{{ $actionLink }}" download class="fw-bold text-decoration-none" style="font-size: 12px; color: #e85d26;">
-                                <i class="fas fa-download me-1" style="font-size:10px;"></i>{{ $buttonText }}
-                            </a>
-                        @else
-                            <a href="{{ $actionLink }}" class="fw-bold text-decoration-none" style="font-size: 12px; color: #00898e;" @if($isExternal) target="_blank" rel="noopener" @endif>{{ $buttonText }} →</a>
-                        @endif
-                    </div>
-                </div>
-            </div>
+           <div class="col-12 col-md-6 col-lg-4 insight-item" data-tag="{{ $tag }}">
+
+    <div class="insight-card h-100 border-0 shadow-sm rounded-5 overflow-hidden bg-white"
+         
+         @if($actionLink !== '#')
+
+            @if($typeCategory === 'download')
+
+                onclick="window.location.href='{{ $actionLink }}'"
+
+            @elseif($isExternal)
+
+                onclick="window.open('{{ $actionLink }}', '_blank')"
+
+            @else
+
+                onclick="window.location.href='{{ $actionLink }}'"
+
+            @endif
+
+         @endif
+
+         style="cursor:pointer;">
+
+        <div class="card-img-position"
+             style="height: 220px; overflow: hidden; position: relative; flex-shrink: 0;">
+
+            <img src="{{ $cardImage }}"
+                 class="w-100 h-100 object-fit-cover"
+                 alt="{{ $title }}">
+
+            <span class="badge position-absolute top-0 start-0 m-3 px-3 py-1"
+                  style="background: {{ $badgeColor }}; font-size: 10px; border-radius: 4px;">
+                {{ $tag }}
+            </span>
+        </div>
+
+        <div class="card-body p-4">
+
+            <small class="fw-bold mb-2 d-block"
+                   style="font-size: 11px; color: #00898e; letter-spacing: 0.5px;">
+                {{ $category }}
+            </small>
+
+            <h5 class="card-title fw-bold text-dark mb-2"
+                style="font-size: 16px; line-height: 1.4;">
+                {{ $title }}
+            </h5>
+
+            @if(!empty($insight?->description))
+
+                <p class="card-text text-muted small mb-0"
+                   style="text-align: justify;">
+                    {{$insight?->description}}
+                </p>
+
+            @else
+
+                <p class="card-text text-muted small mb-0"
+                   style="text-align: justify;">
+                    {{ \Illuminate\Support\Str::limit(strip_tags($insight->articles->first()?->description), 120) }}
+                </p>
+
+            @endif
+        </div>
+
+        <div class="insight-card-footer">
+
+            <span class="text-muted" style="font-size: 12px;">
+                <i class="far fa-calendar-alt me-1"></i>
+                {{ $metaDate }} · {{ $metaDuration }}
+            </span>
+
+            @if($typeCategory === 'download' && $actionLink === '#')
+
+                <span class="text-muted" style="font-size: 12px;">
+                    No file uploaded
+                </span>
+
+            @elseif($typeCategory === 'download')
+
+                <a href="{{ $actionLink }}"
+                   download
+                   onclick="event.stopPropagation();"
+                   class="fw-bold text-decoration-none"
+                   style="font-size: 12px; color: #e85d26;">
+
+                    <i class="fas fa-download me-1" style="font-size:10px;"></i>
+                    {{ $buttonText }}
+                </a>
+
+            @else
+
+                <a href="{{ $actionLink }}"
+                   onclick="event.stopPropagation();"
+                   class="fw-bold text-decoration-none"
+                   style="font-size: 12px; color: #00898e;"
+                   @if($isExternal) target="_blank" rel="noopener" @endif>
+
+                    {{ $buttonText }} →
+                </a>
+
+            @endif
+
+        </div>
+    </div>
+</div>
             @empty
                 <div class="col-12">
                     <div class="border rounded-3 bg-white p-4 text-muted">No insights have been published yet.</div>

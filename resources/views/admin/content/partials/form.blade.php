@@ -384,11 +384,33 @@ if (removeIconBtn) {
             ClassicEditor.create(field)
                 .then(function (editor) {
                     contentEditor = editor;
+
+                    // Make Enter insert <br> instead of new <p>
+                editor.editing.view.document.on('keydown', function (evt, data) {
+                    if (data.domEvent.key === 'Enter' && !data.domEvent.shiftKey) {
+                        evt.stop();
+                        data.preventDefault();
+                        editor.execute('shiftEnter');
+                    }
+                }, { priority: 'high' });
+
+                // Sync on every change so textarea always has current value
+                editor.model.document.on('change:data', function () {
+                    field.value = editor.getData();
+                });
                 })
                 .catch(function (error) {
                     console.error(error);
                 });
         }
+        // Sync CKEditor before form submit
+        document.querySelectorAll('form').forEach(function (form) {
+            form.addEventListener('submit', function () {
+                if (contentEditor) {
+                    field.value = contentEditor.getData();
+                }
+            });
+        });
 
         const contactPagePresetBtn = document.getElementById('applyContactPagePreset');
 

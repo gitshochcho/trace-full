@@ -416,7 +416,17 @@ document.addEventListener('DOMContentLoaded', function () {
             ClassicEditor.create(el, {
                 toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|', 'undo', 'redo'],
             })
-                .then(function (editor) { activeEditors.set(el, editor); })
+               .then(function (editor) {
+                    activeEditors.set(el, editor);
+                    editor.editing.view.document.on('keydown', function (evt, data) {
+                        if (data.domEvent.key === 'Enter' && !data.domEvent.shiftKey) {
+                            evt.stop();
+                            data.preventDefault();
+                            editor.execute('shiftEnter');
+                        }
+                    }, { priority: 'high' });
+                })
+
                 .catch(function (err) { console.error('CKEditor error:', err); });
         });
     }

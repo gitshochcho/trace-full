@@ -59,6 +59,7 @@
         line-height: 1.7;
         max-width: 650px;
         opacity: 0.85;
+            text-align: justify;
     }
     .hero-desc p {
         font-size: 16px;
@@ -211,6 +212,7 @@
         font-size: 15px;
         line-height: 1.6;
         margin-bottom: 25px;
+            text-align: justify;
     }
     .job-meta {
         display: flex;
@@ -312,7 +314,7 @@
                 <div class="sidebar-section">
                     <div class="section-label">OPEN POSITIONS</div>
                     <h2 class="sidebar-title">Current <span class="highlight">Openings</span></h2>
-                    <p class="text-muted mt-3">We hire on a rolling basis. Roles span consultancy, research, technology, and project management.</p>
+                    <p class="text-muted mt-3" style="text-align:justify;">We’re always looking for talented individuals across consulting, research, technology, and project management.</p>
                 </div>
 
                 <div class="filter-section">

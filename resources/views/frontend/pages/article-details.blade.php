@@ -462,6 +462,7 @@
     font-size: 12px;
     color: #64748b;
     margin: 0;
+    text-align: justify;
 }
 
 .author-bio {
@@ -469,6 +470,7 @@
     color: #64748b;
     line-height: 1.65;
     margin: 0;
+    text-align: justify;
 }
 
 /* RELATED INSIGHTS */
@@ -507,6 +509,7 @@
     line-height: 1.45;
     margin: 0;
     transition: color .2s;
+    text-align: justify ;
 }
 
 .related-item:hover .related-title { color: #01888C; }
@@ -761,7 +764,7 @@
     <h2 class="section-heading" id="section-{{ $loop->index }}">
         {{ $section->title }}
     </h2>
-   <div class="body-text">{!! $section->description !!}</div>
+   <div class="body-text">{!! preg_replace('/<p\b([^>]*)>/i', '<p$1 style="text-align:justify;">', $section->description) !!}</div>
 @endforeach
 
         {{-- Tags --}}

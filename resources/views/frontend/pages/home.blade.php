@@ -81,7 +81,7 @@
     gap: 12px;
     margin-bottom: 20px;
 } */
-.hero-tag-box .tag-line { width: 40px; height: 2px; background: #F47735; display: inline-block; }
+/* .hero-tag-box .tag-line { width: 40px; height: 2px; background: #F47735; display: inline-block; } */
 .hero-tag {
     color: #F47735;
     font-size: clamp(10px, 0.9vw, 13px);
@@ -93,7 +93,7 @@
 }
 
 .hero-content h1 {
- font-size: clamp(45px, 6vw, 75px) !important; /* জুম করলেও ৩৫ পিক্সেলের ছোট হবে না */
+ font-size: clamp(35px, 6vw, 65px) !important; 
     line-height: 1.2;
     color: white;
     margin-bottom: clamp(10px, 1.5vh, 24px);
@@ -177,7 +177,7 @@
     .hero-content { top: 52%; }
     .hero-content h1 { font-size: 24px; line-height: 1.3; }
     .hero-tag { font-size: 20px; letter-spacing: 1px; }
-    .hero-tag-box .tag-line { width: 20px; }
+    /* .hero-tag-box .tag-line { width: 20px; } */
     .hero-desc, .hero-btns, .slider-line { display: none !important; }
 }
 
@@ -186,6 +186,10 @@
     .hero-desc { font-size: 14px; }
 }
 
+@media (max-width: 300) {
+    .hero-content h1 { font-size: 22px; }
+    
+}
 
 
 /* tablet */
@@ -233,6 +237,7 @@
         color: #64748b;
         font-size: 15px;
         line-height: 1.6;
+        text-align: justify;
     }
 
     /* List Styling */
@@ -259,6 +264,7 @@
         font-size: 14px;
         color: #64748b;
         margin-bottom: 0;
+        text-align: justify;
     }
 
     /* Learn Button */
@@ -319,7 +325,7 @@
         color: #1a2332;
     }
     .text-teal { color: #00898e; }
-    .section-desc { color: #64748b; font-size: 14px; }
+    .section-desc { color: #64748b; font-size: 14px; text-align: justify; }
 
     /* All Services Button */
     .circle-arrow {
@@ -381,7 +387,7 @@
 }
 
 .card-cat {
-    font-size: 11px;
+    font-size: 15px;
     font-weight: 700;
     color: #6c757d; 
     letter-spacing: 0.8px;
@@ -583,8 +589,8 @@
         height: 50px;
         max-width: 120px;
         object-fit: contain;
-        filter: grayscale(100%);
-        opacity: .75;
+        /* filter: grayscale(100%); */
+        /* opacity: .75; */
         transition: filter .3s ease, opacity .3s ease, transform .3s ease;
     }
     .partner-logos img:hover {
@@ -782,10 +788,10 @@ const heroSliderData = @json($heroSliderMapped);
                     @endif
                 </h2>
  
-                <p class="about-desc mb-5">
-                    {!! strip_tags($aDesc) !!}
-                </p>
- 
+                <div class="about-desc mb-5">
+                    {!! $aDesc !!}
+                </div>
+
                 {{-- LIST ITEMS --}}
                 <div class="about-list">
                     @foreach($items as $item)
@@ -793,7 +799,7 @@ const heroSliderData = @json($heroSliderMapped);
                             <span class="about-num">{{ $item['num'] }}</span>
                             <div class="about-content">
                                 <h4 class="item-title">{{ $item['title'] }}</h4>
-                                <p class="item-text">{{ strip_tags($item['text']) }}</p>
+                                <div class="item-text">{!! $item['text'] !!}</div>
                             </div>
                         </div>
                     @endforeach
@@ -895,7 +901,9 @@ const heroSliderData = @json($heroSliderMapped);
     $title    = $service->service_name ?? '';
     $desc     = strip_tags($service->description ?? '');
 @endphp
+  
 <div class="col-12 col-sm-6 col-lg-4">
+        <a href="{{ route('serviceDetails', $service->id) }}" class="text-decoration-none text-dark">
     <div class="service-card h-100 shadow-sm">
         <div class="card-img-wrapper">
             <img src="{{ $imageUrl }}" alt="{{ $tag }}">
@@ -904,11 +912,15 @@ const heroSliderData = @json($heroSliderMapped);
             <span class="card-cat d-inline-block mb-2">{{ $tag }}</span>
             <div class="animated-line mb-3"></div>
             <h3 class="card-title-text h5 fw-bold mb-2">{{ $title }}</h3>
-            <p class="card-text-desc text-muted">{{ Str::limit($desc, 120) }}</p>
+            <p class="card-text-desc text-muted" style="text-align: justify;">
+                {{ Str::limit($desc, 120) }}
+            </p>
             <a href="{{ route('serviceDetails', $service->id) }}" class="read-more-btn">Read More ›</a>
         </div>
     </div>
+       </a>
 </div>
+
 @empty
 {{-- fallback static cards --}}
 @endforelse
@@ -933,7 +945,7 @@ const heroSliderData = @json($heroSliderMapped);
                 <div style="max-width:520px;">
                     <h2 class="section-title mb-2">Our <span class="text-teal">Projects</span></h2>
                     <p class="section-desc mb-0">
-                        TRACE has delivered trade facilitation reform, laboratory accreditation, digital systems, and policy advisory projects across South Asia — for governments, development banks, and regulatory bodies.
+                        TRACE has delivered trade facilitation reform, laboratory accreditation, digital systems, and policy advisory projects across South Asia for governments, development banks, and regulatory bodies.
                     </p>
                 </div>
                 <a href="/projects" class="all-link text-decoration-none">
@@ -945,17 +957,11 @@ const heroSliderData = @json($heroSliderMapped);
 
         {{-- GRID --}}
         <div class="row g-4">
-            @php
-            $projects = [
-                ['img' => 'Lab Project.png', 'badge' => 'LAB ACCREDITATION', 'title' => 'ISO/IEC 17025:2017 Accreditation Support to PRTC, CVASU', 'sub' => 'Chattogram Veterinary & Animal Sciences University'],
-                ['img' => 'Infrastructure Project.png', 'badge' => 'INFRASTRUCTURE DESIGN', 'title' => 'Seven-Storey Advanced Customs Laboratory Layout Design', 'sub' => 'Customs Authority, Chattogram'],
-                ['img' => 'BAFISA Project.png', 'badge' => 'DIGITAL SOLUTIONS', 'title' => 'HS Code Import Database & BAFISA Website Upgrade', 'sub' => 'Bangladesh Freight Forwarders & Shipping'],
-            ];
-            @endphp
+         
 
            @forelse($homeProjects as $project)
 @php
-    $pImg    = $project->imageUrl() ?? '';
+    $pImg    = $project->heroImageUrl() ?? '';
     $pSvc    = $project->services->first();
     $pCat    = $pSvc?->section ?: ($pSvc?->service_name ?? '');
     $pClient = abbreviateClientName($project->client) ?? '';
@@ -985,7 +991,7 @@ const heroSliderData = @json($heroSliderMapped);
 <section class="partners-section py-5">
     <div class="container" style="max-width:1200px;">
 
-        <p class="partners-title mb-4 text-center">TRUSTED BY LEADING INSTITUTIONS</p>
+        <p class="partners-title mb-4 text-center">OUR PARTNERS</p>
 
         <div class="partner-slider position-relative">
             <div class="partner-logos-wrapper">
