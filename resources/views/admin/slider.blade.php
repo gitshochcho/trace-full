@@ -206,6 +206,13 @@ document.addEventListener('DOMContentLoaded', function () {
             toolbar: { items: ['bold', 'italic', 'underline', '|', 'bulletedList', 'numberedList', '|', 'link', '|', 'undo', 'redo'] }
         }).then(editor => {
             ckEditors[textarea.id] = editor;
+            editor.editing.view.document.on('keydown', function (evt, data) {
+                if (data.domEvent.key === 'Enter' && !data.domEvent.shiftKey) {
+                    evt.stop();
+                    data.preventDefault();
+                    editor.execute('shiftEnter');
+                }
+            }, { priority: 'high' });
         }).catch(console.error);
     }
 

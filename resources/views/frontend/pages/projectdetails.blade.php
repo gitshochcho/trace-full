@@ -114,6 +114,7 @@
     font-size: 15px;
     line-height: 1.6;
     color: #4B5563;
+    text-align: justify;
 }
 
 .outcomes-list li {
@@ -328,9 +329,10 @@
             <div class="meta-item">
                 <i class="far fa-calendar-alt"></i> {{ $project->durationLabel() ?? '' }}
             </div>
-            <div class="meta-item">
-                <i class="fas fa-map-marker-alt"></i> {{ $locationSummary }}
-            </div>
+          <div class="meta-item">
+    <i class="fas fa-map-marker-alt"></i>
+    {{ preg_replace('/\s+/', ' ', strip_tags(html_entity_decode($locationSummary))) }}
+</div>
             <div class="meta-item">
                 <i class="fas fa-briefcase"></i> {{ $serviceNames->isNotEmpty() ? $serviceNames->take(2)->join(' / ') : 'Project Services' }}
             </div>
@@ -347,7 +349,7 @@
             <div class="col-lg-8">
                 <div class="overview-content mb-5">
                     <h3 class="section-title-accent">Project Overview</h3>
-                    <p class="mt-4">{{ stripPTags($project->overview) ?? '' }}</p>
+                    <div class="mt-4">{!! $project->overview !!}</div>
                 </div>
 
                 {{-- <div class="mb-5">
@@ -423,7 +425,7 @@
                         @forelse($project->phaseDetails as $phase)
                             <div class="border rounded-3 bg-white p-4 shadow-sm">
                                 <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
-                                    <div class="flex-grow-1">
+                                    <div class="flex-grow-1" style="text-align: justify;">
                                         <div>{!! $phase->phase_description !!}</div>
                                     </div>
                                     @if($phase->attachmentUrl())

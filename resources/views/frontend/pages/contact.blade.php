@@ -63,6 +63,7 @@
         line-height: 1.6;
         max-width: 550px;
         opacity: 0.85;
+            text-align: justify;
     }
 
     /* Contact Form Card (Overlapping) */

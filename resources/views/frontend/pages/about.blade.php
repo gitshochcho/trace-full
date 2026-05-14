@@ -59,6 +59,7 @@
     max-width: 480px;
     font-size: 17px;
     line-height: 30px;
+    text-align: justify;
 }
 
 .about-hero-content h1 {
@@ -336,6 +337,7 @@
     color: #64748B;
     font-size: 15px;
     line-height: 1.7;
+    text-align: justify;
 }
 
 .btn-get-started {
@@ -376,6 +378,7 @@
     font-size: 14px;
     color: #64748B;
     margin: 0;
+    text-align: justify;
 }
 
 @media (max-width: 1100px) {
@@ -454,6 +457,7 @@
 .feature-card p {
     font-size: 14px;
     line-height: 1.6;
+    text-align: justify;
 }
 
 .icon-box {
@@ -948,8 +952,8 @@
     max-height: 45px;
     max-width: 100%;
     object-fit: contain;
-    filter: grayscale(100%);
-    opacity: 0.6;
+    /* filter: grayscale(100%);
+    opacity: 0.6; */
     transition: 0.3s;
 }
  
@@ -1134,15 +1138,19 @@
                 
                 <h2 class="about-title mb-4">
                     @php
-                        // Controller theke asha data
                         $heading = $aboutTrace->heading ?? '';
-                        $designWord = $aboutTrace?->design_word; 
+                        $designWord = trim($aboutTrace?->design_word ?? '');
+                        $formattedHeading = $heading;
 
                         if ($designWord) {
-                            // Heading er bhetor thaka specific word-ke span tag diye wrap korbe
-                            $formattedHeading = str_ireplace($designWord, "<span>{$designWord}</span>", $heading);
-                        } else {
-                            $formattedHeading = $heading;
+                            $words = array_filter(preg_split('/\s+/', $designWord));
+                            foreach ($words as $word) {
+                                $formattedHeading = preg_replace(
+                                    '/(' . preg_quote($word, '/') . ')/iu',
+                                    '<span>$1</span>',
+                                    $formattedHeading
+                                );
+                            }
                         }
                     @endphp
                     {!! $formattedHeading !!}
@@ -1152,9 +1160,9 @@
                     {{-- Who We Are Section --}}
                     <div class="mb-4">
                         <h4 class="fw-bold" style="font-size: 18px;">{{ $whoWeAre?->heading ?? '' }}</h4>
-                        <div class="text-secondary">
+                        <div class="text-secondary" style="text-align: justify;">
                             {{-- Editor theke asha p tag remove korbe ebong data display korbe --}}
-                            {!! strip_tags($whoWeAre?->description ?? '') !!}
+                            {!! ($whoWeAre?->description ?? '') !!}
                         </div>
                     </div>
 
@@ -1163,8 +1171,9 @@
                     {{-- Our Mission Section --}}
                     <div class="mb-4">
                         <h4 class="fw-bold" style="font-size: 18px;">{{ $ourMission?->heading ?? '' }}</h4>
-                        <div class="text-secondary">
-                            {!! strip_tags($ourMission?->description ?? '') !!}
+                        <div class="text-secondary" style="text-align: justify;">
+                            {!! ($ourMission?->description ?? '') !!}
+                         
                         </div>
                         <div class="d-flex gap-3 mt-4 flex-wrap">
                             <a href="{{ route('contact') }}" class="mission-btn mission-btn-white">Work With Us →</a>
@@ -1203,11 +1212,12 @@
                         {{ strip_tags($commitmentSubHeading) }}
                     </p>
 
-                    <ul>
-                        @foreach($commitmentPoints as $point)
-                            <li>{{ $point }}</li>
-                        @endforeach
-                    </ul>
+                 <ul>
+                   @foreach($commitmentPoints as $point)
+                       <li>{!! $point !!}</li>
+                   @endforeach
+               </ul>
+               
 
                     <p class="bottom-text mt-4" style="color:#cbd5e1; font-style: italic;">
                         {{ $commitmentBottomText }}
@@ -1230,7 +1240,7 @@
                     {!! nl2br($frameworkHeading) !!}
                 </h2>
                 <p class="framework-desc mb-4">
-                    {{ strip_tags($frameworkDescription) }}
+                    {!! strip_tags($frameworkDescription) !!}
                 </p>
                 <a href="{{ route('contact') }}" class="btn-get-started">
                     Get Started &rarr;
@@ -1253,8 +1263,8 @@
                                 @endif
                             </div>
                             <div class="content">
-                                <h4>{{ $item['title'] }}</h4>
-                                <p>{{ $item['description'] }}</p>
+                                <h4>{!! $item['title'] !!}</h4>
+                                <p>{!! $item['description'] !!}</p>
                             </div>
                         </div>
                     @endforeach
@@ -1277,8 +1287,8 @@
                 </h2>
             </div>
             <div class="col-lg-7">
-                <p class="text-secondary mb-0" style="font-size: 15px; line-height: 1.8; max-width: 600px;">
-                    {{ strip_tags($featuresDescription) }}
+                <p class="text-secondary mb-0" style="font-size: 15px; line-height: 1.8; max-width: 600px; text-align: justify; ">
+                    {!! strip_tags($featuresDescription) !!}
                 </p>
             </div>
         </div>
@@ -1304,8 +1314,8 @@
                             @endif
                         </div>
                         <h5 class="fw-bold mb-3">{{ $feature['title'] }}</h5>
-                        <p class="text-secondary small line-height-relaxed">
-                            {{ $feature['description'] }}
+                        <p class="text-secondary small line-height-relaxed" style="text-align: justify;">
+                            {!! $feature['description'] !!}
                         </p>
                     </div>
                 </div>
@@ -1336,7 +1346,7 @@
         <div class="projects-grid">
             @forelse($aboutProjects as $project)
                 @php
-                    $projectImage  = $project->imageUrl() ?? '';
+                    $projectImage  = $project->heroImageUrl() ?? '';
                      $firstSvc         = $project->services->first();
                       $projectCategory  = $firstSvc?->section ?? $firstSvc?->service_name ?? 
                     $projectBadge  = strtoupper($project->services->first()?->service_name ?? $project->project_standard ?? '');
@@ -1504,10 +1514,10 @@
                     {!! $pHeading !!}
                 </h2>
             </div>
-            <div class="col-lg-6">
+            <div class="col-lg-6" style="text-align: justify;">
                 <p class="partners-desc">
                     {!! $partnersContent?->description
-                        ?: 'We work with governments, multilateral development organisations, regulatory bodies, and private sector leaders across the region — building long-term partnerships grounded in trust and results.' !!}
+                        ?: '' !!}
                 </p>
             </div>
         </div>

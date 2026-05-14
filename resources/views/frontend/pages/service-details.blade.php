@@ -139,6 +139,7 @@
     color: #64748b;
     line-height: 1.75;
     margin-bottom: 14px;
+    
 }
 
 .service-box .editor-content p:last-child {
@@ -187,6 +188,7 @@
     line-height: 1.5;
     border-bottom: 1px solid #F1F4F7;
     transition: background .2s;
+    text-align: justify;
 }
 
 .include-item:last-child { border-bottom: none; }
@@ -521,7 +523,7 @@
                 {{-- OVERVIEW --}}
                 <div class="service-box">
                     <h3>Overview</h3>
-                    <div class="editor-content">{!! nl2br(e($overviewPlainText)) !!}</div>
+                    <div class="editor-content" style="text-align: justify;">{!! nl2br($overviewPlainText) !!}</div>
                 </div>
 
                 {{-- SERVICES INCLUDE --}}
@@ -540,7 +542,7 @@
                                     </svg>
                                 @endif
                             </span>
-                            {{ is_object($item) ? strip_tags((string) $item->text) : strip_tags((string) $item) }}
+                          {{ trim(html_entity_decode(is_object($item) ? strip_tags((string) $item->text) : strip_tags((string) $item))) }}
                         </div>
                         @endforeach
                     </div>

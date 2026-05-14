@@ -188,7 +188,7 @@
     margin: 0;
 }
 
-.about-description p {
+.about-description{
     font-family: 'Inter', sans-serif;
     font-size: 15px;
     line-height: 1.7;
@@ -236,6 +236,7 @@
     color: #64748B;
     margin: 0;
     line-height: 1.4;
+    text-align: justify;
 }
 
 .sidebar-container {
@@ -388,7 +389,7 @@
                     <h5 class="sub-title mb-2">{{ $teamDesignation }}</h5>
 
                     <p class="team-location mb-4">
-                        Trace Consulting Limited · Dhaka, Bangladesh
+                        Trace Consulting. Dhaka, Bangladesh
                     </p>
 
                     <div class="team-tags d-flex flex-wrap justify-content-center justify-content-md-start gap-2 mb-4">
@@ -454,9 +455,7 @@
                     </div>
 
                     <div class="about-description">
-                        @foreach($descriptionParagraphs as $paragraph)
-                            <p>{!! $paragraph !!}</p>
-                        @endforeach
+                        {!! $team->description !!}
                     </div>
 
                     <div class="expertise-section mt-5">
