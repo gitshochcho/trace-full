@@ -55,7 +55,7 @@ $articleRows = old('articles', [[
 
                                 <div class="col-md-6">
                                     <label class="form-label">Sort Order</label>
-                                    <input type="number" name="sort_order" value="{{ old('sort_order', 0) }}" class="form-control @error('sort_order') is-invalid @enderror">
+                                    <input type="number" name="sort_order" value="{{ old('sort_order', $nextSortOrder) }}" class="form-control @error('sort_order') is-invalid @enderror" min="0">
                                     @error('sort_order')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
 
@@ -494,7 +494,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!textarea || ckEditors[textarea.id]) return;
         ClassicEditor.create(textarea, {
             toolbar: { items: ['bold', 'italic', 'underline', '|', 'bulletedList', 'numberedList', '|', 'link', '|', 'undo', 'redo'] }
-        }).then(editor => { ckEditors[textarea.id] = editor; }).catch(console.error);
+        
     }
 
     document.querySelectorAll('textarea.outside-author-editor, textarea.article-section-editor').forEach(initCKEditor);

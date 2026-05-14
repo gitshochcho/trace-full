@@ -31,7 +31,8 @@ class InsightController extends Controller
     {
         $insightTypes = InsightType::orderBy('type')->where('status', true)->get(['id', 'type', 'type_category', 'status']);
         $teams = Team::query()->orderBy('first_name')->orderBy('last_name')->get(['id', 'first_name', 'last_name']);
-        return view('admin.insight.create', compact('insightTypes', 'teams'));
+        $nextSortOrder = (Insight::max('sort_order') ?? -1) + 1;
+        return view('admin.insight.create', compact('insightTypes', 'teams', 'nextSortOrder'));
     }
 
     public function store(Request $request): RedirectResponse

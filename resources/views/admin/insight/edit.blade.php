@@ -44,7 +44,7 @@ $currentInsightImageRemoveField = $insight->articleImageUrl() ? 'remove_article_
                     <div class="card-body">
                         <div class="row g-3">
 
-                            <div class="col-12">
+                            <div class="col-md-6">
                                 <label class="form-label">Insight Type</label>
                                 <select id="editInsightTypeSelect" name="type" class="form-control">
                                     @foreach($insightTypes as $type)
@@ -55,6 +55,12 @@ $currentInsightImageRemoveField = $insight->articleImageUrl() ? 'remove_article_
                                         </option>
                                     @endforeach
                                 </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Sort Order</label>
+                                <input type="number" name="sort_order" value="{{ old('sort_order', $insight->sort_order) }}" class="form-control @error('sort_order') is-invalid @enderror" min="0">
+                                @error('sort_order')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
 
                             {{-- Team Authors (multiple) --}}
@@ -490,7 +496,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 items: ['heading','|','bold','italic','underline','strikethrough','|',
                     'bulletedList','numberedList','|','outdent','indent','|','link','|','undo','redo']
             },
-        }).then(editor => { editors[textarea.id] = editor; }).catch(console.error);
+        
+        }).catch(console.error);
     }
 
     document.querySelectorAll('textarea.article-editor, textarea.outside-author-editor').forEach(initCKEditor);
