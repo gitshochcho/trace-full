@@ -886,11 +886,16 @@
             <h4 class="sidebar-heading">RELATED INSIGHTS</h4>
             <div class="related-list">
                 @forelse($relatedArticles as $related)
-                    <a href="{{ route('articleDetails', $related) }}" class="related-item text-decoration-none">
-                        <div class="related-thumb" style="background-image: url('{{ $related->iconUrl() ?: ($related->insight?->imageUrl() ?: asset('assets/img/Op-Ed.png')) }}');"></div>
+                    @php
+                        $relatedFirstArticle = $related->articles->first();
+                        $relatedImage = $related->imageUrl() ?: $related->articleImageUrl() ?: asset('assets/img/Op-Ed.png');
+                        $relatedLink = $relatedFirstArticle ? route('articleDetails', $relatedFirstArticle) : '#';
+                    @endphp
+                    <a href="{{ $relatedLink }}" class="related-item text-decoration-none">
+                        <div class="related-thumb" style="background-image: url('{{ $relatedImage }}');"></div>
                         <div class="related-text">
                             <span class="related-cat">{{ strtoupper($related->insightType?->type ?: 'read') }}</span>
-                            <p class="related-title">{{ \Illuminate\Support\Str::limit($related->title, 70) }}</p>
+                            <p class="related-title">{{ \Illuminate\Support\Str::limit($related->heading, 70) }}</p>
                         </div>
                     </a>
                 @empty

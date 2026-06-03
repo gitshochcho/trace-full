@@ -13,7 +13,7 @@
                 <div class="footer-brand mb-3">
                     @if($siteSettings?->logoImageUrl())
                         <img src="{{ $siteSettings->logoImageUrl() }}" alt="Trace Logo"
-                             style="width: 38px; height: 38px; object-fit: contain;">
+                             style="width: 200px; height: 70px; object-fit: contain;">
                     @endif
                     <div class="d-flex flex-column">
                         <h3 class="mb-0 fw-bold footer-brand-title">{{ $siteSettings?->logo_text ?: '' }}</h3>

@@ -389,7 +389,7 @@
                     <h5 class="sub-title mb-2">{{ $teamDesignation }}</h5>
 
                     <p class="team-location mb-4">
-                        Trace Consulting. Dhaka, Bangladesh
+                        TRACE Consulting. Dhaka, Bangladesh
                     </p>
 
                     <div class="team-tags d-flex flex-wrap justify-content-center justify-content-md-start gap-2 mb-4">

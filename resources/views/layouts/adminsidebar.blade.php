@@ -4,7 +4,7 @@
 @if($setting?->getFirstMediaUrl('logo_image'))
     <img src="{{ $setting->getFirstMediaUrl('logo_image') }}"
          alt="{{ $setting->logo_text ?? 'Logo' }}"
-         class="brand-image opacity-75 shadow"
+         class="brand-image opacity-10 shadow"
          style="height: 33px; width: auto; object-fit: contain;">
 @else
     <img src="{{ asset('dist/assets/img/AdminLTELogo.png') }}"
@@ -14,7 +14,7 @@
 
 {{-- Logo Text + Tagline --}}
 <span class="brand-text fw-light">
-    {{ $setting?->logo_text ?? 'Trace Consultancy ltd.' }}
+    {{ $setting?->logo_text ?? '' }}
     @if($setting?->logo_tagline)
         <small class="d-block opacity-50" style="font-size:10px; line-height:1;">
             {{ $setting->logo_tagline }}

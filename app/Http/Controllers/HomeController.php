@@ -222,9 +222,10 @@ class HomeController extends Controller
         ->orderBy('id')
         ->get(['id', 'title', 'description']);
 
-    $relatedArticles = InsightArticle::with('insightType')
-        ->where('id', '!=', $article->id)
-        ->where('insight_id', '!=', $article->insight_id)
+    $relatedArticles = Insight::with(['media', 'insightType', 'articles' => fn($q) => $q->orderBy('sort_order')->limit(1)])
+        ->where('active', true)
+        ->whereHas('insightType', fn($q) => $q->whereIn('type_category', ['Read', 'read']))
+        ->when($article->insight_id, fn($q) => $q->where('id', '!=', $article->insight_id))
         ->latest()
         ->take(4)
         ->get();
