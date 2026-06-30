@@ -308,7 +308,7 @@
         </div>
     </section>
 
-    <div id="open-positions" class="container-fluid px-lg-5 page-align-container py-5 my-lg-5">
+    <div id="open-positions" class="container-fluid px-lg-5 page-align-container py-3 my-lg-3">
         <div class="row g-lg-5">
             <aside class="col-lg-4 careers-sidebar">
                 <div class="sidebar-section">

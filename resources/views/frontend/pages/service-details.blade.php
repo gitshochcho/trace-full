@@ -513,7 +513,7 @@
 {{-- ==============================
      DETAILS SECTION
 ============================== --}}
-<section class="service-details-section">
+<section class="service-details-section py-4">
     <div class="container-fluid px-lg-5 page-align-container">
         <div class="row g-4 g-lg-5">
 

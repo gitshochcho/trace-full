@@ -1130,7 +1130,7 @@
     </div>
 </section>
 
-<section class="py-5 my-md-5">
+<section class="py-3 my-md-2">
     <div class="custom-container">
         <div class="row align-items-center gy-5">
             <div class="col-lg-6 pe-lg-5">
@@ -1228,7 +1228,7 @@
     </div>
 </section>
 
-<section class="framework-section">
+<section class="framework-section py-5">
     <div class="framework-main-container">
         <div class="row align-items-center">
             <div class="col-lg-5 p-0">
@@ -1274,7 +1274,7 @@
     </div>
 </section>
 
-<section class="features-section">
+<section class="features-section py-3">
     <div class="custom-container">
         <div class="row align-items-end mb-5 gy-4">
             <div class="col-lg-5">
@@ -1324,7 +1324,7 @@
     </div>
 </section>
 
-<section class="projects-section">
+<section class="projects-section py-3 my-lg-3">
     <div class="projects-main-container">
         <div class="row align-items-center mb-4">
             <div class="col-md-8">
@@ -1375,7 +1375,7 @@
     </div>
 </section>
 
-<section class="insights-section">
+<section class="insights-section py-4">
     <div class="insights-container">
         <div class="insights-header mb-5">
             <div class="header-left">
@@ -1385,7 +1385,7 @@
                 <h2 class="insights-title">Ideas and <span>perspectives</span></h2>
                 <p class="insights-desc">Thought leadership, research publications, and knowledge resources from our team.</p>
             </div>
-            <div class="header-right">
+            <div class="header-right py-5">
                 <a href="{{ route('insights') }}" class="all-insights-btn">All Insights &rarr;</a>
             </div>
         </div>
@@ -1494,7 +1494,7 @@
     </div>
 </section>
 
-<section class="partners-section py-5">
+<section class="partners-section py-4">
     <div class="custom-container">
         <div class="row align-items-end mb-5">
             <div class="col-lg-6">

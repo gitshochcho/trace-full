@@ -796,7 +796,7 @@ const heroSliderData = @json($heroSliderMapped);
 ============================== --}}
 
 
-<section class="about-section py-5 my-lg-4">
+<section class="about-section py-3 my-lg-2">
     <div class="container" style="max-width: 1072px; margin: 0 auto; padding: 0 15px;">
         <div class="row align-items-center gy-5">
  
@@ -853,7 +853,7 @@ const heroSliderData = @json($heroSliderMapped);
 {{-- ==============================
       SERVICES SECTION
 ============================== --}}
-<section class="services-section py-5 bg-light-subtle">
+<section class="services-section py-3 bg-light-subtle">
     <div class="container" style="max-width: 1072px; margin: 0 auto; padding: 0 15px;">
 
         {{-- HEADER --}}
@@ -957,7 +957,7 @@ const heroSliderData = @json($heroSliderMapped);
 {{-- ==============================
       PROJECTS SECTION
 ============================== --}}
-<section class="projects-section py-5 bg-white">
+<section class="projects-section py-4 bg-white">
     <div class="container" style="max-width: 1072px; margin: 0 auto; padding: 0 15px;">
 
         {{-- HEADER --}}
@@ -1014,7 +1014,7 @@ const heroSliderData = @json($heroSliderMapped);
 {{-- ==============================
      PARTNERS
 ============================== --}}
-<section class="partners-section py-5">
+<section class="partners-section py-3">
     <div class="container" style="max-width:1200px;">
 
         <p class="partners-title mb-4 text-center">OUR PARTNERS</p>

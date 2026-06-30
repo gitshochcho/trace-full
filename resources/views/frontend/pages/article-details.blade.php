@@ -728,7 +728,7 @@
 {{-- ==============================
      ARTICLE BODY
 ============================== --}}
-<div class="article-layout">
+<div class="article-layout py-4">
 
     {{-- ===== LEFT: MAIN CONTENT ===== --}}
     <div class="article-content">

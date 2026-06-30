@@ -444,7 +444,7 @@
     </div>
 </section>
 
-<section class="about-section py-5">
+<section class="about-section py-4">
     <div class="container custom-container-1080">
         <div class="row g-5">
             <div class="col-lg-8">
@@ -458,7 +458,7 @@
                         {!! $team->description !!}
                     </div>
 
-                    <div class="expertise-section mt-5">
+                    <div class="expertise-section mt-4">
                         <div class="about-title-box mb-4">
                             <span class="orange-line"></span>
                             <h3 class="fw-bold section-heading">Areas of Expertise</h3>

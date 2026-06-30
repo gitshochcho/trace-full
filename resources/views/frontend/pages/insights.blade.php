@@ -103,9 +103,9 @@
 {{-- ==============================
       INSIGHTS GRID
 ============================== --}}
-<section class="insights-list py-5 bg-white">
+<section class="insights-list py-4 bg-white">
     <div class="container-fluid px-lg-5 page-align-container">
-        <div class="results-info d-flex align-items-center gap-3 mb-5">
+        <div class="results-info d-flex align-items-center gap-3 mb-4">
             <span class="small text-muted text-nowrap">Showing <b id="results-count">{{ $allInsights->count() }}</b> insights</span>
             <div class="w-100 bg-light" style="height: 1px;"></div>
         </div>

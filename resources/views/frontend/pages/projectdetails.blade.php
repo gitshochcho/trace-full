@@ -343,7 +343,7 @@
     </div>
 </section>
 
-<section class="project-details-body py-5">
+<section class="project-details-body py-4">
     <div class="custom-container">
         <div class="row gx-lg-5">
             <div class="col-lg-8">
@@ -415,7 +415,7 @@
                 </div>
                 @endif
 
-                 <div class="mb-5">
+                 <div class="mb-4">
                     <h3 class="section-title-accent">{{ $phaseHeading }}</h3>
                    
                     @if(!empty($phaseDescription))
@@ -443,25 +443,26 @@
                     </div>
                 </div>
 
-                <div class="outcomes-content">
-                    <h3 class="section-title-accent">{{ $outcomeHeading }}Key Outcomes</h3>
+               <div class="outcomes-content">
+                    <h3 class="section-title-accent">Key Outcomes</h3>
                     @if(!empty($outcomeDescription))
-                        <p class="mt-3">{{ strip_tags($outcomeDescription) }}</p>
+                        <p class="mt-3">{{ strip_tags(html_entity_decode($outcomeDescription)) }}</p>
                     @endif
                     <ul class="outcomes-list list-unstyled mt-4">
                         @forelse($project->outcomes as $outcome)
                             <li>
                                 @if(!empty($outcome->icon) && str_starts_with($outcome->icon, 'projects/'))
                                     <img src="{{ Storage::url($outcome->icon) }}"
-                                         alt="outcome icon"
-                                         class="me-2 flex-shrink-0"
-                                         style="width:22px;height:22px;object-fit:contain;margin-top:2px;">
+                                        alt="outcome icon"
+                                        class="me-2 flex-shrink-0"
+                                        style="width:22px;height:22px;object-fit:contain;margin-top:2px;">
                                 @elseif(!empty($outcome->icon))
                                     <i class="{{ $outcome->icon }} me-2"></i>
                                 @else
                                     <i class="fas fa-check-circle me-2"></i>
                                 @endif
-                                <span>{!! nl2br(e(strip_tags($outcome->text))) !!}</span>
+                                
+                                <span>{!! nl2br(e(strip_tags(html_entity_decode($outcome->text)))) !!}</span>
                             </li>
                         @empty
                             <li><i class="fas fa-check-circle me-2"></i> No outcomes have been added yet.</li>
@@ -496,7 +497,9 @@
             </div>
             <div class="fact-row">
                 <span class="label">Location</span>
-                <span class="value text-end">{{ \Illuminate\Support\Str::limit($locationSummary, 45) }}</span>
+                <span class="value text-end">
+                    {{ \Illuminate\Support\Str::limit(strip_tags(html_entity_decode($locationSummary)), 45) }}
+                </span>
             </div>
             <div class="fact-row">
                 <span class="label">Duration</span>
@@ -526,7 +529,7 @@
 </aside>
 </section>
 
-<section class="more-projects-section">
+<section class="more-projects-section py-4">
     <div class="custom-container-content">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="section-title mb-0">More Projects</h2>

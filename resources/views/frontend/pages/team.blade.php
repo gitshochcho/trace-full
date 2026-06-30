@@ -664,7 +664,7 @@
         $leadershipHeading = e($leadershipHeadingRaw) . (!empty($leadershipDesignWord) ? ' <span>' . e($leadershipDesignWord) . '</span>' : '');
     }
 @endphp
-<section class="leadership-section">
+<section class="leadership-section py-4">
     <div class="custom-container">
         <div class="leadership-header mb-5">
             <div class="d-flex align-items-center gap-2 mb-2">
@@ -751,7 +751,7 @@
         $coreTeamHeading = e($coreTeamHeadingRaw) . (!empty($coreTeamDesignWord) ? ' <span>' . e($coreTeamDesignWord) . '</span>' : '');
     }
 @endphp
-<section class="team-section py-5">
+<section class="team-section py-4">
     <div class="custom-container">
         <div class="team-header mb-5">
             <div class="d-flex align-items-center gap-2 mb-2">
@@ -838,7 +838,7 @@
         $expertsHeading = e($expertsHeadingRaw) . (!empty($expertsDesignWord) ? ' <span>' . e($expertsDesignWord) . '</span>' : '');
     }
 @endphp
-<section class="experts-section">
+<section class="experts-section py-4">
     <div class="container experts-container">
 
         <div class="experts-top">
