@@ -23,6 +23,7 @@ class SettingsController extends Controller
     {
         $validated = $request->validate([
             'logo_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:2048'],
+            'favicon_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg,ico', 'max:512', 'dimensions:max_width=64,max_height=64'],
             'logo_text' => ['nullable', 'string', 'max:255'],
             'logo_tagline' => ['nullable', 'string', 'max:255'],
             'social_links' => ['nullable', 'array'],
@@ -92,6 +93,11 @@ class SettingsController extends Controller
         if ($request->hasFile('logo_image')) {
             $setting->clearMediaCollection('logo_image');
             $setting->addMedia($request->file('logo_image'))->toMediaCollection('logo_image');
+        }
+
+        if ($request->hasFile('favicon_image')) {
+            $setting->clearMediaCollection('favicon_image');
+            $setting->addMedia($request->file('favicon_image'))->toMediaCollection('favicon_image');
         }
 
         $setting->refresh();

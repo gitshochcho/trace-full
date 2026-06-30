@@ -381,7 +381,13 @@
                 <div class="team-content">
                     <div class="team-tag d-flex align-items-center justify-content-center justify-content-md-start">
                         <span class="line"></span>
-                        <span class="tag-text">TEAM MEMBER</span>
+                        <span class="tag-text">
+                            @if($team->type == 2) 
+                                EXPERT MEMBER
+                            @else
+                                TEAM MEMBER
+                            @endif
+                        </span>
                     </div>
 
                     <h1 class="profile-name fw-bold text-white">{{ $teamName }}</h1>

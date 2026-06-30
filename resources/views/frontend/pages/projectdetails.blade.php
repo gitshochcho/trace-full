@@ -496,7 +496,7 @@
             </div>
             <div class="fact-row">
                 <span class="label">Location</span>
-                <span class="value text-end">{{ \Illuminate\Support\Str::limit($locationSummary, 45) }}</span>
+                <span class="value text-end">{!! \Illuminate\Support\Str::limit($locationSummary, 45) !!}</span>
             </div>
             <div class="fact-row">
                 <span class="label">Duration</span>

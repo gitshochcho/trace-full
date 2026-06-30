@@ -589,6 +589,9 @@
     }
 }
 @media (max-width: 576px) {
+    .team-img-box {
+        height: auto; 
+    }
     .team-img-box img {
         Object-fit: fill;
     }

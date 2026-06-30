@@ -39,8 +39,12 @@ class HomeController extends Controller
         $homeAboutTraceTwo   = contentBlock('home_about_trace_two');
         $homeAboutTraceThree = contentBlock('home_about_trace_three');
         $homeYearsExpertise  = contentBlock('home_years_of_expertise');
-        $slider              = Slider::with('media')->first();
-        $sliderItems         = SliderItem::with('media')->where('active', true)->orderBy('sort_order')->orderBy('id')->get();
+        $slider              = cache()->remember('slider_data', 60 * 60 * 24, function () {
+            return Slider::with('media')->first();
+        });
+        $sliderItems         = cache()->remember('slider_items_data', 60 * 60 * 24, function () {
+            return SliderItem::with('media')->where('active', true)->orderBy('sort_order')->orderBy('id')->get();
+        });
 
         $homeServices = Service::query()
             ->with(['content', 'media', 'solutions'])
@@ -54,7 +58,7 @@ class HomeController extends Controller
             ->with(['services', 'media'])
             ->orderBy('sort_order')
             ->latest('id')
-            ->limit(3)
+            ->limit(6)
             ->get();
 
              $partners = Partner::with('media')->latest()->get(); 
