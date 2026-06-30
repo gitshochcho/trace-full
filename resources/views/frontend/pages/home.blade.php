@@ -3,6 +3,15 @@
 @push('custome-css')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.css" integrity="sha256-4MX+61mt9NVvvuPjUWdUdyfZfxSB1/Rf9WtqRHgG5S0=" crossorigin="anonymous"><!-- jsvectormap -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/css/jsvectormap.min.css" integrity="sha256-+uGLJmmTKOqBr+2E6KDYs/NRsHxSkONXFHUL0fy2O/4=" crossorigin="anonymous">
+@php
+    $firstSlideForPreload = $sliderItems->first() ?? null;
+    $firstSlideImgPreload = $firstSlideForPreload && method_exists($firstSlideForPreload, 'imageUrl')
+        ? $firstSlideForPreload->imageUrl()
+        : ($slider?->imageUrls()[0] ?? null);
+@endphp
+@if($firstSlideImgPreload)
+<link rel="preload" as="image" href="{{ $firstSlideImgPreload }}" fetchpriority="high">
+@endif
 
 <style>
 /* =========================================
@@ -517,16 +526,17 @@
         position: relative;
         border-radius: 16px;
         overflow: hidden;
-        height: 320px; 
+        height: 320px;
+        background: #01354B;
     }
     .project-card img {
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        object-fit: contain;
         transition: 0.5s;
     }
     .project-card:hover img {
-        transform: scale(1.1); 
+        transform: scale(1.05);
     }
 
     
@@ -733,7 +743,11 @@ if ($heroSlides->isEmpty() && isset($slider)) {
         @php
             $slideImg = method_exists($slide, 'imageUrl') ? $slide->imageUrl() : ($slide->_image_url ?? '');
         @endphp
-        <img src="{{ $slideImg }}" alt="Hero {{ $index + 1 }}">
+        @if($index === 0)
+        <img src="{{ $slideImg }}" alt="Hero {{ $index + 1 }}" fetchpriority="high" loading="eager" decoding="sync">
+        @else
+        <img src="{{ $slideImg }}" alt="Hero {{ $index + 1 }}" loading="lazy" decoding="async">
+        @endif
     </div>
 @endforeach
     </div>

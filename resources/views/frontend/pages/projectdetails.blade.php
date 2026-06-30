@@ -497,9 +497,13 @@
             </div>
             <div class="fact-row">
                 <span class="label">Location</span>
+<<<<<<< HEAD
                 <span class="value text-end">
                     {{ \Illuminate\Support\Str::limit(strip_tags(html_entity_decode($locationSummary)), 45) }}
                 </span>
+=======
+                <span class="value text-end">{!! \Illuminate\Support\Str::limit($locationSummary, 45) !!}</span>
+>>>>>>> ee10f0867fc8a6f84df38e591100471f135c451b
             </div>
             <div class="fact-row">
                 <span class="label">Duration</span>

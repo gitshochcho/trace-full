@@ -1160,7 +1160,7 @@
                     {{-- Who We Are Section --}}
                     <div class="mb-4">
                         <h4 class="fw-bold" style="font-size: 18px;">{{ $whoWeAre?->heading ?? '' }}</h4>
-                        <div class="text-secondary" style="text-align: justify;">
+                        <div class="text-secondary" style="text-align: justify; margin-top: 14px;">
                             {{-- Editor theke asha p tag remove korbe ebong data display korbe --}}
                             {!! ($whoWeAre?->description ?? '') !!}
                         </div>
@@ -1171,7 +1171,7 @@
                     {{-- Our Mission Section --}}
                     <div class="mb-4">
                         <h4 class="fw-bold" style="font-size: 18px;">{{ $ourMission?->heading ?? '' }}</h4>
-                        <div class="text-secondary" style="text-align: justify;">
+                        <div class="text-secondary" style="text-align: justify; margin-top: 14px;">
                             {!! ($ourMission?->description ?? '') !!}
                          
                         </div>

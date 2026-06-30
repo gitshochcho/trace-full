@@ -381,7 +381,13 @@
                 <div class="team-content">
                     <div class="team-tag d-flex align-items-center justify-content-center justify-content-md-start">
                         <span class="line"></span>
-                        <span class="tag-text">TEAM MEMBER</span>
+                        <span class="tag-text">
+                            @if($team->type == 2) 
+                                EXPERT MEMBER
+                            @else
+                                TEAM MEMBER
+                            @endif
+                        </span>
                     </div>
 
                     <h1 class="profile-name fw-bold text-white">{{ $teamName }}</h1>
@@ -389,7 +395,7 @@
                     <h5 class="sub-title mb-2">{{ $teamDesignation }}</h5>
 
                     <p class="team-location mb-4">
-                        Trace Consulting. Dhaka, Bangladesh
+                        TRACE Consulting. Dhaka, Bangladesh
                     </p>
 
                     <div class="team-tags d-flex flex-wrap justify-content-center justify-content-md-start gap-2 mb-4">

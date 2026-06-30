@@ -66,6 +66,18 @@
                                     </div>
 
                                     <div class="col-md-6">
+                                        <label class="form-label">Favicon Image</label>
+                                        <input type="file" name="favicon_image" class="form-control @error('favicon_image') is-invalid @enderror" data-max-size="512" data-max-width="64" data-max-height="64">
+                                        @error('favicon_image')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                        <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 64×64px (square, max 512KB) — supports PNG, JPG, WEBP, SVG, ICO</small>
+                                        @if($setting?->faviconImageUrl())
+                                            <div class="mt-2">
+                                                <img src="{{ $setting->faviconImageUrl() }}" alt="Current favicon" style="max-height: 40px; max-width: 40px;">
+                                            </div>
+                                        @endif
+                                    </div>
+
+                                    <div class="col-md-6">
                                         <label class="form-label">Footer Contact Mobile</label>
                                         <input type="text" name="footer_contact_mobile" value="{{ old('footer_contact_mobile', $setting->footer_contact_mobile ?? '') }}" class="form-control @error('footer_contact_mobile') is-invalid @enderror">
                                         @error('footer_contact_mobile')<div class="invalid-feedback">{{ $message }}</div>@enderror
