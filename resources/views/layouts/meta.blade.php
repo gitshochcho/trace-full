@@ -13,3 +13,4 @@
 <meta property="og:image" content="https://traceconsultingltd.com/assets/img/og-tag-image.jpeg">
 <meta property="og:site_name" content="Trace Consulting">
 <meta property="fb:app_id" content="1302728604857233">
+<meta name="csrf-token" content="{{ csrf_token() }}">

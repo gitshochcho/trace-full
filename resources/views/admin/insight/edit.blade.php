@@ -145,10 +145,15 @@ $currentInsightImageRemoveField = $insight->articleImageUrl() ? 'remove_article_
                                 <input type="datetime-local" name="published_at" class="form-control" value="{{ old('published_at', $insight->published_at?->format('Y-m-d\TH:i')) }}">
                             </div>
 
-                            <div class="col-md-6 d-flex align-items-end">
+                            <div class="col-md-6 d-flex align-items-end gap-4 flex-wrap">
                                 <div class="form-check form-switch">
                                     <input class="form-check-input" type="checkbox" name="active" value="1" id="activeSwitch" {{ old('active', $insight->active) ? 'checked' : '' }}>
                                     <label class="form-check-label" for="activeSwitch">Active</label>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input type="hidden" name="show_on_home" value="0">
+                                    <input class="form-check-input" type="checkbox" name="show_on_home" value="1" id="showOnHomeSwitch" {{ old('show_on_home', $insight->show_on_home) ? 'checked' : '' }}>
+                                    <label class="form-check-label fw-semibold text-warning" for="showOnHomeSwitch">Show on Homepage</label>
                                 </div>
                             </div>
 

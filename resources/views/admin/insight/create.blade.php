@@ -170,11 +170,16 @@ $articleRows = old('articles', [[
                                     @error('video_link')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
 
-                                <div class="col-md-6 d-flex align-items-end">
+                                <div class="col-md-6 d-flex align-items-end gap-4 flex-wrap">
                                     <div class="form-check form-switch">
                                         <input type="hidden" name="active" value="0">
                                         <input class="form-check-input" type="checkbox" name="active" value="1" id="activeSwitch" @checked(old('active', '1') == '1')>
                                         <label class="form-check-label" for="activeSwitch">Active</label>
+                                    </div>
+                                    <div class="form-check form-switch">
+                                        <input type="hidden" name="show_on_home" value="0">
+                                        <input class="form-check-input" type="checkbox" name="show_on_home" value="1" id="showOnHomeSwitch" @checked(old('show_on_home', '0') == '1')>
+                                        <label class="form-check-label fw-semibold text-warning" for="showOnHomeSwitch">Show on Homepage</label>
                                     </div>
                                 </div>
 

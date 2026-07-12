@@ -12,8 +12,8 @@ class InsightType extends Model
         protected $fillable = [
             'type',
             'type_category',
+            'sort_order',
             'status',
-            
         ];
 
         public function insights()

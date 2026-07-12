@@ -22,7 +22,9 @@ class ProjectController extends Controller
             ->latest('id')
             ->get();
 
-        $services = Service::withCount('projects')
+        $services = Service::whereHas('projects')
+            ->withCount('projects')
+            ->orderBy('sort_order')
             ->orderBy('service_name')
             ->get();
 
@@ -76,6 +78,7 @@ class ProjectController extends Controller
             'end_date' => $validated['end_date'] ?? null,
             'project_status' => $validated['project_status'],
             'sort_order' => $validated['sort_order'] ?? 0,
+            'show_on_home' => $request->boolean('show_on_home'),
         ]);
 
         $this->syncServices($project, $validated['services'] ?? []);
@@ -140,6 +143,7 @@ class ProjectController extends Controller
             'end_date' => $validated['end_date'] ?? null,
             'project_status' => $validated['project_status'],
             'sort_order' => $validated['sort_order'] ?? 0,
+            'show_on_home' => $request->boolean('show_on_home'),
         ]);
         $project->save();
 

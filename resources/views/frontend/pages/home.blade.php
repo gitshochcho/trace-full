@@ -42,7 +42,26 @@
     pointer-events: none;
 }
 
-/* SLIDER */
+/* HERO VIDEO BG */
+.hero-video-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+.hero-video-bg video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    pointer-events: none;
+}
+.hero-video-bg video::-webkit-media-controls { display: none !important; }
+.hero-video-bg video::-webkit-media-controls-enclosure { display: none !important; }
+
+/* SLIDER (shown only when no video) */
 .slides {
     width: 100%;
     height: 100%;
@@ -314,6 +333,35 @@
         transform: translateX(5px);
     }
 
+    /* About Section Animations */
+    .anim-fade-up {
+        opacity: 0;
+        transform: translateY(40px);
+        transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .anim-fade-left {
+        opacity: 0;
+        transform: translateX(-50px);
+        transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .anim-fade-right {
+        opacity: 0;
+        transform: translateX(50px);
+        transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .anim-visible {
+        opacity: 1 !important;
+        transform: none !important;
+    }
+    .anim-delay-1 { transition-delay: 0.1s; }
+    .anim-delay-2 { transition-delay: 0.2s; }
+    .anim-delay-3 { transition-delay: 0.35s; }
+    .anim-delay-4 { transition-delay: 0.5s; }
+    .anim-delay-5 { transition-delay: 0.65s; }
+    @media (prefers-reduced-motion: reduce) {
+        .anim-fade-up, .anim-fade-left, .anim-fade-right { opacity: 1; transform: none; }
+    }
+
     /* Image Badge */
     /* .about-badge {
         position: absolute;
@@ -523,36 +571,37 @@
 
     
     .project-card {
-        position: relative;
         border-radius: 16px;
         overflow: hidden;
-        height: 320px;
-        background: #01354B;
+        background: #fff;
+        box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+        transition: box-shadow 0.3s, transform 0.3s;
     }
-    .project-card img {
+    .project-card:hover {
+        box-shadow: 0 6px 28px rgba(0,0,0,0.14);
+        transform: translateY(-3px);
+    }
+    .proj-img-box {
+        position: relative;
+        height: 200px;
+        background: #f1f4f7;
+        overflow: hidden;
+    }
+    .proj-img-box img {
         width: 100%;
         height: 100%;
-        object-fit: contain;
-        transition: 0.5s;
+        object-fit: cover;
+        transition: transform 0.5s;
     }
-    .project-card:hover img {
+    .project-card:hover .proj-img-box img {
         transform: scale(1.05);
     }
 
-    
-    .proj-overlay {
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(to top, rgba(0, 45, 58, 0.9) 10%, rgba(0,0,0,0) 60%);
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
-        padding: 25px 20px;
-        color: #fff;
-    }
-
-    /* Badge Design (Left orange bar style) */
+    /* Badge on image top-left */
     .proj-badge-box {
+        position: absolute;
+        top: 12px;
+        left: 12px;
         background: #e85d26;
         color: #fff;
         font-size: 10px;
@@ -560,27 +609,31 @@
         padding: 4px 12px;
         border-radius: 100px;
         display: inline-block;
-        width: fit-content;
-        margin-left: 0px; 
-        margin-bottom: 12px;
+        z-index: 2;
+    }
+
+    /* Content below image */
+    .proj-content {
+        padding: 16px 18px 18px;
     }
 
     .proj-title {
-        font-size: 16px;
+        font-size: 15px;
         font-weight: 700;
         line-height: 1.4;
-        margin-bottom: 8px;
+        margin-bottom: 6px;
+        color: #01354B;
     }
 
     .proj-sub {
         font-size: 12px;
-        opacity: 0.8;
+        color: #6c757d;
         margin-bottom: 0;
     }
 
     /* Mobile Responsive */
     @media (max-width: 576px) {
-        .project-card { height: 280px; }
+        .proj-img-box { height: 180px; }
         .section-title { font-size: 28px; }
     }
 
@@ -590,7 +643,7 @@
     }
     .partners-title {
         color: #64748b;
-        font-size: 12px;
+        font-size: 20px;
         letter-spacing: 2px;
         text-transform: uppercase;
         margin-bottom: 1.5rem;
@@ -622,7 +675,7 @@
         animation-play-state: paused;
     }
     .partner-logos img {
-        height: 50px;
+        height: 80px;
         max-width: 120px;
         object-fit: contain;
         /* filter: grayscale(100%); */
@@ -682,6 +735,125 @@
         }
     }
 
+    /* =========================================
+       LATEST NEWS & FEATURES SECTION
+    ========================================= */
+    .news-card {
+        background: #fff;
+        border: 1px solid #E5E9ED;
+        border-radius: 14px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        color: inherit;
+    }
+    .news-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 24px rgba(0,0,0,0.09);
+        border-color: #4CC3C3;
+        color: inherit;
+    }
+    .news-card-img {
+        height: 200px;
+        overflow: hidden;
+        position: relative;
+        background: #f1f4f7;
+    }
+    .news-card-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    .news-card:hover .news-card-img img {
+        transform: scale(1.05);
+    }
+    .news-card-img .news-type-badge {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 4px;
+        letter-spacing: .4px;
+        color: #fff;
+        background: #01354B;
+    }
+    .news-card-img.no-image {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .news-card-img.no-image i {
+        font-size: 40px;
+        color: #cbd5e1;
+    }
+    .news-card-body {
+        padding: 18px 20px 20px;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+    .news-card-meta {
+        font-size: 11px;
+        color: #94a3b8;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .news-card-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: #01354B;
+        line-height: 1.45;
+        margin-bottom: 10px;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    .news-card-desc {
+        font-size: 13px;
+        color: #64748b;
+        line-height: 1.55;
+        flex-grow: 1;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        margin-bottom: 14px;
+    }
+    .news-card-footer {
+        margin-top: auto;
+        padding-top: 12px;
+        border-top: 1px solid #f1f4f7;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .news-action-link {
+        font-size: 12px;
+        font-weight: 700;
+        color: #008080;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .news-action-link:hover { color: #4CC3C3; }
+    .news-date {
+        font-size: 11px;
+        color: #94a3b8;
+    }
+    @media (max-width: 576px) {
+        .news-card-img { height: 170px; }
+    }
+
 </style>
 @endpush
 
@@ -711,6 +883,15 @@ if ($heroSlides->isEmpty() && isset($slider)) {
     $heroTitleBefore = $hasDesignWord ? Str::before($heroTitle, $heroDesignWord) : $heroTitle;
     $heroTitleAfter  = $hasDesignWord ? Str::after($heroTitle, $heroDesignWord)  : '';
 
+    // First slide with an uploaded video becomes the hero video background
+    $heroVideoUrl = '';
+    foreach ($heroSlides as $slide) {
+        if (method_exists($slide, 'videoUrl') && $slide->videoUrl()) {
+            $heroVideoUrl = $slide->videoUrl();
+            break;
+        }
+    }
+
     // Main about block
     $aTag        = $homeAboutTrace?->section     ?? '';
     $aHeading    = $homeAboutTrace?->heading     ?? '';
@@ -736,21 +917,32 @@ if ($heroSlides->isEmpty() && isset($slider)) {
 @endphp
 
 <section class="hero">
-    {{-- SLIDES --}}
-    <div class="slides">
-        @foreach($heroSlides as $index => $slide)
-    <div class="slide {{ $index === 0 ? 'active' : '' }}">
-        @php
-            $slideImg = method_exists($slide, 'imageUrl') ? $slide->imageUrl() : ($slide->_image_url ?? '');
-        @endphp
-        @if($index === 0)
-        <img src="{{ $slideImg }}" alt="Hero {{ $index + 1 }}" fetchpriority="high" loading="eager" decoding="sync">
-        @else
-        <img src="{{ $slideImg }}" alt="Hero {{ $index + 1 }}" loading="lazy" decoding="async">
-        @endif
+
+    @if($heroVideoUrl)
+    {{-- VIDEO BACKGROUND --}}
+    @php $videoPoster = method_exists($firstSlide, 'imageUrl') ? $firstSlide->imageUrl() : ''; @endphp
+    <div class="hero-video-bg">
+        <video autoplay loop muted playsinline disablepictureinpicture controlslist="nodownload nofullscreen noremoteplayback" {{ $videoPoster ? 'poster="'.$videoPoster.'"' : '' }}>
+            <source src="{{ $heroVideoUrl }}" type="video/mp4">
+        </video>
     </div>
-@endforeach
-    </div>
+    @else
+    {{-- SLIDES (fallback when no video) --}}
+        <div class="slides">
+            @foreach($heroSlides as $index => $slide)
+                <div class="slide {{ $index === 0 ? 'active' : '' }}">
+                    @php
+                        $slideImg = method_exists($slide, 'imageUrl') ? $slide->imageUrl() : ($slide->_image_url ?? '');
+                    @endphp
+                    @if($index === 0)
+                    <img src="{{ $slideImg }}" alt="Hero {{ $index + 1 }}" fetchpriority="high" loading="eager" decoding="sync">
+                    @else
+                    <img src="{{ $slideImg }}" alt="Hero {{ $index + 1 }}" loading="lazy" decoding="async">
+                    @endif
+                </div>
+            @endforeach
+        </div>
+    @endif
 
     {{-- CONTENT --}}
     <div class="hero-content">
@@ -816,26 +1008,26 @@ const heroSliderData = @json($heroSliderMapped);
  
             {{-- LEFT CONTENT --}}
             <div class="col-12 col-lg-6 pe-lg-5">
-                <div class="about-tag-wrapper mb-3">
+                <div class="about-tag-wrapper mb-3 anim-fade-up">
                     <span class="about-tag">{{ $aTag }}</span>
                 </div>
- 
-                <h2 class="about-title mb-4">
+
+                <h2 class="about-title mb-4 anim-fade-up anim-delay-1">
                     @if($aDesignWord && Str::contains($aHeading, $aDesignWord))
                         {!! nl2br(e(Str::before($aHeading, $aDesignWord))) !!}<span class="text-teal">{{ $aDesignWord }}</span>{!! nl2br(e(Str::after($aHeading, $aDesignWord))) !!}
                     @else
                         {{ $aHeading }}
                     @endif
                 </h2>
- 
-                <div class="about-desc mb-5">
+
+                <div class="about-desc mb-5 anim-fade-up anim-delay-2">
                     {!! $aDesc !!}
                 </div>
 
                 {{-- LIST ITEMS --}}
                 <div class="about-list">
-                    @foreach($items as $item)
-                        <div class="about-item d-flex gap-3 mb-4">
+                    @foreach($items as $i => $item)
+                        <div class="about-item d-flex gap-3 mb-4 anim-fade-up anim-delay-{{ $i + 3 }}">
                             <span class="about-num">{{ $item['num'] }}</span>
                             <div class="about-content">
                                 <h4 class="item-title">{{ $item['title'] }}</h4>
@@ -844,13 +1036,13 @@ const heroSliderData = @json($heroSliderMapped);
                         </div>
                     @endforeach
                 </div>
- 
-                <a href="/about" class="learn-btn mt-3 d-inline-block text-decoration-none">Learn About Us &rarr;</a>
+
+                <a href="/about" class="learn-btn mt-3 d-inline-block text-decoration-none anim-fade-up anim-delay-5">Learn About Us &rarr;</a>
             </div>
- 
+
             {{-- RIGHT IMAGE --}}
             <div class="col-12 col-lg-6">
-                <div class="about-img-wrap position-relative">
+                <div class="about-img-wrap position-relative anim-fade-right">
                     <img src="{{ $aImage }}" alt="{{ strip_tags($aHeading) }}" class="img-fluid rounded-4 shadow-sm">
  
                     <!-- <div class="about-badge shadow-lg">
@@ -997,33 +1189,129 @@ const heroSliderData = @json($heroSliderMapped);
 
         {{-- GRID --}}
         <div class="row g-4">
-         
-
-           @forelse($homeProjects as $project)
-@php
-    $pImg    = $project->heroImageUrl() ?? '';
-    $pSvc    = $project->services->first();
-    $pCat    = $pSvc?->section ?: ($pSvc?->service_name ?? '');
-    $pClient = abbreviateClientName($project->client) ?? '';
-@endphp
-<div class="col-12 col-md-6 col-lg-4">
-    <a href="{{ route('projectdetails', $project) }}" class="text-decoration-none">
-        <div class="project-card">
-            <img src="{{ $pImg }}" alt="{{ $project->project_title }}">
-            <div class="proj-overlay">
-                <div class="proj-badge-box">{{ strtoupper($pCat) }}</div>
-                <h3 class="proj-title">{{ $project->project_title }}</h3>
-                <p class="proj-sub">{{ $pClient }}</p>
+            @forelse($homeProjects as $project)
+            @php
+                $pImg    = $project->heroImageUrl() ?? '';
+                $pSvc    = $project->services->first();
+                $pCat    = $pSvc?->section ?: ($pSvc?->service_name ?? '');
+                $pClient = abbreviateClientName($project->client) ?? '';
+            @endphp
+            <div class="col-12 col-md-6 col-lg-4">
+                <a href="{{ route('projectdetails', $project) }}" class="text-decoration-none">
+                    <div class="project-card">
+                        <div class="proj-img-box">
+                            <img src="{{ $pImg }}" alt="{{ $project->project_title }}">
+                            @if($pCat)
+                            <div class="proj-badge-box">{{ strtoupper($pCat) }}</div>
+                            @endif
+                        </div>
+                        <div class="proj-content">
+                            <h3 class="proj-title">{{ $project->project_title }}</h3>
+                            @if($pClient)
+                            <p class="proj-sub">{{ $pClient }}</p>
+                            @endif
+                        </div>
+                    </div>
+                </a>
             </div>
-        </div>
-    </a>
-</div>
-@empty
-{{-- fallback static --}}
-@endforelse
+            @empty
+            @endforelse
         </div>
     </div>
 </section>
+
+{{-- ==============================
+     LATEST NEWS & FEATURES
+============================== --}}
+@if($homeLatestNews->isNotEmpty())
+@php
+    $newsHeading    = $homeLatestNewsHeading?->heading     ?? 'News & Features';
+    $newsDesignWord = $homeLatestNewsHeading?->design_word ?? '';
+    $newsDesc       = strip_tags($homeLatestNewsHeading?->description ?? '');
+    $sourceIconMap  = ['project' => 'fa-folder-open', 'job' => 'fa-briefcase', 'insight' => 'fa-newspaper'];
+@endphp
+<section class="latest-news-section py-4 bg-light-subtle">
+    <div class="container" style="max-width: 1072px; margin: 0 auto; padding: 0 15px;">
+
+        {{-- HEADER --}}
+        <div class="mb-5">
+            <div class="d-flex align-items-center gap-2 mb-3">
+                <span class="tag-dot"></span>
+                <span class="section-tag-pill">LATEST UPDATES</span>
+            </div>
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-3">
+                <div style="max-width:520px;">
+                    <h2 class="section-title mb-2">
+                        @if($newsDesignWord && str_contains($newsHeading, $newsDesignWord))
+                            {{ \Illuminate\Support\Str::before($newsHeading, $newsDesignWord) }}<span class="text-teal">{{ $newsDesignWord }}</span>{{ \Illuminate\Support\Str::after($newsHeading, $newsDesignWord) }}
+                        @else
+                            {{ $newsHeading }}
+                        @endif
+                    </h2>
+                    @if($newsDesc)<p class="section-desc mb-0">{{ $newsDesc }}</p>@endif
+                </div>
+                <!-- <a href="{{ route('insights') }}" class="all-link text-decoration-none">
+                    <span class="fw-bold text-dark me-1" style="font-size:13px;">All Latests</span>
+                    <span class="circle-arrow">&rarr;</span>
+                </a> -->
+            </div>
+        </div>
+
+        {{-- GRID --}}
+        <div class="row g-4">
+            @foreach($homeLatestNews as $item)
+            @php
+                $itemDate  = $item->date instanceof \Carbon\Carbon ? $item->date->format('M d, Y') : ($item->date ? \Carbon\Carbon::parse($item->date)->format('M d, Y') : '');
+                $typeIcon  = $sourceIconMap[$item->source] ?? 'fa-newspaper';
+            @endphp
+            <div class="col-12 col-md-6 col-lg-4">
+                <a href="{{ $item->link }}" class="news-card"
+                   @if($item->is_external) target="_blank" rel="noopener" @endif>
+
+                    {{-- IMAGE --}}
+                    <div class="news-card-img {{ !$item->image ? 'no-image' : '' }}">
+                        @if($item->image)
+                            <img src="{{ $item->image }}" alt="{{ $item->heading }}" loading="lazy">
+                        @else
+                            <i class="fas {{ $typeIcon }}"></i>
+                        @endif
+                        <span class="news-type-badge" style="background:{{ $item->badge_color }};">
+                            {{ strtoupper($item->badge_label) }}
+                        </span>
+                    </div>
+
+                    {{-- BODY --}}
+                    <div class="news-card-body">
+                        <div class="news-card-meta">
+                            @if($itemDate)
+                                <span><i class="fas fa-calendar-alt me-1"></i>{{ $itemDate }}</span>
+                            @endif
+                            @if($item->extra)
+                                <span><i class="fas fa-tag me-1"></i>{{ $item->extra }}</span>
+                            @endif
+                        </div>
+                        <div class="news-card-title">{{ $item->heading }}</div>
+                        @if($item->description)
+                            <div class="news-card-desc">{{ $item->description }}</div>
+                        @endif
+                        <div class="news-card-footer">
+                            <span class="news-action-link">
+                                {{ $item->action_label }}
+                                <i class="fas fa-arrow-right" style="font-size:10px;"></i>
+                            </span>
+                            @if($itemDate)
+                                <span class="news-date">{{ $itemDate }}</span>
+                            @endif
+                        </div>
+                    </div>
+                </a>
+            </div>
+            @endforeach
+        </div>
+
+    </div>
+</section>
+@endif
 
 {{-- ==============================
      PARTNERS
@@ -1087,11 +1375,14 @@ const heroSliderData = @json($heroSliderMapped);
     const taglineEl   = document.getElementById('heroTagline');
     const titleEl     = document.getElementById('heroTitle');
     const descEl      = document.getElementById('heroDesc');
-    let current = 0;
+    const hasVideo    = !!document.querySelector('.hero-video-bg');
+    const total       = typeof heroSliderData !== 'undefined' ? heroSliderData.length : 0;
+
+    let current   = 0;
     let animating = false;
 
     function updateText(idx) {
-        if (typeof heroSliderData === 'undefined' || !heroSliderData[idx]) return;
+        if (!heroSliderData || !heroSliderData[idx]) return;
         const d          = heroSliderData[idx];
         const title      = d.title       || '';
         const designWord = d.design_word || '';
@@ -1113,24 +1404,25 @@ const heroSliderData = @json($heroSliderMapped);
     }
 
     function goTo(n) {
-        if (animating || slides.length <= 1) return;
+        if (animating || total <= 1) return;
         animating = true;
 
         const prev = current;
-        current = (n + slides.length) % slides.length;
+        current = ((n % total) + total) % total;
 
         // Fade out text
         if (heroContent) heroContent.classList.add('hero-text-fading');
 
-        // Fade images — keep prev visible while next fades in
-        slides[prev].classList.remove('active');
-        slides[current].classList.add('active');
+        // Image slides — only switch when no video
+        if (!hasVideo) {
+            slides[prev]?.classList.remove('active');
+            slides[current]?.classList.add('active');
+        }
 
         // Update indicators
         indicators[prev]?.classList.remove('active');
         indicators[current]?.classList.add('active');
 
-        // After text fades out (~450ms), swap content and fade back in
         setTimeout(() => {
             updateText(current);
             if (heroContent) heroContent.classList.remove('hero-text-fading');
@@ -1141,7 +1433,7 @@ const heroSliderData = @json($heroSliderMapped);
     // Auto-advance every 5s
     let timer = setInterval(() => goTo(current + 1), 5000);
 
-    // Click indicators — reset timer on manual click
+    // Click indicators
     indicators.forEach((ind, i) => {
         ind.addEventListener('click', () => {
             clearInterval(timer);
@@ -1151,6 +1443,20 @@ const heroSliderData = @json($heroSliderMapped);
     });
 })();
 
+// ====== SCROLL ANIMATIONS ======
+(function () {
+    const els = document.querySelectorAll('.anim-fade-up, .anim-fade-left, .anim-fade-right');
+    if (!els.length) return;
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+            if (e.isIntersecting) {
+                e.target.classList.add('anim-visible');
+                observer.unobserve(e.target);
+            }
+        });
+    }, { threshold: 0.15 });
+    els.forEach(el => observer.observe(el));
+})();
 
 </script>
 @endpush

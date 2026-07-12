@@ -26,6 +26,12 @@ class SliderController extends Controller
             'items.*.design_word'    => ['nullable', 'string', 'max:255'],
             'item_images'            => ['nullable', 'array'],
             'item_images.*'          => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:4096'],
+            'item_videos'            => ['nullable', 'array'],
+            'item_videos.*'          => ['nullable', 'mimes:mp4,webm,mov', 'max:102400'],
+            'remove_image'           => ['nullable', 'array'],
+            'remove_image.*'         => ['nullable', 'integer'],
+            'remove_video'           => ['nullable', 'array'],
+            'remove_video.*'         => ['nullable', 'integer'],
             'removed_item_ids'       => ['nullable', 'array'],
             'removed_item_ids.*'     => ['integer'],
         ]);
@@ -47,9 +53,24 @@ class SliderController extends Controller
             ]);
             $item->save();
 
+            $removeImageIds = $request->input('remove_image', []);
+            if (in_array($item->id, array_map('intval', $removeImageIds))) {
+                $item->clearMediaCollection('image');
+            }
+
             if ($request->hasFile("item_images.$index")) {
                 $item->clearMediaCollection('image');
                 $item->addMedia($request->file("item_images.$index"))->toMediaCollection('image');
+            }
+
+            if ($request->hasFile("item_videos.$index")) {
+                $item->clearMediaCollection('video');
+                $item->addMedia($request->file("item_videos.$index"))->toMediaCollection('video');
+            }
+
+            $removeVideoIds = $request->input('remove_video', []);
+            if (in_array($item->id, array_map('intval', $removeVideoIds))) {
+                $item->clearMediaCollection('video');
             }
 
             $keptIds[] = $item->id;

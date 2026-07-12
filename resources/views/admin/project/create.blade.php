@@ -78,10 +78,17 @@
                                         </select>
                                         @error('project_status')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <label class="form-label">Sort Order</label>
                                         <input type="number" name="sort_order" value="{{ old('sort_order', 0) }}" class="form-control @error('sort_order') is-invalid @enderror">
                                         @error('sort_order')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                    </div>
+                                    <div class="col-md-2 d-flex align-items-end pb-1">
+                                        <div class="form-check form-switch">
+                                            <input type="hidden" name="show_on_home" value="0">
+                                            <input class="form-check-input" type="checkbox" name="show_on_home" value="1" id="showOnHomeSwitch" @checked(old('show_on_home', '0') == '1')>
+                                            <label class="form-check-label fw-semibold text-warning" for="showOnHomeSwitch">Show on Homepage</label>
+                                        </div>
                                     </div>
 
                                     {{-- Related Services: tag-style --}}

@@ -66,7 +66,7 @@
 </nav>
 
 <style>
-    /* ছবির মতো মেনু আইটেমের হোভার ইফেক্ট */
+
     .nav-link {
         color: #1a2332 !important;
         transition: color 0.3s ease;
@@ -92,6 +92,19 @@
         background: #e85d26;
     }
     
+
+.btn {
+    transition: background-color 0.3s ease !important;
+    display: inline-block; 
+}
+
+
+.btn:hover {
+    background: #005f73 !important; 
+    color: #fff !important;
+    border: none !important;
+    transform: none !important; 
+}
 
     /* মোবাইল ভিউর জন্য কিছু কাস্টম ফিক্স */
     @media (max-width: 991px) {

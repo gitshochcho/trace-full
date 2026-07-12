@@ -62,7 +62,12 @@
                                     <td>{{ $service->heading ?? '-' }}</td>
                                     <td>{{ $service->details->count() }}</td>
                                     <td>{{ $service->solutions->count() }}</td>
-                                    <td>{{ $service->sort_order }}</td>
+                                    <td>
+                                        <input type="number" class="form-control form-control-sm sort-order-input text-center"
+                                               value="{{ $service->sort_order }}"
+                                               data-url="{{ route('admin.services.sort-order', $service) }}"
+                                               min="0" style="width:70px;">
+                                    </td>
                                     <td>
                                         @if($service->active)
                                             <span class="badge text-bg-success">Active</span>
@@ -106,6 +111,29 @@
 
 @push('custome-js')
 <script>
+document.querySelectorAll('.sort-order-input').forEach(function (input) {
+    input.addEventListener('change', function () {
+        const url = this.dataset.url;
+        const val = parseInt(this.value, 10);
+        fetch(url, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            },
+            body: JSON.stringify({ sort_order: val }),
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                this.classList.add('border-success');
+                setTimeout(() => this.classList.remove('border-success'), 1200);
+            }
+        })
+        .catch(() => { this.classList.add('border-danger'); });
+    });
+});
+
 (function () {
     const searchInput = document.getElementById('serviceSearch');
     const tableBody   = document.querySelector('#serviceTable tbody');

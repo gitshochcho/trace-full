@@ -7,14 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
-class ServiceProductSolution extends Model implements HasMedia
+class ServiceHeroPillar extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
 
     protected $fillable = [
         'service_id',
-        'heading',
-        'sub_heading',
+        'title',
+        'description',
         'sort_order',
     ];
 

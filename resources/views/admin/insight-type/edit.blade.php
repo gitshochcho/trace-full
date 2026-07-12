@@ -44,6 +44,11 @@
                                         @error('type_category')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
                                     
+                                    <div class="col-12">
+                                        <label class="form-label">Display Order <span class="text-muted small">(lower number = appears first)</span></label>
+                                        <input type="number" name="sort_order" value="{{ old('sort_order', $insightType->sort_order) }}" class="form-control @error('sort_order') is-invalid @enderror" min="0">
+                                        @error('sort_order')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                    </div>
                                     <div class="col-md-6 d-flex align-items-end">
                                         <div class="form-check form-switch">
                                             <input class="form-check-input" type="checkbox" name="status" value="1" id="activeSwitch" @checked(old('status', $insightType->status) == '1')>

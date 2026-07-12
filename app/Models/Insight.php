@@ -14,13 +14,13 @@ class Insight extends Model implements HasMedia
 
     protected $fillable = [
         'type',
-        // 'type_id',
         'video_link',
         'heading',
         'sub_heading',
         'description',
         'sort_order',
         'active',
+        'show_on_home',
         'published_at',
         'source_name',
         'author_team_ids',
@@ -30,6 +30,7 @@ class Insight extends Model implements HasMedia
 
     protected $casts = [
         'active' => 'boolean',
+        'show_on_home' => 'boolean',
         'published_at' => 'datetime',
         'author_team_ids' => 'array',
         'outside_authors' => 'array',

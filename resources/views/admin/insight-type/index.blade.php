@@ -37,6 +37,7 @@
                         <table class="table table-striped align-middle mb-0">
                             <thead class="table-dark">
                                 <tr>
+                                    <th>Order</th>
                                     <th>Type Name</th>
                                     <th>Category</th>
                                     <th>Status</th>
@@ -46,6 +47,12 @@
                             <tbody id="typeTableBody">
                                 @forelse($insights as $insight)
                                 <tr data-search="{{ strtolower($insight->type . ' ' . $insight->type_category) }}">
+                                    <td>
+                                        <input type="number" class="form-control form-control-sm sort-order-input text-center"
+                                               value="{{ $insight->sort_order }}"
+                                               data-url="{{ route('admin.insight-types.sort-order', $insight) }}"
+                                               min="0" style="width:70px;">
+                                    </td>
                                     <td>{{ ucfirst(str_replace('_', ' ', $insight->type)) }}</td>
                                     <td><span class="badge bg-info text-dark">{{ $insight->type_category }}</span></td>
                                     <td>
@@ -74,7 +81,7 @@
                                 </tr>
                                 @endforelse
                                 <tr id="noResultsRow" style="display:none">
-                                    <td colspan="4" class="text-center text-muted py-3">No results match your search.</td>
+                                    <td colspan="5" class="text-center text-muted py-3">No results match your search.</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -93,6 +100,29 @@
 
 @push('custome-js')
 <script>
+document.querySelectorAll('.sort-order-input').forEach(function (input) {
+    input.addEventListener('change', function () {
+        const url = this.dataset.url;
+        const val = parseInt(this.value, 10);
+        fetch(url, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            },
+            body: JSON.stringify({ sort_order: val }),
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                this.classList.add('border-success');
+                setTimeout(() => this.classList.remove('border-success'), 1200);
+            }
+        })
+        .catch(() => { this.classList.add('border-danger'); });
+    });
+});
+
 document.getElementById('typeSearch').addEventListener('input', function () {
     const q = this.value.toLowerCase();
     let visible = 0;

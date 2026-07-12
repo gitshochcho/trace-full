@@ -41,6 +41,11 @@
                                     @error('type_category')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                                 <div class="col-12">
+                                    <label class="form-label">Display Order <span class="text-muted small">(lower number = appears first)</span></label>
+                                    <input type="number" name="sort_order" value="{{ old('sort_order', 0) }}" class="form-control @error('sort_order') is-invalid @enderror" min="0">
+                                    @error('sort_order')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                </div>
+                                <div class="col-12">
                                     <label class="form-label">Status</label>
                                     <div class="form-check form-switch">
                                         <input type="hidden" name="status" value="0">

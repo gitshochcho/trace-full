@@ -23,11 +23,13 @@ class Project extends Model implements HasMedia
         'end_date',
         'project_status',
         'sort_order',
+        'show_on_home',
     ];
 
     protected $casts = [
         'start_date' => 'date',
         'end_date' => 'date',
+        'show_on_home' => 'boolean',
     ];
 
     public function services()

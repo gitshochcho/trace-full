@@ -65,31 +65,34 @@
 <section class="insights-topbar border-bottom sticky-top bg-white py-3 shadow-sm">
     <div class="container-fluid px-lg-5 page-align-container">
         <div class="row align-items-center">
-            <div class="col-lg-8">
-                <div class="filters d-flex flex-wrap gap-2 gap-md-4">
-
-                    @php
-            $uniqueTypes = $insights->map(fn($i) => $i->insightType->type ?? null)->filter()->unique();
-        @endphp
-        
-        <a href="#" class="filter-link active" data-filter="ALL">ALL ({{ $insights->count() }})</a>
-        @foreach($uniqueTypes as $type)
-            <a href="#" class="filter-link" data-filter="{{ strtoupper($type) }}">
-                {{ strtoupper($type) }} 
-                ({{ $insights->where('insightType.type', $type)->count() }})
-            </a>
-        @endforeach
-                    {{-- <a href="#" class="filter-link active" data-filter="ALL">All <span class="ms-1 opacity-50">{{ $allInsights->count() }}</span></a>
-                    <a href="#" class="filter-link" data-filter="VIDEO WATCH">Video Watch <span class="ms-1 opacity-50">{{ $typeCounts['VIDEO WATCH'] }}</span></a>
-                    <a href="#" class="filter-link" data-filter="READ">Read <span class="ms-1 opacity-50">{{ $typeCounts['READ'] }}</span></a>
-                    <a href="#" class="filter-link" data-filter="DOWNLOAD">Download <span class="ms-1 opacity-50">{{ $typeCounts['DOWNLOAD'] }}</span></a> --}}
+            <div class="col-lg-9">
+                <div class="filter-swiper-wrap">
+                    <button class="filter-nav-btn filter-prev"><i class="fas fa-chevron-left"></i></button>
+                    <div class="swiper filter-swiper">
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide">
+                                <a href="#" class="filter-link active" data-filter="ALL">ALL ({{ $insights->count() }})</a>
+                            </div>
+                            @foreach($insightTypes as $insightType)
+                                @php $typeCount = $insights->where('insightType.id', $insightType->id)->count(); @endphp
+                                @if($typeCount > 0)
+                                <div class="swiper-slide">
+                                    <a href="#" class="filter-link" data-filter="{{ strtoupper($insightType->type) }}">
+                                        {{ strtoupper($insightType->type) }} ({{ $typeCount }})
+                                    </a>
+                                </div>
+                                @endif
+                            @endforeach
+                        </div>
+                    </div>
+                    <button class="filter-nav-btn filter-next"><i class="fas fa-chevron-right"></i></button>
                 </div>
             </div>
-            <div class="col-lg-4 mt-3 mt-lg-0">
-                <div class="d-flex gap-2">
-                    <div class="input-group input-group-sm border rounded-pill px-2 py-1">
-                        <span class="input-group-text bg-transparent border-0"><i class="fas fa-search text-muted"></i></span>
-                        <input type="text" id="insightSearch" class="form-control border-0 shadow-none" placeholder="Search insights...">
+            <div class="col-lg-3 mt-3 mt-lg-0">
+                <div class="d-flex gap-2 justify-content-end">
+                    <div class="input-group border rounded-pill px-2" style="max-width: 220px; height: 34px; align-items: center;">
+                        <span class="input-group-text bg-transparent border-0 p-1"><i class="fas fa-search text-muted" style="font-size:11px;"></i></span>
+                        <input type="text" id="insightSearch" class="form-control border-0 shadow-none" placeholder="Search..." style="font-size:13px;">
                     </div>
                     <!-- <select class="form-select form-select-sm border-0 fw-bold shadow-none w-auto" style="font-size: 12px;">
                         <option>Newest First</option>
@@ -112,7 +115,7 @@
 
         <div class="row g-4">
            {{-- @foreach($allInsights as $insight)
-    ID: {{ $insight->id }} | 
+    ID: {{ $insight->id }} |
     typeCategory: "{{ $insight->insightType?->type_category }}" |
     leadArticle: {{ $insight->articles->first()?->id ?? 'NULL' }} |
     actionLink will be: {{ $insight->insightType?->type_category === 'read' && $insight->articles->first() ? 'ROUTE' : '#' }}
@@ -139,19 +142,19 @@
 $typeCategory = strtolower(str_replace(' ', '_', $insight->insightType?->type_category ?? ''));
 
 if ($typeCategory === 'download') {
-    $actionLink = $insight->attachmentUrl() ?: '#';
-$isExternal = false;
+    $actionLink = $insight->attachmentUrl() ?: route('articleDetails', ['insight_id' => $insight->id]);
+    $isExternal = false;
 } elseif (in_array($typeCategory, ['watch', 'video', 'video_watch'], true)) {
-    $actionLink = $insight->videoUrl() ?: '#';
-    $isExternal = true;
+    $actionLink = $insight->videoUrl() ?: route('articleDetails', ['insight_id' => $insight->id]);
+    $isExternal = !empty($insight->videoUrl());
 } elseif ($typeCategory === 'read_on') {
-    $actionLink = $insight->source_name ?: '#'; 
-    $isExternal = true;
+    $actionLink = $insight->source_name ?: route('articleDetails', ['insight_id' => $insight->id]);
+    $isExternal = !empty($insight->source_name);
 } elseif ($typeCategory === 'read' && $leadArticle) {
     $actionLink = route('articleDetails', $leadArticle);
     $isExternal = false;
 } else {
-    $actionLink = '#';
+    $actionLink = route('articleDetails', ['insight_id' => $insight->id]);
     $isExternal = false;
 }
     $metaDate = optional($insight->published_at)->format('M Y') ?: 'TBA';
@@ -295,14 +298,41 @@ $isExternal = false;
 .breadcrumb-links .sep { margin: 0 8px; }
 .breadcrumb-links .active { color: #01354B; font-weight: 600; }
     /* Custom Styles for Same to Same Look */
+    .filter-swiper-wrap {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .filter-swiper {
+        overflow: hidden;
+        flex: 1;
+    }
+    .filter-swiper .swiper-slide {
+        width: auto !important;
+    }
+    .filter-nav-btn {
+        width: 36px; height: 36px; flex-shrink: 0;
+        border-radius: 50%;
+        background: #e0e0e0;
+        border: 1.5px solid #dde3ea;
+        color: #64748b;
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer; transition: 0.2s; font-size: 12px;
+        padding: 0;
+    }
+    .filter-nav-btn:hover { background: #e85d26; color: #fff; border-color: #e85d26; }
+    .filter-nav-btn.swiper-button-disabled { opacity: 0.25; pointer-events: none; }
     .filter-link {
         text-decoration: none;
         color: #64748b;
-        font-size: 13px;
-        font-weight: 600;
+        font-size: 14px;
+        font-weight: 500;
         padding-bottom: 5px;
         border-bottom: 2px solid transparent;
         transition: 0.3s;
+        white-space: nowrap;
+        display: inline-block;
     }
     .filter-link.active, .filter-link:hover {
         color: #e85d26;
@@ -348,13 +378,26 @@ $isExternal = false;
 @push('custome-js')
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const filterLinks = document.querySelectorAll('.filter-link');
+
+        // Filter tab Swiper
+        new Swiper('.filter-swiper', {
+            slidesPerView: 'auto',
+            spaceBetween: 28,
+            freeMode: true,
+            navigation: {
+                prevEl: '.filter-prev',
+                nextEl: '.filter-next',
+            },
+        });
+
+        const filterLinks  = document.querySelectorAll('.filter-link');
         const insightItems = document.querySelectorAll('.insight-item');
-        const resultCount = document.getElementById('results-count');
-        const searchInput = document.getElementById('insightSearch');
+        const resultCount  = document.getElementById('results-count');
+        const searchInput  = document.getElementById('insightSearch');
+        let activeFilter   = 'ALL';
+        let activeSearch   = '';
+
         const loadMoreBtn = document.getElementById('load-more-btn');
-        let activeFilter = 'ALL';
-        let activeSearch = '';
 
         function applyFilterAndSearch() {
             let visibleCount = 0;

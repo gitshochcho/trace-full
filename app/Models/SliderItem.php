@@ -40,6 +40,12 @@ class SliderItem extends Model implements HasMedia
         });
     }
 
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('image')->singleFile();
+        $this->addMediaCollection('video')->singleFile();
+    }
+
     public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('webp')
@@ -57,5 +63,11 @@ class SliderItem extends Model implements HasMedia
         }
 
         return $this->getFirstMediaUrl('image') ?: null;
+    }
+
+    public function videoUrl(): ?string
+    {
+        $url = $this->getFirstMediaUrl('video');
+        return $url !== '' ? $url : null;
     }
 }

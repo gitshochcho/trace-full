@@ -67,6 +67,7 @@ Route::prefix('admin')->group(function () {
             Route::get('services-manager/{service}/edit', 'edit')->name('admin.services.edit');
             Route::put('services-manager/{service}', 'update')->name('admin.services.update');
             Route::delete('services-manager/{service}', 'destroy')->name('admin.services.destroy');
+            Route::patch('services-manager/{service}/sort-order', 'updateSortOrder')->name('admin.services.sort-order');
         });
 
         Route::controller(ProjectController::class)->group(function () {
@@ -161,6 +162,7 @@ Route::prefix('admin')->group(function () {
             Route::get('insight-types/{insightType}/edit', 'edit')->name('admin.insight-types.edit');
             Route::put('insight-types/{insightType}', 'update')->name('admin.insight-types.update');
             Route::delete('insight-types/{insightType}', 'destroy')->name('admin.insight-types.destroy');
+            Route::patch('insight-types/{insightType}/sort-order', 'updateSortOrder')->name('admin.insight-types.sort-order');
         });
 
     });
