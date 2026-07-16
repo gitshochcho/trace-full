@@ -81,7 +81,7 @@
                                                    class="form-control" placeholder="Slide title...">
                                             <small class="text-muted">The Design Word inside the title will be highlighted automatically.</small>
                                         </div>
-                                        <div class="col-12">
+                                        <!-- <div class="col-12">
                                             <label class="form-label fw-bold">
                                                 Background Video
                                                 <span class="text-muted fw-normal small">(MP4/WebM, max 100MB — overrides image if set)</span>
@@ -100,7 +100,7 @@
                                                    class="form-control form-control-sm"
                                                    accept="video/mp4,video/webm,video/quicktime">
                                             <small class="text-muted">Leave empty to keep existing video. Leave both empty to use the image.</small>
-                                        </div>
+                                        </div> -->
                                         <div class="col-12">
                                             <label class="form-label">Description</label>
                                             <textarea name="items[{{ $index }}][description]"

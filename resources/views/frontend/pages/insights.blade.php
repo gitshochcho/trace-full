@@ -136,7 +136,7 @@
     'article'      => '#1032ae',
     default        => '#15803d',
 };
-    $cardImage = $insight->imageUrl() ?: $insight->articleImageUrl() ?: asset('assets/img/Op-Ed.png');
+    $cardImage = $insight->imageUrl() ?: $insight->articleImageUrl() ?: asset('');
     $leadArticle = $insight->articles->first();
     $description = \Illuminate\Support\Str::limit($insight->description ?? ($leadArticle?->description ?? ''), 120);
 $typeCategory = strtolower(str_replace(' ', '_', $insight->insightType?->type_category ?? ''));

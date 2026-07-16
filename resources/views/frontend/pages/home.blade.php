@@ -325,12 +325,31 @@
     .learn-btn {
         color: #1a2332;
         font-weight: 700;
-        font-size: 14px;
+        font-size: 16px;
+        gap: 10px;
+        margin-top: -4px;
         transition: 0.3s;
     }
     .learn-btn:hover {
         color: #e85d26;
         transform: translateX(5px);
+    }
+    .learn-btn-arrow {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: #f1f5f9;
+        color: #1a2332;
+        font-size: 16px;
+        transition: 0.3s;
+        flex-shrink: 0;
+    }
+    .learn-btn:hover .learn-btn-arrow {
+        background: #e85d26;
+        color: #fff;
     }
 
     /* About Section Animations */
@@ -738,120 +757,111 @@
     /* =========================================
        LATEST NEWS & FEATURES SECTION
     ========================================= */
-    .news-card {
-        background: #fff;
-        border: 1px solid #E5E9ED;
-        border-radius: 14px;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        transition: all 0.3s ease;
+    .news-grid {
+        display: grid;
+        grid-template-columns: 516px 1fr 1fr;
+        column-gap: 20px;
+        row-gap: 16px;
+    }
+    .news-card-link {
         text-decoration: none;
         color: inherit;
     }
-    .news-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 10px 24px rgba(0,0,0,0.09);
-        border-color: #4CC3C3;
-        color: inherit;
+    .news-grid > .news-card-link:first-child {
+        grid-row: span 2;
+        display: flex;
+        flex-direction: column;
     }
-    .news-card-img {
-        height: 200px;
-        overflow: hidden;
-        position: relative;
-        background: #f1f4f7;
-    }
-    .news-card-img img {
+    .news-big-card {
+        flex: 1;
         width: 100%;
         height: 100%;
-        object-fit: cover;
-        transition: transform 0.5s ease;
-    }
-    .news-card:hover .news-card-img img {
-        transform: scale(1.05);
-    }
-    .news-card-img .news-type-badge {
-        position: absolute;
-        top: 12px;
-        left: 12px;
-        font-size: 10px;
-        font-weight: 700;
-        padding: 4px 10px;
-        border-radius: 4px;
-        letter-spacing: .4px;
-        color: #fff;
-        background: #01354B;
-    }
-    .news-card-img.no-image {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .news-card-img.no-image i {
-        font-size: 40px;
-        color: #cbd5e1;
-    }
-    .news-card-body {
-        padding: 18px 20px 20px;
+        background: #fff;
+        border: 1px solid #E3E8EB;
+        border-radius: 10px;
         display: flex;
         flex-direction: column;
-        flex-grow: 1;
+        overflow: hidden;
+        box-shadow: 0px 10px 36px 0px #01354B1A;
+        transition: box-shadow 0.3s, transform 0.3s, border-color 0.3s;
     }
-    .news-card-meta {
-        font-size: 11px;
-        color: #94a3b8;
-        margin-bottom: 8px;
+    .news-big-card .news-card-img-box img { height: 260px; object-fit: cover; transition: transform 0.5s ease; }
+    .news-small-card {
+        width: 100%;
+        height: 100%;
+        background: #fff;
+        border: 1px solid #E3E8EB;
+        border-radius: 10px;
+        overflow: hidden;
         display: flex;
-        align-items: center;
-        gap: 10px;
+        flex-direction: column;
+        transition: box-shadow 0.3s, transform 0.3s, border-color 0.3s;
     }
-    .news-card-title {
-        font-size: 15px;
-        font-weight: 700;
+    .news-card-link:hover .news-big-card,
+    .news-card-link:hover .news-small-card {
+        box-shadow: 0 10px 28px rgba(1, 53, 75, 0.16);
+        transform: translateY(-4px);
+        border-color: #4CC3C3;
+    }
+    .news-card-link:hover .news-card-img-box img {
+        transform: scale(1.05);
+    }
+    .news-card-link:hover .news-footer-link {
         color: #01354B;
-        line-height: 1.45;
-        margin-bottom: 10px;
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
     }
-    .news-card-desc {
-        font-size: 13px;
-        color: #64748b;
-        line-height: 1.55;
-        flex-grow: 1;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        margin-bottom: 14px;
+    .news-small-img img { height: 120px; object-fit: cover; transition: transform 0.5s ease; }
+    .news-card-img-box { position: relative; background: #f1f4f7; overflow: hidden; }
+    .news-card-img-box img { width: 100%; display: block; }
+    .news-card-img-box.no-image { display: flex; align-items: center; justify-content: center; min-height: 120px; }
+    .news-card-img-box.no-image i { font-size: 32px; color: #cbd5e1; }
+    .news-img-overlay-gradient {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(142.06deg, rgba(1, 53, 75, 0.6) 0%, rgba(1, 136, 140, 0.3) 100%);
     }
-    .news-card-footer {
-        margin-top: auto;
-        padding-top: 12px;
-        border-top: 1px solid #f1f4f7;
+    .news-badge-custom {
+        position: absolute;
+        bottom: 12px;
+        left: 12px;
+        background: #F47735;
+        color: #fff;
+        font-size: 10px;
+        padding: 3px 10px;
+        border-radius: 100px;
+    }
+    .news-card-body { padding: 24px; flex-grow: 1; }
+    .news-card-body-small { padding: 18px 20px 12px; flex: 1; }
+    .news-card-h { font-size: 18px; font-weight: 600; color: #01354B; line-height: 1.4; }
+    .news-card-h-small { font-size: 14px; font-weight: 700; color: #01354B; line-height: 1.4; margin-bottom: 0; }
+    .news-card-p { font-size: 13px; color: #64748B; margin-top: 12px; line-height: 1.6; }
+    .news-card-footer { padding: 15px 24px; border-top: 1px solid #F1F5F9; display: flex; justify-content: space-between; }
+    .news-card-footer-small { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; border-top: 1px solid #F1F5F9; }
+    .news-meta-text { font-size: 11px; color: #94A3B8; }
+    .news-footer-link { font-size: 12px; color: #01888C; font-weight: 700; text-decoration: none; transition: color 0.3s; }
+    .news-all-box-link {
+        background: #F1F5F9;
+        border: 1px solid #E3E8EB;
+        border-radius: 10px;
         display: flex;
+        flex-direction: column;
+        justify-content: center;
         align-items: center;
-        justify-content: space-between;
-    }
-    .news-action-link {
-        font-size: 12px;
-        font-weight: 700;
-        color: #008080;
         text-decoration: none;
-        display: flex;
-        align-items: center;
-        gap: 5px;
+        transition: 0.3s;
+        min-height: 120px;
     }
-    .news-action-link:hover { color: #4CC3C3; }
-    .news-date {
-        font-size: 11px;
-        color: #94a3b8;
+    .news-all-box-link:hover { background: #E6F7F8; }
+    .news-all-text { color: #01888C; font-size: 11px; text-transform: uppercase; font-weight: 700; }
+    .news-all-link-text { color: #01888C; font-size: 20px; font-weight: 800; margin: 2px 0; }
+    .news-arrow-icon { color: #01354B; font-size: 24px; }
+    @media (max-width: 900px) {
+        .news-grid { grid-template-columns: 1fr 1fr; }
+        .news-grid > .news-card-link:first-child { grid-column: span 2; grid-row: auto; }
+        .news-big-card { height: auto; }
     }
-    @media (max-width: 576px) {
-        .news-card-img { height: 170px; }
+    @media (max-width: 600px) {
+        .news-grid { grid-template-columns: 1fr; }
+        .news-grid > .news-card-link:first-child { grid-column: auto; }
     }
 
 </style>
@@ -1037,7 +1047,10 @@ const heroSliderData = @json($heroSliderMapped);
                     @endforeach
                 </div>
 
-                <a href="/about" class="learn-btn mt-3 d-inline-block text-decoration-none anim-fade-up anim-delay-5">Learn About Us &rarr;</a>
+                <a href="/about" class="learn-btn d-inline-flex align-items-center text-decoration-none anim-fade-up anim-delay-5">
+                    <span>Learn About Us</span>
+                    <span class="learn-btn-arrow">&rarr;</span>
+                </a>
             </div>
 
             {{-- RIGHT IMAGE --}}
@@ -1250,62 +1263,67 @@ const heroSliderData = @json($heroSliderMapped);
                     </h2>
                     @if($newsDesc)<p class="section-desc mb-0">{{ $newsDesc }}</p>@endif
                 </div>
-                <!-- <a href="{{ route('insights') }}" class="all-link text-decoration-none">
-                    <span class="fw-bold text-dark me-1" style="font-size:13px;">All Latests</span>
+                <a href="{{ route('latestUpdates') }}" class="all-link text-decoration-none">
+                    <span class="fw-bold text-dark me-1" style="font-size: 13px;">Show All</span>
                     <span class="circle-arrow">&rarr;</span>
-                </a> -->
+                </a>
             </div>
         </div>
 
         {{-- GRID --}}
-        <div class="row g-4">
-            @foreach($homeLatestNews as $item)
+        <div class="news-grid">
+            @foreach($homeLatestNews->take(5) as $index => $item)
             @php
                 $itemDate  = $item->date instanceof \Carbon\Carbon ? $item->date->format('M d, Y') : ($item->date ? \Carbon\Carbon::parse($item->date)->format('M d, Y') : '');
                 $typeIcon  = $sourceIconMap[$item->source] ?? 'fa-newspaper';
+                $isFeatured = $index === 0;
             @endphp
-            <div class="col-12 col-md-6 col-lg-4">
-                <a href="{{ $item->link }}" class="news-card"
-                   @if($item->is_external) target="_blank" rel="noopener" @endif>
-
-                    {{-- IMAGE --}}
-                    <div class="news-card-img {{ !$item->image ? 'no-image' : '' }}">
-                        @if($item->image)
-                            <img src="{{ $item->image }}" alt="{{ $item->heading }}" loading="lazy">
-                        @else
-                            <i class="fas {{ $typeIcon }}"></i>
-                        @endif
-                        <span class="news-type-badge" style="background:{{ $item->badge_color }};">
-                            {{ strtoupper($item->badge_label) }}
-                        </span>
-                    </div>
-
-                    {{-- BODY --}}
-                    <div class="news-card-body">
-                        <div class="news-card-meta">
-                            @if($itemDate)
-                                <span><i class="fas fa-calendar-alt me-1"></i>{{ $itemDate }}</span>
+            @if($isFeatured)
+                <a href="{{ $item->link }}" class="news-card-link" @if($item->is_external) target="_blank" rel="noopener" @endif>
+                    <div class="news-card news-big-card">
+                        <div class="news-card-img-box {{ !$item->image ? 'no-image' : '' }}">
+                            @if($item->image)
+                                <img src="{{ $item->image }}" alt="{{ $item->heading }}" loading="lazy">
+                                <div class="news-img-overlay-gradient"></div>
+                            @else
+                                <i class="fas {{ $typeIcon }}"></i>
                             @endif
-                            @if($item->extra)
-                                <span><i class="fas fa-tag me-1"></i>{{ $item->extra }}</span>
+                            <span class="news-badge-custom">{{ strtoupper($item->badge_label) }}</span>
+                        </div>
+                        <div class="news-card-body">
+                            <h4 class="news-card-h">{{ $item->heading }}</h4>
+                            @if($item->description)
+                                <p class="news-card-p">{{ $item->description }}</p>
                             @endif
                         </div>
-                        <div class="news-card-title">{{ $item->heading }}</div>
-                        @if($item->description)
-                            <div class="news-card-desc">{{ $item->description }}</div>
-                        @endif
                         <div class="news-card-footer">
-                            <span class="news-action-link">
-                                {{ $item->action_label }}
-                                <i class="fas fa-arrow-right" style="font-size:10px;"></i>
-                            </span>
-                            @if($itemDate)
-                                <span class="news-date">{{ $itemDate }}</span>
-                            @endif
+                            <span class="news-meta-text">{{ $itemDate }}{{ $itemDate && $item->extra ? ' · ' : '' }}{{ $item->extra }}</span>
+                            <span class="news-footer-link">{{ $item->action_label }} &rarr;</span>
                         </div>
                     </div>
                 </a>
-            </div>
+            @else
+                <a href="{{ $item->link }}" class="news-card-link" @if($item->is_external) target="_blank" rel="noopener" @endif>
+                    <div class="news-card news-small-card">
+                        <div class="news-card-img-box news-small-img {{ !$item->image ? 'no-image' : '' }}">
+                            @if($item->image)
+                                <img src="{{ $item->image }}" alt="{{ $item->heading }}" loading="lazy">
+                                <div class="news-img-overlay-gradient"></div>
+                            @else
+                                <i class="fas {{ $typeIcon }}"></i>
+                            @endif
+                            <span class="news-badge-custom" style="background: #01888C;">{{ strtoupper($item->badge_label) }}</span>
+                        </div>
+                        <div class="news-card-body-small">
+                            <h4 class="news-card-h-small">{{ $item->heading }}</h4>
+                        </div>
+                        <div class="news-card-footer-small">
+                            <span class="news-meta-text">{{ $itemDate }}{{ $itemDate && $item->extra ? ' · ' : '' }}{{ $item->extra }}</span>
+                            <span class="news-footer-link">{{ $item->action_label }} &rarr;</span>
+                        </div>
+                    </div>
+                </a>
+            @endif
             @endforeach
         </div>
 

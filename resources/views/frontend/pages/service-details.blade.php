@@ -63,39 +63,41 @@
 /* Pillars strip — bottom of hero */
 .hero-pillars {
     position: relative; z-index: 2;
-    background: rgba(0, 10, 22, 0.80);
-    padding: 0;
+    background: transparent;
+    padding: 0 0 36px;
 }
 .hero-pillars-inner {
     max-width: 1072px; margin: 0 auto; padding: 0 24px;
-    display: flex; flex-wrap: nowrap;
+    display: flex; flex-wrap: nowrap; justify-content: flex-start;
 }
 .pillar-item {
-    display: flex; flex-direction: row; align-items: center; text-align: left;
-    flex: 1 1 0;
-    gap: 12px;
-    padding: 16px 20px 16px 0;
-    border-right: 1px solid rgba(255,255,255,0.10);
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    flex: 0 1 220px;
+    gap: 10px;
+    padding: 0 14px;
+    border-right: 1px solid rgba(255,255,255,0.18);
 }
-.pillar-item:not(:first-child) { padding-left: 20px; }
+.pillar-item:not(:first-child) { padding-left: 14px; }
 .pillar-item:last-child { border-right: none; }
+.pillar-desc { max-width: 165px; margin: 0 auto; }
 
 .pillar-icon {
-    width: 44px; height: 44px; flex-shrink: 0;
-    border: 1.5px solid rgba(255,255,255,0.40);
+    width: 52px; height: 52px; flex-shrink: 0;
+    border: 1.5px solid rgba(255,255,255,0.50);
     border-radius: 50%;
+    background: transparent;
     display: flex; align-items: center; justify-content: center;
 }
-.pillar-icon img { width: 22px; height: 22px; object-fit: contain; filter: brightness(0) invert(1); }
-.pillar-icon svg { width: 22px; height: 22px; stroke: #fff; fill: none; stroke-width: 1.8; }
+.pillar-icon img { width: 30px; height: 30px; object-fit: contain; filter: brightness(0) invert(1); }
+.pillar-icon svg { width: 24px; height: 24px; stroke: #fff; fill: none; stroke-width: 1.8; }
 
-.pillar-text-wrap { display: flex; flex-direction: column; gap: 3px; }
+.pillar-text-wrap { display: flex; flex-direction: column; gap: 4px; }
 .pillar-title {
-    font-size: 10px; font-weight: 800; color: #fff;
-    text-transform: uppercase; letter-spacing: 0.8px; line-height: 1.3;
+    font-size: 12px; font-weight: 800; color: #fff;
+    text-transform: uppercase; letter-spacing: 0.6px; line-height: 1.3;
 }
 .pillar-desc {
-    font-size: 10px; color: #8aaabb; line-height: 1.5;
+    font-size: 12px; color: #a9c2d0; line-height: 1.5;
 }
 
 /* =========================================
@@ -138,7 +140,7 @@
     letter-spacing: 0.88px; margin-bottom: 12px; line-height: 1;
 }
 .section-divider {
-    width: 100%; height: 2px;
+    width: 13%; height: 3px;
     background: #18909C; margin-bottom: 24px;
 }
 .overview-text {
@@ -165,7 +167,7 @@
     flex-shrink: 0; overflow: hidden;
 }
 .include-icon img {
-    width: 16px; height: 16px; object-fit: contain;
+    width: 22px; height: 22px; object-fit: contain;
     filter: brightness(0) invert(1);
 }
 .include-icon svg {
@@ -215,12 +217,16 @@
 }
 .prod-icon-box {
     width: 62px; height: 62px; border-radius: 14px;
-    background: #003054;
+    background: transparent; border: 1.5px solid #003054;
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0; overflow: hidden;
+    transition: border-color 0.3s ease;
 }
+/* .prod-card:hover .prod-icon-box {
+    border-color: #F47735;
+} */
 .prod-icon-box img {
-    width: 28px; height: 28px; object-fit: contain;
+    width: 42px; height: 42px; object-fit: contain;
 }
 .prod-icon-box svg {
     width: 26px; height: 26px;
@@ -263,8 +269,8 @@
     .hero-container { padding-top: 36px; padding-bottom: 24px; }
     .hero-content h1 { font-size: 32px; }
     .hero-pillars-inner { flex-wrap: wrap; }
-    .pillar-item { flex: 1 1 45%; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.08); padding: 16px 12px; }
-    .pillar-item:nth-child(odd) { border-right: 1px solid rgba(255,255,255,0.08); }
+    .pillar-item { flex: 1 1 45%; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.18); padding: 16px 12px; }
+    .pillar-item:nth-child(odd) { border-right: 1px solid rgba(255,255,255,0.18); }
     .pillar-item:last-child { border-bottom: none; }
     .overview-section { padding: 36px 0 44px; }
     .prod-card { min-width: 45%; max-width: 50%; }
@@ -398,11 +404,16 @@
                 <h3 class="section-title">Overview</h3>
                 <div class="section-divider"></div>
                 <div class="overview-text">
-                    @foreach(array_filter(explode("\n", $overviewPlainText)) as $para)
+                    <!-- @foreach(array_filter(explode("\n", $overviewPlainText)) as $para)
                         <p>{{ trim($para) }}</p>
-                    @endforeach
+                    @endforeach -->
+
+                     @foreach(array_filter(explode("\n", $overviewPlainText)) as $para)
+                            <p>{{ trim(html_entity_decode($para)) }}</p>
+                     @endforeach
                 </div>
             </div>
+
 
             {{-- Our Services Include --}}
             <div>

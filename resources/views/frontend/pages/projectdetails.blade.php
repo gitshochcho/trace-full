@@ -334,10 +334,7 @@
     {{ preg_replace('/\s+/', ' ', strip_tags(html_entity_decode($locationSummary))) }}
 </div>
             <div class="meta-item">
-                <i class="fas fa-briefcase"></i> {{ $serviceNames->isNotEmpty() ? $serviceNames->take(2)->join(' / ') : 'Project Services' }}
-            </div>
-            <div class="meta-item">
-                <i class="fas fa-layer-group"></i> {{ $project->phaseDetails->count() }} Deliverable Phases
+                <i class="fas fa-briefcase"></i> {{ $serviceNames->isNotEmpty() ? $serviceNames->join(' / ') : 'Project Services' }}
             </div>
         </div>
     </div>
@@ -489,7 +486,7 @@
             @endif
             <div class="fact-row">
                 <span class="label">Sector</span>
-                <span class="value text-end">{{ $heroBadge }}</span>
+                <span class="value text-end">{{ $serviceNames->isNotEmpty() ? $serviceNames->join(', ') : $heroBadge }}</span>
             </div>
             <div class="fact-row">
                 <span class="label">Standard</span>
@@ -497,21 +494,13 @@
             </div>
             <div class="fact-row">
                 <span class="label">Location</span>
-<<<<<<< HEAD
                 <span class="value text-end">
                     {{ \Illuminate\Support\Str::limit(strip_tags(html_entity_decode($locationSummary)), 45) }}
                 </span>
-=======
-                <span class="value text-end">{!! \Illuminate\Support\Str::limit($locationSummary, 45) !!}</span>
->>>>>>> ee10f0867fc8a6f84df38e591100471f135c451b
-            </div>
-            <div class="fact-row">
-                <span class="label">Duration</span>
-                <span class="value text-end">{{ $project->durationLabel() ?? '' }}</span>
             </div>
             <div class="fact-row border-0">
-                <span class="label">Phases</span>
-                <span class="value text-end">{{ $project->phaseDetails->count() }} Deliverable Phases</span>
+                <span class="label">Duration</span>
+                <span class="value text-end">{{ $project->durationLabel() ?? '' }}</span>
             </div>
             <div class="status-row pt-3 mt-2 border-top">
                 <span class="label text-muted">Status</span>

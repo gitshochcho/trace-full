@@ -648,9 +648,9 @@
         $authorTeams = collect([$article->author]);
     }
     $primaryAuthor   = $authorTeams->first();
-    $authorName      = $primaryAuthor?->fullName() ?: 'TRACE Research Desk';
-    $authorRole      = $primaryAuthor?->designation ?: 'Author';
-    $authorInitials  = collect(explode(' ', $authorName))->filter()->map(fn ($word) => strtoupper(substr($word, 0, 1)))->take(2)->implode('');
+    $authorName      = $primaryAuthor?->fullName();
+    $authorRole      = $primaryAuthor?->designation;
+    $authorInitials  = $authorName ? collect(explode(' ', $authorName))->filter()->map(fn ($word) => strtoupper(substr($word, 0, 1)))->take(2)->implode('') : '';
     $authorImageUrl  = $primaryAuthor?->imageUrl();
 
     // Outside authors
@@ -755,9 +755,9 @@
               <img src="{{ $articleImage }}"
                   alt="{{ $articleTitle }}"
                  class="article-main-img">
-             <p class="img-caption">
-    {{ $article->image_description ?: ($categoryLabel . ' — published by TRACE Insights.') }}
-</p>
+             @if($article->image_description)
+             <p class="img-caption">{{ $article->image_description }}</p>
+             @endif
         </div>
 
        @foreach($sections as $section)
@@ -833,8 +833,9 @@
         @endif
 
         {{-- Authors --}}
+        @if($authorTeams->isNotEmpty() || !empty($outsideAuthors))
         <div class="sidebar-card author-card">
-            <h4 class="sidebar-heading">{{ $authorTeams->count() + count($outsideAuthors) > 1 ? 'AUTHORS' : 'AUTHOR' }}</h4>
+            <h4 class="sidebar-heading">{{ $authorTeams->count() + count($outsideAuthors) > 1 ? 'AUTHORS/PARTICIPANTS' : 'AUTHOR' }}</h4>
 
             {{-- Team Authors --}}
             @foreach($authorTeams as $teamAuthor)
@@ -880,12 +881,14 @@
                 </div>
             @endif
         </div>
+        @endif
 
         {{-- Related Insights --}}
+        @if($relatedArticles->isNotEmpty())
         <div class="sidebar-card related-card">
             <h4 class="sidebar-heading">RELATED INSIGHTS</h4>
             <div class="related-list">
-                @forelse($relatedArticles as $related)
+                @foreach($relatedArticles as $related)
                     @php
                         $relatedFirstArticle = $related->articles->first();
                         $relatedImage = $related->imageUrl() ?: $related->articleImageUrl() ?: asset('assets/img/Op-Ed.png');
@@ -898,12 +901,11 @@
                             <p class="related-title">{{ \Illuminate\Support\Str::limit($related->heading, 70) }}</p>
                         </div>
                     </a>
-                @empty
-                    <p class="small text-muted mb-0">No related insights available.</p>
-                @endforelse
+                @endforeach
 
             </div>
         </div>
+        @endif
 
     </aside>
 

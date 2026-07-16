@@ -364,10 +364,12 @@
                  <a href="{{ route('serviceDetails', ['id' => $service['id']]) }}">
                 <div class="service-card">
 
+                   
                     <img
                         src="{{ $service['img'] }}"
                         alt="{{ $service['tag'] }}"
                         class="card-img">
+                  
 
                     <div class="card-content">
                         <span class="card-tag">{{ $service['tag'] }}</span>

@@ -70,7 +70,7 @@ $currentInsightImageRemoveField = $insight->articleImageUrl() ? 'remove_article_
     <p class="text-muted small mb-2">Click to select, click again to remove</p>
     <div class="author-chip-grid d-flex flex-wrap gap-2" id="authorChipGrid">
         @foreach($teams as $team)
-            @php $isSelected = in_array($team->id, old('author_team_ids', [])); @endphp
+            @php $isSelected = in_array($team->id, $savedAuthorTeamIds); @endphp
             <div class="author-chip d-flex align-items-center gap-2 rounded-pill px-3 py-2 border {{ $isSelected ? 'chip-selected' : '' }}"
                  data-id="{{ $team->id }}"
                  style="cursor:pointer; user-select:none; transition: all 0.15s;">
@@ -486,8 +486,8 @@ document.addEventListener('DOMContentLoaded', function () {
         setVisible(editSourceNameWrap,   isOpEdType());
         setVisible(editInsightAttWrap,   isBrochuresType());
         setVisible(editArticleAttWrap,   isArticleOrPub());
-        setVisible(editArticleImageWrap, isArticleOrPub());
-        setVisible(editImageDescWrap,    isArticleOrPub());
+        setVisible(editArticleImageWrap, isArticleOrPub() || isBrochuresType());
+        setVisible(editImageDescWrap,    isArticleOrPub() || isBrochuresType());
         setVisible(editSocialLinksWrap,  isArticleOrPub());
         setVisible(editPublishLinkWrap,  isArticleOrPub());
         setVisible(editArticleSectWrap,  isArticleOrPub());

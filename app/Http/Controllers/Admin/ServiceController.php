@@ -255,7 +255,7 @@ class ServiceController extends Controller
         $keptIds = [];
 
         foreach (array_values($details) as $index => $item) {
-            $text = $item['text'] ?? null;
+            $text = trim((string) ($item['text'] ?? ''));
             $detailId = ! empty($item['id']) ? (int) $item['id'] : null;
 
             if ($text === '' && ! isset($detailIcons[$index]) && $detailId === null) {

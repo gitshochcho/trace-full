@@ -704,9 +704,10 @@
     flex-direction: column;
     overflow: hidden;
     box-shadow: 0px 10px 36px 0px #01354B1A;
+    transition: box-shadow 0.3s, transform 0.3s, border-color 0.3s;
 }
 
-.big-card .card-img-box img { height: 260px; object-fit: cover; }
+.big-card .card-img-box img { height: 260px; object-fit: cover; transition: transform 0.5s ease; }
 
 .small-card {
     width: 100%;
@@ -717,11 +718,23 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    transition: box-shadow 0.3s, transform 0.3s, border-color 0.3s;
 }
 
-.small-img img { height: 120px; object-fit: cover; }
+.small-img img { height: 120px; object-fit: cover; transition: transform 0.5s ease; }
 
-.card-img-box { position: relative; }
+.insight-card-link:hover .big-card,
+.insight-card-link:hover .small-card {
+    box-shadow: 0 10px 28px rgba(1, 53, 75, 0.16);
+    transform: translateY(-4px);
+    border-color: #4CC3C3;
+}
+
+.insight-card-link:hover .card-img-box img { transform: scale(1.05); }
+
+.insight-card-link:hover .footer-link { color: #01354B; }
+
+.card-img-box { position: relative; overflow: hidden; }
 
 .img-overlay-gradient {
     position: absolute;
@@ -785,7 +798,7 @@
     .insights-grid > .insight-card-link:first-child { grid-column: auto; }
 }
 
-/* ================= PARTNERS SECTION ================= */
+/* ================= PARTNERS SECTION =================
 .partners-section {
     width: 100%;
     max-width: 1920px;
@@ -952,8 +965,6 @@
     max-height: 45px;
     max-width: 100%;
     object-fit: contain;
-    /* filter: grayscale(100%);
-    opacity: 0.6; */
     transition: 0.3s;
 }
  
@@ -984,7 +995,7 @@
     .logo-grid { grid-template-columns: repeat(2, 1fr); }
     .partner-logo-wrapper:nth-child(2) { border-right: none; }
     .partner-logo-wrapper { border-bottom: 1px solid #E5E9ED; }
-}
+} */
 
 .mission-btn {
     display: inline-flex;
@@ -1494,7 +1505,7 @@
     </div>
 </section>
 
-<section class="partners-section py-4">
+<!-- <section class="partners-section py-4">
     <div class="custom-container">
         <div class="row align-items-end mb-5">
             <div class="col-lg-6">
@@ -1573,7 +1584,7 @@
             </button>
         </div>
     </div>
-</section>
+</section> -->
 
 @include('frontend.layout.cta')
 
