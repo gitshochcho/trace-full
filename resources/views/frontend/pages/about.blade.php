@@ -979,6 +979,35 @@
     color: #94A3B8;
     text-align: center;
 }
+
+.mission-btn-white {
+    background-color: #ffffff;
+    color: #000000;
+    border: 2px solid #D0D8DE;
+}
+.mission-btn-white:hover {
+    background-color: #FF6B00;
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+.mission-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    height: 46px;
+    padding: 12px 28px;
+    border-radius: 100px;
+    border: 2px solid #FF6B00;
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    opacity: 1;
+    white-space: nowrap;
+    transition: background-color 0.25s ease, color 0.25s ease, transform 0.2s ease;
+    flex-shrink: 0;
+}
+
  
 /* dots */
 .dots-box { display: flex; gap: 8px; align-items: center; }
@@ -997,33 +1026,7 @@
     .partner-logo-wrapper { border-bottom: 1px solid #E5E9ED; }
 } */
 
-.mission-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: auto;
-    height: 46px;
-    padding: 12px 28px;
-    border-radius: 100px;
-    border: 2px solid #FF6B00;
-    font-weight: 600;
-    font-size: 14px;
-    text-decoration: none;
-    opacity: 1;
-    white-space: nowrap;
-    transition: background-color 0.25s ease, color 0.25s ease, transform 0.2s ease;
-}
 
-.mission-btn-white {
-    background-color: #ffffff;
-    color: #000000;
-    border: 2px solid #D0D8DE;
-}
-.mission-btn-white:hover {
-    background-color: #FF6B00;
-    color: #ffffff;
-    transform: translateY(-2px);
-}
 </style>
 @endpush
 
