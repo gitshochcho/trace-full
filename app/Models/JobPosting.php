@@ -16,12 +16,14 @@ class JobPosting extends Model
         'responsibilities',
         'requirements',
         'is_active',
+        'show_on_home',
         'posted_date',
         'end_date',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'show_on_home' => 'boolean',
         'posted_date' => 'date',
         'end_date' => 'date',
     ];

@@ -32,6 +32,13 @@ class Setting extends Model implements HasMedia
         return $url !== '' ? $url : null;
     }
 
+    public function faviconImageUrl(): ?string
+    {
+        $url = $this->getFirstMediaUrl('favicon_image');
+
+        return $url !== '' ? $url : null;
+    }
+
     public function socialLinksWithIcons(): array
     {
         $links = is_array($this->social_links) ? $this->social_links : [];

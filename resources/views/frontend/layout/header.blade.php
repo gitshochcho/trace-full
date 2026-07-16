@@ -1,27 +1,3 @@
-<!-- <div class="topbar d-none d-lg-block" style="background-color: #004051; color: #fff;">
-    <div class="container-fluid px-5" style="max-width: 1072px; margin: 0 auto;">
-        <div class="d-flex justify-content-between align-items-center py-2">
-            <div class="topbar-left">
-                <span style="font-size: 11px; opacity: 1;">✉ {{ $siteSettings?->footer_contact_email ?: '' }}</span>
-            </div>
-            <div class="topbar-right d-flex align-items-center gap-3">
-                <a href="#" class="text-decoration-none" style="font-size: 11px; color: #fff; opacity: 1;">Company news</a> -->
-                <!-- <a href="#" class="text-decoration-none" style="font-size: 11px; color: #fff; opacity: 1;">Faq</a> -->
-                <!-- <span class="text-white" style="opacity: 0.5;">|</span>
-                <div class="social-icons d-flex gap-3">
-                    @foreach(($siteSettings?->socialLinksWithIcons() ?? []) as $socialLink)
-                        <a href="{{ $socialLink['link'] ?? '#' }}" target="_blank" rel="noreferrer" style="color: #fff; font-size: 13px; opacity: 1;" aria-label="{{ $socialLink['title'] ?? 'social link' }}">
-                            @if(! empty($socialLink['icon_url']))
-                                <img src="{{ $socialLink['icon_url'] }}" alt="{{ $socialLink['title'] ?? 'Social icon' }}" style="width: 14px; height: 14px; object-fit: contain;">
-                            @endif
-                        </a>
-                    @endforeach
-                </div>
-            </div>
-        </div>
-    </div>
-</div> -->
-
 <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm py-3" style="height: 74px; opacity: 1;">
     <div class="container-fluid px-lg-5 d-flex justify-content-between" style="max-width: 1072px; margin: 0 auto;">
         <a class="navbar-brand d-flex align-items-center gap-2" href="/">
@@ -51,12 +27,18 @@
                     <a class="nav-link text-dark px-0 {{ request()->is('insights') ? 'active' : '' }}" href="/insights">Insights</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link text-dark px-0 {{ request()->is('our-innovations') ? 'active' : '' }}" href="/our-innovations">Our Innovations</a>
+                </li>
+                <!-- <li class="nav-item">
+                    <a class="nav-link text-dark px-0 {{ request()->is('latest-updates') ? 'active' : '' }}" href="/latest-updates">Latest</a>
+                </li> -->
+                <li class="nav-item">
                     <a class="nav-link text-dark px-0 {{ request()->is('career') ? 'active' : '' }}" href="/career">Careers</a>
                 </li>
             </ul>
             
             <div class="d-grid d-lg-block mt-3 mt-lg-0">
-                <a href="/contact" class="btn rounded-pill py-2 px-4" 
+                <a href="/contact" class="btn rounded-pill py-2 px-4 {{ request()->is('contact') ? 'contact-btn-active' : '' }}"
                    style="background: #002D3A; color: #fff; font-size: 12px; font-weight: 700; text-decoration: none; box-shadow: none; border: none;">
                     Contact Us &rarr;
                 </a>
@@ -66,7 +48,7 @@
 </nav>
 
 <style>
-    /* ছবির মতো মেনু আইটেমের হোভার ইফেক্ট */
+
     .nav-link {
         color: #1a2332 !important;
         transition: color 0.3s ease;
@@ -91,6 +73,24 @@
         border-radius: 2px;
         background: #e85d26;
     }
+    
+
+.btn {
+    transition: background-color 0.3s ease !important;
+    display: inline-block; 
+}
+
+
+.btn:hover {
+    background: #005f73 !important;
+    color: #fff !important;
+    border: none !important;
+    transform: none !important;
+}
+
+.contact-btn-active {
+    background: #e85d26 !important;
+}
 
     /* মোবাইল ভিউর জন্য কিছু কাস্টম ফিক্স */
     @media (max-width: 991px) {

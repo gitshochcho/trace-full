@@ -44,7 +44,7 @@ $currentInsightImageRemoveField = $insight->articleImageUrl() ? 'remove_article_
                     <div class="card-body">
                         <div class="row g-3">
 
-                            <div class="col-12">
+                            <div class="col-md-6">
                                 <label class="form-label">Insight Type</label>
                                 <select id="editInsightTypeSelect" name="type" class="form-control">
                                     @foreach($insightTypes as $type)
@@ -57,6 +57,12 @@ $currentInsightImageRemoveField = $insight->articleImageUrl() ? 'remove_article_
                                 </select>
                             </div>
 
+                            <div class="col-md-6">
+                                <label class="form-label">Sort Order</label>
+                                <input type="number" name="sort_order" value="{{ old('sort_order', $insight->sort_order) }}" class="form-control @error('sort_order') is-invalid @enderror" min="0">
+                                @error('sort_order')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
+
                             {{-- Team Authors (multiple) --}}
                            {{-- Author Field Wrap --}}
 <div class="col-12" id="editAuthorFieldWrap">
@@ -64,7 +70,7 @@ $currentInsightImageRemoveField = $insight->articleImageUrl() ? 'remove_article_
     <p class="text-muted small mb-2">Click to select, click again to remove</p>
     <div class="author-chip-grid d-flex flex-wrap gap-2" id="authorChipGrid">
         @foreach($teams as $team)
-            @php $isSelected = in_array($team->id, old('author_team_ids', [])); @endphp
+            @php $isSelected = in_array($team->id, $savedAuthorTeamIds); @endphp
             <div class="author-chip d-flex align-items-center gap-2 rounded-pill px-3 py-2 border {{ $isSelected ? 'chip-selected' : '' }}"
                  data-id="{{ $team->id }}"
                  style="cursor:pointer; user-select:none; transition: all 0.15s;">
@@ -139,10 +145,15 @@ $currentInsightImageRemoveField = $insight->articleImageUrl() ? 'remove_article_
                                 <input type="datetime-local" name="published_at" class="form-control" value="{{ old('published_at', $insight->published_at?->format('Y-m-d\TH:i')) }}">
                             </div>
 
-                            <div class="col-md-6 d-flex align-items-end">
+                            <div class="col-md-6 d-flex align-items-end gap-4 flex-wrap">
                                 <div class="form-check form-switch">
                                     <input class="form-check-input" type="checkbox" name="active" value="1" id="activeSwitch" {{ old('active', $insight->active) ? 'checked' : '' }}>
                                     <label class="form-check-label" for="activeSwitch">Active</label>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input type="hidden" name="show_on_home" value="0">
+                                    <input class="form-check-input" type="checkbox" name="show_on_home" value="1" id="showOnHomeSwitch" {{ old('show_on_home', $insight->show_on_home) ? 'checked' : '' }}>
+                                    <label class="form-check-label fw-semibold text-warning" for="showOnHomeSwitch">Show on Homepage</label>
                                 </div>
                             </div>
 
@@ -475,8 +486,8 @@ document.addEventListener('DOMContentLoaded', function () {
         setVisible(editSourceNameWrap,   isOpEdType());
         setVisible(editInsightAttWrap,   isBrochuresType());
         setVisible(editArticleAttWrap,   isArticleOrPub());
-        setVisible(editArticleImageWrap, isArticleOrPub());
-        setVisible(editImageDescWrap,    isArticleOrPub());
+        setVisible(editArticleImageWrap, isArticleOrPub() || isBrochuresType());
+        setVisible(editImageDescWrap,    isArticleOrPub() || isBrochuresType());
         setVisible(editSocialLinksWrap,  isArticleOrPub());
         setVisible(editPublishLinkWrap,  isArticleOrPub());
         setVisible(editArticleSectWrap,  isArticleOrPub());
@@ -490,7 +501,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 items: ['heading','|','bold','italic','underline','strikethrough','|',
                     'bulletedList','numberedList','|','outdent','indent','|','link','|','undo','redo']
             },
-        }).then(editor => { editors[textarea.id] = editor; }).catch(console.error);
+       }).then(editor => {
+            editors[textarea.id] = editor;
+            editor.editing.view.document.on('keydown', function (evt, data) {
+                if (data.domEvent.key === 'Enter' && !data.domEvent.shiftKey) {
+                    evt.stop();
+                    data.preventDefault();
+                    editor.execute('shiftEnter');
+                }
+            }, { priority: 'high' });
+            
+        }).catch(console.error);
     }
 
     document.querySelectorAll('textarea.article-editor, textarea.outside-author-editor').forEach(initCKEditor);

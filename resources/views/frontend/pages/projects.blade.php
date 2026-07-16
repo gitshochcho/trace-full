@@ -273,11 +273,12 @@
     width: 100%; /* Apnar dewa width (approx) container onusare auto nibe */
     min-height: 31px;
     padding-top: 14px;
-    margin-top: 20px; /* Magic: footer ke ekbare niche niye jabe */
+  
     border-top: 1px solid #E5E9ED; /* Border-top visible kora */
     display: flex;
     justify-content: space-between;
     align-items: center;
+        margin-top: auto;
 }
 
 .project-bio {
@@ -285,6 +286,7 @@
     line-height: 1.6;
     margin-bottom: 15px;
     flex-grow: 1; /* Content choto holeo footer niche thakbe */
+    text-align: justify;
 }
 
 .project-tags span {
@@ -319,7 +321,16 @@
     color: #adb5bd; /* Photo er moto light gray */
 }
 
+/*Card Redirect*/
+.project-card {
+  position: relative;
+}
 
+.card-overlay-link {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+}
 </style>
 @endpush
 
@@ -438,7 +449,8 @@
                     $projectDesc      = stripPTags($project->overview) ?? '';
                 @endphp
                 <div class="col-xl-4 col-lg-4 col-md-6">
-                    <div class="project-card h-100 shadow-sm">
+                    <div class="project-card h-100 shadow-sm position-relative">
+                        <a href="{{ route('projectdetails', $project) }}" class="card-overlay-link"></a>
                         <div class="project-img-box">
                             <img src="{{ $projectImage }}" alt="{{ $project->project_title }}">
                             <span class="category-tag">{{ $projectCategory }}</span>
@@ -449,7 +461,9 @@
                             <h6 class="client-name text-uppercase">{{ abbreviateClientName($project->client) ?? '' }}</h6>
                             <h4 class="project-standard">{{ $project->project_standard ?: '' }}</h4>
                             <h4 class="project-title">{{ $project->project_title }}</h4>
-                            <p class="project-bio text-muted">{{ \Illuminate\Support\Str::limit($projectDesc, 140) }}</p>
+                           <p class="project-bio text-muted">
+    {{ \Illuminate\Support\Str::limit(strip_tags(html_entity_decode($projectDesc)), 140) }}
+</p>
 
                             <div class="project-tags">
                                 @forelse($projectTags as $tag)

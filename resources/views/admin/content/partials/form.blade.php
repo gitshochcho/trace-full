@@ -37,6 +37,7 @@
                             <button type="button" id="applyInsightsPagePreset" class="btn btn-sm btn-outline-primary preset-btn">Insights Page</button>
                             <button type="button" id="applyProjectsPagePreset" class="btn btn-sm btn-outline-primary preset-btn">Projects Page</button>
                             <button type="button" id="applyCareerPagePreset" class="btn btn-sm btn-outline-primary preset-btn">Career Page</button>
+                            <button type="button" id="applyInnovationsPagePreset" class="btn btn-sm btn-outline-primary preset-btn">Innovations Page</button>
                         </div>
                     </div>
                 </div>
@@ -273,6 +274,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const insightsPagePresetBtn = document.getElementById('applyInsightsPagePreset');
         const projectsPagePresetBtn = document.getElementById('applyProjectsPagePreset');
         const careerPagePresetBtn   = document.getElementById('applyCareerPagePreset');
+        const innovationsPagePresetBtn = document.getElementById('applyInnovationsPagePreset');
         const projectLocationPresetBtn = document.getElementById('applyProjectLocationPreset');
         const projectPhasePresetBtn = document.getElementById('applyProjectPhasePreset');
         const projectOutcomePresetBtn = document.getElementById('applyProjectOutcomePreset');
@@ -384,11 +386,33 @@ if (removeIconBtn) {
             ClassicEditor.create(field)
                 .then(function (editor) {
                     contentEditor = editor;
+
+                    // Make Enter insert <br> instead of new <p>
+                editor.editing.view.document.on('keydown', function (evt, data) {
+                    if (data.domEvent.key === 'Enter' && !data.domEvent.shiftKey) {
+                        evt.stop();
+                        data.preventDefault();
+                        editor.execute('shiftEnter');
+                    }
+                }, { priority: 'high' });
+
+                // Sync on every change so textarea always has current value
+                editor.model.document.on('change:data', function () {
+                    field.value = editor.getData();
+                });
                 })
                 .catch(function (error) {
                     console.error(error);
                 });
         }
+        // Sync CKEditor before form submit
+        document.querySelectorAll('form').forEach(function (form) {
+            form.addEventListener('submit', function () {
+                if (contentEditor) {
+                    field.value = contentEditor.getData();
+                }
+            });
+        });
 
         const contactPagePresetBtn = document.getElementById('applyContactPagePreset');
 
@@ -497,6 +521,18 @@ if (removeIconBtn) {
                 if (designWordField) designWordField.value = 'Team';
                 if (typeField)      typeField.value      = 'Hero';
                 setDescriptionValue('We are looking for curious, driven professionals to help us reshape trade policy, regulatory reform, and economic development across South Asia.');
+            });
+        }
+
+        if (innovationsPagePresetBtn) {
+            innovationsPagePresetBtn.addEventListener('click', function () {
+                if (slugField)      slugField.value      = 'innovations-page';
+                if (sectionField)   sectionField.value   = 'OUR INNOVATION';
+                if (headingField)   headingField.value   = 'Our Innovation';
+                if (subHeadingField) subHeadingField.value = '';
+                if (designWordField) designWordField.value = '';
+                if (typeField)      typeField.value      = 'Hero';
+                setDescriptionValue('Explore our digital platforms and innovative systems designed to solve real-world challenges and drive meaningful impact.');
             });
         }
 

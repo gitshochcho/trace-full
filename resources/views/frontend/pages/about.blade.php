@@ -59,6 +59,7 @@
     max-width: 480px;
     font-size: 17px;
     line-height: 30px;
+    text-align: justify;
 }
 
 .about-hero-content h1 {
@@ -336,6 +337,7 @@
     color: #64748B;
     font-size: 15px;
     line-height: 1.7;
+    text-align: justify;
 }
 
 .btn-get-started {
@@ -376,6 +378,7 @@
     font-size: 14px;
     color: #64748B;
     margin: 0;
+    text-align: justify;
 }
 
 @media (max-width: 1100px) {
@@ -454,6 +457,7 @@
 .feature-card p {
     font-size: 14px;
     line-height: 1.6;
+    text-align: justify;
 }
 
 .icon-box {
@@ -700,9 +704,10 @@
     flex-direction: column;
     overflow: hidden;
     box-shadow: 0px 10px 36px 0px #01354B1A;
+    transition: box-shadow 0.3s, transform 0.3s, border-color 0.3s;
 }
 
-.big-card .card-img-box img { height: 260px; object-fit: cover; }
+.big-card .card-img-box img { height: 260px; object-fit: cover; transition: transform 0.5s ease; }
 
 .small-card {
     width: 100%;
@@ -713,11 +718,23 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    transition: box-shadow 0.3s, transform 0.3s, border-color 0.3s;
 }
 
-.small-img img { height: 120px; object-fit: cover; }
+.small-img img { height: 120px; object-fit: cover; transition: transform 0.5s ease; }
 
-.card-img-box { position: relative; }
+.insight-card-link:hover .big-card,
+.insight-card-link:hover .small-card {
+    box-shadow: 0 10px 28px rgba(1, 53, 75, 0.16);
+    transform: translateY(-4px);
+    border-color: #4CC3C3;
+}
+
+.insight-card-link:hover .card-img-box img { transform: scale(1.05); }
+
+.insight-card-link:hover .footer-link { color: #01354B; }
+
+.card-img-box { position: relative; overflow: hidden; }
 
 .img-overlay-gradient {
     position: absolute;
@@ -781,7 +798,7 @@
     .insights-grid > .insight-card-link:first-child { grid-column: auto; }
 }
 
-/* ================= PARTNERS SECTION ================= */
+/* ================= PARTNERS SECTION =================
 .partners-section {
     width: 100%;
     max-width: 1920px;
@@ -948,8 +965,6 @@
     max-height: 45px;
     max-width: 100%;
     object-fit: contain;
-    filter: grayscale(100%);
-    opacity: 0.6;
     transition: 0.3s;
 }
  
@@ -964,6 +979,35 @@
     color: #94A3B8;
     text-align: center;
 }
+
+.mission-btn-white {
+    background-color: #ffffff;
+    color: #000000;
+    border: 2px solid #D0D8DE;
+}
+.mission-btn-white:hover {
+    background-color: #FF6B00;
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+.mission-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    height: 46px;
+    padding: 12px 28px;
+    border-radius: 100px;
+    border: 2px solid #FF6B00;
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    opacity: 1;
+    white-space: nowrap;
+    transition: background-color 0.25s ease, color 0.25s ease, transform 0.2s ease;
+    flex-shrink: 0;
+}
+
  
 /* dots */
 .dots-box { display: flex; gap: 8px; align-items: center; }
@@ -980,35 +1024,9 @@
     .logo-grid { grid-template-columns: repeat(2, 1fr); }
     .partner-logo-wrapper:nth-child(2) { border-right: none; }
     .partner-logo-wrapper { border-bottom: 1px solid #E5E9ED; }
-}
+} */
 
-.mission-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 147px;
-    height: 46px;
-    padding: 12px 28px;
-    border-radius: 100px;
-    border: 2px solid #FF6B00;
-    font-weight: 600;
-    font-size: 14px;
-    text-decoration: none;
-    opacity: 1;
-    white-space: nowrap;
-    transition: background-color 0.25s ease, color 0.25s ease, transform 0.2s ease;
-}
 
-.mission-btn-white {
-    background-color: #ffffff;
-    color: #000000;
-    border: 2px solid #D0D8DE;
-}
-.mission-btn-white:hover {
-    background-color: #FF6B00;
-    color: #ffffff;
-    transform: translateY(-2px);
-}
 </style>
 @endpush
 
@@ -1126,7 +1144,7 @@
     </div>
 </section>
 
-<section class="py-5 my-md-5">
+<section class="py-3 my-md-2">
     <div class="custom-container">
         <div class="row align-items-center gy-5">
             <div class="col-lg-6 pe-lg-5">
@@ -1134,15 +1152,19 @@
                 
                 <h2 class="about-title mb-4">
                     @php
-                        // Controller theke asha data
                         $heading = $aboutTrace->heading ?? '';
-                        $designWord = $aboutTrace?->design_word; 
+                        $designWord = trim($aboutTrace?->design_word ?? '');
+                        $formattedHeading = $heading;
 
                         if ($designWord) {
-                            // Heading er bhetor thaka specific word-ke span tag diye wrap korbe
-                            $formattedHeading = str_ireplace($designWord, "<span>{$designWord}</span>", $heading);
-                        } else {
-                            $formattedHeading = $heading;
+                            $words = array_filter(preg_split('/\s+/', $designWord));
+                            foreach ($words as $word) {
+                                $formattedHeading = preg_replace(
+                                    '/(' . preg_quote($word, '/') . ')/iu',
+                                    '<span>$1</span>',
+                                    $formattedHeading
+                                );
+                            }
                         }
                     @endphp
                     {!! $formattedHeading !!}
@@ -1152,9 +1174,9 @@
                     {{-- Who We Are Section --}}
                     <div class="mb-4">
                         <h4 class="fw-bold" style="font-size: 18px;">{{ $whoWeAre?->heading ?? '' }}</h4>
-                        <div class="text-secondary">
+                        <div class="text-secondary" style="text-align: justify; margin-top: 14px;">
                             {{-- Editor theke asha p tag remove korbe ebong data display korbe --}}
-                            {!! strip_tags($whoWeAre?->description ?? '') !!}
+                            {!! ($whoWeAre?->description ?? '') !!}
                         </div>
                     </div>
 
@@ -1163,8 +1185,9 @@
                     {{-- Our Mission Section --}}
                     <div class="mb-4">
                         <h4 class="fw-bold" style="font-size: 18px;">{{ $ourMission?->heading ?? '' }}</h4>
-                        <div class="text-secondary">
-                            {!! strip_tags($ourMission?->description ?? '') !!}
+                        <div class="text-secondary" style="text-align: justify; margin-top: 14px;">
+                            {!! ($ourMission?->description ?? '') !!}
+                         
                         </div>
                         <div class="d-flex gap-3 mt-4 flex-wrap">
                             <a href="{{ route('contact') }}" class="mission-btn mission-btn-white">Work With Us →</a>
@@ -1203,11 +1226,12 @@
                         {{ strip_tags($commitmentSubHeading) }}
                     </p>
 
-                    <ul>
-                        @foreach($commitmentPoints as $point)
-                            <li>{{ $point }}</li>
-                        @endforeach
-                    </ul>
+                 <ul>
+                   @foreach($commitmentPoints as $point)
+                       <li>{!! $point !!}</li>
+                   @endforeach
+               </ul>
+               
 
                     <p class="bottom-text mt-4" style="color:#cbd5e1; font-style: italic;">
                         {{ $commitmentBottomText }}
@@ -1218,7 +1242,7 @@
     </div>
 </section>
 
-<section class="framework-section">
+<section class="framework-section py-5">
     <div class="framework-main-container">
         <div class="row align-items-center">
             <div class="col-lg-5 p-0">
@@ -1230,7 +1254,7 @@
                     {!! nl2br($frameworkHeading) !!}
                 </h2>
                 <p class="framework-desc mb-4">
-                    {{ strip_tags($frameworkDescription) }}
+                    {!! strip_tags($frameworkDescription) !!}
                 </p>
                 <a href="{{ route('contact') }}" class="btn-get-started">
                     Get Started &rarr;
@@ -1253,8 +1277,8 @@
                                 @endif
                             </div>
                             <div class="content">
-                                <h4>{{ $item['title'] }}</h4>
-                                <p>{{ $item['description'] }}</p>
+                                <h4>{!! $item['title'] !!}</h4>
+                                <p>{!! $item['description'] !!}</p>
                             </div>
                         </div>
                     @endforeach
@@ -1264,7 +1288,7 @@
     </div>
 </section>
 
-<section class="features-section">
+<section class="features-section py-3">
     <div class="custom-container">
         <div class="row align-items-end mb-5 gy-4">
             <div class="col-lg-5">
@@ -1277,8 +1301,8 @@
                 </h2>
             </div>
             <div class="col-lg-7">
-                <p class="text-secondary mb-0" style="font-size: 15px; line-height: 1.8; max-width: 600px;">
-                    {{ strip_tags($featuresDescription) }}
+                <p class="text-secondary mb-0" style="font-size: 15px; line-height: 1.8; max-width: 600px; text-align: justify; ">
+                    {!! strip_tags($featuresDescription) !!}
                 </p>
             </div>
         </div>
@@ -1304,8 +1328,8 @@
                             @endif
                         </div>
                         <h5 class="fw-bold mb-3">{{ $feature['title'] }}</h5>
-                        <p class="text-secondary small line-height-relaxed">
-                            {{ $feature['description'] }}
+                        <p class="text-secondary small line-height-relaxed" style="text-align: justify;">
+                            {!! $feature['description'] !!}
                         </p>
                     </div>
                 </div>
@@ -1314,7 +1338,7 @@
     </div>
 </section>
 
-<section class="projects-section">
+<section class="projects-section py-3 my-lg-3">
     <div class="projects-main-container">
         <div class="row align-items-center mb-4">
             <div class="col-md-8">
@@ -1336,7 +1360,7 @@
         <div class="projects-grid">
             @forelse($aboutProjects as $project)
                 @php
-                    $projectImage  = $project->imageUrl() ?? '';
+                    $projectImage  = $project->heroImageUrl() ?? '';
                      $firstSvc         = $project->services->first();
                       $projectCategory  = $firstSvc?->section ?? $firstSvc?->service_name ?? 
                     $projectBadge  = strtoupper($project->services->first()?->service_name ?? $project->project_standard ?? '');
@@ -1365,7 +1389,7 @@
     </div>
 </section>
 
-<section class="insights-section">
+<section class="insights-section py-4">
     <div class="insights-container">
         <div class="insights-header mb-5">
             <div class="header-left">
@@ -1375,7 +1399,7 @@
                 <h2 class="insights-title">Ideas and <span>perspectives</span></h2>
                 <p class="insights-desc">Thought leadership, research publications, and knowledge resources from our team.</p>
             </div>
-            <div class="header-right">
+            <div class="header-right py-5">
                 <a href="{{ route('insights') }}" class="all-insights-btn">All Insights &rarr;</a>
             </div>
         </div>
@@ -1484,7 +1508,7 @@
     </div>
 </section>
 
-<section class="partners-section py-5">
+<!-- <section class="partners-section py-4">
     <div class="custom-container">
         <div class="row align-items-end mb-5">
             <div class="col-lg-6">
@@ -1504,10 +1528,10 @@
                     {!! $pHeading !!}
                 </h2>
             </div>
-            <div class="col-lg-6">
+            <div class="col-lg-6" style="text-align: justify;">
                 <p class="partners-desc">
                     {!! $partnersContent?->description
-                        ?: 'We work with governments, multilateral development organisations, regulatory bodies, and private sector leaders across the region — building long-term partnerships grounded in trust and results.' !!}
+                        ?: '' !!}
                 </p>
             </div>
         </div>
@@ -1563,7 +1587,7 @@
             </button>
         </div>
     </div>
-</section>
+</section> -->
 
 @include('frontend.layout.cta')
 

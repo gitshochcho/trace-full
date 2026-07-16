@@ -4,7 +4,7 @@
 @if($setting?->getFirstMediaUrl('logo_image'))
     <img src="{{ $setting->getFirstMediaUrl('logo_image') }}"
          alt="{{ $setting->logo_text ?? 'Logo' }}"
-         class="brand-image opacity-75 shadow"
+         class="brand-image opacity-10 shadow"
          style="height: 33px; width: auto; object-fit: contain;">
 @else
     <img src="{{ asset('dist/assets/img/AdminLTELogo.png') }}"
@@ -14,7 +14,7 @@
 
 {{-- Logo Text + Tagline --}}
 <span class="brand-text fw-light">
-    {{ $setting?->logo_text ?? 'Trace Consultancy ltd.' }}
+    {{ $setting?->logo_text ?? '' }}
     @if($setting?->logo_tagline)
         <small class="d-block opacity-50" style="font-size:10px; line-height:1;">
             {{ $setting->logo_tagline }}
@@ -142,6 +142,30 @@
             <a href="{{ route('admin.partners.create') }}" class="nav-link {{ request()->routeIs('admin.partners.create') ? 'active' : '' }}">
                 <i class="nav-icon bi bi-circle"></i>
                 <p>Add Partner</p>
+            </a>
+        </li>
+    </ul>
+</li>
+
+                <li class="nav-item">
+    <a href="#" class="nav-link {{ request()->is('admin/innovations*') ? 'active' : '' }}">
+        <i class="nav-icon bi bi-lightbulb"></i>
+        <p>
+            Innovations
+            <i class="nav-arrow bi bi-chevron-right"></i>
+        </p>
+    </a>
+    <ul class="nav nav-treeview">
+        <li class="nav-item">
+            <a href="{{ route('admin.innovations.index') }}" class="nav-link {{ request()->routeIs('admin.innovations.index') ? 'active' : '' }}">
+                <i class="nav-icon bi bi-circle"></i>
+                <p>All Innovations</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ route('admin.innovations.create') }}" class="nav-link {{ request()->routeIs('admin.innovations.create') ? 'active' : '' }}">
+                <i class="nav-icon bi bi-circle"></i>
+                <p>Add Innovation</p>
             </a>
         </li>
     </ul>

@@ -188,7 +188,7 @@
     margin: 0;
 }
 
-.about-description p {
+.about-description{
     font-family: 'Inter', sans-serif;
     font-size: 15px;
     line-height: 1.7;
@@ -236,11 +236,12 @@
     color: #64748B;
     margin: 0;
     line-height: 1.4;
+    text-align: justify;
 }
 
 .sidebar-container {
     position: sticky;
-    top: 20px;
+    top: 100px;
 }
 
 .cta-card {
@@ -380,7 +381,13 @@
                 <div class="team-content">
                     <div class="team-tag d-flex align-items-center justify-content-center justify-content-md-start">
                         <span class="line"></span>
-                        <span class="tag-text">TEAM MEMBER</span>
+                        <span class="tag-text">
+                            @if($team->type == 2) 
+                                EXPERT MEMBER
+                            @else
+                                TEAM MEMBER
+                            @endif
+                        </span>
                     </div>
 
                     <h1 class="profile-name fw-bold text-white">{{ $teamName }}</h1>
@@ -388,7 +395,7 @@
                     <h5 class="sub-title mb-2">{{ $teamDesignation }}</h5>
 
                     <p class="team-location mb-4">
-                        Trace Consulting Limited · Dhaka, Bangladesh
+                        TRACE Consulting. Dhaka, Bangladesh
                     </p>
 
                     <div class="team-tags d-flex flex-wrap justify-content-center justify-content-md-start gap-2 mb-4">
@@ -443,7 +450,7 @@
     </div>
 </section>
 
-<section class="about-section py-5">
+<section class="about-section py-4">
     <div class="container custom-container-1080">
         <div class="row g-5">
             <div class="col-lg-8">
@@ -454,12 +461,10 @@
                     </div>
 
                     <div class="about-description">
-                        @foreach($descriptionParagraphs as $paragraph)
-                            <p>{!! $paragraph !!}</p>
-                        @endforeach
+                        {!! $team->description !!}
                     </div>
 
-                    <div class="expertise-section mt-5">
+                    <div class="expertise-section mt-4">
                         <div class="about-title-box mb-4">
                             <span class="orange-line"></span>
                             <h3 class="fw-bold section-heading">Areas of Expertise</h3>

@@ -23,7 +23,6 @@
     .contact-wrapper {
         font-family: 'Inter', system-ui, -apple-system, sans-serif;
         background-color: #fff;
-        overflow-x: hidden;
     }
 
     /* Hero Section */
@@ -63,6 +62,14 @@
         line-height: 1.6;
         max-width: 550px;
         opacity: 0.85;
+            text-align: justify;
+    }
+
+    /* Contact Form Sidebar (sticky) */
+    .contact-form-sidebar {
+        position: sticky;
+        top: 260px;
+        align-self: flex-start;
     }
 
     /* Contact Form Card (Overlapping) */
@@ -75,7 +82,7 @@
         position: relative;
         z-index: 10;
         border: 1px solid #ffffff;
-        
+
     }
     .contact-form-header {
         background: var(--dark-navy);
@@ -254,6 +261,7 @@
         .info-row { flex-direction: column; text-align: center; }
         .info-icon-wrap { margin-right: 0; margin-bottom: 15px; }
         .info-action-btn { margin-left: 0; margin-top: 15px; width: 100%; }
+        .contact-form-sidebar { position: static; }
     }
 </style>
 @endpush
@@ -377,7 +385,7 @@
                 </div>
             </div>
 
-            <div class="col-lg-5 order-1 order-lg-2">
+<div class="col-lg-5 order-1 order-lg-2 contact-form-sidebar">
                 <div class="contact-form-card">
                     <div class="contact-form-header">
                         <p class="form-label-top">SEND A MESSAGE</p>

@@ -71,6 +71,7 @@
     color: #94a3b8;
     line-height: 1.7;
     margin: 0 0 14px 0;
+    text-align: justify;
 }
 
 .services-hero .editor-content p:last-child {
@@ -131,7 +132,7 @@
 }
 
 .card-tag {
-    font-size: 10.5px;
+    font-size: 15px;
     font-weight: 700;
     letter-spacing: 1.5px;
     color: #22c1c3;
@@ -160,6 +161,7 @@
     line-height: 1.65;
     margin: 0;
     flex: 1;
+    text-align: justify;
 }
 
 /* CARD FOOTER */
@@ -170,6 +172,7 @@
     align-items: center;
     justify-content: space-between;
     background: #fff;
+    margin-top: auto;
 }
 
 .card-footer-bar .products-count {
@@ -358,12 +361,15 @@
         <div class="row g-4">
             @foreach($serviceCards as $service)
             <div class="col-12 col-sm-6 col-lg-4">
+                 <a href="{{ route('serviceDetails', ['id' => $service['id']]) }}">
                 <div class="service-card">
 
+                   
                     <img
                         src="{{ $service['img'] }}"
                         alt="{{ $service['tag'] }}"
                         class="card-img">
+                  
 
                     <div class="card-content">
                         <span class="card-tag">{{ $service['tag'] }}</span>
@@ -372,15 +378,19 @@
                         <p>{!! $service['desc'] !!}</p>
                     </div>
 
-                    <div class="card-footer-bar">
-                        <span class="products-count">
-                            <span class="dot"></span>
-                            {{ $service['products'] }}
-                        </span>
-                        <a href="{{ route('serviceDetails', ['id' => $service['id']]) }}">View Service →</a>
-                    </div>
+                     <div class="card-footer-bar">
+        <span class="products-count">
+            <span class="dot"></span>
+            {{ $service['products'] }}
+        </span>
+
+        <a href="{{ route('serviceDetails', ['id' => $service['id']]) }}">
+            View Service →
+        </a>
+    </div>
 
                 </div>
+                </a>
             </div>
             @endforeach
         </div>

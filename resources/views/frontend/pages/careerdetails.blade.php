@@ -43,6 +43,7 @@
         line-height: 1.8;
         padding: 12px 0 12px 32px;
         position: relative;
+        text-align: justify;
     }
     .job-section li:before {
         content: "✓";
@@ -143,8 +144,8 @@
                     <span class="job-division">{{ $job->department }}</span>
                     <h2>{{ $job->title }}</h2>
                     
-                    <div class="job-main-text mt-4">
-                        {!! $job->description !!}
+                    <div class="job-main-text mt-4" style="text-align: justify;">
+                        {!! nl2br($job->description) !!}
                     </div>
 
                     {{-- Responsibilities Section --}}
@@ -175,7 +176,7 @@
 
             {{-- RIGHT COLUMN: Sidebar --}}
             <div class="col-lg-5">
-                <div style="position: sticky; top: 20px;">
+                <div style="position: sticky; top: 100px;">
                     
                     {{-- 1. Job Details Card (Smaller) --}}
                     <div class="job-sidebar-info">

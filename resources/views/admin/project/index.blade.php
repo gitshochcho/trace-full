@@ -28,6 +28,38 @@
                 </div>
             @endif
 
+            {{-- Filter Category Order Card --}}
+            <div class="card card-outline card-warning mb-4">
+                <div class="card-header" style="cursor:pointer;" data-bs-toggle="collapse" data-bs-target="#categoryOrderPanel">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="card-title mb-0"><i class="fas fa-sort me-2"></i>Projects Filter — Category Order</h3>
+                        <small class="text-muted">Click to expand / collapse</small>
+                    </div>
+                </div>
+                <div class="collapse" id="categoryOrderPanel">
+                    <div class="card-body">
+                        <p class="text-muted small mb-3">Change the number to reorder categories in the Projects page filter. Lower number = appears first.</p>
+                        <div class="row g-3">
+                            @foreach($services as $service)
+                            <div class="col-12 col-md-6 col-lg-4">
+                                <div class="d-flex align-items-center gap-2 border rounded px-3 py-2 bg-light">
+                                    <input type="number" class="form-control form-control-sm text-center cat-sort-input"
+                                           value="{{ $service->sort_order }}"
+                                           data-url="{{ route('admin.services.sort-order', $service) }}"
+                                           min="0" style="width:70px; flex-shrink:0;">
+                                    <div>
+                                        <div class="fw-semibold" style="font-size:13px;">{{ $service->section ?: $service->service_name }}</div>
+                                        <div class="text-muted" style="font-size:11px;">{{ $service->projects_count }} project(s)</div>
+                                    </div>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                        <div id="catSaveMsg" class="mt-2 text-success small" style="display:none;">Saved!</div>
+                    </div>
+                </div>
+            </div>
+
             <div class="card card-outline card-primary">
                 <div class="card-header">
                     <div class="d-flex justify-content-between align-items-center gap-2">
@@ -102,6 +134,31 @@
 
 @push('custome-js')
 <script>
+document.querySelectorAll('.cat-sort-input').forEach(function (input) {
+    input.addEventListener('change', function () {
+        const url = this.dataset.url;
+        const val = parseInt(this.value, 10);
+        fetch(url, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            },
+            body: JSON.stringify({ sort_order: val }),
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                const msg = document.getElementById('catSaveMsg');
+                if (msg) { msg.style.display = ''; setTimeout(() => msg.style.display = 'none', 1500); }
+                this.classList.add('border-success');
+                setTimeout(() => this.classList.remove('border-success'), 1200);
+            }
+        })
+        .catch(() => { this.classList.add('border-danger'); });
+    });
+});
+
 (function () {
     const searchInput = document.getElementById('projectSearch');
     const tableBody   = document.querySelector('#projectTable tbody');

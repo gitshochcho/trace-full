@@ -2,8 +2,9 @@
 
 @section('content')
     @php
-        $details   = old('details',   [['id' => null, 'text' => '']]);
-        $solutions = old('solutions',  [['id' => null, 'heading' => '', 'sub_heading' => '']]);
+        $heroPillars = old('hero_pillars', [['id' => null, 'title' => '', 'description' => '']]);
+        $details     = old('details',   [['id' => null, 'text' => '']]);
+        $solutions   = old('solutions',  [['id' => null, 'heading' => '', 'sub_heading' => '']]);
     @endphp
 
     <div class="app-content-header">
@@ -115,6 +116,40 @@
                     {{-- RIGHT: Details + Solutions --}}
                     <div class="col-12 col-xl-7">
 
+                        <div class="card card-outline card-warning mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h3 class="card-title mb-0">Hero Pillars <small class="text-muted fw-normal">(shows below hero image)</small></h3>
+                                <button type="button" class="btn btn-sm btn-outline-warning" id="addPillarRow">Add Pillar</button>
+                            </div>
+                            <div class="card-body">
+                                <div id="pillarsWrapper" class="d-grid gap-3">
+                                    @foreach($heroPillars as $index => $pillar)
+                                    <div class="border rounded p-3 pillar-row">
+                                        <div class="row g-3 align-items-start">
+                                            <div class="col-12 col-md-5">
+                                                <input type="hidden" name="hero_pillars[{{ $index }}][id]" value="">
+                                                <label class="form-label">Title <span class="text-danger">*</span></label>
+                                                <input type="text" name="hero_pillars[{{ $index }}][title]" value="{{ $pillar['title'] ?? '' }}" class="form-control" placeholder="BETTER POLICIES">
+                                            </div>
+                                            <div class="col-12 col-md-5">
+                                                <label class="form-label">Description</label>
+                                                <input type="text" name="hero_pillars[{{ $index }}][description]" value="{{ $pillar['description'] ?? '' }}" class="form-control" placeholder="Evidence-based and inclusive">
+                                            </div>
+                                            <div class="col-12 col-md-10">
+                                                <label class="form-label">Icon Image</label>
+                                                <input type="file" name="hero_pillars_icons[{{ $index }}]" class="form-control" accept="image/*" data-max-size="2048">
+                                                <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 64×64px square (max 2MB)</small>
+                                            </div>
+                                            <div class="col-12 col-md-2 d-grid">
+                                                <button type="button" class="btn btn-outline-danger remove-pillar-row">Remove</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="card card-outline card-secondary mb-4">
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <h3 class="card-title mb-0">Service Details</h3>
@@ -155,16 +190,21 @@
                                     @foreach($solutions as $index => $solution)
                                         <div class="border rounded p-3 solution-row">
                                             <div class="row g-3 align-items-start">
-                                                <div class="col-12 col-md-6">
+                                                <div class="col-12 col-md-5">
                                                     <input type="hidden" name="solutions[{{ $index }}][id]" value="{{ $solution['id'] ?? '' }}">
                                                     <label class="form-label">Heading</label>
                                                     <input type="text" name="solutions[{{ $index }}][heading]" value="{{ $solution['heading'] ?? '' }}" class="form-control">
                                                 </div>
-                                                <div class="col-12 col-md-6">
-                                                    <label class="form-label">Sub Heading</label>
+                                                <div class="col-12 col-md-5">
+                                                    <label class="form-label">Sub Heading <small class="text-muted">(description)</small></label>
                                                     <input type="text" name="solutions[{{ $index }}][sub_heading]" value="{{ $solution['sub_heading'] ?? '' }}" class="form-control">
                                                 </div>
-                                                <div class="col-12 d-grid d-md-flex justify-content-md-end">
+                                                <div class="col-12 col-md-10">
+                                                    <label class="form-label">Icon Image</label>
+                                                    <input type="file" name="solutions_icons[{{ $index }}]" class="form-control" accept="image/*" data-max-size="2048" data-max-width="64" data-max-height="64">
+                                                    <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 64×64px square (max 2MB)</small>
+                                                </div>
+                                                <div class="col-12 col-md-2 d-grid">
                                                     <button type="button" class="btn btn-outline-danger remove-solution-row">Remove</button>
                                                 </div>
                                             </div>
@@ -190,6 +230,30 @@
         </div>
     </div>
 
+    <template id="pillarRowTemplate">
+        <div class="border rounded p-3 pillar-row">
+            <div class="row g-3 align-items-start">
+                <div class="col-12 col-md-5">
+                    <input type="hidden" name="__PILLAR_NAME__[id]" value="">
+                    <label class="form-label">Title <span class="text-danger">*</span></label>
+                    <input type="text" name="__PILLAR_NAME__[title]" class="form-control" placeholder="BETTER POLICIES">
+                </div>
+                <div class="col-12 col-md-5">
+                    <label class="form-label">Description</label>
+                    <input type="text" name="__PILLAR_NAME__[description]" class="form-control" placeholder="Evidence-based and inclusive">
+                </div>
+                <div class="col-12 col-md-10">
+                    <label class="form-label">Icon Image</label>
+                    <input type="file" name="__PILLAR_ICON_NAME__" class="form-control" accept="image/*" data-max-size="2048">
+                    <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 64×64px square (max 2MB)</small>
+                </div>
+                <div class="col-12 col-md-2 d-grid">
+                    <button type="button" class="btn btn-outline-danger remove-pillar-row">Remove</button>
+                </div>
+            </div>
+        </div>
+    </template>
+
     <template id="detailRowTemplate">
         <div class="border rounded p-3 detail-row">
             <div class="row g-3 align-items-start">
@@ -213,16 +277,21 @@
     <template id="solutionRowTemplate">
         <div class="border rounded p-3 solution-row">
             <div class="row g-3 align-items-start">
-                <div class="col-12 col-md-6">
+                <div class="col-12 col-md-5">
                     <input type="hidden" name="__SOLUTION_NAME__[id]" value="">
                     <label class="form-label">Heading</label>
                     <input type="text" name="__SOLUTION_NAME__[heading]" class="form-control">
                 </div>
-                <div class="col-12 col-md-6">
-                    <label class="form-label">Sub Heading</label>
+                <div class="col-12 col-md-5">
+                    <label class="form-label">Sub Heading <small class="text-muted">(description)</small></label>
                     <input type="text" name="__SOLUTION_NAME__[sub_heading]" class="form-control">
                 </div>
-                <div class="col-12 d-grid d-md-flex justify-content-md-end">
+                <div class="col-12 col-md-10">
+                    <label class="form-label">Icon Image</label>
+                    <input type="file" name="__SOLUTION_ICON_NAME__" class="form-control" accept="image/*" data-max-size="2048" data-max-width="64" data-max-height="64">
+                    <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 64×64px square (max 2MB)</small>
+                </div>
+                <div class="col-12 col-md-2 d-grid">
                     <button type="button" class="btn btn-outline-danger remove-solution-row">Remove</button>
                 </div>
             </div>
@@ -237,7 +306,9 @@
 document.addEventListener('DOMContentLoaded', function () {
     const activeEditors  = new Map();
     const form           = document.querySelector('form');
-    const detailWrapper  = document.getElementById('detailsWrapper');
+    const pillarWrapper   = document.getElementById('pillarsWrapper');
+    const pillarTemplate  = document.getElementById('pillarRowTemplate');
+    const detailWrapper   = document.getElementById('detailsWrapper');
     const solutionWrapper = document.getElementById('solutionsWrapper');
     const detailTemplate  = document.getElementById('detailRowTemplate');
     const solutionTemplate = document.getElementById('solutionRowTemplate');
@@ -279,7 +350,17 @@ document.addEventListener('DOMContentLoaded', function () {
             if (el.dataset.editorReady) return;
             el.dataset.editorReady = '1';
             ClassicEditor.create(el)
-                .then(function (editor) { activeEditors.set(el, editor); })
+               
+            .then(function (editor) {
+                    activeEditors.set(el, editor);
+                    editor.editing.view.document.on('keydown', function (evt, data) {
+                        if (data.domEvent.key === 'Enter' && !data.domEvent.shiftKey) {
+                            evt.stop();
+                            data.preventDefault();
+                            editor.execute('shiftEnter');
+                        }
+                    }, { priority: 'high' });
+                })
                 .catch(function (err) { console.error(err); });
         });
     }
@@ -294,6 +375,15 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // ── Pillar dynamic rows ──────────────────────────────────────────
+    document.getElementById('addPillarRow').addEventListener('click', function () {
+        const index = pillarWrapper.querySelectorAll('.pillar-row').length;
+        const html = pillarTemplate.innerHTML
+            .replaceAll('__PILLAR_NAME__', `hero_pillars[${index}]`)
+            .replaceAll('__PILLAR_ICON_NAME__', `hero_pillars_icons[${index}]`);
+        pillarWrapper.insertAdjacentHTML('beforeend', html);
+    });
+
     // ── Detail dynamic rows ──────────────────────────────────────────
     document.getElementById('addDetailRow').addEventListener('click', function () {
         const index = detailWrapper.querySelectorAll('.detail-row').length;
@@ -307,11 +397,16 @@ document.addEventListener('DOMContentLoaded', function () {
     // ── Solution dynamic rows ────────────────────────────────────────
     document.getElementById('addSolutionRow').addEventListener('click', function () {
         const index = solutionWrapper.querySelectorAll('.solution-row').length;
-        solutionWrapper.insertAdjacentHTML('beforeend',
-            solutionTemplate.innerHTML.replaceAll('__SOLUTION_NAME__', 'solutions[' + index + ']'));
+        const html = solutionTemplate.innerHTML
+            .replaceAll('__SOLUTION_NAME__', `solutions[${index}]`)
+            .replaceAll('__SOLUTION_ICON_NAME__', `solutions_icons[${index}]`);
+        solutionWrapper.insertAdjacentHTML('beforeend', html);
     });
 
     document.addEventListener('click', function (e) {
+        if (e.target.classList.contains('remove-pillar-row')) {
+            e.target.closest('.pillar-row').remove();
+        }
         if (e.target.classList.contains('remove-detail-row')) {
             const row = e.target.closest('.detail-row');
             const textarea = row ? row.querySelector('.detail-editor') : null;

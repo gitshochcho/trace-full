@@ -41,7 +41,7 @@
                 <h1 class="display-4 fw-bolder mb-4" style="line-height: 1.1;">
                     {{ $heroHeading }} <span style="color: #00bfc5;">{{ $heroDesignWord }}</span>
                 </h1>
-                <p class="lead opacity-75 mb-4" style="font-size: 16px; max-width: 550px; color: rgba(255, 255, 255, 0.8);">
+                <p class="lead opacity-75 mb-4" style="font-size: 16px; max-width: 550px; color: rgba(255, 255, 255, 0.8); text-align: justify;">
                     {{ strip_tags($heroDescription) }}
                 </p>
                 <div class="d-flex gap-5 mt-5">
@@ -65,35 +65,38 @@
 <section class="insights-topbar border-bottom sticky-top bg-white py-3 shadow-sm">
     <div class="container-fluid px-lg-5 page-align-container">
         <div class="row align-items-center">
-            <div class="col-lg-8">
-                <div class="filters d-flex flex-wrap gap-2 gap-md-4">
-
-                    @php
-            $uniqueTypes = $insights->map(fn($i) => $i->insightType->type ?? null)->filter()->unique();
-        @endphp
-        
-        <a href="#" class="filter-link active" data-filter="ALL">ALL ({{ $insights->count() }})</a>
-        @foreach($uniqueTypes as $type)
-            <a href="#" class="filter-link" data-filter="{{ strtoupper($type) }}">
-                {{ strtoupper($type) }} 
-                ({{ $insights->where('insightType.type', $type)->count() }})
-            </a>
-        @endforeach
-                    {{-- <a href="#" class="filter-link active" data-filter="ALL">All <span class="ms-1 opacity-50">{{ $allInsights->count() }}</span></a>
-                    <a href="#" class="filter-link" data-filter="VIDEO WATCH">Video Watch <span class="ms-1 opacity-50">{{ $typeCounts['VIDEO WATCH'] }}</span></a>
-                    <a href="#" class="filter-link" data-filter="READ">Read <span class="ms-1 opacity-50">{{ $typeCounts['READ'] }}</span></a>
-                    <a href="#" class="filter-link" data-filter="DOWNLOAD">Download <span class="ms-1 opacity-50">{{ $typeCounts['DOWNLOAD'] }}</span></a> --}}
+            <div class="col-lg-9">
+                <div class="filter-swiper-wrap">
+                    <button class="filter-nav-btn filter-prev"><i class="fas fa-chevron-left"></i></button>
+                    <div class="swiper filter-swiper">
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide">
+                                <a href="#" class="filter-link active" data-filter="ALL">ALL ({{ $insights->count() }})</a>
+                            </div>
+                            @foreach($insightTypes as $insightType)
+                                @php $typeCount = $insights->where('insightType.id', $insightType->id)->count(); @endphp
+                                @if($typeCount > 0)
+                                <div class="swiper-slide">
+                                    <a href="#" class="filter-link" data-filter="{{ strtoupper($insightType->type) }}">
+                                        {{ strtoupper($insightType->type) }} ({{ $typeCount }})
+                                    </a>
+                                </div>
+                                @endif
+                            @endforeach
+                        </div>
+                    </div>
+                    <button class="filter-nav-btn filter-next"><i class="fas fa-chevron-right"></i></button>
                 </div>
             </div>
-            <div class="col-lg-4 mt-3 mt-lg-0">
-                <div class="d-flex gap-2">
-                    <div class="input-group input-group-sm border rounded-pill px-2 py-1">
-                        <span class="input-group-text bg-transparent border-0"><i class="fas fa-search text-muted"></i></span>
-                        <input type="text" id="insightSearch" class="form-control border-0 shadow-none" placeholder="Search insights...">
+            <div class="col-lg-3 mt-3 mt-lg-0">
+                <div class="d-flex gap-2 justify-content-end">
+                    <div class="input-group border rounded-pill px-2" style="max-width: 220px; height: 34px; align-items: center;">
+                        <span class="input-group-text bg-transparent border-0 p-1"><i class="fas fa-search text-muted" style="font-size:11px;"></i></span>
+                        <input type="text" id="insightSearch" class="form-control border-0 shadow-none" placeholder="Search..." style="font-size:13px;">
                     </div>
-                    <select class="form-select form-select-sm border-0 fw-bold shadow-none w-auto" style="font-size: 12px;">
+                    <!-- <select class="form-select form-select-sm border-0 fw-bold shadow-none w-auto" style="font-size: 12px;">
                         <option>Newest First</option>
-                    </select>
+                    </select> -->
                 </div>
             </div>
         </div>
@@ -103,16 +106,16 @@
 {{-- ==============================
       INSIGHTS GRID
 ============================== --}}
-<section class="insights-list py-5 bg-white">
+<section class="insights-list py-4 bg-white">
     <div class="container-fluid px-lg-5 page-align-container">
-        <div class="results-info d-flex align-items-center gap-3 mb-5">
+        <div class="results-info d-flex align-items-center gap-3 mb-4">
             <span class="small text-muted text-nowrap">Showing <b id="results-count">{{ $allInsights->count() }}</b> insights</span>
             <div class="w-100 bg-light" style="height: 1px;"></div>
         </div>
 
         <div class="row g-4">
            {{-- @foreach($allInsights as $insight)
-    ID: {{ $insight->id }} | 
+    ID: {{ $insight->id }} |
     typeCategory: "{{ $insight->insightType?->type_category }}" |
     leadArticle: {{ $insight->articles->first()?->id ?? 'NULL' }} |
     actionLink will be: {{ $insight->insightType?->type_category === 'read' && $insight->articles->first() ? 'ROUTE' : '#' }}
@@ -133,65 +136,137 @@
     'article'      => '#1032ae',
     default        => '#15803d',
 };
-    $cardImage = $insight->imageUrl() ?: $insight->articleImageUrl() ?: asset('assets/img/Op-Ed.png');
+    $cardImage = $insight->imageUrl() ?: $insight->articleImageUrl() ?: asset('');
     $leadArticle = $insight->articles->first();
     $description = \Illuminate\Support\Str::limit($insight->description ?? ($leadArticle?->description ?? ''), 120);
 $typeCategory = strtolower(str_replace(' ', '_', $insight->insightType?->type_category ?? ''));
 
 if ($typeCategory === 'download') {
-    $actionLink = $insight->attachmentUrl() ?: '#';
-$isExternal = false;
+    $actionLink = $insight->attachmentUrl() ?: route('articleDetails', ['insight_id' => $insight->id]);
+    $isExternal = false;
 } elseif (in_array($typeCategory, ['watch', 'video', 'video_watch'], true)) {
-    $actionLink = $insight->videoUrl() ?: '#';
-    $isExternal = true;
+    $actionLink = $insight->videoUrl() ?: route('articleDetails', ['insight_id' => $insight->id]);
+    $isExternal = !empty($insight->videoUrl());
 } elseif ($typeCategory === 'read_on') {
-    $actionLink = $insight->source_name ?: '#'; 
-    $isExternal = true;
+    $actionLink = $insight->source_name ?: route('articleDetails', ['insight_id' => $insight->id]);
+    $isExternal = !empty($insight->source_name);
 } elseif ($typeCategory === 'read' && $leadArticle) {
     $actionLink = route('articleDetails', $leadArticle);
     $isExternal = false;
 } else {
-    $actionLink = '#';
+    $actionLink = route('articleDetails', ['insight_id' => $insight->id]);
     $isExternal = false;
 }
     $metaDate = optional($insight->published_at)->format('M Y') ?: 'TBA';
     $metaDuration = $leadArticle?->read_minutes ? $leadArticle->read_minutes . ' min' : 'Quick read';
 @endphp
-            <div class="col-12 col-md-6 col-lg-4 insight-item" data-tag="{{ $tag }}">
-                <div class="insight-card h-100 border-0 shadow-sm rounded-5 overflow-hidden bg-white">
-                    <div class="card-img-position" style="height: 220px; overflow: hidden; position: relative; flex-shrink: 0;">
-                        <img src="{{ $cardImage }}" class="w-100 h-100 object-fit-cover" alt="{{ $title }}">
-                        <span class="badge position-absolute top-0 start-0 m-3 px-3 py-1" style="background: {{ $badgeColor }}; font-size: 10px; border-radius: 4px;">{{ $tag }}</span>
-                    </div>
-                    <div class="card-body p-4">
-                        <small class="fw-bold mb-2 d-block" style="font-size: 11px; color: #00898e; letter-spacing: 0.5px;">{{ $category }}</small>
-                        <h5 class="card-title fw-bold text-dark mb-2" style="font-size: 16px; line-height: 1.4;">{{ $title }}</h5>
-                        @if(!empty($insight?->description))
-                       
-                        <p class="card-text text-muted small mb-0">{{$insight?->description}}</p>
-                        @else
-                      
-                        <p class="card-text text-muted small mb-0">
-                            {{ \Illuminate\Support\Str::limit(strip_tags($insight->articles->first()?->description), 120) }}
-                        </p>
-                        
-                        
-                        @endif
-                    </div>
-                    <div class="insight-card-footer">
-                        <span class="text-muted" style="font-size: 12px;"><i class="far fa-calendar-alt me-1"></i> {{ $metaDate }} · {{ $metaDuration }}</span>
-                        @if($typeCategory === 'download' && $actionLink === '#')
-                            <span class="text-muted" style="font-size: 12px;">No file uploaded</span>
-                        @elseif($typeCategory === 'download')
-                            <a href="{{ $actionLink }}" download class="fw-bold text-decoration-none" style="font-size: 12px; color: #e85d26;">
-                                <i class="fas fa-download me-1" style="font-size:10px;"></i>{{ $buttonText }}
-                            </a>
-                        @else
-                            <a href="{{ $actionLink }}" class="fw-bold text-decoration-none" style="font-size: 12px; color: #00898e;" @if($isExternal) target="_blank" rel="noopener" @endif>{{ $buttonText }} →</a>
-                        @endif
-                    </div>
-                </div>
-            </div>
+           <div class="col-12 col-md-6 col-lg-4 insight-item" data-tag="{{ $tag }}">
+
+    <div class="insight-card h-100 border-0 shadow-sm rounded-5 overflow-hidden bg-white"
+         
+         @if($actionLink !== '#')
+
+            @if($typeCategory === 'download')
+
+                onclick="window.location.href='{{ $actionLink }}'"
+
+            @elseif($isExternal)
+
+                onclick="window.open('{{ $actionLink }}', '_blank')"
+
+            @else
+
+                onclick="window.location.href='{{ $actionLink }}'"
+
+            @endif
+
+         @endif
+
+         style="cursor:pointer;">
+
+        <div class="card-img-position"
+             style="height: 220px; overflow: hidden; position: relative; flex-shrink: 0;">
+
+            <img src="{{ $cardImage }}"
+                 class="w-100 h-100 object-fit-cover"
+                 alt="{{ $title }}">
+
+            <span class="badge position-absolute top-0 start-0 m-3 px-3 py-1"
+                  style="background: {{ $badgeColor }}; font-size: 10px; border-radius: 4px;">
+                {{ $tag }}
+            </span>
+        </div>
+
+        <div class="card-body p-4">
+
+            <small class="fw-bold mb-2 d-block"
+                   style="font-size: 11px; color: #00898e; letter-spacing: 0.5px;">
+                {{ $category }}
+            </small>
+
+            <h5 class="card-title fw-bold text-dark mb-2"
+                style="font-size: 16px; line-height: 1.4;">
+                {{ $title }}
+            </h5>
+
+            @if(!empty($insight?->description))
+
+                <p class="card-text text-muted small mb-0"
+                   style="text-align: justify;">
+                    {{$insight?->description}}
+                </p>
+
+            @else
+
+                <p class="card-text text-muted small mb-0"
+                   style="text-align: justify;">
+                    {{ \Illuminate\Support\Str::limit(strip_tags($insight->articles->first()?->description), 120) }}
+                </p>
+
+            @endif
+        </div>
+
+        <div class="insight-card-footer">
+
+            <span class="text-muted" style="font-size: 12px;">
+                <i class="far fa-calendar-alt me-1"></i>
+                {{ $metaDate }} · {{ $metaDuration }}
+            </span>
+
+            @if($typeCategory === 'download' && $actionLink === '#')
+
+                <span class="text-muted" style="font-size: 12px;">
+                    No file uploaded
+                </span>
+
+            @elseif($typeCategory === 'download')
+
+                <a href="{{ $actionLink }}"
+                   download
+                   onclick="event.stopPropagation();"
+                   class="fw-bold text-decoration-none"
+                   style="font-size: 12px; color: #e85d26;">
+
+                    <i class="fas fa-download me-1" style="font-size:10px;"></i>
+                    {{ $buttonText }}
+                </a>
+
+            @else
+
+                <a href="{{ $actionLink }}"
+                   onclick="event.stopPropagation();"
+                   class="fw-bold text-decoration-none"
+                   style="font-size: 12px; color: #00898e;"
+                   @if($isExternal) target="_blank" rel="noopener" @endif>
+
+                    {{ $buttonText }} →
+                </a>
+
+            @endif
+
+        </div>
+    </div>
+</div>
             @empty
                 <div class="col-12">
                     <div class="border rounded-3 bg-white p-4 text-muted">No insights have been published yet.</div>
@@ -223,14 +298,41 @@ $isExternal = false;
 .breadcrumb-links .sep { margin: 0 8px; }
 .breadcrumb-links .active { color: #01354B; font-weight: 600; }
     /* Custom Styles for Same to Same Look */
+    .filter-swiper-wrap {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .filter-swiper {
+        overflow: hidden;
+        flex: 1;
+    }
+    .filter-swiper .swiper-slide {
+        width: auto !important;
+    }
+    .filter-nav-btn {
+        width: 36px; height: 36px; flex-shrink: 0;
+        border-radius: 50%;
+        background: #e0e0e0;
+        border: 1.5px solid #dde3ea;
+        color: #64748b;
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer; transition: 0.2s; font-size: 12px;
+        padding: 0;
+    }
+    .filter-nav-btn:hover { background: #e85d26; color: #fff; border-color: #e85d26; }
+    .filter-nav-btn.swiper-button-disabled { opacity: 0.25; pointer-events: none; }
     .filter-link {
         text-decoration: none;
         color: #64748b;
-        font-size: 13px;
-        font-weight: 600;
+        font-size: 14px;
+        font-weight: 500;
         padding-bottom: 5px;
         border-bottom: 2px solid transparent;
         transition: 0.3s;
+        white-space: nowrap;
+        display: inline-block;
     }
     .filter-link.active, .filter-link:hover {
         color: #e85d26;
@@ -276,13 +378,26 @@ $isExternal = false;
 @push('custome-js')
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const filterLinks = document.querySelectorAll('.filter-link');
+
+        // Filter tab Swiper
+        new Swiper('.filter-swiper', {
+            slidesPerView: 'auto',
+            spaceBetween: 28,
+            freeMode: true,
+            navigation: {
+                prevEl: '.filter-prev',
+                nextEl: '.filter-next',
+            },
+        });
+
+        const filterLinks  = document.querySelectorAll('.filter-link');
         const insightItems = document.querySelectorAll('.insight-item');
-        const resultCount = document.getElementById('results-count');
-        const searchInput = document.getElementById('insightSearch');
+        const resultCount  = document.getElementById('results-count');
+        const searchInput  = document.getElementById('insightSearch');
+        let activeFilter   = 'ALL';
+        let activeSearch   = '';
+
         const loadMoreBtn = document.getElementById('load-more-btn');
-        let activeFilter = 'ALL';
-        let activeSearch = '';
 
         function applyFilterAndSearch() {
             let visibleCount = 0;

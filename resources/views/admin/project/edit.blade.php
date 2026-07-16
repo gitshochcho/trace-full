@@ -114,10 +114,17 @@
                                         </select>
                                         @error('project_status')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <label class="form-label">Sort Order</label>
                                         <input type="number" name="sort_order" value="{{ old('sort_order', $project->sort_order) }}" class="form-control @error('sort_order') is-invalid @enderror">
                                         @error('sort_order')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                    </div>
+                                    <div class="col-md-2 d-flex align-items-end pb-1">
+                                        <div class="form-check form-switch">
+                                            <input type="hidden" name="show_on_home" value="0">
+                                            <input class="form-check-input" type="checkbox" name="show_on_home" value="1" id="showOnHomeSwitch" {{ old('show_on_home', $project->show_on_home) ? 'checked' : '' }}>
+                                            <label class="form-check-label fw-semibold text-warning" for="showOnHomeSwitch">Show on Homepage</label>
+                                        </div>
                                     </div>
 
                                     {{-- Related Services: tag-style --}}
@@ -416,7 +423,17 @@ document.addEventListener('DOMContentLoaded', function () {
             ClassicEditor.create(el, {
                 toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|', 'undo', 'redo'],
             })
-                .then(function (editor) { activeEditors.set(el, editor); })
+               .then(function (editor) {
+                    activeEditors.set(el, editor);
+                    editor.editing.view.document.on('keydown', function (evt, data) {
+                        if (data.domEvent.key === 'Enter' && !data.domEvent.shiftKey) {
+                            evt.stop();
+                            data.preventDefault();
+                            editor.execute('shiftEnter');
+                        }
+                    }, { priority: 'high' });
+                })
+
                 .catch(function (err) { console.error('CKEditor error:', err); });
         });
     }

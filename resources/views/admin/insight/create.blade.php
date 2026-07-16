@@ -55,7 +55,7 @@ $articleRows = old('articles', [[
 
                                 <div class="col-md-6">
                                     <label class="form-label">Sort Order</label>
-                                    <input type="number" name="sort_order" value="{{ old('sort_order', 0) }}" class="form-control @error('sort_order') is-invalid @enderror">
+                                    <input type="number" name="sort_order" value="{{ old('sort_order', $nextSortOrder) }}" class="form-control @error('sort_order') is-invalid @enderror" min="0">
                                     @error('sort_order')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
 
@@ -170,11 +170,16 @@ $articleRows = old('articles', [[
                                     @error('video_link')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
 
-                                <div class="col-md-6 d-flex align-items-end">
+                                <div class="col-md-6 d-flex align-items-end gap-4 flex-wrap">
                                     <div class="form-check form-switch">
                                         <input type="hidden" name="active" value="0">
                                         <input class="form-check-input" type="checkbox" name="active" value="1" id="activeSwitch" @checked(old('active', '1') == '1')>
                                         <label class="form-check-label" for="activeSwitch">Active</label>
+                                    </div>
+                                    <div class="form-check form-switch">
+                                        <input type="hidden" name="show_on_home" value="0">
+                                        <input class="form-check-input" type="checkbox" name="show_on_home" value="1" id="showOnHomeSwitch" @checked(old('show_on_home', '0') == '1')>
+                                        <label class="form-check-label fw-semibold text-warning" for="showOnHomeSwitch">Show on Homepage</label>
                                     </div>
                                 </div>
 
@@ -482,8 +487,8 @@ document.addEventListener('DOMContentLoaded', function () {
         setVisible(sourceNameWrap,   isOpEdType());
         setVisible(insightAttWrap,   isBrochuresType());
         setVisible(articleAttWrap,   isArticleOrPub());
-        setVisible(articleImageWrap, isArticleOrPub());
-        setVisible(imageDescWrap,    isArticleOrPub());
+        setVisible(articleImageWrap, isArticleOrPub() || isBrochuresType());
+        setVisible(imageDescWrap,    isArticleOrPub() || isBrochuresType());
         setVisible(socialLinksWrap,  isArticleOrPub());
         setVisible(publishLinkWrap,  isArticleOrPub());
         setVisible(articleSectWrap,  isArticleOrPub());
@@ -494,7 +499,17 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!textarea || ckEditors[textarea.id]) return;
         ClassicEditor.create(textarea, {
             toolbar: { items: ['bold', 'italic', 'underline', '|', 'bulletedList', 'numberedList', '|', 'link', '|', 'undo', 'redo'] }
-        }).then(editor => { ckEditors[textarea.id] = editor; }).catch(console.error);
+       }).then(editor => {
+            ckEditors[textarea.id] = editor;
+            editor.editing.view.document.on('keydown', function (evt, data) {
+                if (data.domEvent.key === 'Enter' && !data.domEvent.shiftKey) {
+                    evt.stop();
+                    data.preventDefault();
+                    editor.execute('shiftEnter');
+                }
+            }, { priority: 'high' });
+
+        }).catch(console.error);
     }
 
     document.querySelectorAll('textarea.outside-author-editor, textarea.article-section-editor').forEach(initCKEditor);

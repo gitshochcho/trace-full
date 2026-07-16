@@ -84,12 +84,21 @@
                                         @error('order')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
 
-                                    <div class="col-md-6">
-                                        <label class="form-label">Status</label>
-                                        <div class="form-check form-switch">
-                                            <input type="hidden" name="is_active" value="0">
-                                            <input type="checkbox" name="is_active" value="1" {{ old('is_active', '1') == '1' ? 'checked' : '' }} class="form-check-input" id="is_active" role="switch">
-                                            <label class="form-check-label" for="is_active">Active</label>
+                                    <div class="col-md-6 d-flex gap-4 align-items-end flex-wrap">
+                                        <div>
+                                            <label class="form-label">Status</label>
+                                            <div class="form-check form-switch">
+                                                <input type="hidden" name="is_active" value="0">
+                                                <input type="checkbox" name="is_active" value="1" {{ old('is_active', '1') == '1' ? 'checked' : '' }} class="form-check-input" id="is_active" role="switch">
+                                                <label class="form-check-label" for="is_active">Active</label>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="form-check form-switch">
+                                                <input type="hidden" name="show_on_home" value="0">
+                                                <input type="checkbox" name="show_on_home" value="1" {{ old('show_on_home', '0') == '1' ? 'checked' : '' }} class="form-check-input" id="show_on_home" role="switch">
+                                                <label class="form-check-label fw-semibold text-warning" for="show_on_home">Show on Homepage</label>
+                                            </div>
                                         </div>
                                     </div>
 

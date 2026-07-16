@@ -44,6 +44,7 @@ class JobPostingController extends Controller
         ]);
 
         $validated['is_active'] = $request->boolean('is_active');
+        $validated['show_on_home'] = $request->boolean('show_on_home');
 
         JobPosting::create($validated);
 
@@ -86,6 +87,7 @@ class JobPostingController extends Controller
         ]);
 
         $validated['is_active'] = $request->boolean('is_active');
+        $validated['show_on_home'] = $request->boolean('show_on_home');
 
         $jobPosting->update($validated);
 

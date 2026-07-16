@@ -75,6 +75,7 @@
     color: #A5B4C3; 
     font-size: 15px; 
     line-height: 1.7; 
+        text-align: justify;
 }
 
 
@@ -116,7 +117,7 @@
 .leader-info .role { color: #01888C; font-weight: 700; margin-bottom: 2px; }
 .leader-info .company { color: #94A3B8; font-size: 13px; }
 .orange-divider { width: 50px; height: 3px; background: #F47735; margin: 20px 0; }
-.leader-info .bio { color: #475569; font-size: 15px; line-height: 1.7; }
+.leader-info .bio { color: #475569; font-size: 15px; line-height: 1.7; text-align: justify; }
 
 /* Skill Tags */
 .skill-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 25px; }
@@ -280,10 +281,16 @@
 
    
    
-/* মাঝখানের কন্টেন্ট যা ফাঁকা জায়গা পূরণ করবে */
+
 .team-content {
     padding: 20px;
-    flex-grow: 1; /* কন্টেন্ট কম হলেও এটি জায়গা দখল করে রাখবে এবং নিচের বক্সকে নিচে ঠেলে দিবে */
+    flex-grow: 1; 
+    display: flex;
+    flex-direction: column;
+}
+
+.team-name-block {
+    min-height: 110px;
 }
 
     .team-content .name {
@@ -319,6 +326,7 @@
         line-height: 1.6;
         margin-bottom: 20px;
         min-height: 60px;
+        text-align: justify;
     }
 
 /* ইমেজ বক্সের ভেতর আইকন রাখার পজিশন */
@@ -467,7 +475,7 @@
     border: 1px solid #E5E9ED;
     border-radius: 24px;
     padding: 24px;
-    height: 245px; 
+    height: 280px; 
     display: flex;
     gap: 20px;
     transition: all 0.3s ease;
@@ -486,8 +494,8 @@
 }
 
 .expert-left img {
-    width: 72px;
-    height: 72px;
+    width: 82px;
+    height: 82px;
     /* border-radius: 50%; */
     object-fit: cover;
     /* border: 4px solid #F1F5F9; */
@@ -539,14 +547,14 @@
 
 .expert-right h4 {
     font-family: "Sora", sans-serif;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 700;
     margin-bottom: 4px;
     color: #0F172A;
 }
 
 .role {
-    font-size: 13px;
+    font-size: 15px;
     color: #01888C;
     font-weight: 600;
     margin-bottom: 12px;
@@ -557,6 +565,7 @@
     color: #64748B;
     line-height: 1.5;
     margin-bottom: 15px;
+    text-align: justify;
 }
 
 .expert-tags span {
@@ -574,6 +583,21 @@
         height: auto; 
     }
 }
+@media (max-width: 768px) {
+    .team-img-box img {
+        Object-fit: fill;
+    }
+}
+@media (max-width: 576px) {
+    .team-img-box {
+        height: auto; 
+    }
+    .team-img-box img {
+        Object-fit: fill;
+    }
+}
+
+
 
 </style>
 @endpush
@@ -643,7 +667,7 @@
         $leadershipHeading = e($leadershipHeadingRaw) . (!empty($leadershipDesignWord) ? ' <span>' . e($leadershipDesignWord) . '</span>' : '');
     }
 @endphp
-<section class="leadership-section">
+<section class="leadership-section py-4">
     <div class="custom-container">
         <div class="leadership-header mb-5">
             <div class="d-flex align-items-center gap-2 mb-2">
@@ -654,7 +678,8 @@
             <p class="desc">{{ strip_tags($leadershipDesc) }}</p>
         </div>
 
-        <div class="leader-card">
+    <div class="leader-card" data-href="{{ route('teamdetails', $leader) }}" style="cursor:pointer;">
+            
             <div class="row g-0">
                 <div class="col-lg-5 position-relative">
                     <div class="leader-img-box">
@@ -690,17 +715,24 @@
                         <div class="leader-card-footer">
                            <div class="social-links">
     @forelse($leaderSocials->take(3) as $social)
-        <a href="mailto:{{ $social->social_link ?: '#' }}" target="_blank" rel="noopener">
-            @if($social->iconUrl())
-                <img src="{{ $social->iconUrl() }}" alt="social" style="width: 16px; height: 16px; object-fit: contain;">
-            @else
-                <i class="fa-solid fa-link"></i>
-            @endif
-        </a>
-    @empty
-        <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
-    @endforelse
-</div>
+
+            @php
+                $rawLink = $social->social_link ?: '#';
+                $href = ($rawLink !== '#' && filter_var($rawLink, FILTER_VALIDATE_EMAIL))
+                    ? 'mailto:' . $rawLink
+                    : $rawLink;
+                    @endphp
+                <a href="{{ $href }}" target="_blank" rel="noopener" onclick="event.stopPropagation();">
+                        @if($social->iconUrl())
+                            <img src="{{ $social->iconUrl() }}" alt="social" style="width: 16px; height: 16px; object-fit: contain;">
+                        @else
+                            <i class="fa-solid fa-link"></i>
+                        @endif
+                    </a>
+                @empty
+                    <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+                @endforelse
+    </div>
                             <a href="{{ route('teamdetails', $leader) }}" class="btn-profile">View Full Profile →</a>
                         </div>
                     </div>
@@ -722,7 +754,7 @@
         $coreTeamHeading = e($coreTeamHeadingRaw) . (!empty($coreTeamDesignWord) ? ' <span>' . e($coreTeamDesignWord) . '</span>' : '');
     }
 @endphp
-<section class="team-section py-5">
+<section class="team-section py-4">
     <div class="custom-container">
         <div class="team-header mb-5">
             <div class="d-flex align-items-center gap-2 mb-2">
@@ -736,14 +768,20 @@
         <div class="row g-4">
 @forelse($coreTeamMembers as $member)
     <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
-        <div class="team-card h-100 shadow-sm d-flex flex-column">
+        <div class="team-card h-100 shadow-sm d-flex flex-column" data-href="{{ route('teamdetails', $member) }}" style="cursor:pointer;">
             
             <div class="team-img-box">
                 <img src="{{ $member->imageUrl() ?: asset('assets/img/saifullah.png') }}" alt="{{ $member->fullName() }}">
                 
 <div class="team-social-overlay">
     @forelse($member->socialMedia->take(2) as $social)
-        <a href="mailto:{{ $social->social_link ?: '#' }}" class="social-icon" target="_blank" rel="noopener">
+        @php
+            $rawLink = $social->social_link ?: '#';
+            $href = ($rawLink !== '#' && filter_var($rawLink, FILTER_VALIDATE_EMAIL))
+                ? 'mailto:' . $rawLink
+                : $rawLink;
+        @endphp
+       <a href="{{ $href }}" class="social-icon" target="_blank" rel="noopener" onclick="event.stopPropagation();">
             @if($social->iconUrl())
                 <img src="{{ $social->iconUrl() }}" alt="social" style="width: 16px; height: 16px; object-fit: contain;">
             @else
@@ -758,9 +796,11 @@
             <div class="fixed-divider"></div>
             
             <div class="team-content flex-grow-1">
-                <h4 class="name">{{ $member->fullName() }}</h4>
-                <h5 class="role">{{ $member->designation ?? '' }}</h5>
-                <span class="sub text-muted">{{ $member->headtitle ?? '' }}</span>
+                <div class="team-name-block">
+                   <h4 class="name">{{ $member->fullName() }}</h4>
+                     <h5 class="role">{{ $member->designation ?? '' }}</h5>
+                       <span class="sub text-muted">{{ $member->headtitle ?? '' }}</span>
+                </div>
                 <div class="orange-divider"></div>
 
                 <p class="bio">{{ $member->short_description ?: \Illuminate\Support\Str::limit(stripPTags($member->description), 150) }}</p>
@@ -801,7 +841,7 @@
         $expertsHeading = e($expertsHeadingRaw) . (!empty($expertsDesignWord) ? ' <span>' . e($expertsDesignWord) . '</span>' : '');
     }
 @endphp
-<section class="experts-section">
+<section class="experts-section py-4">
     <div class="container experts-container">
 
         <div class="experts-top">
@@ -828,7 +868,13 @@
                 {{-- সোশ্যাল লিঙ্কগুলোর z-index বাড়িয়ে দেওয়া হয়েছে যাতে stretched-link এর ওপর কাজ করে --}}
                <div class="leader-social position-relative" style="z-index: 2;">
     @forelse($expert->socialMedia->take(2) as $social)
-        <a href="mailto:{{ $social->social_link ?: '#' }}" target="_blank" rel="noopener">
+      @php
+            $rawLink = $social->social_link ?: '#';
+            $href = ($rawLink !== '#' && filter_var($rawLink, FILTER_VALIDATE_EMAIL))
+                ? 'mailto:' . $rawLink
+                : $rawLink;
+        @endphp
+        <a href="{{ $href }}" target="_blank" rel="noopener">
             @if($social->iconUrl())
                 <img src="{{ $social->iconUrl() }}" alt="social" style="width: 14px; height: 14px; object-fit: contain;">
             @else
@@ -867,3 +913,15 @@
 
 @include('frontend.layout.cta')
 @endsection
+
+@push('custome-js')
+<script>
+document.querySelectorAll('.leader-card[data-href], .team-card[data-href]').forEach(function(card) {
+    card.addEventListener('click', function(e) {
+        if (!e.target.closest('a')) {
+            window.location.href = card.dataset.href;
+        }
+    });
+});
+</script>
+@endpush

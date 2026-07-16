@@ -5,8 +5,10 @@ use App\Mail\ForgetPassMail;
 use App\Models\ContactInfo;
 use App\Models\Country;
 use App\Models\Gender;
+use App\Models\Innovation;
 use App\Models\Insight;
 use App\Models\InsightArticle;
+use App\Models\InsightType;
 use App\Models\JobApplication;
 use App\Models\JobPosting;
 use App\Models\Partner;
@@ -39,8 +41,12 @@ class HomeController extends Controller
         $homeAboutTraceTwo   = contentBlock('home_about_trace_two');
         $homeAboutTraceThree = contentBlock('home_about_trace_three');
         $homeYearsExpertise  = contentBlock('home_years_of_expertise');
-        $slider              = Slider::with('media')->first();
-        $sliderItems         = SliderItem::with('media')->where('active', true)->orderBy('sort_order')->orderBy('id')->get();
+        $slider              = cache()->remember('slider_data', 60 * 60 * 24, function () {
+            return Slider::with('media')->first();
+        });
+        $sliderItems         = cache()->remember('slider_items_data', 60 * 60 * 24, function () {
+            return SliderItem::with('media')->where('active', true)->orderBy('sort_order')->orderBy('id')->get();
+        });
 
         $homeServices = Service::query()
             ->with(['content', 'media', 'solutions'])
@@ -54,12 +60,131 @@ class HomeController extends Controller
             ->with(['services', 'media'])
             ->orderBy('sort_order')
             ->latest('id')
-            ->limit(3)
+            ->limit(6)
             ->get();
 
-             $partners = Partner::with('media')->latest()->get(); 
+        $partners = Partner::with('media')->latest()->get();
 
-        return view('frontend.pages.home', compact('slider', 'sliderItems', 'homeServices', 'homeProjects', 'homeAboutTrace', 'homeAboutTraceOne', 'homeAboutTraceTwo', 'homeAboutTraceThree', 'homeYearsExpertise', 'partners'));
+        // Insights marked show_on_home
+        $homeInsights = Insight::with(['insightType', 'media', 'articles' => fn($q) => $q->where('active', true)->orderBy('sort_order')])
+            ->where('active', true)
+            ->where('show_on_home', true)
+            ->orderBy('sort_order')
+            ->latest('id')
+            ->get()
+            ->map(fn($i) => (object)[
+                'source'       => 'insight',
+                'id'           => $i->id,
+                'heading'      => $i->heading,
+                'description'  => $i->description,
+                'image'        => $i->imageUrl() ?: $i->articleImageUrl(),
+                'date'         => $i->published_at,
+                'badge_label'  => $i->insightType?->type ?? 'Insight',
+                'badge_color'  => match(strtolower($i->insightType?->type ?? '')) {
+                    'video'        => '#000000',
+                    'op-ed/press'  => '#116fa1',
+                    'publication'  => '#0f766e',
+                    'brochures'    => '#ea580c',
+                    'article'      => '#1032ae',
+                    default        => '#01354B',
+                },
+                'action_label' => $i->actionLabel(),
+                'link'         => (function() use ($i) {
+                    $cat = strtolower(str_replace(' ', '_', $i->insightType?->type_category ?? ''));
+                    $lead = $i->articles->first();
+                    if ($cat === 'download') return $i->attachmentUrl() ?: route('articleDetails', ['insight_id' => $i->id]);
+                    if (in_array($cat, ['watch','video','video_watch'])) return $i->videoUrl() ?: route('articleDetails', ['insight_id' => $i->id]);
+                    if ($cat === 'read_on') return $i->source_name ?: route('articleDetails', ['insight_id' => $i->id]);
+                    if ($cat === 'read' && $lead) return route('articleDetails', $lead);
+                    return route('articleDetails', ['insight_id' => $i->id]);
+                })(),
+                'is_external'  => (function() use ($i) {
+                    $cat = strtolower(str_replace(' ', '_', $i->insightType?->type_category ?? ''));
+                    if (in_array($cat, ['watch','video','video_watch'])) return !empty($i->videoUrl());
+                    if ($cat === 'read_on') return !empty($i->source_name);
+                    return false;
+                })(),
+                'extra'        => $i->articles->first()?->read_minutes ? $i->articles->first()->read_minutes . ' min read' : null,
+            ]);
+
+        // Projects marked show_on_home
+        $homeProjectNews = Project::with(['services', 'media'])
+            ->where('show_on_home', true)
+            ->orderBy('sort_order')
+            ->latest('id')
+            ->get()
+            ->map(fn($p) => (object)[
+                'source'       => 'project',
+                'id'           => $p->id,
+                'heading'      => $p->project_title,
+                'description'  => \Illuminate\Support\Str::limit(strip_tags($p->overview ?? ''), 120),
+                'image'        => $p->heroImageUrl(),
+                'date'         => $p->start_date,
+                'badge_label'  => $p->services->first()?->section ?: ($p->services->first()?->service_name ?? 'Project'),
+                'badge_color'  => '#01354B',
+                'action_label' => 'View Project',
+                'link'         => route('projectdetails', $p),
+                'is_external'  => false,
+                'extra'        => $p->project_status,
+            ]);
+
+        // Jobs marked show_on_home
+        $homeJobNews = JobPosting::where('is_active', true)
+            ->where('show_on_home', true)
+            ->orderBy('posted_date', 'desc')
+            ->get()
+            ->map(fn($j) => (object)[
+                'source'       => 'job',
+                'id'           => $j->id,
+                'heading'      => $j->title,
+                'description'  => \Illuminate\Support\Str::limit(strip_tags($j->description ?? ''), 120),
+                'image'        => null,
+                'date'         => $j->posted_date,
+                'badge_label'  => 'Career',
+                'badge_color'  => '#7c3aed',
+                'action_label' => 'Apply Now',
+                'link'         => route('careerdetails', $j->id),
+                'is_external'  => false,
+                'extra'        => $j->employment_type,
+            ]);
+
+        // Innovations marked show_on_home
+        $homeInnovationNews = Innovation::where('active', true)
+            ->where('show_on_home', true)
+            ->orderBy('sort_order')
+            ->latest('id')
+            ->get()
+            ->map(fn($n) => (object)[
+                'source'       => 'innovation',
+                'id'           => $n->id,
+                'heading'      => $n->title,
+                'description'  => \Illuminate\Support\Str::limit(strip_tags($n->description ?? ''), 120),
+                'image'        => $n->imageUrl(),
+                'date'         => $n->created_at,
+                'badge_label'  => 'Innovation',
+                'badge_color'  => '#16a34a',
+                'action_label' => 'Visit Website',
+                'link'         => $n->website_link ?: route('innovations'),
+                'is_external'  => (bool) $n->website_link,
+                'extra'        => null,
+            ]);
+
+       $homeLatestNews = collect($homeInsights->all())
+            ->merge($homeProjectNews->all())
+            ->merge($homeJobNews->all())
+            ->merge($homeInnovationNews->all())
+            ->sortByDesc('date')
+            ->values();
+ 
+
+        $homeLatestNewsHeading = contentBlock('home-latest-news');
+
+        return view('frontend.pages.home', compact(
+            'slider', 'sliderItems', 'homeServices', 'homeProjects',
+            'homeAboutTrace', 'homeAboutTraceOne', 'homeAboutTraceTwo',
+            'homeAboutTraceThree', 'homeYearsExpertise', 'partners',
+            'homeLatestNews', 'homeLatestNewsHeading'
+        ));
     }
 
     public function services(Request $request)
@@ -77,7 +202,7 @@ class HomeController extends Controller
             ->get();
 
         $serviceCards = $services->map(function (Service $service) {
-            $imageUrl = $service->imageUrl() ?? asset('assets/img/Trade and Customs.png');
+           $imageUrl = $service->imageUrl() ?? asset('');
 
             return [
                 'id'       => $service->id,
@@ -99,7 +224,12 @@ class HomeController extends Controller
     public function serviceDetails(Request $request, $id)
     {
         $service = Service::query()
-            ->with(['details' => fn($q) => $q->orderBy('sort_order'), 'solutions' => fn($q) => $q->orderBy('sort_order'), 'media'])
+            ->with([
+                'details'     => fn($q) => $q->orderBy('sort_order'),
+                'solutions'   => fn($q) => $q->orderBy('sort_order'),
+                'heroPillars' => fn($q) => $q->orderBy('sort_order'),
+                'media',
+            ])
             ->findOrFail($id);
 
         $otherServices = Service::query()
@@ -117,6 +247,7 @@ class HomeController extends Controller
         $services = Service::query()
             ->whereHas('projects')
             ->withCount('projects')
+            ->orderBy('sort_order')
             ->orderBy('service_name')
             ->get();
 
@@ -199,13 +330,185 @@ class HomeController extends Controller
         ->latest('id')
         ->get();
 
+        $insightTypes = InsightType::where('status', true)
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->get();
+
         $insightsPageContent = contentBlock('insights-page')
             ?? contentBlock('insights-page-header');
 
-        return view('frontend.pages.insights', compact('insights', 'insightsPageContent'));
+        return view('frontend.pages.insights', compact('insights', 'insightsPageContent', 'insightTypes'));
     }
+
+    public function innovations()
+    {
+        $innovations = Innovation::with('media')
+            ->where('active', true)
+            ->orderBy('sort_order')
+            ->latest('id')
+            ->get();
+
+        $categories = $innovations->pluck('category')->filter()->unique()->values();
+
+        $innovationsPageContent = contentBlock('innovations-page');
+
+        return view('frontend.pages.innovations', compact('innovations', 'categories', 'innovationsPageContent'));
+    }
+
+    public function latestUpdates(Request $request)
+    {
+        $latestUpdatesContent = contentBlock('home-latest-news');
+
+        $insightItems = Insight::with(['insightType', 'media', 'articles' => fn($q) => $q->where('active', true)->orderBy('sort_order')])
+            ->where('active', true)
+            ->where('show_on_home', true)
+            ->latest('id')
+            ->get()
+            ->map(fn($i) => (object)[
+                'source'       => 'insight',
+                'id'           => $i->id,
+                'heading'      => $i->heading,
+                'description'  => $i->description,
+                'image'        => $i->imageUrl() ?: $i->articleImageUrl(),
+                'date'         => $i->published_at,
+                'badge_label'  => $i->insightType?->type ?? 'Insight',
+                'badge_color'  => match(strtolower($i->insightType?->type ?? '')) {
+                    'video'        => '#000000',
+                    'op-ed/press'  => '#116fa1',
+                    'publication'  => '#0f766e',
+                    'brochures'    => '#ea580c',
+                    'article'      => '#1032ae',
+                    default        => '#01354B',
+                },
+                'action_label' => $i->actionLabel(),
+                'link'         => (function() use ($i) {
+                    $cat = strtolower(str_replace(' ', '_', $i->insightType?->type_category ?? ''));
+                    $lead = $i->articles->first();
+                    if ($cat === 'download') return $i->attachmentUrl() ?: route('articleDetails', ['insight_id' => $i->id]);
+                    if (in_array($cat, ['watch','video','video_watch'])) return $i->videoUrl() ?: route('articleDetails', ['insight_id' => $i->id]);
+                    if ($cat === 'read_on') return $i->source_name ?: route('articleDetails', ['insight_id' => $i->id]);
+                    if ($cat === 'read' && $lead) return route('articleDetails', $lead);
+                    return route('articleDetails', ['insight_id' => $i->id]);
+                })(),
+                'is_external'  => (function() use ($i) {
+                    $cat = strtolower(str_replace(' ', '_', $i->insightType?->type_category ?? ''));
+                    if (in_array($cat, ['watch','video','video_watch'])) return !empty($i->videoUrl());
+                    if ($cat === 'read_on') return !empty($i->source_name);
+                    return false;
+                })(),
+                'extra'        => $i->articles->first()?->read_minutes ? $i->articles->first()->read_minutes . ' min read' : null,
+            ]);
+
+        $projectItems = Project::with(['services', 'media'])
+            ->where('show_on_home', true)
+            ->orderBy('sort_order')
+            ->latest('id')
+            ->get()
+            ->map(fn($p) => (object)[
+                'source'       => 'project',
+                'id'           => $p->id,
+                'heading'      => $p->project_title,
+                'description'  => \Illuminate\Support\Str::limit(strip_tags($p->overview ?? ''), 120),
+                'image'        => $p->heroImageUrl(),
+                'date'         => $p->start_date,
+                'badge_label'  => $p->services->first()?->section ?: ($p->services->first()?->service_name ?? 'Project'),
+                'badge_color'  => '#01354B',
+                'action_label' => 'View Project',
+                'link'         => route('projectdetails', $p),
+                'is_external'  => false,
+                'extra'        => $p->project_status,
+            ]);
+
+        $jobItems = JobPosting::where('is_active', true)
+            ->where('show_on_home', true)
+            ->orderBy('posted_date', 'desc')
+            ->get()
+            ->map(fn($j) => (object)[
+                'source'       => 'job',
+                'id'           => $j->id,
+                'heading'      => $j->title,
+                'description'  => \Illuminate\Support\Str::limit(strip_tags($j->description ?? ''), 120),
+                'image'        => null,
+                'date'         => $j->posted_date,
+                'badge_label'  => 'Career',
+                'badge_color'  => '#7c3aed',
+                'action_label' => 'Apply Now',
+                'link'         => route('careerdetails', $j->id),
+                'is_external'  => false,
+                'extra'        => $j->employment_type,
+            ]);
+
+        $innovationItems = Innovation::where('active', true)
+            ->where('show_on_home', true)
+            ->orderBy('sort_order')
+            ->latest('id')
+            ->get()
+            ->map(fn($n) => (object)[
+                'source'       => 'innovation',
+                'id'           => $n->id,
+                'heading'      => $n->title,
+                'description'  => \Illuminate\Support\Str::limit(strip_tags($n->description ?? ''), 120),
+                'image'        => $n->imageUrl(),
+                'date'         => $n->created_at,
+                'badge_label'  => 'Innovation',
+                'badge_color'  => '#16a34a',
+                'action_label' => 'Visit Website',
+                'link'         => $n->website_link ?: route('innovations'),
+                'is_external'  => (bool) $n->website_link,
+                'extra'        => null,
+            ]);
+
+        $allUpdates = collect($insightItems->all())
+            ->merge($projectItems->all())
+            ->merge($jobItems->all())
+            ->merge($innovationItems->all())
+            ->sortByDesc('date')
+            ->values();
+
+        $counts = [
+            'ALL'        => $allUpdates->count(),
+            'INSIGHT'    => $insightItems->count(),
+            'PROJECT'    => $projectItems->count(),
+            'JOB'        => $jobItems->count(),
+            'INNOVATION' => $innovationItems->count(),
+        ];
+
+        $activeFilter = strtoupper((string) $request->get('type', 'ALL'));
+        $filteredUpdates = $activeFilter === 'ALL'
+            ? $allUpdates
+            : $allUpdates->filter(fn($item) => strtoupper($item->source) === $activeFilter)->values();
+
+        $page = max(1, (int) $request->get('page', 1));
+        $perPage = 12;
+        $paginatedUpdates = new \Illuminate\Pagination\LengthAwarePaginator(
+            $filteredUpdates->forPage($page, $perPage)->values(),
+            $filteredUpdates->count(),
+            $perPage,
+            $page,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
+
+        return view('frontend.pages.latest-updates', compact('latestUpdatesContent', 'paginatedUpdates', 'counts', 'activeFilter'));
+    }
+
     public function articleDetails(Request $request, ?InsightArticle $article = null)
     {
+        // Support opening directly from an Insight (no article) via ?insight_id=X
+        if (!$article && $request->filled('insight_id')) {
+            $insight = Insight::with(['insightType', 'media'])->findOrFail($request->integer('insight_id'));
+            $article = new InsightArticle([
+                'title'       => $insight->heading,
+                'description' => $insight->description ?? '',
+                'insight_id'  => $insight->id,
+                'active'      => true,
+            ]);
+            $article->setRelation('insight', $insight);
+            $article->setRelation('insightType', $insight->insightType);
+            $article->setRelation('media', collect());
+            $article->setRelation('author', null);
+        }
+
         $article ??= InsightArticle::query()
             ->with(['author.media', 'insight.media', 'media'])
             ->where('active', true)
@@ -213,7 +516,9 @@ class HomeController extends Controller
             ->latest('id')
             ->firstOrFail();
 
-        $article->load(['author.media', 'insight.media', 'media', 'insightType']);
+        if ($article->exists) {
+            $article->load(['author.media', 'insight.media', 'media', 'insightType']);
+        }
 
         
 
@@ -222,12 +527,22 @@ class HomeController extends Controller
         ->orderBy('id')
         ->get(['id', 'title', 'description']);
 
-    $relatedArticles = InsightArticle::with('insightType')
-        ->where('id', '!=', $article->id)
-        ->where('insight_id', '!=', $article->insight_id)
-        ->latest()
-        ->take(4)
-        ->get();
+    $currentTypeCategory = strtolower((string) (
+        $article->insightType?->type_category
+        ?? $article->insight?->insightType?->type_category
+        ?? ''
+    ));
+
+    $relatedArticles = $currentTypeCategory === 'meeting'
+        ? collect()
+        : Insight::with(['media', 'insightType', 'articles' => fn($q) => $q->orderBy('sort_order')->limit(1)])
+            ->where('active', true)
+            ->whereHas('insightType', fn($q) => $q->whereIn('type_category', ['Read', 'read']))
+            ->when($article->insight_id, fn($q) => $q->where('id', '!=', $article->insight_id))
+            ->latest()
+            ->take(4)
+            ->get();
+        
 
             $dynamicSections = collect();
     for ($i = 1; $i <= 15; $i++) {

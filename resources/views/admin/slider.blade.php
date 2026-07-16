@@ -46,6 +46,14 @@
                                             <div class="img-thumbnail w-100 d-flex align-items-center justify-content-center text-muted slide-preview-img" style="height:160px;background:#f8f9fa;font-size:13px;">No image</div>
                                         @endif
                                     </div>
+                                    @if($item->imageUrl())
+                                    <div class="mb-2">
+                                        <label class="d-flex align-items-center gap-1 small text-danger" style="cursor:pointer;">
+                                            <input type="checkbox" name="remove_image[]" value="{{ $item->id }}" class="form-check-input mt-0">
+                                            Remove image
+                                        </label>
+                                    </div>
+                                    @endif
                                     <input type="file" name="item_images[{{ $index }}]" class="form-control form-control-sm item-image-input"
                                            accept="image/jpeg,image/png,image/webp,image/svg+xml">
                                     <small class="text-muted">1920×800px recommended (max 4MB)</small>
@@ -73,6 +81,26 @@
                                                    class="form-control" placeholder="Slide title...">
                                             <small class="text-muted">The Design Word inside the title will be highlighted automatically.</small>
                                         </div>
+                                        <!-- <div class="col-12">
+                                            <label class="form-label fw-bold">
+                                                Background Video
+                                                <span class="text-muted fw-normal small">(MP4/WebM, max 100MB — overrides image if set)</span>
+                                            </label>
+                                            @if($item->videoUrl())
+                                            <div class="mb-2 d-flex align-items-center gap-3 p-2 border rounded bg-light">
+                                                <video src="{{ $item->videoUrl() }}" style="height:60px;width:100px;object-fit:cover;border-radius:4px;" muted></video>
+                                                <div class="flex-grow-1 small text-muted">Video uploaded</div>
+                                                <label class="d-flex align-items-center gap-1 small text-danger" style="cursor:pointer;">
+                                                    <input type="checkbox" name="remove_video[]" value="{{ $item->id }}" class="form-check-input mt-0">
+                                                    Remove video
+                                                </label>
+                                            </div>
+                                            @endif
+                                            <input type="file" name="item_videos[{{ $index }}]"
+                                                   class="form-control form-control-sm"
+                                                   accept="video/mp4,video/webm,video/quicktime">
+                                            <small class="text-muted">Leave empty to keep existing video. Leave both empty to use the image.</small>
+                                        </div> -->
                                         <div class="col-12">
                                             <label class="form-label">Description</label>
                                             <textarea name="items[{{ $index }}][description]"
@@ -138,6 +166,16 @@
                         <label class="form-label">Title</label>
                         <input type="text" name="items[__INDEX__][title]" class="form-control" placeholder="Slide title...">
                         <small class="text-muted">The Design Word inside the title will be highlighted automatically.</small>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-bold">
+                            Background Video
+                            <span class="text-muted fw-normal small">(MP4/WebM, max 100MB — overrides image if set)</span>
+                        </label>
+                        <input type="file" name="item_videos[__INDEX__]"
+                               class="form-control form-control-sm"
+                               accept="video/mp4,video/webm,video/quicktime">
+                        <small class="text-muted">Leave empty to use the image above.</small>
                     </div>
                     <div class="col-12">
                         <label class="form-label">Description</label>
@@ -206,6 +244,13 @@ document.addEventListener('DOMContentLoaded', function () {
             toolbar: { items: ['bold', 'italic', 'underline', '|', 'bulletedList', 'numberedList', '|', 'link', '|', 'undo', 'redo'] }
         }).then(editor => {
             ckEditors[textarea.id] = editor;
+            editor.editing.view.document.on('keydown', function (evt, data) {
+                if (data.domEvent.key === 'Enter' && !data.domEvent.shiftKey) {
+                    evt.stop();
+                    data.preventDefault();
+                    editor.execute('shiftEnter');
+                }
+            }, { priority: 'high' });
         }).catch(console.error);
     }
 

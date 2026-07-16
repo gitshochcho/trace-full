@@ -18,6 +18,21 @@ class Slider extends Model implements HasMedia
         'design_word',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saved(function () {
+            cache()->forget('slider_data');
+            cache()->forget('slider_items_data');
+        });
+
+        static::deleted(function () {
+            cache()->forget('slider_data');
+            cache()->forget('slider_items_data');
+        });
+    }
+
     public function imageUrls(): array
     {
         return $this->getMedia('slider_images')

@@ -1,450 +1,299 @@
 @extends('frontend.layout.app')
 
-
-
 @push('custome-css')
 <style>
-
 /* =========================================
    HERO
 ========================================= */
 .service-hero {
     position: relative;
-    height: 420px;
+    min-height: 420px;
     overflow: hidden;
-}
-
-.hero-bg {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-}
-
-.hero-bg img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-}
-
-.hero-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-        90deg,
-        rgba(1, 53, 75, 0.92) 0%,
-        rgba(1, 53, 75, 0.75) 50%,
-        rgba(1, 53, 75, 0.25) 100%
-    );
-    z-index: 1;
-}
-
-.hero-container {
-    position: relative;
-    z-index: 2;
-    height: 100%;
-    max-width: 1072px;
-    margin: 0 auto;
-    padding: 0 24px;
-    display: flex;
-    align-items: center;
-}
-
-.page-align-container { max-width: 1072px; margin: 0 auto; }
-
-.hero-content {
-    max-width: 520px;
-}
-
-.hero-content h1 {
-    font-size: 48px;
-    font-weight: 700;
-    color: #ffffff;
-    line-height: 1.15;
-    margin-bottom: 16px;
-}
-
-.hero-content h1 span {
-    color: #22c1c3;
-}
-
-.hero-content p,
-.hero-content div p,
-.hero-content-text,
-.hero-content-text p {
-    font-size: 14px;
-    color: #cbd5e1;
-    line-height: 1.7;
-    margin-bottom: 20px;
-    max-width: 440px;
-}
-
-.hero-content-text ul,
-.hero-content-text ol {
-    margin: 0 0 20px 20px;
-    padding-left: 0;
-    color: #cbd5e1;
-}
-
-.hero-content-text li {
-    margin-bottom: 8px;
-    color: #cbd5e1;
-}
-
-.hero-line {
-    width: 48px;
-    height: 3px;
-    background: #F47735;
-    border-radius: 2px;
-}
-
-/* =========================================
-   DETAILS SECTION
-========================================= */
-.service-details-section {
-    background: #ffffff;
-    padding: 64px 0 80px;
-}
-
-/* =========================================
-   LEFT — BOXES
-========================================= */
-.service-box {
-    margin-bottom: 40px;
-}
-
-/* SECTION HEADING with orange left border */
-.service-box h3 {
-    font-size: 20px;
-    font-weight: 700;
-    color: #0f172a;
-    border-left: 3px solid #F47735;
-    padding-left: 12px;
-    margin-bottom: 18px;
-    line-height: 1.3;
-}
-
-.service-box p {
-    font-size: 14px;
-    color: #64748b;
-    line-height: 1.75;
-    margin-bottom: 14px;
-}
-
-.service-box p:last-child { margin-bottom: 0; }
-
-/* CKEditor Content Styling */
-.service-box .editor-content p {
-    font-size: 14px;
-    color: #64748b;
-    line-height: 1.75;
-    margin-bottom: 14px;
-}
-
-.service-box .editor-content p:last-child {
-    margin-bottom: 0;
-}
-
-.service-box .editor-content ul,
-.service-box .editor-content ol {
-    margin-left: 24px;
-    margin-bottom: 14px;
-    color: #64748b;
-}
-
-.service-box .editor-content li {
-    margin-bottom: 8px;
-    line-height: 1.75;
-    color: #64748b;
-}
-
-.service-box .editor-content strong {
-    font-weight: 700;
-    color: #334155;
-}
-
-.service-box .editor-content em {
-    font-style: italic;
-}
-
-/* ---- SERVICES INCLUDE ---- */
-.include-list {
     display: flex;
     flex-direction: column;
-    gap: 0;
-    border: 1px solid #E5E9ED;
-    border-radius: 10px;
-    overflow: hidden;
+}
+.hero-bg { position: absolute; inset: 0; z-index: 0; }
+.hero-bg img { width: 100%; height: 100%; object-fit: cover; object-position: center center; }
+.hero-overlay {
+    position: absolute; inset: 0; z-index: 1;
+    background: linear-gradient(
+        90deg,
+        rgba(0,20,40,0.95) 0%,
+        rgba(0,25,48,0.82) 40%,
+        rgba(0,15,35,0.45) 70%,
+        rgba(0,10,25,0.20) 100%
+    );
 }
 
-.include-item {
+/* Title + subtitle area */
+.hero-container {
+    position: relative; z-index: 2;
+    width: 100%; max-width: 1072px; margin: 0 auto;
+    padding: 52px 24px 40px;
+    flex: 1;
     display: flex;
     align-items: flex-start;
-    gap: 12px;
-    padding: 14px 18px;
-    font-size: 13.5px;
-    color: #334155;
-    line-height: 1.5;
-    border-bottom: 1px solid #F1F4F7;
-    transition: background .2s;
+    justify-content: flex-start;
+}
+.hero-content { max-width: 520px; text-align: left; }
+
+.hero-content h1 {
+    font-size: 56px; font-weight: 900; color: #fff;
+    line-height: 1.0; margin-bottom: 0;
+    text-transform: uppercase; letter-spacing: -1px;
+}
+.hero-content h1 span { color: #22c1c3; }
+
+/* Teal horizontal line under h1 */
+.hero-title-line {
+    width: 120px; height: 3px;
+    background: #22c1c3;
+    margin: 14px 0 16px;
 }
 
-.include-item:last-child { border-bottom: none; }
-.include-item:hover { background: #f8fafc; }
-
-.include-item .check-icon {
-    width: 20px;
-    height: 20px;
-    background: #E2F5F5;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    margin-top: 1px;
+.hero-subtitle-wrap { margin: 0; }
+.hero-content-text { margin: 0; }
+.hero-content-text p {
+    font-size: 13px; color: #c8dce8;
+    line-height: 1.65; margin-bottom: 2px;
 }
+.hero-content-text p:first-child { font-weight: 600; color: #ddeaf3; font-style: normal; }
+.hero-content-text p:last-child  { font-style: italic; margin-bottom: 0; }
 
-.include-item .check-icon svg {
-    width: 11px;
-    height: 11px;
-    stroke: #01888C;
-    stroke-width: 2.5;
-    fill: none;
+/* Pillars strip — bottom of hero */
+.hero-pillars {
+    position: relative; z-index: 2;
+    background: transparent;
+    padding: 0 0 36px;
 }
-
-/* ---- PRODUCTS GRID ---- */
-.product-sub {
-    font-size: 13px;
-    color: #94a3b8;
-    margin-bottom: 20px !important;
+.hero-pillars-inner {
+    max-width: 1072px; margin: 0 auto; padding: 0 24px;
+    display: flex; flex-wrap: nowrap; justify-content: flex-start;
 }
-
-.product-card {
-    border: 1px solid #E5E9ED;
-    border-radius: 10px;
-    padding: 18px 18px 16px;
-    transition: box-shadow .25s, transform .25s;
-    height: 100%;
-}
-
-.product-card:hover {
-    box-shadow: 0 4px 20px rgba(1,53,75,.10);
-    transform: translateY(-3px);
-}
-
-.product-card .prod-num {
-    font-size: 11px;
-    color: #94a3b8;
-    letter-spacing: 1px;
-    display: block;
-    margin-bottom: 8px;
-}
-
-.product-card h4 {
-    font-size: 14px;
-    font-weight: 700;
-    color: #0f172a;
-    line-height: 1.4;
-    margin-bottom: 12px;
-}
-
-.prod-tag {
-    display: inline-block;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    padding: 4px 10px;
-    border-radius: 4px;
-    background: #E2F5F5;
-    color: #01888C;
-}
-
-/* =========================================
-   RIGHT SIDEBAR
-========================================= */
-.sidebar-box {
-    background: #fff;
-    border: 1px solid #E5E9ED;
-    border-radius: 12px;
-    padding: 22px;
-    margin-bottom: 20px;
-}
-
-/* NEED THIS SERVICE — dark box */
-.sidebar-cta {
-    background: #01354B;
-    border: none;
-    border-radius: 12px;
-    padding: 24px 22px;
-    margin-bottom: 20px;
-}
-
-.sidebar-cta h4 {
-    font-size: 17px;
-    font-weight: 700;
-    color: #ffffff;
-    margin-bottom: 8px;
-}
-
-.sidebar-cta p {
-    font-size: 13px;
-    color: #94a3b8;
-    line-height: 1.6;
-    margin-bottom: 18px;
-}
-
-.btn-expert {
-    display: block;
-    width: 100%;
-    background: #F47735;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    padding: 12px;
-    font-size: 14px;
-    font-weight: 600;
-    text-align: center;
-    cursor: pointer;
-    transition: background .3s;
-    text-decoration: none;
-}
-
-.btn-expert:hover {
-    background: #d9622a;
-    color: #fff;
-}
-
-/* OTHER SERVICES */
-.sidebar-box h4 {
-    font-size: 14px;
-    font-weight: 700;
-    color: #0f172a;
-    margin-bottom: 16px;
-}
-
-.other-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 11px 14px;
-    font-size: 13px;
-    color: #334155;
-    border-radius: 7px;
-    cursor: pointer;
-    text-decoration: none;
-    transition: background .2s, color .2s;
-    margin-bottom: 4px;
-}
-
-.other-item:last-child { margin-bottom: 0; }
-
-.other-item:hover {
-    background: #F0FAFA;
-    color: #01888C;
-}
-
-.other-item .item-left {
-    display: flex;
-    align-items: center;
+.pillar-item {
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    flex: 0 1 220px;
     gap: 10px;
+    padding: 0 14px;
+    border-right: 1px solid rgba(255,255,255,0.18);
 }
+.pillar-item:not(:first-child) { padding-left: 14px; }
+.pillar-item:last-child { border-right: none; }
+.pillar-desc { max-width: 165px; margin: 0 auto; }
 
-.other-item .item-icon {
-    width: 30px;
-    height: 30px;
+.pillar-icon {
+    width: 52px; height: 52px; flex-shrink: 0;
+    border: 1.5px solid rgba(255,255,255,0.50);
     border-radius: 50%;
-    background: #F1F4F7;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
+    background: transparent;
+    display: flex; align-items: center; justify-content: center;
 }
+.pillar-icon img { width: 30px; height: 30px; object-fit: contain; filter: brightness(0) invert(1); }
+.pillar-icon svg { width: 24px; height: 24px; stroke: #fff; fill: none; stroke-width: 1.8; }
 
-.other-item .item-icon svg {
-    width: 14px;
-    height: 14px;
-    stroke: #64748b;
-    fill: none;
-    stroke-width: 1.8;
+.pillar-text-wrap { display: flex; flex-direction: column; gap: 4px; }
+.pillar-title {
+    font-size: 12px; font-weight: 800; color: #fff;
+    text-transform: uppercase; letter-spacing: 0.6px; line-height: 1.3;
 }
-
-.other-item:hover .item-icon {
-    background: #E2F5F5;
+.pillar-desc {
+    font-size: 12px; color: #a9c2d0; line-height: 1.5;
 }
-
-.other-item:hover .item-icon svg {
-    stroke: #01888C;
-}
-
-.other-item .arrow-right {
-    font-size: 13px;
-    color: #94a3b8;
-}
-
-
 
 /* =========================================
-   RESPONSIVE
+   BREADCRUMB
 ========================================= */
-
-@media (min-width: 992px) {
-    .col-lg-4 {
-        position: relative;
-    }
-
-    /* Sideer wrapper jeta scroll korle atkay thakbe */
-    .sidebar-sticky-wrapper {
-        position: sticky;
-        top: 90px; /* Matha theke koto niche thakbe */
-        align-self: start; /* Flex container er bhetore height adjust korbe */
-    }
-}
-@media (max-width: 992px) {
-    .service-hero { height: 260px; }
-    .hero-content h1 { font-size: 36px; }
-    .cta-section .cta-title { font-size: 28px; }
-}
-
-@media (max-width: 768px) {
-    .service-hero { height: 220px; }
-    .hero-content h1 { font-size: 28px; }
-    .hero-content p { font-size: 13px; }
-    .service-details-section { padding: 40px 0 60px; }
-    .service-box h3 { font-size: 18px; }
-    .cta-section { padding: 52px 0; }
-    .cta-section .cta-title { font-size: 24px; }
-}
-
-@media (max-width: 576px) {
-    .service-hero { height: 200px; }
-    .hero-content h1 { font-size: 24px; }
-    .hero-overlay {
-        background: rgba(1, 53, 75, 0.85);
-    }
-    .cta-section .cta-title { font-size: 22px; }
-}
-
-/* আপনার স্টাইলশিটে এটি আপডেট করুন */
-.custom-container {
-    max-width: 1072px !important; /* আপনি ১০৭২ চাইলে এটি দিন */
-    margin: 0 auto;
-    padding-left: 15px; /* বাম পাশে হালকা গ্যাপের জন্য */
-    padding-right: 15px;
-}
-
 .service-breadcrumb {
-    background: #F8F9FB;
-    min-height: 43px;
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid #E5E9ED;
-    width: 100%;
+    background: #F8F9FB; min-height: 43px;
+    display: flex; align-items: center;
+    border-bottom: 1px solid #E5E9ED; width: 100%;
 }
 .service-breadcrumb .breadcrumb-links { font-size: 13px; color: #64748B; }
 .service-breadcrumb .breadcrumb-links a { color: #64748B; text-decoration: none; }
 .service-breadcrumb .breadcrumb-links .sep { margin: 0 10px; color: #CBD5E1; }
 .service-breadcrumb .breadcrumb-links .active { color: #01354B; font-weight: 600; }
 
+/* =========================================
+   OVERVIEW + SERVICES (two-col)
+========================================= */
+.overview-section {
+    background: #fff;
+    padding: 48px 0 36px;
+}
+.overview-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    align-items: stretch;
+}
+.overview-grid > div:first-child {
+    padding-right: 56px;
+    border-right: 2px solid #E4EAF0;
+}
+.overview-grid > div:last-child {
+    padding-left: 56px;
+}
+.section-title {
+    font-family: 'Manrope', sans-serif;
+    font-size: 20px; font-weight: 800;
+    color: #003054; text-transform: uppercase;
+    letter-spacing: 0.88px; margin-bottom: 12px; line-height: 1;
+}
+.section-divider {
+    width: 13%; height: 3px;
+    background: #18909C; margin-bottom: 24px;
+}
+.overview-text {
+    font-size: 15px; color: #4B5563; line-height: 1.82; text-align: justify;
+}
+.overview-text p { margin-bottom: 20px; }
+.overview-text p:last-child { margin-bottom: 0; }
+.overview-text ul, .overview-text ol { margin-left: 20px; margin-bottom: 16px; }
+.overview-text li { margin-bottom: 6px; }
+
+/* Include list */
+.include-list { display: flex; flex-direction: column; }
+.include-item {
+    display: flex; align-items: center; gap: 14px;
+    padding-bottom: 13px; border-bottom: 1px solid #E4EAF0;
+    margin-bottom: 0;
+}
+.include-item:not(:first-child) { padding-top: 13px; }
+.include-item:last-child { border-bottom: none; padding-bottom: 0; }
+.include-icon {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: #003054;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; overflow: hidden;
+}
+.include-icon img {
+    width: 22px; height: 22px; object-fit: contain;
+    filter: brightness(0) invert(1);
+}
+.include-icon svg {
+    width: 14px; height: 14px;
+    stroke: #fff; fill: none; stroke-width: 2;
+}
+.include-text {
+    font-size: 15px; color: #4B5563; line-height: 1.53;
+}
+
+/* =========================================
+   PRODUCTS & SOLUTIONS
+========================================= */
+.products-section {
+    background: #fff;
+    border-top: 1px solid #E4EAF0;
+    padding: 36px 0 56px;
+}
+.products-header {
+    display: flex; align-items: center; gap: 16px;
+    margin-bottom: 52px;
+}
+.products-header .line { flex: 1; height: 2px; background: #18909C; }
+.products-header h2 {
+    font-family: 'Manrope', sans-serif;
+    font-size: 20px; font-weight: 800;
+    color: #003054; text-transform: uppercase;
+    letter-spacing: 0.88px; white-space: nowrap; line-height: 1;
+}
+.products-grid {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0;
+}
+.prod-card {
+    flex: 1 1 0;
+    min-width: 120px;
+    max-width: 180px;
+    display: flex; flex-direction: column;
+    align-items: center; text-align: center; gap: 11px;
+    padding: 0 16px 14px;
+    border-right: 2px solid #E4EAF0;
+}
+.prod-card:last-child {
+    border-right: none;
+}
+.prod-icon-box {
+    width: 62px; height: 62px; border-radius: 14px;
+    background: transparent; border: 1.5px solid #003054;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; overflow: hidden;
+    transition: border-color 0.3s ease;
+}
+/* .prod-card:hover .prod-icon-box {
+    border-color: #F47735;
+} */
+.prod-icon-box img {
+    width: 42px; height: 42px; object-fit: contain;
+}
+.prod-icon-box svg {
+    width: 26px; height: 26px;
+    stroke: #fff; fill: none; stroke-width: 1.6;
+}
+.prod-card h4 {
+    font-family: 'Manrope', sans-serif;
+    font-size: 11.5px; font-weight: 800;
+    color: #003054; text-transform: uppercase;
+    letter-spacing: 0.46px; line-height: 1.3;
+    margin: 0;
+}
+.prod-card p {
+    font-size: 12px; color: #6B7280;
+    line-height: 1.55; margin: 0;
+}
+
+/* =========================================
+   SIDEBAR (CTA — kept for future use via include)
+========================================= */
+.page-align-container { max-width: 1072px; margin: 0 auto; }
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+@media (max-width: 1100px) {
+    .products-grid { grid-template-columns: repeat(4, 1fr); }
+}
+@media (max-width: 992px) {
+    .service-hero { min-height: 320px; }
+    .hero-content h1 { font-size: 36px; }
+    .overview-grid { grid-template-columns: 1fr; gap: 0; }
+    .overview-grid > div:first-child { padding-right: 0; border-right: none; border-bottom: 1px solid #E4EAF0; padding-bottom: 36px; margin-bottom: 36px; }
+    .overview-grid > div:last-child { padding-left: 0; }
+    .prod-card { min-width: 30%; max-width: 33%; }
+    .prod-card:nth-child(3n) { border-right: none; }
+    .prod-card { padding-bottom: 20px; margin-bottom: 8px; }
+}
+@media (max-width: 768px) {
+    .hero-container { padding-top: 36px; padding-bottom: 24px; }
+    .hero-content h1 { font-size: 32px; }
+    .hero-pillars-inner { flex-wrap: wrap; }
+    .pillar-item { flex: 1 1 45%; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.18); padding: 16px 12px; }
+    .pillar-item:nth-child(odd) { border-right: 1px solid rgba(255,255,255,0.18); }
+    .pillar-item:last-child { border-bottom: none; }
+    .overview-section { padding: 36px 0 44px; }
+    .prod-card { min-width: 45%; max-width: 50%; }
+    .prod-card:nth-child(2n) { border-right: none; }
+}
+@media (max-width: 576px) {
+    .hero-content h1 { font-size: 26px; }
+    .hero-overlay {
+    position: absolute; inset: 0; z-index: 1;
+    background: linear-gradient(
+        90deg,
+        rgba(0,20,40,0.95) 0%,
+        rgba(0,25,48,0.82) 40%,
+        rgba(0,15,35,0.45) 70%,
+        rgba(0,10,25,0.20) 100%
+    );
+}
+    .prod-card { min-width: 45%; max-width: 50%; }
+}
+.custom-container {
+    max-width: 1072px !important; margin: 0 auto;
+    padding-left: 15px; padding-right: 15px;
+}
 </style>
 @endpush
 
@@ -463,11 +312,22 @@
     $solutionItems = $service->solutions;
 
     $sidebarServices = $otherServices;
+
+    /* Hero pillars from dedicated admin input; all details → services list */
+    $heroPillars  = $service->heroPillars;
+    $servicesList = $includeItems;
+
+    $defaultPillarIcons = [
+        '<svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>',
+        '<svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+        '<svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',
+        '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>',
+    ];
+
+    $defaultProdIcon = '<svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>';
 @endphp
 
-{{-- ==============================
-     BREADCRUMB
-============================== --}}
+{{-- BREADCRUMB --}}
 <nav class="service-breadcrumb">
     <div class="container custom-container">
         <div class="breadcrumb-links">
@@ -480,127 +340,146 @@
     </div>
 </nav>
 
-{{-- ==============================
-     HERO
-============================== --}}
+{{-- HERO --}}
 <section class="service-hero">
-
     <div class="hero-bg">
         <img src="{{ $heroImage }}" alt="{{ $heroTitle }}">
     </div>
-
     <div class="hero-overlay"></div>
 
     <div class="hero-container">
         <div class="hero-content">
             <h1>
                 {{ Str::before($heroTitle, $heroDesignWord) }}
-                @if(Str::contains($heroTitle, $heroDesignWord))
+                @if($heroDesignWord && Str::contains($heroTitle, $heroDesignWord))
                     <span>{{ $heroDesignWord }}</span>{{ Str::after($heroTitle, $heroDesignWord) }}
-                @else
+                @elseif($heroDesignWord)
                     <span>{{ $heroDesignWord }}</span>
                 @endif
             </h1>
-            <div class="hero-content-text">{!! $heroDescription !!}</div>
-            <div class="hero-line"></div>
+            <div class="hero-title-line"></div>
+            @if($heroDescription)
+            <div class="hero-subtitle-wrap">
+                <div class="hero-content-text">{!! $heroDescription !!}</div>
+            </div>
+            @endif
         </div>
     </div>
 
+    @if($heroPillars->count())
+    <div class="hero-pillars">
+        <div class="hero-pillars-inner">
+            @foreach($heroPillars as $i => $pillar)
+            @php
+                $pTitle   = strtoupper(trim($pillar->title));
+                $pDesc    = trim($pillar->description ?? '');
+                $pIconSrc = $pillar->iconUrl();
+            @endphp
+            <div class="pillar-item">
+                <div class="pillar-icon">
+                    @if($pIconSrc)
+                        <img src="{{ $pIconSrc }}" alt="{{ $pTitle }}">
+                    @else
+                        {!! $defaultPillarIcons[$i % 4] !!}
+                    @endif
+                </div>
+                <div class="pillar-text-wrap">
+                    <div class="pillar-title">{{ $pTitle }}</div>
+                    @if($pDesc)<div class="pillar-desc">{{ $pDesc }}</div>@endif
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </div>
+    @endif
 </section>
 
-{{-- ==============================
-     DETAILS SECTION
-============================== --}}
-<section class="service-details-section">
-    <div class="container-fluid px-lg-5 page-align-container">
-        <div class="row g-4 g-lg-5">
+{{-- OVERVIEW + SERVICES INCLUDE --}}
+<section class="overview-section">
+    <div class="container custom-container">
+        <div class="overview-grid">
 
-            {{-- ===== LEFT COLUMN ===== --}}
-            <div class="col-12 col-lg-8">
+            {{-- Overview --}}
+            <div>
+                <h3 class="section-title">Overview</h3>
+                <div class="section-divider"></div>
+                <div class="overview-text">
+                    <!-- @foreach(array_filter(explode("\n", $overviewPlainText)) as $para)
+                        <p>{{ trim($para) }}</p>
+                    @endforeach -->
 
-                {{-- OVERVIEW --}}
-                <div class="service-box">
-                    <h3>Overview</h3>
-                    <div class="editor-content">{!! nl2br(e($overviewPlainText)) !!}</div>
+                     @foreach(array_filter(explode("\n", $overviewPlainText)) as $para)
+                            <p>{{ trim(html_entity_decode($para)) }}</p>
+                     @endforeach
                 </div>
+            </div>
 
-                {{-- SERVICES INCLUDE --}}
-                <div class="service-box">
-                    <h3>Our Services Include</h3>
 
-                    <div class="include-list">
-                        @foreach($includeItems as $item)
-                        <div class="include-item">
-                            <span class="check-icon">
-                                @if(is_object($item) && method_exists($item, 'iconUrl') && $item->iconUrl())
-                                    <img src="{{ $item->iconUrl() }}" alt="icon" style="width: 12px; height: 12px; object-fit: contain;">
-                                @else
-                                    <svg viewBox="0 0 12 12">
-                                        <polyline points="2,6 5,9 10,3"/>
-                                    </svg>
-                                @endif
-                            </span>
-                            {{ is_object($item) ? strip_tags((string) $item->text) : strip_tags((string) $item) }}
+            {{-- Our Services Include --}}
+            <div>
+                <h3 class="section-title">Our Services Include</h3>
+                <div class="section-divider"></div>
+                <div class="include-list">
+                    @foreach($servicesList as $item)
+                    @php
+                        $itemText = trim(html_entity_decode(is_object($item) ? strip_tags((string) $item->text) : strip_tags((string) $item)));
+                        $itemIcon = is_object($item) && method_exists($item, 'iconUrl') ? $item->iconUrl() : null;
+                    @endphp
+                    <div class="include-item">
+                        <div class="include-icon">
+                            @if($itemIcon)
+                                <img src="{{ $itemIcon }}" alt="icon">
+                            @else
+                                <svg viewBox="0 0 14 14"><polyline points="2,7 5.5,10.5 12,3"/></svg>
+                            @endif
                         </div>
-                        @endforeach
+                        <p class="include-text">{{ $itemText }}</p>
                     </div>
+                    @endforeach
                 </div>
+            </div>
 
-                {{-- PRODUCTS --}}
-                <div class="service-box">
-                    <h3>Products & Solutions</h3>
-                    <p class="product-sub">
-                        {{ $service->sub_heading ?? '' }}
-                    </p>
-
-                    <div class="row g-3">
-                        @foreach($solutionItems as $index => $product)
-                        <div class="col-12 col-sm-6">
-                            <div class="product-card">
-                                <span class="prod-num">Product {{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</span>
-                                <h4>{{ is_object($product) ? $product->heading : $product['heading'] }}</h4>
-                                <span class="prod-tag">{{ is_object($product) ? ($product->sub_heading ?? 'PRODUCT') : ($product['sub_heading'] ?? 'PRODUCT') }}</span>
-                            </div>
-                        </div>
-                        @endforeach
-                    </div>
-                </div>
-
-            </div>{{-- end left --}}
-
-            {{-- ===== RIGHT SIDEBAR ===== --}}
-<div class="col-12 col-lg-4">
-    <div class="sidebar-sticky-wrapper">
-
-        {{-- NEED THIS SERVICE --}}
-        <div class="sidebar-cta">
-            <h4>Need this service?</h4>
-            <p>Get in touch and our team will walk you through our solutions.</p>
-            <a href="{{ route('contact') }}" class="btn-expert">Talk to Our Experts</a>
         </div>
-
-        {{-- OTHER SERVICES --}}
-        <div class="sidebar-box">
-            <h4>Other Services</h4>
-
-                    @forelse($sidebarServices as $svc)
-                    <a href="{{ route('serviceDetails', ['id' => $svc->id]) }}" class="other-item">
-                        <span class="item-left">
-                            <span>{{ $svc->section ?: $svc->service_name }}</span>
-                        </span>
-                        <span class="arrow-right">›</span>
-                    </a>
-                    @empty
-                    <p class="mb-0 text-muted">No services found.</p>
-                    @endforelse
-
-                </div>{{-- end sidebar-box --}}
-
-            </div>{{-- end right --}}
-
-        </div>{{-- end row --}}
     </div>
 </section>
+
+{{-- PRODUCTS & SOLUTIONS --}}
+@if($solutionItems->count())
+<section class="products-section">
+    <div class="container custom-container">
+
+        <div class="products-header">
+            <div class="line"></div>
+            <h2>Products &amp; Solutions</h2>
+            <div class="line"></div>
+        </div>
+
+        <div class="products-grid">
+            @foreach($solutionItems as $product)
+            @php
+                $pHeading = is_object($product) ? $product->heading : $product['heading'];
+                $pSub     = is_object($product) ? ($product->sub_heading ?? '') : ($product['sub_heading'] ?? '');
+                $pIcon    = is_object($product) && method_exists($product, 'iconUrl') ? $product->iconUrl() : null;
+            @endphp
+            <div class="prod-card">
+                <div class="prod-icon-box">
+                    @if($pIcon)
+                        <img src="{{ $pIcon }}" alt="{{ $pHeading }}">
+                    @else
+                        {!! $defaultProdIcon !!}
+                    @endif
+                </div>
+                <h4>{{ $pHeading }}</h4>
+                @if($pSub)
+                <p>{{ $pSub }}</p>
+                @endif
+            </div>
+            @endforeach
+        </div>
+
+    </div>
+</section>
+@endif
 
 @include('frontend.layout.cta')
 

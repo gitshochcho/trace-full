@@ -430,6 +430,30 @@
 }
 .dl-btn:hover { background: #d9622a; color: #fff; }
 
+.copy-link-btn {
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: 1px solid #b2e8e8;
+    border-radius: 6px;
+    color: #01888C;
+    background: #eef9f9;
+    transition: background .2s, border-color .2s, color .2s;
+}
+.copy-link-btn:hover {
+    background: #01888C;
+    border-color: #01888C;
+    color: #fff;
+}
+.copy-link-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(1, 136, 140, 0.2);
+}
+
 /* AUTHOR CARD */
 .author-info {
     display: flex;
@@ -462,6 +486,7 @@
     font-size: 12px;
     color: #64748b;
     margin: 0;
+    text-align: justify;
 }
 
 .author-bio {
@@ -469,6 +494,7 @@
     color: #64748b;
     line-height: 1.65;
     margin: 0;
+    text-align: justify;
 }
 
 /* RELATED INSIGHTS */
@@ -507,6 +533,7 @@
     line-height: 1.45;
     margin: 0;
     transition: color .2s;
+    text-align: justify ;
 }
 
 .related-item:hover .related-title { color: #01888C; }
@@ -645,9 +672,9 @@
         $authorTeams = collect([$article->author]);
     }
     $primaryAuthor   = $authorTeams->first();
-    $authorName      = $primaryAuthor?->fullName() ?: 'TRACE Research Desk';
-    $authorRole      = $primaryAuthor?->designation ?: 'Author';
-    $authorInitials  = collect(explode(' ', $authorName))->filter()->map(fn ($word) => strtoupper(substr($word, 0, 1)))->take(2)->implode('');
+    $authorName      = $primaryAuthor?->fullName();
+    $authorRole      = $primaryAuthor?->designation;
+    $authorInitials  = $authorName ? collect(explode(' ', $authorName))->filter()->map(fn ($word) => strtoupper(substr($word, 0, 1)))->take(2)->implode('') : '';
     $authorImageUrl  = $primaryAuthor?->imageUrl();
 
     // Outside authors
@@ -725,7 +752,7 @@
 {{-- ==============================
      ARTICLE BODY
 ============================== --}}
-<div class="article-layout">
+<div class="article-layout py-4">
 
     {{-- ===== LEFT: MAIN CONTENT ===== --}}
     <div class="article-content">
@@ -752,16 +779,16 @@
               <img src="{{ $articleImage }}"
                   alt="{{ $articleTitle }}"
                  class="article-main-img">
-             <p class="img-caption">
-    {{ $article->image_description ?: ($categoryLabel . ' — published by TRACE Insights.') }}
-</p>
+             @if($article->image_description)
+             <p class="img-caption">{{ $article->image_description }}</p>
+             @endif
         </div>
 
        @foreach($sections as $section)
     <h2 class="section-heading" id="section-{{ $loop->index }}">
         {{ $section->title }}
     </h2>
-   <div class="body-text">{!! $section->description !!}</div>
+   <div class="body-text">{!! preg_replace('/<p\b([^>]*)>/i', '<p$1 style="text-align:justify;">', $section->description) !!}</div>
 @endforeach
 
         {{-- Tags --}}
@@ -818,8 +845,7 @@
                     </a>
                     <button type="button"
                         onclick="navigator.clipboard.writeText('{{ $plUrl }}'); const b=this; b.innerHTML='<i class=\'fas fa-check\'></i>'; setTimeout(()=>b.innerHTML='<i class=\'far fa-copy\'></i>',2000);"
-                        class="btn btn-sm"
-                        style="width:34px;height:34px;padding:0;border:1px solid #b2e8e8;border-radius:6px;color:#01888C;background:#eef9f9;flex-shrink:0;"
+                        class="copy-link-btn"
                         title="Copy link">
                         <i class="far fa-copy"></i>
                     </button>
@@ -830,8 +856,9 @@
         @endif
 
         {{-- Authors --}}
+        @if($authorTeams->isNotEmpty() || !empty($outsideAuthors))
         <div class="sidebar-card author-card">
-            <h4 class="sidebar-heading">{{ $authorTeams->count() + count($outsideAuthors) > 1 ? 'AUTHORS' : 'AUTHOR' }}</h4>
+            <h4 class="sidebar-heading">{{ $authorTeams->count() + count($outsideAuthors) > 1 ? 'AUTHORS/PARTICIPANTS' : 'AUTHOR' }}</h4>
 
             {{-- Team Authors --}}
             @foreach($authorTeams as $teamAuthor)
@@ -877,25 +904,31 @@
                 </div>
             @endif
         </div>
+        @endif
 
         {{-- Related Insights --}}
+        @if($relatedArticles->isNotEmpty())
         <div class="sidebar-card related-card">
             <h4 class="sidebar-heading">RELATED INSIGHTS</h4>
             <div class="related-list">
-                @forelse($relatedArticles as $related)
-                    <a href="{{ route('articleDetails', $related) }}" class="related-item text-decoration-none">
-                        <div class="related-thumb" style="background-image: url('{{ $related->iconUrl() ?: ($related->insight?->imageUrl() ?: asset('assets/img/Op-Ed.png')) }}');"></div>
+                @foreach($relatedArticles as $related)
+                    @php
+                        $relatedFirstArticle = $related->articles->first();
+                        $relatedImage = $related->imageUrl() ?: $related->articleImageUrl() ?: asset('assets/img/Op-Ed.png');
+                        $relatedLink = $relatedFirstArticle ? route('articleDetails', $relatedFirstArticle) : '#';
+                    @endphp
+                    <a href="{{ $relatedLink }}" class="related-item text-decoration-none">
+                        <div class="related-thumb" style="background-image: url('{{ $relatedImage }}');"></div>
                         <div class="related-text">
                             <span class="related-cat">{{ strtoupper($related->insightType?->type ?: 'read') }}</span>
-                            <p class="related-title">{{ \Illuminate\Support\Str::limit($related->title, 70) }}</p>
+                            <p class="related-title">{{ \Illuminate\Support\Str::limit($related->heading, 70) }}</p>
                         </div>
                     </a>
-                @empty
-                    <p class="small text-muted mb-0">No related insights available.</p>
-                @endforelse
+                @endforeach
 
             </div>
         </div>
+        @endif
 
     </aside>
 

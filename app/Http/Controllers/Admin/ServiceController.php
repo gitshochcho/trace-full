@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Service;
 use App\Models\ServiceDetail;
+use App\Models\ServiceHeroPillar;
 use App\Models\ServiceProductSolution;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -43,10 +44,18 @@ class ServiceController extends Controller
             'details.*.text'      => ['nullable', 'string'],
             'details_icons'       => ['nullable', 'array'],
             'details_icons.*'     => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:2048'],
-            'solutions'           => ['nullable', 'array'],
-            'solutions.*.id'      => ['nullable', 'integer'],
+            'solutions'               => ['nullable', 'array'],
+            'solutions.*.id'          => ['nullable', 'integer'],
             'solutions.*.heading'     => ['nullable', 'string', 'max:255'],
             'solutions.*.sub_heading' => ['nullable', 'string', 'max:255'],
+            'solutions_icons'         => ['nullable', 'array'],
+            'solutions_icons.*'       => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:2048'],
+            'hero_pillars'              => ['nullable', 'array'],
+            'hero_pillars.*.id'         => ['nullable', 'integer'],
+            'hero_pillars.*.title'      => ['nullable', 'string', 'max:255'],
+            'hero_pillars.*.description'=> ['nullable', 'string'],
+            'hero_pillars_icons'        => ['nullable', 'array'],
+            'hero_pillars_icons.*'      => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:2048'],
         ]);
 
         $service = Service::create([
@@ -70,7 +79,8 @@ class ServiceController extends Controller
         }
 
         $this->syncDetails($service, $request->input('details', []), $request->file('details_icons', []));
-        $this->syncSolutions($service, $request->input('solutions', []));
+        $this->syncSolutions($service, $request->input('solutions', []), $request->file('solutions_icons', []));
+        $this->syncHeroPillars($service, $request->input('hero_pillars', []), $request->file('hero_pillars_icons', []));
 
         return redirect()
             ->route('admin.services.index')
@@ -82,7 +92,7 @@ class ServiceController extends Controller
 
     public function edit(Service $service)
     {
-        $service->load(['media', 'details.media', 'solutions']);
+        $service->load(['media', 'details.media', 'solutions.media', 'heroPillars.media']);
         $services = Service::with(['media'])->latest()->get();
 
         return view('admin.service.edit', compact('service', 'services'));
@@ -109,10 +119,18 @@ class ServiceController extends Controller
             'details.*.media_key' => ['nullable', 'string', 'max:50'],
             'details_icons'       => ['nullable', 'array'],
             'details_icons.*'     => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:2048'],
-            'solutions'           => ['nullable', 'array'],
-            'solutions.*.id'      => ['nullable', 'integer'],
+            'solutions'               => ['nullable', 'array'],
+            'solutions.*.id'          => ['nullable', 'integer'],
             'solutions.*.heading'     => ['nullable', 'string', 'max:255'],
             'solutions.*.sub_heading' => ['nullable', 'string', 'max:255'],
+            'solutions_icons'         => ['nullable', 'array'],
+            'solutions_icons.*'       => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:2048'],
+            'hero_pillars'              => ['nullable', 'array'],
+            'hero_pillars.*.id'         => ['nullable', 'integer'],
+            'hero_pillars.*.title'      => ['nullable', 'string', 'max:255'],
+            'hero_pillars.*.description'=> ['nullable', 'string'],
+            'hero_pillars_icons'        => ['nullable', 'array'],
+            'hero_pillars_icons.*'      => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:2048'],
         ]);
 
         $service->fill([
@@ -143,7 +161,8 @@ class ServiceController extends Controller
         }
 
         $this->syncDetails($service, $request->input('details', []), $request->file('details_icons', []));
-        $this->syncSolutions($service, $request->input('solutions', []));
+        $this->syncSolutions($service, $request->input('solutions', []), $request->file('solutions_icons', []));
+        $this->syncHeroPillars($service, $request->input('hero_pillars', []), $request->file('hero_pillars_icons', []));
 
         return redirect()
             ->route('admin.services.index')
@@ -153,13 +172,30 @@ class ServiceController extends Controller
             ]);
     }
 
+    public function updateSortOrder(Request $request, Service $service)
+    {
+        $request->validate(['sort_order' => 'required|integer|min:0']);
+        $service->update(['sort_order' => $request->sort_order]);
+        return response()->json(['success' => true]);
+    }
+
     public function destroy(Service $service): RedirectResponse
     {
-        $service->load('details');
+        $service->load(['details', 'solutions', 'heroPillars']);
 
         foreach ($service->details as $detail) {
             $detail->clearMediaCollection('icon');
             $detail->delete();
+        }
+
+        foreach ($service->solutions as $solution) {
+            $solution->clearMediaCollection('icon');
+            $solution->delete();
+        }
+
+        foreach ($service->heroPillars as $pillar) {
+            $pillar->clearMediaCollection('icon');
+            $pillar->delete();
         }
 
         $service->clearMediaCollection('image');
@@ -174,12 +210,52 @@ class ServiceController extends Controller
             ]);
     }
 
+    private function syncHeroPillars(Service $service, array $pillars, array $pillarIcons = []): void
+    {
+        $keptIds = [];
+
+        foreach (array_values($pillars) as $index => $item) {
+            $title       = trim((string) ($item['title'] ?? ''));
+            $description = trim((string) ($item['description'] ?? ''));
+            $pillarId    = ! empty($item['id']) ? (int) $item['id'] : null;
+
+            if ($title === '' && $description === '' && $pillarId === null) {
+                continue;
+            }
+
+            $pillar = $pillarId
+                ? ServiceHeroPillar::firstOrNew(['id' => $pillarId, 'service_id' => $service->id])
+                : new ServiceHeroPillar(['service_id' => $service->id]);
+
+            $pillar->service_id  = $service->id;
+            $pillar->title       = $title;
+            $pillar->description = $description ?: null;
+            $pillar->sort_order  = $index;
+            $pillar->save();
+
+            $keptIds[] = $pillar->id;
+
+            if (isset($pillarIcons[$index])) {
+                $pillar->clearMediaCollection('icon');
+                $pillar->addMedia($pillarIcons[$index])->toMediaCollection('icon');
+            }
+        }
+
+        $service->heroPillars()
+            ->whereNotIn('id', $keptIds)
+            ->get()
+            ->each(function (ServiceHeroPillar $pillar) {
+                $pillar->clearMediaCollection('icon');
+                $pillar->delete();
+            });
+    }
+
     private function syncDetails(Service $service, array $details, array $detailIcons): void
     {
         $keptIds = [];
 
         foreach (array_values($details) as $index => $item) {
-            $text = $item['text'] ?? null;
+            $text = trim((string) ($item['text'] ?? ''));
             $detailId = ! empty($item['id']) ? (int) $item['id'] : null;
 
             if ($text === '' && ! isset($detailIcons[$index]) && $detailId === null) {
@@ -209,7 +285,7 @@ class ServiceController extends Controller
             });
     }
 
-    private function syncSolutions(Service $service, array $solutions): void
+    private function syncSolutions(Service $service, array $solutions, array $solutionIcons = []): void
     {
         $keptIds = [];
 
@@ -233,12 +309,20 @@ class ServiceController extends Controller
             $solution->save();
 
             $keptIds[] = $solution->id;
+
+            if (isset($solutionIcons[$index])) {
+                $solution->clearMediaCollection('icon');
+                $solution->addMedia($solutionIcons[$index])->toMediaCollection('icon');
+            }
         }
 
         $service->solutions()
             ->whereNotIn('id', $keptIds)
             ->get()
-            ->each->delete();
+            ->each(function (ServiceProductSolution $solution) {
+                $solution->clearMediaCollection('icon');
+                $solution->delete();
+            });
     }
 
     private function normalizeEditorText(?string $value): ?string

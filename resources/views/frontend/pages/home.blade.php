@@ -3,6 +3,15 @@
 @push('custome-css')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.css" integrity="sha256-4MX+61mt9NVvvuPjUWdUdyfZfxSB1/Rf9WtqRHgG5S0=" crossorigin="anonymous"><!-- jsvectormap -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/css/jsvectormap.min.css" integrity="sha256-+uGLJmmTKOqBr+2E6KDYs/NRsHxSkONXFHUL0fy2O/4=" crossorigin="anonymous">
+@php
+    $firstSlideForPreload = $sliderItems->first() ?? null;
+    $firstSlideImgPreload = $firstSlideForPreload && method_exists($firstSlideForPreload, 'imageUrl')
+        ? $firstSlideForPreload->imageUrl()
+        : ($slider?->imageUrls()[0] ?? null);
+@endphp
+@if($firstSlideImgPreload)
+<link rel="preload" as="image" href="{{ $firstSlideImgPreload }}" fetchpriority="high">
+@endif
 
 <style>
 /* =========================================
@@ -33,8 +42,27 @@
     pointer-events: none;
 }
 
-/* SLIDER */
-.slides, .slide {
+/* HERO VIDEO BG */
+.hero-video-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+.hero-video-bg video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    pointer-events: none;
+}
+.hero-video-bg video::-webkit-media-controls { display: none !important; }
+.hero-video-bg video::-webkit-media-controls-enclosure { display: none !important; }
+
+/* SLIDER (shown only when no video) */
+.slides {
     width: 100%;
     height: 100%;
     position: absolute;
@@ -42,24 +70,50 @@
     left: 0;
 }
 
-.slide img {
+.slide {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* ইমেজকে কন্টেইনারের ভেতর ফিট রাখবে */
-    object-position: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    z-index: 0;
+    transition: opacity 1.2s ease;
 }
+
 .slide.active {
     opacity: 1;
     z-index: 1;
-    transform: scale(1);
 }
 
 .slide img {
     width: 100%;
-    height: 100%;          
-   
+    height: 100%;
     object-fit: cover;
     object-position: center;
+    transform: scale(1.04);
+    transition: transform 6s ease;
+}
+
+.slide.active img {
+    transform: scale(1);
+}
+
+/* TEXT TRANSITIONS */
+#heroTagline,
+#heroTitle,
+#heroDesc,
+.hero-btns,
+.slider-line {
+    transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+.hero-text-fading #heroTagline,
+.hero-text-fading #heroTitle,
+.hero-text-fading #heroDesc,
+.hero-text-fading .hero-btns {
+    opacity: 0;
+    transform: translateY(14px);
 }
 
 .hero-content {
@@ -81,7 +135,7 @@
     gap: 12px;
     margin-bottom: 20px;
 } */
-.hero-tag-box .tag-line { width: 40px; height: 2px; background: #F47735; display: inline-block; }
+/* .hero-tag-box .tag-line { width: 40px; height: 2px; background: #F47735; display: inline-block; } */
 .hero-tag {
     color: #F47735;
     font-size: clamp(10px, 0.9vw, 13px);
@@ -93,7 +147,7 @@
 }
 
 .hero-content h1 {
- font-size: clamp(45px, 6vw, 75px) !important; /* জুম করলেও ৩৫ পিক্সেলের ছোট হবে না */
+ font-size: clamp(35px, 6vw, 65px) !important; 
     line-height: 1.2;
     color: white;
     margin-bottom: clamp(10px, 1.5vh, 24px);
@@ -177,7 +231,7 @@
     .hero-content { top: 52%; }
     .hero-content h1 { font-size: 24px; line-height: 1.3; }
     .hero-tag { font-size: 20px; letter-spacing: 1px; }
-    .hero-tag-box .tag-line { width: 20px; }
+    /* .hero-tag-box .tag-line { width: 20px; } */
     .hero-desc, .hero-btns, .slider-line { display: none !important; }
 }
 
@@ -186,6 +240,10 @@
     .hero-desc { font-size: 14px; }
 }
 
+@media (max-width: 300) {
+    .hero-content h1 { font-size: 22px; }
+    
+}
 
 
 /* tablet */
@@ -233,6 +291,7 @@
         color: #64748b;
         font-size: 15px;
         line-height: 1.6;
+        text-align: justify;
     }
 
     /* List Styling */
@@ -259,18 +318,67 @@
         font-size: 14px;
         color: #64748b;
         margin-bottom: 0;
+        text-align: justify;
     }
 
     /* Learn Button */
     .learn-btn {
         color: #1a2332;
         font-weight: 700;
-        font-size: 14px;
+        font-size: 16px;
+        gap: 10px;
+        margin-top: -4px;
         transition: 0.3s;
     }
     .learn-btn:hover {
         color: #e85d26;
         transform: translateX(5px);
+    }
+    .learn-btn-arrow {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: #f1f5f9;
+        color: #1a2332;
+        font-size: 16px;
+        transition: 0.3s;
+        flex-shrink: 0;
+    }
+    .learn-btn:hover .learn-btn-arrow {
+        background: #e85d26;
+        color: #fff;
+    }
+
+    /* About Section Animations */
+    .anim-fade-up {
+        opacity: 0;
+        transform: translateY(40px);
+        transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .anim-fade-left {
+        opacity: 0;
+        transform: translateX(-50px);
+        transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .anim-fade-right {
+        opacity: 0;
+        transform: translateX(50px);
+        transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .anim-visible {
+        opacity: 1 !important;
+        transform: none !important;
+    }
+    .anim-delay-1 { transition-delay: 0.1s; }
+    .anim-delay-2 { transition-delay: 0.2s; }
+    .anim-delay-3 { transition-delay: 0.35s; }
+    .anim-delay-4 { transition-delay: 0.5s; }
+    .anim-delay-5 { transition-delay: 0.65s; }
+    @media (prefers-reduced-motion: reduce) {
+        .anim-fade-up, .anim-fade-left, .anim-fade-right { opacity: 1; transform: none; }
     }
 
     /* Image Badge */
@@ -319,7 +427,7 @@
         color: #1a2332;
     }
     .text-teal { color: #00898e; }
-    .section-desc { color: #64748b; font-size: 14px; }
+    .section-desc { color: #64748b; font-size: 14px; text-align: justify; }
 
     /* All Services Button */
     .circle-arrow {
@@ -381,7 +489,7 @@
 }
 
 .card-cat {
-    font-size: 11px;
+    font-size: 15px;
     font-weight: 700;
     color: #6c757d; 
     letter-spacing: 0.8px;
@@ -482,35 +590,37 @@
 
     
     .project-card {
-        position: relative;
         border-radius: 16px;
         overflow: hidden;
-        height: 320px; 
+        background: #fff;
+        box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+        transition: box-shadow 0.3s, transform 0.3s;
     }
-    .project-card img {
+    .project-card:hover {
+        box-shadow: 0 6px 28px rgba(0,0,0,0.14);
+        transform: translateY(-3px);
+    }
+    .proj-img-box {
+        position: relative;
+        height: 200px;
+        background: #f1f4f7;
+        overflow: hidden;
+    }
+    .proj-img-box img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: 0.5s;
+        transition: transform 0.5s;
     }
-    .project-card:hover img {
-        transform: scale(1.1); 
-    }
-
-    
-    .proj-overlay {
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(to top, rgba(0, 45, 58, 0.9) 10%, rgba(0,0,0,0) 60%);
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
-        padding: 25px 20px;
-        color: #fff;
+    .project-card:hover .proj-img-box img {
+        transform: scale(1.05);
     }
 
-    /* Badge Design (Left orange bar style) */
+    /* Badge on image top-left */
     .proj-badge-box {
+        position: absolute;
+        top: 12px;
+        left: 12px;
         background: #e85d26;
         color: #fff;
         font-size: 10px;
@@ -518,27 +628,31 @@
         padding: 4px 12px;
         border-radius: 100px;
         display: inline-block;
-        width: fit-content;
-        margin-left: 0px; 
-        margin-bottom: 12px;
+        z-index: 2;
+    }
+
+    /* Content below image */
+    .proj-content {
+        padding: 16px 18px 18px;
     }
 
     .proj-title {
-        font-size: 16px;
+        font-size: 15px;
         font-weight: 700;
         line-height: 1.4;
-        margin-bottom: 8px;
+        margin-bottom: 6px;
+        color: #01354B;
     }
 
     .proj-sub {
         font-size: 12px;
-        opacity: 0.8;
+        color: #6c757d;
         margin-bottom: 0;
     }
 
     /* Mobile Responsive */
     @media (max-width: 576px) {
-        .project-card { height: 280px; }
+        .proj-img-box { height: 180px; }
         .section-title { font-size: 28px; }
     }
 
@@ -548,7 +662,7 @@
     }
     .partners-title {
         color: #64748b;
-        font-size: 12px;
+        font-size: 20px;
         letter-spacing: 2px;
         text-transform: uppercase;
         margin-bottom: 1.5rem;
@@ -580,11 +694,11 @@
         animation-play-state: paused;
     }
     .partner-logos img {
-        height: 50px;
+        height: 80px;
         max-width: 120px;
         object-fit: contain;
-        filter: grayscale(100%);
-        opacity: .75;
+        /* filter: grayscale(100%); */
+        /* opacity: .75; */
         transition: filter .3s ease, opacity .3s ease, transform .3s ease;
     }
     .partner-logos img:hover {
@@ -640,6 +754,116 @@
         }
     }
 
+    /* =========================================
+       LATEST NEWS & FEATURES SECTION
+    ========================================= */
+    .news-grid {
+        display: grid;
+        grid-template-columns: 516px 1fr 1fr;
+        column-gap: 20px;
+        row-gap: 16px;
+    }
+    .news-card-link {
+        text-decoration: none;
+        color: inherit;
+    }
+    .news-grid > .news-card-link:first-child {
+        grid-row: span 2;
+        display: flex;
+        flex-direction: column;
+    }
+    .news-big-card {
+        flex: 1;
+        width: 100%;
+        height: 100%;
+        background: #fff;
+        border: 1px solid #E3E8EB;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        box-shadow: 0px 10px 36px 0px #01354B1A;
+        transition: box-shadow 0.3s, transform 0.3s, border-color 0.3s;
+    }
+    .news-big-card .news-card-img-box img { height: 260px; object-fit: cover; transition: transform 0.5s ease; }
+    .news-small-card {
+        width: 100%;
+        height: 100%;
+        background: #fff;
+        border: 1px solid #E3E8EB;
+        border-radius: 10px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        transition: box-shadow 0.3s, transform 0.3s, border-color 0.3s;
+    }
+    .news-card-link:hover .news-big-card,
+    .news-card-link:hover .news-small-card {
+        box-shadow: 0 10px 28px rgba(1, 53, 75, 0.16);
+        transform: translateY(-4px);
+        border-color: #4CC3C3;
+    }
+    .news-card-link:hover .news-card-img-box img {
+        transform: scale(1.05);
+    }
+    .news-card-link:hover .news-footer-link {
+        color: #01354B;
+    }
+    .news-small-img img { height: 120px; object-fit: cover; transition: transform 0.5s ease; }
+    .news-card-img-box { position: relative; background: #f1f4f7; overflow: hidden; }
+    .news-card-img-box img { width: 100%; display: block; }
+    .news-card-img-box.no-image { display: flex; align-items: center; justify-content: center; min-height: 120px; }
+    .news-card-img-box.no-image i { font-size: 32px; color: #cbd5e1; }
+    .news-img-overlay-gradient {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(142.06deg, rgba(1, 53, 75, 0.6) 0%, rgba(1, 136, 140, 0.3) 100%);
+    }
+    .news-badge-custom {
+        position: absolute;
+        bottom: 12px;
+        left: 12px;
+        background: #F47735;
+        color: #fff;
+        font-size: 10px;
+        padding: 3px 10px;
+        border-radius: 100px;
+    }
+    .news-card-body { padding: 24px; flex-grow: 1; }
+    .news-card-body-small { padding: 18px 20px 12px; flex: 1; }
+    .news-card-h { font-size: 18px; font-weight: 600; color: #01354B; line-height: 1.4; }
+    .news-card-h-small { font-size: 14px; font-weight: 700; color: #01354B; line-height: 1.4; margin-bottom: 0; }
+    .news-card-p { font-size: 13px; color: #64748B; margin-top: 12px; line-height: 1.6; }
+    .news-card-footer { padding: 15px 24px; border-top: 1px solid #F1F5F9; display: flex; justify-content: space-between; }
+    .news-card-footer-small { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; border-top: 1px solid #F1F5F9; }
+    .news-meta-text { font-size: 11px; color: #94A3B8; }
+    .news-footer-link { font-size: 12px; color: #01888C; font-weight: 700; text-decoration: none; transition: color 0.3s; }
+    .news-all-box-link {
+        background: #F1F5F9;
+        border: 1px solid #E3E8EB;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-decoration: none;
+        transition: 0.3s;
+        min-height: 120px;
+    }
+    .news-all-box-link:hover { background: #E6F7F8; }
+    .news-all-text { color: #01888C; font-size: 11px; text-transform: uppercase; font-weight: 700; }
+    .news-all-link-text { color: #01888C; font-size: 20px; font-weight: 800; margin: 2px 0; }
+    .news-arrow-icon { color: #01354B; font-size: 24px; }
+    @media (max-width: 900px) {
+        .news-grid { grid-template-columns: 1fr 1fr; }
+        .news-grid > .news-card-link:first-child { grid-column: span 2; grid-row: auto; }
+        .news-big-card { height: auto; }
+    }
+    @media (max-width: 600px) {
+        .news-grid { grid-template-columns: 1fr; }
+        .news-grid > .news-card-link:first-child { grid-column: auto; }
+    }
+
 </style>
 @endpush
 
@@ -669,6 +893,15 @@ if ($heroSlides->isEmpty() && isset($slider)) {
     $heroTitleBefore = $hasDesignWord ? Str::before($heroTitle, $heroDesignWord) : $heroTitle;
     $heroTitleAfter  = $hasDesignWord ? Str::after($heroTitle, $heroDesignWord)  : '';
 
+    // First slide with an uploaded video becomes the hero video background
+    $heroVideoUrl = '';
+    foreach ($heroSlides as $slide) {
+        if (method_exists($slide, 'videoUrl') && $slide->videoUrl()) {
+            $heroVideoUrl = $slide->videoUrl();
+            break;
+        }
+    }
+
     // Main about block
     $aTag        = $homeAboutTrace?->section     ?? '';
     $aHeading    = $homeAboutTrace?->heading     ?? '';
@@ -694,17 +927,32 @@ if ($heroSlides->isEmpty() && isset($slider)) {
 @endphp
 
 <section class="hero">
-    {{-- SLIDES --}}
-    <div class="slides">
-        @foreach($heroSlides as $index => $slide)
-    <div class="slide {{ $index === 0 ? 'active' : '' }}">
-        @php
-            $slideImg = method_exists($slide, 'imageUrl') ? $slide->imageUrl() : ($slide->_image_url ?? '');
-        @endphp
-        <img src="{{ $slideImg }}" alt="Hero {{ $index + 1 }}">
+
+    @if($heroVideoUrl)
+    {{-- VIDEO BACKGROUND --}}
+    @php $videoPoster = method_exists($firstSlide, 'imageUrl') ? $firstSlide->imageUrl() : ''; @endphp
+    <div class="hero-video-bg">
+        <video autoplay loop muted playsinline disablepictureinpicture controlslist="nodownload nofullscreen noremoteplayback" {{ $videoPoster ? 'poster="'.$videoPoster.'"' : '' }}>
+            <source src="{{ $heroVideoUrl }}" type="video/mp4">
+        </video>
     </div>
-@endforeach
-    </div>
+    @else
+    {{-- SLIDES (fallback when no video) --}}
+        <div class="slides">
+            @foreach($heroSlides as $index => $slide)
+                <div class="slide {{ $index === 0 ? 'active' : '' }}">
+                    @php
+                        $slideImg = method_exists($slide, 'imageUrl') ? $slide->imageUrl() : ($slide->_image_url ?? '');
+                    @endphp
+                    @if($index === 0)
+                    <img src="{{ $slideImg }}" alt="Hero {{ $index + 1 }}" fetchpriority="high" loading="eager" decoding="sync">
+                    @else
+                    <img src="{{ $slideImg }}" alt="Hero {{ $index + 1 }}" loading="lazy" decoding="async">
+                    @endif
+                </div>
+            @endforeach
+        </div>
+    @endif
 
     {{-- CONTENT --}}
     <div class="hero-content">
@@ -764,47 +1012,50 @@ const heroSliderData = @json($heroSliderMapped);
 ============================== --}}
 
 
-<section class="about-section py-5 my-lg-4">
+<section class="about-section py-3 my-lg-2">
     <div class="container" style="max-width: 1072px; margin: 0 auto; padding: 0 15px;">
         <div class="row align-items-center gy-5">
  
             {{-- LEFT CONTENT --}}
             <div class="col-12 col-lg-6 pe-lg-5">
-                <div class="about-tag-wrapper mb-3">
+                <div class="about-tag-wrapper mb-3 anim-fade-up">
                     <span class="about-tag">{{ $aTag }}</span>
                 </div>
- 
-                <h2 class="about-title mb-4">
+
+                <h2 class="about-title mb-4 anim-fade-up anim-delay-1">
                     @if($aDesignWord && Str::contains($aHeading, $aDesignWord))
                         {!! nl2br(e(Str::before($aHeading, $aDesignWord))) !!}<span class="text-teal">{{ $aDesignWord }}</span>{!! nl2br(e(Str::after($aHeading, $aDesignWord))) !!}
                     @else
                         {{ $aHeading }}
                     @endif
                 </h2>
- 
-                <p class="about-desc mb-5">
-                    {!! strip_tags($aDesc) !!}
-                </p>
- 
+
+                <div class="about-desc mb-5 anim-fade-up anim-delay-2">
+                    {!! $aDesc !!}
+                </div>
+
                 {{-- LIST ITEMS --}}
                 <div class="about-list">
-                    @foreach($items as $item)
-                        <div class="about-item d-flex gap-3 mb-4">
+                    @foreach($items as $i => $item)
+                        <div class="about-item d-flex gap-3 mb-4 anim-fade-up anim-delay-{{ $i + 3 }}">
                             <span class="about-num">{{ $item['num'] }}</span>
                             <div class="about-content">
                                 <h4 class="item-title">{{ $item['title'] }}</h4>
-                                <p class="item-text">{{ strip_tags($item['text']) }}</p>
+                                <div class="item-text">{!! $item['text'] !!}</div>
                             </div>
                         </div>
                     @endforeach
                 </div>
- 
-                <a href="/about" class="learn-btn mt-3 d-inline-block text-decoration-none">Learn About Us &rarr;</a>
+
+                <a href="/about" class="learn-btn d-inline-flex align-items-center text-decoration-none anim-fade-up anim-delay-5">
+                    <span>Learn About Us</span>
+                    <span class="learn-btn-arrow">&rarr;</span>
+                </a>
             </div>
- 
+
             {{-- RIGHT IMAGE --}}
             <div class="col-12 col-lg-6">
-                <div class="about-img-wrap position-relative">
+                <div class="about-img-wrap position-relative anim-fade-right">
                     <img src="{{ $aImage }}" alt="{{ strip_tags($aHeading) }}" class="img-fluid rounded-4 shadow-sm">
  
                     <!-- <div class="about-badge shadow-lg">
@@ -821,7 +1072,7 @@ const heroSliderData = @json($heroSliderMapped);
 {{-- ==============================
       SERVICES SECTION
 ============================== --}}
-<section class="services-section py-5 bg-light-subtle">
+<section class="services-section py-3 bg-light-subtle">
     <div class="container" style="max-width: 1072px; margin: 0 auto; padding: 0 15px;">
 
         {{-- HEADER --}}
@@ -895,7 +1146,9 @@ const heroSliderData = @json($heroSliderMapped);
     $title    = $service->service_name ?? '';
     $desc     = strip_tags($service->description ?? '');
 @endphp
+  
 <div class="col-12 col-sm-6 col-lg-4">
+        <a href="{{ route('serviceDetails', $service->id) }}" class="text-decoration-none text-dark">
     <div class="service-card h-100 shadow-sm">
         <div class="card-img-wrapper">
             <img src="{{ $imageUrl }}" alt="{{ $tag }}">
@@ -904,11 +1157,15 @@ const heroSliderData = @json($heroSliderMapped);
             <span class="card-cat d-inline-block mb-2">{{ $tag }}</span>
             <div class="animated-line mb-3"></div>
             <h3 class="card-title-text h5 fw-bold mb-2">{{ $title }}</h3>
-            <p class="card-text-desc text-muted">{{ Str::limit($desc, 120) }}</p>
+            <p class="card-text-desc text-muted" style="text-align: justify;">
+                {{ Str::limit($desc, 120) }}
+            </p>
             <a href="{{ route('serviceDetails', $service->id) }}" class="read-more-btn">Read More ›</a>
         </div>
     </div>
+       </a>
 </div>
+
 @empty
 {{-- fallback static cards --}}
 @endforelse
@@ -919,7 +1176,7 @@ const heroSliderData = @json($heroSliderMapped);
 {{-- ==============================
       PROJECTS SECTION
 ============================== --}}
-<section class="projects-section py-5 bg-white">
+<section class="projects-section py-4 bg-white">
     <div class="container" style="max-width: 1072px; margin: 0 auto; padding: 0 15px;">
 
         {{-- HEADER --}}
@@ -933,7 +1190,7 @@ const heroSliderData = @json($heroSliderMapped);
                 <div style="max-width:520px;">
                     <h2 class="section-title mb-2">Our <span class="text-teal">Projects</span></h2>
                     <p class="section-desc mb-0">
-                        TRACE has delivered trade facilitation reform, laboratory accreditation, digital systems, and policy advisory projects across South Asia — for governments, development banks, and regulatory bodies.
+                        TRACE has delivered trade facilitation reform, laboratory accreditation, digital systems, and policy advisory projects across South Asia for governments, development banks, and regulatory bodies.
                     </p>
                 </div>
                 <a href="/projects" class="all-link text-decoration-none">
@@ -945,47 +1202,142 @@ const heroSliderData = @json($heroSliderMapped);
 
         {{-- GRID --}}
         <div class="row g-4">
+            @forelse($homeProjects as $project)
             @php
-            $projects = [
-                ['img' => 'Lab Project.png', 'badge' => 'LAB ACCREDITATION', 'title' => 'ISO/IEC 17025:2017 Accreditation Support to PRTC, CVASU', 'sub' => 'Chattogram Veterinary & Animal Sciences University'],
-                ['img' => 'Infrastructure Project.png', 'badge' => 'INFRASTRUCTURE DESIGN', 'title' => 'Seven-Storey Advanced Customs Laboratory Layout Design', 'sub' => 'Customs Authority, Chattogram'],
-                ['img' => 'BAFISA Project.png', 'badge' => 'DIGITAL SOLUTIONS', 'title' => 'HS Code Import Database & BAFISA Website Upgrade', 'sub' => 'Bangladesh Freight Forwarders & Shipping'],
-            ];
+                $pImg    = $project->heroImageUrl() ?? '';
+                $pSvc    = $project->services->first();
+                $pCat    = $pSvc?->section ?: ($pSvc?->service_name ?? '');
+                $pClient = abbreviateClientName($project->client) ?? '';
             @endphp
-
-           @forelse($homeProjects as $project)
-@php
-    $pImg    = $project->imageUrl() ?? '';
-    $pSvc    = $project->services->first();
-    $pCat    = $pSvc?->section ?: ($pSvc?->service_name ?? '');
-    $pClient = abbreviateClientName($project->client) ?? '';
-@endphp
-<div class="col-12 col-md-6 col-lg-4">
-    <a href="{{ route('projectdetails', $project) }}" class="text-decoration-none">
-        <div class="project-card">
-            <img src="{{ $pImg }}" alt="{{ $project->project_title }}">
-            <div class="proj-overlay">
-                <div class="proj-badge-box">{{ strtoupper($pCat) }}</div>
-                <h3 class="proj-title">{{ $project->project_title }}</h3>
-                <p class="proj-sub">{{ $pClient }}</p>
+            <div class="col-12 col-md-6 col-lg-4">
+                <a href="{{ route('projectdetails', $project) }}" class="text-decoration-none">
+                    <div class="project-card">
+                        <div class="proj-img-box">
+                            <img src="{{ $pImg }}" alt="{{ $project->project_title }}">
+                            @if($pCat)
+                            <div class="proj-badge-box">{{ strtoupper($pCat) }}</div>
+                            @endif
+                        </div>
+                        <div class="proj-content">
+                            <h3 class="proj-title">{{ $project->project_title }}</h3>
+                            @if($pClient)
+                            <p class="proj-sub">{{ $pClient }}</p>
+                            @endif
+                        </div>
+                    </div>
+                </a>
             </div>
-        </div>
-    </a>
-</div>
-@empty
-{{-- fallback static --}}
-@endforelse
+            @empty
+            @endforelse
         </div>
     </div>
 </section>
 
 {{-- ==============================
+     LATEST NEWS & FEATURES
+============================== --}}
+@if($homeLatestNews->isNotEmpty())
+@php
+    $newsHeading    = $homeLatestNewsHeading?->heading     ?? 'News & Features';
+    $newsDesignWord = $homeLatestNewsHeading?->design_word ?? '';
+    $newsDesc       = strip_tags($homeLatestNewsHeading?->description ?? '');
+    $sourceIconMap  = ['project' => 'fa-folder-open', 'job' => 'fa-briefcase', 'insight' => 'fa-newspaper'];
+@endphp
+<section class="latest-news-section py-4 bg-light-subtle">
+    <div class="container" style="max-width: 1072px; margin: 0 auto; padding: 0 15px;">
+
+        {{-- HEADER --}}
+        <div class="mb-5">
+            <div class="d-flex align-items-center gap-2 mb-3">
+                <span class="tag-dot"></span>
+                <span class="section-tag-pill">LATEST UPDATES</span>
+            </div>
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-3">
+                <div style="max-width:520px;">
+                    <h2 class="section-title mb-2">
+                        @if($newsDesignWord && str_contains($newsHeading, $newsDesignWord))
+                            {{ \Illuminate\Support\Str::before($newsHeading, $newsDesignWord) }}<span class="text-teal">{{ $newsDesignWord }}</span>{{ \Illuminate\Support\Str::after($newsHeading, $newsDesignWord) }}
+                        @else
+                            {{ $newsHeading }}
+                        @endif
+                    </h2>
+                    @if($newsDesc)<p class="section-desc mb-0">{{ $newsDesc }}</p>@endif
+                </div>
+                <a href="{{ route('latestUpdates') }}" class="all-link text-decoration-none">
+                    <span class="fw-bold text-dark me-1" style="font-size: 13px;">Show All</span>
+                    <span class="circle-arrow">&rarr;</span>
+                </a>
+            </div>
+        </div>
+
+        {{-- GRID --}}
+        <div class="news-grid">
+            @foreach($homeLatestNews->take(5) as $index => $item)
+            @php
+                $itemDate  = $item->date instanceof \Carbon\Carbon ? $item->date->format('M d, Y') : ($item->date ? \Carbon\Carbon::parse($item->date)->format('M d, Y') : '');
+                $typeIcon  = $sourceIconMap[$item->source] ?? 'fa-newspaper';
+                $isFeatured = $index === 0;
+            @endphp
+            @if($isFeatured)
+                <a href="{{ $item->link }}" class="news-card-link" @if($item->is_external) target="_blank" rel="noopener" @endif>
+                    <div class="news-card news-big-card">
+                        <div class="news-card-img-box {{ !$item->image ? 'no-image' : '' }}">
+                            @if($item->image)
+                                <img src="{{ $item->image }}" alt="{{ $item->heading }}" loading="lazy">
+                                <div class="news-img-overlay-gradient"></div>
+                            @else
+                                <i class="fas {{ $typeIcon }}"></i>
+                            @endif
+                            <span class="news-badge-custom">{{ strtoupper($item->badge_label) }}</span>
+                        </div>
+                        <div class="news-card-body">
+                            <h4 class="news-card-h">{{ $item->heading }}</h4>
+                            @if($item->description)
+                                <p class="news-card-p">{{ $item->description }}</p>
+                            @endif
+                        </div>
+                        <div class="news-card-footer">
+                            <span class="news-meta-text">{{ $itemDate }}{{ $itemDate && $item->extra ? ' · ' : '' }}{{ $item->extra }}</span>
+                            <span class="news-footer-link">{{ $item->action_label }} &rarr;</span>
+                        </div>
+                    </div>
+                </a>
+            @else
+                <a href="{{ $item->link }}" class="news-card-link" @if($item->is_external) target="_blank" rel="noopener" @endif>
+                    <div class="news-card news-small-card">
+                        <div class="news-card-img-box news-small-img {{ !$item->image ? 'no-image' : '' }}">
+                            @if($item->image)
+                                <img src="{{ $item->image }}" alt="{{ $item->heading }}" loading="lazy">
+                                <div class="news-img-overlay-gradient"></div>
+                            @else
+                                <i class="fas {{ $typeIcon }}"></i>
+                            @endif
+                            <span class="news-badge-custom" style="background: #01888C;">{{ strtoupper($item->badge_label) }}</span>
+                        </div>
+                        <div class="news-card-body-small">
+                            <h4 class="news-card-h-small">{{ $item->heading }}</h4>
+                        </div>
+                        <div class="news-card-footer-small">
+                            <span class="news-meta-text">{{ $itemDate }}{{ $itemDate && $item->extra ? ' · ' : '' }}{{ $item->extra }}</span>
+                            <span class="news-footer-link">{{ $item->action_label }} &rarr;</span>
+                        </div>
+                    </div>
+                </a>
+            @endif
+            @endforeach
+        </div>
+
+    </div>
+</section>
+@endif
+
+{{-- ==============================
      PARTNERS
 ============================== --}}
-<section class="partners-section py-5">
+<section class="partners-section py-3">
     <div class="container" style="max-width:1200px;">
 
-        <p class="partners-title mb-4 text-center">TRUSTED BY LEADING INSTITUTIONS</p>
+        <p class="partners-title mb-4 text-center">OUR PARTNERS</p>
 
         <div class="partner-slider position-relative">
             <div class="partner-logos-wrapper">
@@ -1035,20 +1387,24 @@ const heroSliderData = @json($heroSliderMapped);
 <script>
 // ====== HERO SLIDER ======
 (function () {
-    const slides     = document.querySelectorAll('.slide');
-    const indicators = document.querySelectorAll('.slider-line .ind');
-    const taglineEl  = document.getElementById('heroTagline');
-    const titleEl    = document.getElementById('heroTitle');
-    const descEl     = document.getElementById('heroDesc');
-    let current = 0;
+    const slides      = document.querySelectorAll('.slide');
+    const indicators  = document.querySelectorAll('.slider-line .ind');
+    const heroContent = document.querySelector('.hero-content');
+    const taglineEl   = document.getElementById('heroTagline');
+    const titleEl     = document.getElementById('heroTitle');
+    const descEl      = document.getElementById('heroDesc');
+    const hasVideo    = !!document.querySelector('.hero-video-bg');
+    const total       = typeof heroSliderData !== 'undefined' ? heroSliderData.length : 0;
+
+    let current   = 0;
+    let animating = false;
 
     function updateText(idx) {
-        if (typeof heroSliderData === 'undefined' || !heroSliderData[idx]) return;
-        const d           = heroSliderData[idx];
-        const title       = d.title       || '';
-        const designWord  = d.design_word || '';
-        const tagline     = d.tagline     || '';
-        const description = d.description || '';
+        if (!heroSliderData || !heroSliderData[idx]) return;
+        const d          = heroSliderData[idx];
+        const title      = d.title       || '';
+        const designWord = d.design_word || '';
+        const tagline    = d.tagline     || '';
 
         if (taglineEl) taglineEl.textContent = tagline;
 
@@ -1062,25 +1418,63 @@ const heroSliderData = @json($heroSliderMapped);
             }
         }
 
-        if (descEl) descEl.innerHTML = description;
+        if (descEl) descEl.innerHTML = d.description || '';
     }
 
     function goTo(n) {
-        slides[current].classList.remove('active');
-        indicators[current]?.classList.remove('active');
-        current = (n + slides.length) % slides.length;
-        slides[current].classList.add('active');
+        if (animating || total <= 1) return;
+        animating = true;
+
+        const prev = current;
+        current = ((n % total) + total) % total;
+
+        // Fade out text
+        if (heroContent) heroContent.classList.add('hero-text-fading');
+
+        // Image slides — only switch when no video
+        if (!hasVideo) {
+            slides[prev]?.classList.remove('active');
+            slides[current]?.classList.add('active');
+        }
+
+        // Update indicators
+        indicators[prev]?.classList.remove('active');
         indicators[current]?.classList.add('active');
-        updateText(current);
+
+        setTimeout(() => {
+            updateText(current);
+            if (heroContent) heroContent.classList.remove('hero-text-fading');
+            animating = false;
+        }, 450);
     }
 
-    // Auto-advance every 4s
-    setInterval(() => goTo(current + 1), 4000);
+    // Auto-advance every 5s
+    let timer = setInterval(() => goTo(current + 1), 5000);
 
     // Click indicators
-    indicators.forEach((ind, i) => ind.addEventListener('click', () => goTo(i)));
+    indicators.forEach((ind, i) => {
+        ind.addEventListener('click', () => {
+            clearInterval(timer);
+            goTo(i);
+            timer = setInterval(() => goTo(current + 1), 5000);
+        });
+    });
 })();
 
+// ====== SCROLL ANIMATIONS ======
+(function () {
+    const els = document.querySelectorAll('.anim-fade-up, .anim-fade-left, .anim-fade-right');
+    if (!els.length) return;
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+            if (e.isIntersecting) {
+                e.target.classList.add('anim-visible');
+                observer.unobserve(e.target);
+            }
+        });
+    }, { threshold: 0.15 });
+    els.forEach(el => observer.observe(el));
+})();
 
 </script>
 @endpush

@@ -13,7 +13,7 @@
                 <div class="footer-brand mb-3">
                     @if($siteSettings?->logoImageUrl())
                         <img src="{{ $siteSettings->logoImageUrl() }}" alt="Trace Logo"
-                             style="width: 38px; height: 38px; object-fit: contain;">
+                             style="width: 200px; height: 70px; object-fit: contain; background: white; padding: 5px; border-radius: 4px;">
                     @endif
                     <div class="d-flex flex-column">
                         <h3 class="mb-0 fw-bold footer-brand-title">{{ $siteSettings?->logo_text ?: '' }}</h3>
@@ -22,7 +22,7 @@
                 </div>
 
                 {{-- Description --}}
-                <p style="font-size: 13px; color: #8fa6ad; line-height: 1.7; margin-bottom: 20px;">
+                <p style="font-size: 13px; color: #8fa6ad; line-height: 1.7; margin-bottom: 20px; text-align: justify;">
                     {{ $siteSettings?->footer_description ?: '' }}
                 </p>
 
@@ -70,12 +70,12 @@
     <div class="container-fluid px-lg-0 py-3" style="max-width: 1072px; margin: 0 auto;">
         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2">
             <p class="mb-0" style="font-size: 12px; color: #8fa6ad;">
-                © 2026 Trace Consulting Limited. All rights reserved.
+                © 2026 TRACE Consulting. All rights reserved.
             </p>
-            <div class="d-flex gap-3">
+            <!-- <div class="d-flex gap-3">
                 <span class="footer-bottom-link">Privacy Policy</span>
                 <span class="footer-bottom-link">Terms of Use</span>
-            </div>
+            </div> -->
         </div>
     </div>
 </footer>

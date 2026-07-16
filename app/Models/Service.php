@@ -50,6 +50,11 @@ class Service extends Model implements HasMedia
         return $this->hasMany(ServiceDetail::class)->orderBy('sort_order');
     }
 
+    public function heroPillars()
+    {
+        return $this->hasMany(ServiceHeroPillar::class)->orderBy('sort_order');
+    }
+
     public function solutions()
     {
         return $this->hasMany(ServiceProductSolution::class)->orderBy('sort_order');

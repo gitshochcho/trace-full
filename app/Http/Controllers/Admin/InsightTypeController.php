@@ -10,7 +10,7 @@ class InsightTypeController extends Controller
 {
     public function index()
     {
-        $insights = InsightType::orderBy('type')->paginate(20);
+        $insights = InsightType::orderBy('sort_order')->orderBy('id')->paginate(20);
         return view('admin.insight-type.index', compact('insights'));
     }
 
@@ -22,11 +22,13 @@ class InsightTypeController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'type' => 'required|string|max:255',
-            'type_category' => 'required|string|max:255',
+            'type'         => 'required|string|max:255',
+            'type_category'=> 'required|string|max:255',
+            'sort_order'   => 'nullable|integer|min:0',
         ]);
 
-        $validated['status'] = $request->has('status') ? 1 : 0;
+        $validated['status']     = $request->has('status') ? 1 : 0;
+        $validated['sort_order'] = $validated['sort_order'] ?? 0;
 
         InsightType::create($validated);
 
@@ -41,15 +43,24 @@ class InsightTypeController extends Controller
     public function update(Request $request, InsightType $insightType)
     {
         $validated = $request->validate([
-            'type' => 'required|string|max:255',
-            'type_category' => 'required|string|max:255',
+            'type'         => 'required|string|max:255',
+            'type_category'=> 'required|string|max:255',
+            'sort_order'   => 'nullable|integer|min:0',
         ]);
 
-        $validated['status'] = $request->has('status') ? 1 : 0;
+        $validated['status']     = $request->has('status') ? 1 : 0;
+        $validated['sort_order'] = $validated['sort_order'] ?? 0;
 
         $insightType->update($validated);
 
         return redirect()->route('admin.insight-types.index')->with('message', 'Insight type updated successfully');
+    }
+
+    public function updateSortOrder(Request $request, InsightType $insightType)
+    {
+        $request->validate(['sort_order' => 'required|integer|min:0']);
+        $insightType->update(['sort_order' => $request->sort_order]);
+        return response()->json(['success' => true]);
     }
 
     public function destroy(InsightType $insightType)

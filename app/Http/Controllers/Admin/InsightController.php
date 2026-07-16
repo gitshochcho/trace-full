@@ -31,7 +31,8 @@ class InsightController extends Controller
     {
         $insightTypes = InsightType::orderBy('type')->where('status', true)->get(['id', 'type', 'type_category', 'status']);
         $teams = Team::query()->orderBy('first_name')->orderBy('last_name')->get(['id', 'first_name', 'last_name']);
-        return view('admin.insight.create', compact('insightTypes', 'teams'));
+        $nextSortOrder = (Insight::max('sort_order') ?? -1) + 1;
+        return view('admin.insight.create', compact('insightTypes', 'teams', 'nextSortOrder'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -46,6 +47,7 @@ class InsightController extends Controller
             'description' => $validated['description'] ?? null,
             'sort_order' => $validated['sort_order'] ?? 0,
             'active' => (bool) ($validated['active'] ?? true),
+            'show_on_home' => $request->boolean('show_on_home'),
             'published_at' => $validated['published_at'] ?? null,
             'source_name' => $validated['source_name'] ?? null,
             'publish_links' => $validated['publish_links'] ?? [],
@@ -82,6 +84,7 @@ class InsightController extends Controller
             'description' => $validated['description'] ?? null,
             'sort_order' => $validated['sort_order'] ?? 0,
             'active' => (bool) ($validated['active'] ?? true),
+            'show_on_home' => $request->boolean('show_on_home'),
             'published_at' => $validated['published_at'] ?? null,
             'source_name' => $validated['source_name'] ?? null,
             'publish_links' => $validated['publish_links'] ?? [],
