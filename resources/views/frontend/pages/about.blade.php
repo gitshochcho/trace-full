@@ -1001,7 +1001,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 147px;
+    width: auto;
     height: 46px;
     padding: 12px 28px;
     border-radius: 100px;

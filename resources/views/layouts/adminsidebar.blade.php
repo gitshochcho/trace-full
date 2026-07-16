@@ -147,6 +147,30 @@
     </ul>
 </li>
 
+                <li class="nav-item">
+    <a href="#" class="nav-link {{ request()->is('admin/innovations*') ? 'active' : '' }}">
+        <i class="nav-icon bi bi-lightbulb"></i>
+        <p>
+            Innovations
+            <i class="nav-arrow bi bi-chevron-right"></i>
+        </p>
+    </a>
+    <ul class="nav nav-treeview">
+        <li class="nav-item">
+            <a href="{{ route('admin.innovations.index') }}" class="nav-link {{ request()->routeIs('admin.innovations.index') ? 'active' : '' }}">
+                <i class="nav-icon bi bi-circle"></i>
+                <p>All Innovations</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ route('admin.innovations.create') }}" class="nav-link {{ request()->routeIs('admin.innovations.create') ? 'active' : '' }}">
+                <i class="nav-icon bi bi-circle"></i>
+                <p>Add Innovation</p>
+            </a>
+        </li>
+    </ul>
+</li>
+
                 <!-- <li class="nav-item {{ request()->is('admin/role/permission/*') ? 'menu-open' : '' }}"> <a href="#" class="nav-link {{ request()->is('admin/role/permission/*') ? 'active' : '' }}">  <span class="nav-icon mdi mdi-home"></span>
                         <p>
                            Role & Permission

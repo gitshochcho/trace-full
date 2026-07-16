@@ -430,6 +430,30 @@
 }
 .dl-btn:hover { background: #d9622a; color: #fff; }
 
+.copy-link-btn {
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: 1px solid #b2e8e8;
+    border-radius: 6px;
+    color: #01888C;
+    background: #eef9f9;
+    transition: background .2s, border-color .2s, color .2s;
+}
+.copy-link-btn:hover {
+    background: #01888C;
+    border-color: #01888C;
+    color: #fff;
+}
+.copy-link-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(1, 136, 140, 0.2);
+}
+
 /* AUTHOR CARD */
 .author-info {
     display: flex;
@@ -821,8 +845,7 @@
                     </a>
                     <button type="button"
                         onclick="navigator.clipboard.writeText('{{ $plUrl }}'); const b=this; b.innerHTML='<i class=\'fas fa-check\'></i>'; setTimeout(()=>b.innerHTML='<i class=\'far fa-copy\'></i>',2000);"
-                        class="btn btn-sm"
-                        style="width:34px;height:34px;padding:0;border:1px solid #b2e8e8;border-radius:6px;color:#01888C;background:#eef9f9;flex-shrink:0;"
+                        class="copy-link-btn"
                         title="Copy link">
                         <i class="far fa-copy"></i>
                     </button>

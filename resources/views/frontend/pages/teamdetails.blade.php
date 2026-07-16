@@ -241,7 +241,7 @@
 
 .sidebar-container {
     position: sticky;
-    top: 20px;
+    top: 100px;
 }
 
 .cta-card {

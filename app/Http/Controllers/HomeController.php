@@ -5,6 +5,7 @@ use App\Mail\ForgetPassMail;
 use App\Models\ContactInfo;
 use App\Models\Country;
 use App\Models\Gender;
+use App\Models\Innovation;
 use App\Models\Insight;
 use App\Models\InsightArticle;
 use App\Models\InsightType;
@@ -147,9 +148,31 @@ class HomeController extends Controller
                 'extra'        => $j->employment_type,
             ]);
 
+        // Innovations marked show_on_home
+        $homeInnovationNews = Innovation::where('active', true)
+            ->where('show_on_home', true)
+            ->orderBy('sort_order')
+            ->latest('id')
+            ->get()
+            ->map(fn($n) => (object)[
+                'source'       => 'innovation',
+                'id'           => $n->id,
+                'heading'      => $n->title,
+                'description'  => \Illuminate\Support\Str::limit(strip_tags($n->description ?? ''), 120),
+                'image'        => $n->imageUrl(),
+                'date'         => $n->created_at,
+                'badge_label'  => 'Innovation',
+                'badge_color'  => '#16a34a',
+                'action_label' => 'Visit Website',
+                'link'         => $n->website_link ?: route('innovations'),
+                'is_external'  => (bool) $n->website_link,
+                'extra'        => null,
+            ]);
+
        $homeLatestNews = collect($homeInsights->all())
             ->merge($homeProjectNews->all())
             ->merge($homeJobNews->all())
+            ->merge($homeInnovationNews->all())
             ->sortByDesc('date')
             ->values();
  
@@ -318,6 +341,21 @@ class HomeController extends Controller
         return view('frontend.pages.insights', compact('insights', 'insightsPageContent', 'insightTypes'));
     }
 
+    public function innovations()
+    {
+        $innovations = Innovation::with('media')
+            ->where('active', true)
+            ->orderBy('sort_order')
+            ->latest('id')
+            ->get();
+
+        $categories = $innovations->pluck('category')->filter()->unique()->values();
+
+        $innovationsPageContent = contentBlock('innovations-page');
+
+        return view('frontend.pages.innovations', compact('innovations', 'categories', 'innovationsPageContent'));
+    }
+
     public function latestUpdates(Request $request)
     {
         $latestUpdatesContent = contentBlock('home-latest-news');
@@ -401,17 +439,39 @@ class HomeController extends Controller
                 'extra'        => $j->employment_type,
             ]);
 
+        $innovationItems = Innovation::where('active', true)
+            ->where('show_on_home', true)
+            ->orderBy('sort_order')
+            ->latest('id')
+            ->get()
+            ->map(fn($n) => (object)[
+                'source'       => 'innovation',
+                'id'           => $n->id,
+                'heading'      => $n->title,
+                'description'  => \Illuminate\Support\Str::limit(strip_tags($n->description ?? ''), 120),
+                'image'        => $n->imageUrl(),
+                'date'         => $n->created_at,
+                'badge_label'  => 'Innovation',
+                'badge_color'  => '#16a34a',
+                'action_label' => 'Visit Website',
+                'link'         => $n->website_link ?: route('innovations'),
+                'is_external'  => (bool) $n->website_link,
+                'extra'        => null,
+            ]);
+
         $allUpdates = collect($insightItems->all())
             ->merge($projectItems->all())
             ->merge($jobItems->all())
+            ->merge($innovationItems->all())
             ->sortByDesc('date')
             ->values();
 
         $counts = [
-            'ALL'      => $allUpdates->count(),
-            'INSIGHT'  => $insightItems->count(),
-            'PROJECT'  => $projectItems->count(),
-            'JOB'      => $jobItems->count(),
+            'ALL'        => $allUpdates->count(),
+            'INSIGHT'    => $insightItems->count(),
+            'PROJECT'    => $projectItems->count(),
+            'JOB'        => $jobItems->count(),
+            'INNOVATION' => $innovationItems->count(),
         ];
 
         $activeFilter = strtoupper((string) $request->get('type', 'ALL'));

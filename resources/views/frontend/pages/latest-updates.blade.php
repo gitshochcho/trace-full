@@ -79,7 +79,7 @@
     $updHeading    = $latestUpdatesContent?->heading     ?? 'News & Features';
     $updDesignWord = $latestUpdatesContent?->design_word ?? '';
     $updDescription= strip_tags($latestUpdatesContent?->description ?? '');
-    $sourceIconMap = ['project' => 'fa-folder-open', 'job' => 'fa-briefcase', 'insight' => 'fa-newspaper'];
+    $sourceIconMap = ['project' => 'fa-folder-open', 'job' => 'fa-briefcase', 'insight' => 'fa-newspaper', 'innovation' => 'fa-lightbulb'];
 @endphp
 
 <nav class="service-breadcrumb">
@@ -126,6 +126,7 @@
             <a href="{{ route('latestUpdates', ['type' => 'insight']) }}" class="filter-link {{ $activeFilter === 'INSIGHT' ? 'active' : '' }}">INSIGHTS ({{ $counts['INSIGHT'] }})</a>
             <a href="{{ route('latestUpdates', ['type' => 'project']) }}" class="filter-link {{ $activeFilter === 'PROJECT' ? 'active' : '' }}">PROJECTS ({{ $counts['PROJECT'] }})</a>
             <a href="{{ route('latestUpdates', ['type' => 'job']) }}" class="filter-link {{ $activeFilter === 'JOB' ? 'active' : '' }}">CAREERS ({{ $counts['JOB'] }})</a>
+            <a href="{{ route('latestUpdates', ['type' => 'innovation']) }}" class="filter-link {{ $activeFilter === 'INNOVATION' ? 'active' : '' }}">INNOVATIONS ({{ $counts['INNOVATION'] }})</a>
         </div>
     </div>
 </section>

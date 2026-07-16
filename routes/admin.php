@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\TeamController;
 use App\Http\Controllers\Admin\PartnerController;
+use App\Http\Controllers\Admin\InnovationController;
 use App\Http\Controllers\Admin\CvSubmissionController;
 use App\Http\Controllers\Admin\InsightTypeController;
 
@@ -96,6 +97,15 @@ Route::prefix('admin')->group(function () {
     Route::get('partners/{partner}/edit', 'edit')->name('admin.partners.edit');
     Route::put('partners/{partner}', 'update')->name('admin.partners.update');
     Route::delete('partners/{partner}', 'destroy')->name('admin.partners.destroy');
+});
+
+        Route::controller(InnovationController::class)->group(function () {
+    Route::get('innovations', 'index')->name('admin.innovations.index');
+    Route::get('innovations/create', 'create')->name('admin.innovations.create');
+    Route::post('innovations', 'store')->name('admin.innovations.store');
+    Route::get('innovations/{innovation}/edit', 'edit')->name('admin.innovations.edit');
+    Route::put('innovations/{innovation}', 'update')->name('admin.innovations.update');
+    Route::delete('innovations/{innovation}', 'destroy')->name('admin.innovations.destroy');
 });
 
         Route::controller(InsightController::class)->group(function () {

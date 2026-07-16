@@ -130,7 +130,7 @@
     display: flex;
     flex-direction: column;
     position: sticky;
-    top: 20px;
+    top: 100px;
     align-self: flex-start;
 }
 

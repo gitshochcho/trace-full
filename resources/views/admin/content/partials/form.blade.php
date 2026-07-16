@@ -37,6 +37,7 @@
                             <button type="button" id="applyInsightsPagePreset" class="btn btn-sm btn-outline-primary preset-btn">Insights Page</button>
                             <button type="button" id="applyProjectsPagePreset" class="btn btn-sm btn-outline-primary preset-btn">Projects Page</button>
                             <button type="button" id="applyCareerPagePreset" class="btn btn-sm btn-outline-primary preset-btn">Career Page</button>
+                            <button type="button" id="applyInnovationsPagePreset" class="btn btn-sm btn-outline-primary preset-btn">Innovations Page</button>
                         </div>
                     </div>
                 </div>
@@ -273,6 +274,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const insightsPagePresetBtn = document.getElementById('applyInsightsPagePreset');
         const projectsPagePresetBtn = document.getElementById('applyProjectsPagePreset');
         const careerPagePresetBtn   = document.getElementById('applyCareerPagePreset');
+        const innovationsPagePresetBtn = document.getElementById('applyInnovationsPagePreset');
         const projectLocationPresetBtn = document.getElementById('applyProjectLocationPreset');
         const projectPhasePresetBtn = document.getElementById('applyProjectPhasePreset');
         const projectOutcomePresetBtn = document.getElementById('applyProjectOutcomePreset');
@@ -519,6 +521,18 @@ if (removeIconBtn) {
                 if (designWordField) designWordField.value = 'Team';
                 if (typeField)      typeField.value      = 'Hero';
                 setDescriptionValue('We are looking for curious, driven professionals to help us reshape trade policy, regulatory reform, and economic development across South Asia.');
+            });
+        }
+
+        if (innovationsPagePresetBtn) {
+            innovationsPagePresetBtn.addEventListener('click', function () {
+                if (slugField)      slugField.value      = 'innovations-page';
+                if (sectionField)   sectionField.value   = 'OUR INNOVATION';
+                if (headingField)   headingField.value   = 'Our Innovation';
+                if (subHeadingField) subHeadingField.value = '';
+                if (designWordField) designWordField.value = '';
+                if (typeField)      typeField.value      = 'Hero';
+                setDescriptionValue('Explore our digital platforms and innovative systems designed to solve real-world challenges and drive meaningful impact.');
             });
         }
 

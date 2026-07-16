@@ -26,6 +26,9 @@
                 <li class="nav-item">
                     <a class="nav-link text-dark px-0 {{ request()->is('insights') ? 'active' : '' }}" href="/insights">Insights</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark px-0 {{ request()->is('our-innovations') ? 'active' : '' }}" href="/our-innovations">Our Innovations</a>
+                </li>
                 <!-- <li class="nav-item">
                     <a class="nav-link text-dark px-0 {{ request()->is('latest-updates') ? 'active' : '' }}" href="/latest-updates">Latest</a>
                 </li> -->

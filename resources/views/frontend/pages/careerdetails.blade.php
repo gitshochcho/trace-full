@@ -176,7 +176,7 @@
 
             {{-- RIGHT COLUMN: Sidebar --}}
             <div class="col-lg-5">
-                <div style="position: sticky; top: 20px;">
+                <div style="position: sticky; top: 100px;">
                     
                     {{-- 1. Job Details Card (Smaller) --}}
                     <div class="job-sidebar-info">
