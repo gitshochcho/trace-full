@@ -8,4 +8,8 @@
 <link href="{{asset('frontend/css/style.css')}}" rel="stylesheet">
 
 <!-- Favicon -->
-<link rel="icon" href="{{asset('frontend/assets/images/favicon.png')}}">
+@if(!empty($siteSettings?->faviconImageUrl()))
+    <link rel="icon" href="{{ $siteSettings->faviconImageUrl() }}">
+@else
+    <link rel="icon" href="{{asset('frontend/assets/images/favicon.png')}}">
+@endif

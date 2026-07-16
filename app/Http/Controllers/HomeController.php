@@ -1,31 +1,743 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Mail\ForgetPassMail;
+use App\Models\ContactInfo;
 use App\Models\Country;
 use App\Models\Gender;
+use App\Models\Innovation;
+use App\Models\Insight;
+use App\Models\InsightArticle;
+use App\Models\InsightType;
+use App\Models\JobApplication;
+use App\Models\JobPosting;
+use App\Models\Partner;
+use App\Models\Project;
+use App\Models\Service;
+use App\Models\Slider;
+use App\Models\SliderItem;
+use App\Models\Team;
 use App\Models\User;
 use App\Models\UserDetail;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Propaganistas\LaravelPhone\PhoneNumber;
-use Propaganistas\LaravelPhone\Rules\Phone;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
-use Laravel\Socialite\Facades\Socialite;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Validator ;
+use Illuminate\Support\Facades\Validator;
+use Laravel\Socialite\Facades\Socialite;
+use Propaganistas\LaravelPhone\Rules\Phone;
+
 
 class HomeController extends Controller
 {
 
     public function home(Request $request)
     {
+        $homeAboutTrace      = contentBlock('home_about_trace');
+        $homeAboutTraceOne   = contentBlock('home_about_trace_one');
+        $homeAboutTraceTwo   = contentBlock('home_about_trace_two');
+        $homeAboutTraceThree = contentBlock('home_about_trace_three');
+        $homeYearsExpertise  = contentBlock('home_years_of_expertise');
+        $slider              = cache()->remember('slider_data', 60 * 60 * 24, function () {
+            return Slider::with('media')->first();
+        });
+        $sliderItems         = cache()->remember('slider_items_data', 60 * 60 * 24, function () {
+            return SliderItem::with('media')->where('active', true)->orderBy('sort_order')->orderBy('id')->get();
+        });
 
-        return view('frontend.pages.home');
+        $homeServices = Service::query()
+            ->with(['content', 'media', 'solutions'])
+            ->where('active', true)
+            ->orderBy('sort_order')
+            ->limit(6)
+            ->get();
+
+        // Projects — latest 3টা
+        $homeProjects = Project::query()
+            ->with(['services', 'media'])
+            ->orderBy('sort_order')
+            ->latest('id')
+            ->limit(6)
+            ->get();
+
+        $partners = Partner::with('media')->latest()->get();
+
+        // Insights marked show_on_home
+        $homeInsights = Insight::with(['insightType', 'media', 'articles' => fn($q) => $q->where('active', true)->orderBy('sort_order')])
+            ->where('active', true)
+            ->where('show_on_home', true)
+            ->orderBy('sort_order')
+            ->latest('id')
+            ->get()
+            ->map(fn($i) => (object)[
+                'source'       => 'insight',
+                'id'           => $i->id,
+                'heading'      => $i->heading,
+                'description'  => $i->description,
+                'image'        => $i->imageUrl() ?: $i->articleImageUrl(),
+                'date'         => $i->published_at,
+                'badge_label'  => $i->insightType?->type ?? 'Insight',
+                'badge_color'  => match(strtolower($i->insightType?->type ?? '')) {
+                    'video'        => '#000000',
+                    'op-ed/press'  => '#116fa1',
+                    'publication'  => '#0f766e',
+                    'brochures'    => '#ea580c',
+                    'article'      => '#1032ae',
+                    default        => '#01354B',
+                },
+                'action_label' => $i->actionLabel(),
+                'link'         => (function() use ($i) {
+                    $cat = strtolower(str_replace(' ', '_', $i->insightType?->type_category ?? ''));
+                    $lead = $i->articles->first();
+                    if ($cat === 'download') return $i->attachmentUrl() ?: route('articleDetails', ['insight_id' => $i->id]);
+                    if (in_array($cat, ['watch','video','video_watch'])) return $i->videoUrl() ?: route('articleDetails', ['insight_id' => $i->id]);
+                    if ($cat === 'read_on') return $i->source_name ?: route('articleDetails', ['insight_id' => $i->id]);
+                    if ($cat === 'read' && $lead) return route('articleDetails', $lead);
+                    return route('articleDetails', ['insight_id' => $i->id]);
+                })(),
+                'is_external'  => (function() use ($i) {
+                    $cat = strtolower(str_replace(' ', '_', $i->insightType?->type_category ?? ''));
+                    if (in_array($cat, ['watch','video','video_watch'])) return !empty($i->videoUrl());
+                    if ($cat === 'read_on') return !empty($i->source_name);
+                    return false;
+                })(),
+                'extra'        => $i->articles->first()?->read_minutes ? $i->articles->first()->read_minutes . ' min read' : null,
+            ]);
+
+        // Projects marked show_on_home
+        $homeProjectNews = Project::with(['services', 'media'])
+            ->where('show_on_home', true)
+            ->orderBy('sort_order')
+            ->latest('id')
+            ->get()
+            ->map(fn($p) => (object)[
+                'source'       => 'project',
+                'id'           => $p->id,
+                'heading'      => $p->project_title,
+                'description'  => \Illuminate\Support\Str::limit(strip_tags($p->overview ?? ''), 120),
+                'image'        => $p->heroImageUrl(),
+                'date'         => $p->start_date,
+                'badge_label'  => $p->services->first()?->section ?: ($p->services->first()?->service_name ?? 'Project'),
+                'badge_color'  => '#01354B',
+                'action_label' => 'View Project',
+                'link'         => route('projectdetails', $p),
+                'is_external'  => false,
+                'extra'        => $p->project_status,
+            ]);
+
+        // Jobs marked show_on_home
+        $homeJobNews = JobPosting::where('is_active', true)
+            ->where('show_on_home', true)
+            ->orderBy('posted_date', 'desc')
+            ->get()
+            ->map(fn($j) => (object)[
+                'source'       => 'job',
+                'id'           => $j->id,
+                'heading'      => $j->title,
+                'description'  => \Illuminate\Support\Str::limit(strip_tags($j->description ?? ''), 120),
+                'image'        => null,
+                'date'         => $j->posted_date,
+                'badge_label'  => 'Career',
+                'badge_color'  => '#7c3aed',
+                'action_label' => 'Apply Now',
+                'link'         => route('careerdetails', $j->id),
+                'is_external'  => false,
+                'extra'        => $j->employment_type,
+            ]);
+
+        // Innovations marked show_on_home
+        $homeInnovationNews = Innovation::where('active', true)
+            ->where('show_on_home', true)
+            ->orderBy('sort_order')
+            ->latest('id')
+            ->get()
+            ->map(fn($n) => (object)[
+                'source'       => 'innovation',
+                'id'           => $n->id,
+                'heading'      => $n->title,
+                'description'  => \Illuminate\Support\Str::limit(strip_tags($n->description ?? ''), 120),
+                'image'        => $n->imageUrl(),
+                'date'         => $n->created_at,
+                'badge_label'  => 'Innovation',
+                'badge_color'  => '#16a34a',
+                'action_label' => 'Visit Website',
+                'link'         => $n->website_link ?: route('innovations'),
+                'is_external'  => (bool) $n->website_link,
+                'extra'        => null,
+            ]);
+
+       $homeLatestNews = collect($homeInsights->all())
+            ->merge($homeProjectNews->all())
+            ->merge($homeJobNews->all())
+            ->merge($homeInnovationNews->all())
+            ->sortByDesc('date')
+            ->values();
+ 
+
+        $homeLatestNewsHeading = contentBlock('home-latest-news');
+
+        return view('frontend.pages.home', compact(
+            'slider', 'sliderItems', 'homeServices', 'homeProjects',
+            'homeAboutTrace', 'homeAboutTraceOne', 'homeAboutTraceTwo',
+            'homeAboutTraceThree', 'homeYearsExpertise', 'partners',
+            'homeLatestNews', 'homeLatestNewsHeading'
+        ));
+    }
+
+    public function services(Request $request)
+    {
+        $servicesHero = contentBlock('services-page')
+            ?? contentBlock('service-hero')
+            ?? contentBlock('service hero');
+        $workWithUs   = contentBlock('work-with-us');
+        // dd($servicesHero);
+
+        $services = Service::query()
+            ->with(['media', 'solutions'])
+            ->where('active', true)
+            ->orderBy('sort_order')
+            ->get();
+
+        $serviceCards = $services->map(function (Service $service) {
+           $imageUrl = $service->imageUrl() ?? asset('');
+
+            return [
+                'id'       => $service->id,
+                'img'      => $imageUrl,
+                'tag'      => $service->section ?: $service->service_name,
+                'title'    => $service->service_name,
+                'desc'     => $service->description ?? '',
+                'products' => $service->solutions->isNotEmpty()
+                    ? $service->solutions->count() . ' Solutions'
+                    : 'View Service',
+            ];
+        })->values();
+
+        return view('frontend.pages.services', compact('servicesHero', 'workWithUs', 'serviceCards'));
+    }
+
+    
+
+    public function serviceDetails(Request $request, $id)
+    {
+        $service = Service::query()
+            ->with([
+                'details'     => fn($q) => $q->orderBy('sort_order'),
+                'solutions'   => fn($q) => $q->orderBy('sort_order'),
+                'heroPillars' => fn($q) => $q->orderBy('sort_order'),
+                'media',
+            ])
+            ->findOrFail($id);
+
+        $otherServices = Service::query()
+            ->where('active', true)
+            ->orderBy('sort_order')
+            ->get(['id', 'service_name', 'section']);
+
+        return view('frontend.pages.service-details', compact('service', 'otherServices'));
+    }
+
+    public function projects(Request $request)
+    {
+        $projectsHero = contentBlock('projects-page');
+
+        $services = Service::query()
+            ->whereHas('projects')
+            ->withCount('projects')
+            ->orderBy('sort_order')
+            ->orderBy('service_name')
+            ->get();
+
+        $selectedService = $request->integer('service');
+
+        $projects = Project::query()
+            ->with(['services', 'media'])
+            ->withCount('services')
+            ->when($selectedService, function ($query, $serviceId) {
+                $query->whereHas('services', function ($serviceQuery) use ($serviceId) {
+                    $serviceQuery->where('services.id', $serviceId);
+                });
+            })
+            ->orderBy('sort_order')
+            ->latest('id')
+            ->get();
+
+        return view('frontend.pages.projects', compact('projectsHero', 'services', 'projects', 'selectedService'));
+    }
+
+    public function projectdetails(Request $request, ?Project $project = null)
+    {
+        $project ??= Project::query()
+            ->with(['services', 'locations', 'phaseDetails', 'outcomes', 'media'])
+            ->orderBy('sort_order')
+            ->latest('id')
+            ->firstOrFail();
+
+        $project->load(['services', 'locations', 'phaseDetails', 'outcomes', 'media']);
+
+        $relatedProjects = Project::query()
+            ->with(['services', 'media'])
+            ->whereKeyNot($project->id)
+            ->orderBy('sort_order')
+            ->latest('id')
+            ->take(3)
+            ->get();
+
+        return view('frontend.pages.projectdetails', compact('project', 'relatedProjects'));
+    }
+
+    // public function insights(Request $request)
+    // {
+    //     $insightsPageContent = contentBlock('insights-page');
+
+    //     $insights = Insight::query()
+    //         ->with(['articles.author.media', 'articles.media', 'media', 'insightType'])
+    //         ->where('active', true)
+    //         ->orderBy('sort_order')
+    //         ->latest('id')
+    //         ->get();
+
+    //     $insightTypes = InsightType::query()
+    //         ->where('status', true)
+    //         ->orderBy('type')
+    //         ->get()
+    //         ->map(function ($type) {
+    //             $type->insights_count = $type->insights()->where('active', true)->count();
+    //             return $type;
+    //         });
+
+    //     // Add "All" option with total count
+    //     $allOption = (object) [
+    //         'id' => null,
+    //         'type' => 'All',
+    //         'insights_count' => $insights->count(),
+    //     ];
+    //     $insightTypes = collect([$allOption])->merge($insightTypes);
+
+    //     return view('frontend.pages.insights', compact('insightsPageContent', 'insights', 'insightTypes'));
+    // }
+
+    public function insights()
+    {
+        $insights = Insight::with(['insightType', 'media', 'articles' => function($q) {
+            $q->where('active', true)->orderBy('sort_order');
+        }])
+        ->where('active', true)
+        ->orderBy('sort_order')
+        ->latest('id')
+        ->get();
+
+        $insightTypes = InsightType::where('status', true)
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->get();
+
+        $insightsPageContent = contentBlock('insights-page')
+            ?? contentBlock('insights-page-header');
+
+        return view('frontend.pages.insights', compact('insights', 'insightsPageContent', 'insightTypes'));
+    }
+
+    public function innovations()
+    {
+        $innovations = Innovation::with('media')
+            ->where('active', true)
+            ->orderBy('sort_order')
+            ->latest('id')
+            ->get();
+
+        $categories = $innovations->pluck('category')->filter()->unique()->values();
+
+        $innovationsPageContent = contentBlock('innovations-page');
+
+        return view('frontend.pages.innovations', compact('innovations', 'categories', 'innovationsPageContent'));
+    }
+
+    public function latestUpdates(Request $request)
+    {
+        $latestUpdatesContent = contentBlock('home-latest-news');
+
+        $insightItems = Insight::with(['insightType', 'media', 'articles' => fn($q) => $q->where('active', true)->orderBy('sort_order')])
+            ->where('active', true)
+            ->where('show_on_home', true)
+            ->latest('id')
+            ->get()
+            ->map(fn($i) => (object)[
+                'source'       => 'insight',
+                'id'           => $i->id,
+                'heading'      => $i->heading,
+                'description'  => $i->description,
+                'image'        => $i->imageUrl() ?: $i->articleImageUrl(),
+                'date'         => $i->published_at,
+                'badge_label'  => $i->insightType?->type ?? 'Insight',
+                'badge_color'  => match(strtolower($i->insightType?->type ?? '')) {
+                    'video'        => '#000000',
+                    'op-ed/press'  => '#116fa1',
+                    'publication'  => '#0f766e',
+                    'brochures'    => '#ea580c',
+                    'article'      => '#1032ae',
+                    default        => '#01354B',
+                },
+                'action_label' => $i->actionLabel(),
+                'link'         => (function() use ($i) {
+                    $cat = strtolower(str_replace(' ', '_', $i->insightType?->type_category ?? ''));
+                    $lead = $i->articles->first();
+                    if ($cat === 'download') return $i->attachmentUrl() ?: route('articleDetails', ['insight_id' => $i->id]);
+                    if (in_array($cat, ['watch','video','video_watch'])) return $i->videoUrl() ?: route('articleDetails', ['insight_id' => $i->id]);
+                    if ($cat === 'read_on') return $i->source_name ?: route('articleDetails', ['insight_id' => $i->id]);
+                    if ($cat === 'read' && $lead) return route('articleDetails', $lead);
+                    return route('articleDetails', ['insight_id' => $i->id]);
+                })(),
+                'is_external'  => (function() use ($i) {
+                    $cat = strtolower(str_replace(' ', '_', $i->insightType?->type_category ?? ''));
+                    if (in_array($cat, ['watch','video','video_watch'])) return !empty($i->videoUrl());
+                    if ($cat === 'read_on') return !empty($i->source_name);
+                    return false;
+                })(),
+                'extra'        => $i->articles->first()?->read_minutes ? $i->articles->first()->read_minutes . ' min read' : null,
+            ]);
+
+        $projectItems = Project::with(['services', 'media'])
+            ->where('show_on_home', true)
+            ->orderBy('sort_order')
+            ->latest('id')
+            ->get()
+            ->map(fn($p) => (object)[
+                'source'       => 'project',
+                'id'           => $p->id,
+                'heading'      => $p->project_title,
+                'description'  => \Illuminate\Support\Str::limit(strip_tags($p->overview ?? ''), 120),
+                'image'        => $p->heroImageUrl(),
+                'date'         => $p->start_date,
+                'badge_label'  => $p->services->first()?->section ?: ($p->services->first()?->service_name ?? 'Project'),
+                'badge_color'  => '#01354B',
+                'action_label' => 'View Project',
+                'link'         => route('projectdetails', $p),
+                'is_external'  => false,
+                'extra'        => $p->project_status,
+            ]);
+
+        $jobItems = JobPosting::where('is_active', true)
+            ->where('show_on_home', true)
+            ->orderBy('posted_date', 'desc')
+            ->get()
+            ->map(fn($j) => (object)[
+                'source'       => 'job',
+                'id'           => $j->id,
+                'heading'      => $j->title,
+                'description'  => \Illuminate\Support\Str::limit(strip_tags($j->description ?? ''), 120),
+                'image'        => null,
+                'date'         => $j->posted_date,
+                'badge_label'  => 'Career',
+                'badge_color'  => '#7c3aed',
+                'action_label' => 'Apply Now',
+                'link'         => route('careerdetails', $j->id),
+                'is_external'  => false,
+                'extra'        => $j->employment_type,
+            ]);
+
+        $innovationItems = Innovation::where('active', true)
+            ->where('show_on_home', true)
+            ->orderBy('sort_order')
+            ->latest('id')
+            ->get()
+            ->map(fn($n) => (object)[
+                'source'       => 'innovation',
+                'id'           => $n->id,
+                'heading'      => $n->title,
+                'description'  => \Illuminate\Support\Str::limit(strip_tags($n->description ?? ''), 120),
+                'image'        => $n->imageUrl(),
+                'date'         => $n->created_at,
+                'badge_label'  => 'Innovation',
+                'badge_color'  => '#16a34a',
+                'action_label' => 'Visit Website',
+                'link'         => $n->website_link ?: route('innovations'),
+                'is_external'  => (bool) $n->website_link,
+                'extra'        => null,
+            ]);
+
+        $allUpdates = collect($insightItems->all())
+            ->merge($projectItems->all())
+            ->merge($jobItems->all())
+            ->merge($innovationItems->all())
+            ->sortByDesc('date')
+            ->values();
+
+        $counts = [
+            'ALL'        => $allUpdates->count(),
+            'INSIGHT'    => $insightItems->count(),
+            'PROJECT'    => $projectItems->count(),
+            'JOB'        => $jobItems->count(),
+            'INNOVATION' => $innovationItems->count(),
+        ];
+
+        $activeFilter = strtoupper((string) $request->get('type', 'ALL'));
+        $filteredUpdates = $activeFilter === 'ALL'
+            ? $allUpdates
+            : $allUpdates->filter(fn($item) => strtoupper($item->source) === $activeFilter)->values();
+
+        $page = max(1, (int) $request->get('page', 1));
+        $perPage = 12;
+        $paginatedUpdates = new \Illuminate\Pagination\LengthAwarePaginator(
+            $filteredUpdates->forPage($page, $perPage)->values(),
+            $filteredUpdates->count(),
+            $perPage,
+            $page,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
+
+        return view('frontend.pages.latest-updates', compact('latestUpdatesContent', 'paginatedUpdates', 'counts', 'activeFilter'));
+    }
+
+    public function articleDetails(Request $request, ?InsightArticle $article = null)
+    {
+        // Support opening directly from an Insight (no article) via ?insight_id=X
+        if (!$article && $request->filled('insight_id')) {
+            $insight = Insight::with(['insightType', 'media'])->findOrFail($request->integer('insight_id'));
+            $article = new InsightArticle([
+                'title'       => $insight->heading,
+                'description' => $insight->description ?? '',
+                'insight_id'  => $insight->id,
+                'active'      => true,
+            ]);
+            $article->setRelation('insight', $insight);
+            $article->setRelation('insightType', $insight->insightType);
+            $article->setRelation('media', collect());
+            $article->setRelation('author', null);
+        }
+
+        $article ??= InsightArticle::query()
+            ->with(['author.media', 'insight.media', 'media'])
+            ->where('active', true)
+            ->orderBy('sort_order')
+            ->latest('id')
+            ->firstOrFail();
+
+        if ($article->exists) {
+            $article->load(['author.media', 'insight.media', 'media', 'insightType']);
+        }
+
+        
+
+         $sections = InsightArticle::where('insight_id', $article->insight_id)
+        ->orderBy('sort_order')
+        ->orderBy('id')
+        ->get(['id', 'title', 'description']);
+
+    $currentTypeCategory = strtolower((string) (
+        $article->insightType?->type_category
+        ?? $article->insight?->insightType?->type_category
+        ?? ''
+    ));
+
+    $relatedArticles = $currentTypeCategory === 'meeting'
+        ? collect()
+        : Insight::with(['media', 'insightType', 'articles' => fn($q) => $q->orderBy('sort_order')->limit(1)])
+            ->where('active', true)
+            ->whereHas('insightType', fn($q) => $q->whereIn('type_category', ['Read', 'read']))
+            ->when($article->insight_id, fn($q) => $q->where('id', '!=', $article->insight_id))
+            ->latest()
+            ->take(4)
+            ->get();
+        
+
+            $dynamicSections = collect();
+    for ($i = 1; $i <= 15; $i++) {
+        $block = contentBlock("read_section_{$i}");
+        if ($block) {
+            $dynamicSections->push($block);
+        }
+    }
+
+   $relatedInsights = Insight::where('active', true)->take(3)->get();
+
+        return view('frontend.pages.article-details', compact('article', 'relatedArticles', 'dynamicSections', 'relatedInsights', 'sections'));
+    }
+
+    public function career(Request $request)
+    {
+        $careerHeader = contentBlock('career-heading');
+        $jobs = JobPosting::active()->ordered()->paginate(12);
+        return view('frontend.pages.career', compact('careerHeader', 'jobs'));
+    }
+    public function careerdetails(Request $request, $id)
+    {
+        $job = JobPosting::active()->findOrFail($id);
+        return view('frontend.pages.careerdetails', compact('job'));
+    }
+
+    public function applyForJob(Request $request, $id)
+    {
+        $job = JobPosting::active()->findOrFail($id);
+
+        $validated = $request->validate([
+            'name'         => 'required|string|max:255',
+            'email'        => 'required|email|max:255',
+            'phone'        => 'required|string|max:20',
+            'cover_letter' => 'nullable|string',
+            'cv'           => 'required|file|mimes:pdf,doc,docx|max:5120', // 5MB max
+        ]);
+
+        // Check for duplicate application with same name, email, and phone
+        $existingApplication = JobApplication::where('name', $validated['name'])
+            ->where('email', $validated['email'])
+            ->where('phone', $validated['phone'])
+            ->first();
+
+        if ($existingApplication) {
+            return back()->with('error', 'You have already applied with this email and phone number. Duplicate applications are not allowed.');
+        }
+
+        try {
+            // Handle CV upload
+            $cvPath = null;
+            if ($request->hasFile('cv')) {
+                $cvPath = $request->file('cv')->store('cvs', 'public');
+            }
+
+            JobApplication::create([
+                'job_posting_id' => $job->id,
+                'name'           => $validated['name'],
+                'email'          => $validated['email'],
+                'phone'          => $validated['phone'],
+                'cover_letter'   => $validated['cover_letter'] ?? null,
+                'cv_path'        => $cvPath,
+                'is_reviewed'    => false,
+            ]);
+
+            return back()->with('success', 'Your application has been submitted successfully! We will review it soon.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'An error occurred while submitting your application. Please try again later.');
+        }
+    }
+
+    public function contact(Request $request)
+    {
+        $heroContent      = contentBlock('contact-page');
+        $contactHeader = contentBlock('contact-us-head');
+        $contactPhones    = ContactInfo::where('type', 'phone')->active()->ordered()->get();
+        $contactEmails    = ContactInfo::where('type', 'email')->active()->ordered()->get();
+        $contactAddresses = ContactInfo::where('type', 'address')->active()->ordered()->get();
+        return view('frontend.pages.contact', compact('heroContent', 'contactHeader', 'contactPhones', 'contactEmails', 'contactAddresses'));
+    }
+
+    public function about(Request $request)
+    {
+        $aboutPageContent           = contentBlock('about-page') ?? contentBlock('about');
+        $aboutCommitmentContent     = contentBlock('about_us_section_3');
+        $aboutFrameworkContent      = contentBlock('about_us_how_we_work');
+        $aboutUniqueFeaturesContent = contentBlock('about_us_we_make_trace_different');
+        $aboutHeader                = contentBlock('about_us_header');
+        $aboutTrace                 = contentBlock('about_trace');
+        // Who We Are এবং Mission সেকশন
+        $whoWeAre               = contentBlock('about_us_who_we_are');
+        $ourMission             = contentBlock('about_us_our_mission');
+        $aboutCommitmentContent = contentBlock('about_us_section_3');
+        $aboutFrameworkContent  = contentBlock('about_us_how_we_work');
+        $partnersContent        = contentBlock('about_us_partners');
+
+        $frameworkItems = collect([
+            contentBlock('about_us_insight'),
+            contentBlock('about_us_strategy') ?? contentBlock('about_us_stratigy'),
+            contentBlock('about_us_impact'),
+        ])->filter();
+
+        $uniqueFeatureCards = collect([
+            contentBlock('about_us_industry_wide_network'),
+            contentBlock('about_us_sustainable_approach'),
+            contentBlock('about_us_tailored_innovation'),
+            contentBlock('about_us_end_to_end_integrated_solutions'),
+        ])->filter();
+
+        $aboutProjects = Project::query()
+            ->with(['services', 'media'])
+            ->orderBy('sort_order')
+            ->latest('id')
+            ->take(3)
+            ->get();
+
+        $partners = Partner::with('media')->get();
+
+        $aboutInsights = Insight::query()
+            ->with(['articles.author.media', 'articles.media', 'media'])
+            ->where('active', true)
+            ->orderBy('sort_order')
+            ->latest('id')
+            ->take(4)
+            ->get();
+
+        return view('frontend.pages.about', compact(
+            'aboutPageContent',
+            'aboutCommitmentContent',
+            'aboutFrameworkContent',
+            'frameworkItems',
+            'aboutUniqueFeaturesContent',
+            'uniqueFeatureCards',
+            'aboutProjects',
+            'aboutInsights',
+            'aboutHeader',
+            'aboutTrace',
+            'whoWeAre',
+            'ourMission',
+            'partnersContent',
+            'aboutProjects',
+            'partners'
+        ));
+    }
+
+    public function team(Request $request)
+    {
+        $teamPageContent   = contentBlock('team-page');
+        $leadershipContent = contentBlock('team-leadership');
+        $coreTeamContent   = contentBlock('team-core');
+        $expertsContent    = contentBlock('team-experts');
+
+        $advisors = Team::query()
+            ->with(['projects', 'experties.media', 'socialMedia.media', 'media'])
+            ->where('type', 2)
+            ->orderBy('sort_order')
+            ->latest('id')
+            ->get();
+
+        $teams = Team::query()
+            ->with(['experties.media', 'socialMedia.media', 'projects', 'media']) 
+            ->where('type', 1)
+            ->orderBy('sort_order')         
+            ->latest('id')
+            ->get();
+    
+        $leadTeam = $teams->first();
+        $coreTeams = $teams->filter(function (Team $member) use ($leadTeam) {
+            return ! $leadTeam || $member->id !== $leadTeam->id;
+        })->values();
+
+        return view('frontend.pages.team', compact('teamPageContent', 'leadershipContent', 'coreTeamContent', 'expertsContent', 'teams', 'leadTeam', 'coreTeams', 'advisors'));
+    }
+
+    public function teamdetails(Request $request, ?Team $team = null)
+    {
+        $team ??= Team::query()
+            ->with(['experties.media', 'socialMedia.media', 'projects', 'media'])
+            ->orderBy('sort_order')
+            ->latest('id')
+            ->firstOrFail();
+
+        $team->load(['experties.media', 'socialMedia.media', 'projects', 'media']);
+
+        $otherTeamMembers = Team::query()
+            ->with(['media'])
+            ->whereKeyNot($team->id)
+            ->orderBy('sort_order')
+            ->latest('id')
+            ->take(3)
+            ->get();
+
+        $allTeamMembersCount = Team::query()->count();
+
+        return view('frontend.pages.teamdetails', compact('team', 'otherTeamMembers', 'allTeamMembersCount'));
     }
 
     public function dashboard(Request $request)
@@ -36,70 +748,59 @@ class HomeController extends Controller
 
     public function login()
     {
-        $datas = Country::all();
+        $datas   = Country::all();
         $genders = Gender::all();
-        return view('auth.login',compact('datas','genders'));
+        return view('auth.login', compact('datas', 'genders'));
 
     }
-
-
-
 
     public function registration()
     {
-        $datas = Country::all();
+        $datas   = Country::all();
         $genders = Gender::all();
-        return view('auth.register',compact('datas','genders'));
+        return view('auth.register', compact('datas', 'genders'));
 
     }
 
-
     public function validateLogin(Request $request)
     {
-        $countryIso = Country::where('id',18)->first();
+        $countryIso = Country::where('id', 18)->first();
 
         $validated = $request->validate([
             // 'email_or_phone' => ['bail','required','regex:/^[0-9+]+$/',(new Phone)->country([$countryIso->iso])],
-            'email_or_phone' => ['bail','required'],
+            'email_or_phone' => ['bail', 'required'],
 
-            'password' => 'required',
-            ],
+            'password'       => 'required',
+        ],
             [
-                'email_or_phone.regex' => 'The phone number must contain only English digits (0-9).',
+                'email_or_phone.regex'    => 'The phone number must contain only English digits (0-9).',
                 'email_or_phone.required' => 'The phone number is required',
             ]
         );
-
 
         $password = $request->input('password');
 
         if (filter_var($request->email_or_phone, FILTER_VALIDATE_EMAIL)) {
             $user = User::where('email', $request->email_or_phone)
             // ->orWhere('phone', $phoneNumber)
-            ->first();
+                ->first();
+        } else {
+            $phoneNumber = validationMobileNumber($request->email_or_phone, $countryIso->iso);
+            $user        = User::where('email', $request->email_or_phone)
+                ->orWhere('phone', $phoneNumber)
+                ->first();
         }
-        else
-        {
-            $phoneNumber = validationMobileNumber($request->email_or_phone,$countryIso->iso);
-            $user = User::where('email', $request->email_or_phone)
-                    ->orWhere('phone', $phoneNumber)
-                    ->first();
-        }
-
-
 
         if ($user) {
-            if (Hash::check($password, $user->password))
-            {
+            if (Hash::check($password, $user->password)) {
 
                 if (($user->status == 0)) {
 
-
-                    $toster = array(
-                        'message' => "This account is in black listed",
-                        'alert-type' => 'error'
-                    );
-                    return back()->with( $toster);
+                    $toster = [
+                        'message'    => "This account is in black listed",
+                        'alert-type' => 'error',
+                    ];
+                    return back()->with($toster);
 
                 } else {
 
@@ -108,113 +809,101 @@ class HomeController extends Controller
                     } else {
                         Auth::guard('web')->login($user);
                     }
-                    $toster = array(
-                        'message' => "Wlecome to Dashboard, ".$user->name,
-                        'alert-type' => 'success'
-                    );
+                    $toster = [
+                        'message'    => "Wlecome to Dashboard, " . $user->name,
+                        'alert-type' => 'success',
+                    ];
 
-                    return redirect()->route('user.dashboard')->with( $toster);
+                    return redirect()->route('user.dashboard')->with($toster);
                 }
 
-            }
-
-            else
-            {
+            } else {
                 return back()->with('fail', 'Wrong Credential');
             }
-        }
-        else
-        {
-            $toster = array(
-                'message' => "User Not Found",
-                'alert-type' => 'error'
-            );
+        } else {
+            $toster = [
+                'message'    => "User Not Found",
+                'alert-type' => 'error',
+            ];
 
-            return back()->with( $toster);
+            return back()->with($toster);
         }
     }
 
-
-
-
-
     public function storRegistration(Request $request)
     {
-        $code = rand(100000,999999);
-        $countryID = $request->country_id ?? 18;
-        $countryIso = Country::where('id',$countryID)->first();
-
+        $code       = rand(100000, 999999);
+        $countryID  = $request->country_id ?? 18;
+        $countryIso = Country::where('id', $countryID)->first();
 
         $validated = $request->validate([
-            'name' => 'required',
-            'email' => 'unique:users',
-            'password' => 'required|confirmed',
+            'name'                  => 'required',
+            'email'                 => 'unique:users',
+            'password'              => 'required|confirmed',
             'password_confirmation' => 'required|same:password',
             // 'education_type_id' => 'required',
-            'phone' => ['required','unique:users','regex:/^[0-9+]+$/',(new Phone)->country([$countryIso->iso]??['BD']),],
+            'phone'                 => ['required', 'unique:users', 'regex:/^[0-9+]+$/', (new Phone)->country([$countryIso->iso] ?? ['BD'])],
             // 'upazila_id' => 'required',
             // 'district_id' => 'required',
             // 'division_id' => 'required',
-            'gender_id' => 'required',
+            'gender_id'             => 'required',
             // 'country_id' => 'required',
-            ],
+        ],
             [
-                'phone.regex' => 'The phone number must contain only English digits (0-9).',
+                'phone.regex'    => 'The phone number must contain only English digits (0-9).',
                 'phone.required' => 'The phone number is required',
             ]
         );
 
+        $phoneNumber = validationMobileNumber($request->phone, $countryIso->iso);
 
-        $phoneNumber = validationMobileNumber($request->phone,$countryIso->iso);
+        $user = DB::transaction(function () use ($request, $code, $phoneNumber) {
+            $userCreate = [
+                "name"     => $request->name,
+                "email"    => $request->email ?? null,
+                "password" => Hash::make($request->password),
+                "phone"    => $phoneNumber,
+                "otp"      => $code,
+                "status"   => 1,
 
-            $user = DB::transaction(function () use($request,$code,$phoneNumber) {
-                $userCreate = array(
-                    "name" => $request->name,
-                    "email" => $request->email ?? null,
-                    "password" => Hash::make($request->password),
-                    "phone" => $phoneNumber,
-                    "otp" => $code,
-                    "status" => 1,
+            ];
 
-                );
+            $newuser = User::create($userCreate);
 
-                $newuser = User::create($userCreate);
+            $userdetail = [
+                "user_id"           => $newuser->id,
+                "division_id"       => $request->division_id ?? null,
+                "district_id"       => $request->district_id ?? null,
+                "upazila_id"        => $request->upazila_id ?? null,
+                "union_id"          => $request->union_id ?? null,
+                "education_type_id" => $request->education_type_id ?? null,
+                "profession_id"     => $request->profession_id ?? null,
+                "gender_id"         => $request->gender_id ?? null,
+                "country_id"        => $request->country_id ?? null,
+                "religion_id"       => $request->religion_id ?? null,
+            ];
+            $userDetail = UserDetail::create($userdetail);
 
-                $userdetail = array(
-                    "user_id" => $newuser->id,
-                    "division_id" => $request->division_id ?? null,
-                    "district_id" => $request->district_id ?? null ,
-                    "upazila_id" => $request->upazila_id ?? null ,
-                    "union_id" => $request->union_id ?? null ,
-                    "education_type_id" => $request->education_type_id ?? null ,
-                    "profession_id" => $request->profession_id ?? null ,
-                    "gender_id" => $request->gender_id ?? null ,
-                    "country_id" => $request->country_id ?? null ,
-                    "religion_id" => $request->religion_id ?? null ,
-                );
-                $userDetail = UserDetail::create($userdetail);
+            return $newuser;
+        });
 
-                return $newuser;
-            });
+        if ($user->status == 1) {
+            $toster = [
+                'message'    => "Registration Successfull",
+                'alert-type' => 'success',
+            ];
+            return redirect()->route('login')->with($toster);
 
-            if ($user->status == 1) {
-                $toster = array(
-                    'message' => "Registration Successfull",
-                    'alert-type' => 'success'
-                );
-                return redirect()->route('login')->with( $toster);
+        } else {
 
-            } else {
+            $toster = [
+                'message'    => "Registration Fail",
+                'alert-type' => 'error',
+            ];
+            return redirect()->route('registration')->with($toster);
 
-                $toster = array(
-                    'message' => "Registration Fail",
-                    'alert-type' => 'error'
-                );
-                return redirect()->route('registration')->with( $toster);
-
-            }
+        }
     }
-
 
     public function googleOauthLoad()
     {
@@ -224,7 +913,7 @@ class HomeController extends Controller
     public function googleOauthCallBack()
     {
         $user = Socialite::driver('google')->user();
-        dd( $user);
+        dd($user);
     }
 
     public function logout(Request $request): RedirectResponse
@@ -241,135 +930,118 @@ class HomeController extends Controller
     public function loadForgetMyPass()
     {
         $datas = Country::all();
-        return view('auth.forgetpass',compact('datas'));
+        return view('auth.forgetpass', compact('datas'));
 
     }
 
     public function searchUser(Request $request)
     {
-        $countryIso = Country::where('id',18)->first();
+        $countryIso = Country::where('id', 18)->first();
 
         $validated = $request->validate([
-            'email_or_phone' => ['bail','required'],
-            ],
+            'email_or_phone' => ['bail', 'required'],
+        ],
             [
-                'email_or_phone.regex' => 'The phone number must contain only English digits (0-9).',
+                'email_or_phone.regex'    => 'The phone number must contain only English digits (0-9).',
                 'email_or_phone.required' => 'The phone number is required',
             ]
         );
 
         if (filter_var($request->email_or_phone, FILTER_VALIDATE_EMAIL)) {
-            $credential = array("email" => $request->email_or_phone);
-        }
-        else
-        {
-            $phoneNumber = validationMobileNumber($request->email_or_phone,$countryIso->iso);
-            $credential = array("phone" => $phoneNumber);
-            $email = false;
+            $credential = ["email" => $request->email_or_phone];
+        } else {
+            $phoneNumber = validationMobileNumber($request->email_or_phone, $countryIso->iso);
+            $credential  = ["phone" => $phoneNumber];
+            $email       = false;
         }
 
         $user = User::where($credential)->first();
 
         if ($user) {
-            $toster = array(
-                'message' => 'User Found',
-                'alert-type' => 'success'
-            );
+            $toster = [
+                'message'    => 'User Found',
+                'alert-type' => 'success',
+            ];
 
             return redirect()->route('userOtpLoad')->with('uuid', $user->id)->with($toster);
 
-        }
-        else
-        {
-            $toster = array(
-                'message' => 'User Not Found',
-                'alert-type' => 'error'
-            );
+        } else {
+            $toster = [
+                'message'    => 'User Not Found',
+                'alert-type' => 'error',
+            ];
 
-            return back()->with( $toster);
+            return back()->with($toster);
         }
     }
-
 
     public function userOtpLoad(Request $request)
     {
         $uuID = session('uuid') ?? $request->uuid;
         $user = User::find($uuID);
 
-        if (!$user) {
+        if (! $user) {
             return back()->with([
-                'message' => 'User Not Found',
-                'alert-type' => 'error'
+                'message'    => 'User Not Found',
+                'alert-type' => 'error',
             ]);
         }
 
-        $randCode = rand(100000,999999);
-        $toster = array(
-            'message' => 'User Found',
-            'alert-type' => 'success'
-        );
-        $status = storeOtp($user, $randCode);
-        $name = $user->name;
+        $randCode = rand(100000, 999999);
+        $toster   = [
+            'message'    => 'User Found',
+            'alert-type' => 'success',
+        ];
+        $status         = storeOtp($user, $randCode);
+        $name           = $user->name;
         $messageContent = "Your Reset Code is : {$randCode}";
 
         // Email Code
-        if($user->email != null && $status == true)
-        {
-            Mail::to($user->email)->queue(new ForgetPassMail($name,$messageContent));
-        }
-        else
-        {
+        if ($user->email != null && $status == true) {
+            Mail::to($user->email)->queue(new ForgetPassMail($name, $messageContent));
+        } else {
             return back()->with([
-                'message' => 'Error in otp sending',
-                'alert-type' => 'error'
+                'message'    => 'Error in otp sending',
+                'alert-type' => 'error',
             ]);
         }
 
         return view('auth.userotp', compact('user'))->with($toster);
 
-
     }
-
 
     public function validateUserOtp(Request $request)
     {
 
-
         $validator = Validator::make($request->all(), [
-            'otp' => 'required|array|size:6',
+            'otp'   => 'required|array|size:6',
             'otp.*' => 'required|digits:1',
         ]);
 
-
-
         if ($validator->fails()) {
-            $toster = array(
-                'message' => 'Wrong OTP',
-                'alert-type' => 'error'
-            );
-            return redirect()->route('forgetMyPass')->with( $toster);
+            $toster = [
+                'message'    => 'Wrong OTP',
+                'alert-type' => 'error',
+            ];
+            return redirect()->route('forgetMyPass')->with($toster);
         }
 
         $otp = preg_replace('/\D/', '', implode('', $request->input('otp')));
 
-
         $user = User::find($request->uuid);
 
         // if ($admin->otp == $request->otp && $admin->otp_validate_time > now())
-        if ($user?->otp == $otp)
-        {
-            $toster = array(
-                'message' => 'Otp Matched',
-                'alert-type' => 'success'
-            );
+        if ($user?->otp == $otp) {
+            $toster = [
+                'message'    => 'Otp Matched',
+                'alert-type' => 'success',
+            ];
             return view('auth.passconfirm', compact('user'))->with($toster);
-        }
-        else
-        {
-            $toster = array(
-                'message' => 'Wrong OTP',
-                'alert-type' => 'error'
-            );
+        } else {
+            $toster = [
+                'message'    => 'Wrong OTP',
+                'alert-type' => 'error',
+            ];
 
             return redirect()->route('userOtpLoad')->with('uuid', $user->id)->with($toster);
             // return view('auth.userotp', compact('user'))->with($toster);
@@ -377,40 +1049,104 @@ class HomeController extends Controller
         }
     }
 
-
-
     public function updateUserPassword(Request $request)
     {
 
         $validator = Validator::make($request->all(), [
-            'password' => 'required',
+            'password'              => 'required',
             'password_confirmation' => 'required|same:password',
         ],
-        [
-            'password.required' => 'The Password is required',
-            'password_confirmation.required' => 'The Confirm Password is required',
-            'password_confirmation.same' => 'The Confirm Password and Password must match',
-        ]
-    );
+            [
+                'password.required'              => 'The Password is required',
+                'password_confirmation.required' => 'The Confirm Password is required',
+                'password_confirmation.same'     => 'The Confirm Password and Password must match',
+            ]
+        );
 
         if ($validator->fails()) {
-            $toster = array(
-                'message' => $validator->errors()->first(),
-                'alert-type' => 'error'
-            );
-            return redirect()->route('login')->with( $toster);
+            $toster = [
+                'message'    => $validator->errors()->first(),
+                'alert-type' => 'error',
+            ];
+            return redirect()->route('login')->with($toster);
         }
 
-
-        $user = User::find($request->uuid);
+        $user           = User::find($request->uuid);
         $user->password = Hash::make($request->password);
         $user->save();
 
-        $toster = array(
-            'message' => 'Password Updated',
-            'alert-type' => 'success'
-        );
+        $toster = [
+            'message'    => 'Password Updated',
+            'alert-type' => 'success',
+        ];
 
         return redirect()->route('login')->with($toster);
     }
+
+    public function aboutUs(Request $request)
+    {
+        // ১. সেকশন ভিত্তিক কন্টেন্ট ব্লক (অ্যাডমিন প্যানেলের স্লাগ অনুযায়ী)
+        $aboutHeader                = contentBlock('about_us_header');
+        $aboutTrace                 = contentBlock('about_trace');
+        $whoWeAre                   = contentBlock('about_us_who_we_are');
+        $ourMission                 = contentBlock('about_us_our_mission');
+        $aboutCommitmentContent     = contentBlock('about_us_section_3');
+        $aboutFrameworkContent      = contentBlock('about_us_how_we_work');
+        $aboutUniqueFeaturesContent = contentBlock('about_us_we_make_trace_different');
+        $partnersContent            = contentBlock('about_us_partners');
+
+        $partners = Partner::with('media')->get();
+
+        // ২. Framework / How we work এর আইটেমগুলো (স্লাগ চেক করে)
+        $frameworkItems = collect([
+            contentBlock('about_us_insight'),
+            contentBlock('about_us_strategy') ?? contentBlock('about_us_stratigy'), // স্পেলিং মিস্টেক হ্যান্ডেল করতে
+            contentBlock('about_us_impact'),
+        ])->filter();
+
+        // ৩. Unique Features / Why Trace Different এর কার্ডগুলো
+        $uniqueFeatureCards = collect([
+            contentBlock('about_us_industry_wide_network'),
+            contentBlock('about_us_sustainable_approach'),
+            contentBlock('about_us_tailored_innovation'),
+            contentBlock('about_us_end_to_end_integrated_solutions'),
+        ])->filter();
+
+        // ৪. প্রজেক্টস এবং পার্টনারস
+        $aboutProjects = Project::query()
+            ->with(['services', 'media'])
+            ->orderBy('sort_order')
+            ->latest('id')
+            ->take(3)
+            ->get();
+
+        // $partners = Partner::with('media')->get();
+
+        // ৫. ইনসাইটস (যদি পেজে দরকার হয়)
+        $aboutInsights = Insight::query()
+            ->with(['articles.author.media', 'articles.media', 'media'])
+            ->where('active', true)
+            ->orderBy('sort_order')
+            ->latest('id')
+            ->take(4)
+            ->get();
+
+        return view('frontend.pages.about', compact(
+            'aboutHeader',
+            'aboutTrace',
+            'whoWeAre',
+            'ourMission',
+            'aboutCommitmentContent',
+            'aboutFrameworkContent',
+            'frameworkItems',
+            'aboutUniqueFeaturesContent',
+            'uniqueFeatureCards',
+            'aboutProjects',
+            'partners',
+            'aboutInsights',
+            'partnersContent',
+
+        ));
+    }
+    
 }
