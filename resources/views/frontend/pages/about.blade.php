@@ -739,7 +739,7 @@
 .img-overlay-gradient {
     position: absolute;
     inset: 0;
-    background: linear-gradient(142.06deg, rgba(1, 53, 75, 0.6) 0%, rgba(1, 136, 140, 0.3) 100%);
+    /* background: linear-gradient(142.06deg, rgba(1, 53, 75, 0.6) 0%, rgba(1, 136, 140, 0.3) 100%); */
 }
 
 .in-badge-custom {
