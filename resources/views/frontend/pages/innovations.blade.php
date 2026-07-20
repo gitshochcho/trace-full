@@ -66,9 +66,8 @@
 
 @section('content')
 @php
-    $heroHeading    = $innovationsPageContent?->heading     ?? 'Our Innovation';
-    $heroDescription= strip_tags($innovationsPageContent?->description ?? '')
-        ?: 'Explore our digital platforms and innovative systems designed to solve real-world challenges and drive meaningful impact.';
+    $heroHeading    = $innovationsPageContent?->heading;
+    $heroDescription= strip_tags($innovationsPageContent?->description ?? '');
 @endphp
 
 <nav class="service-breadcrumb">
@@ -81,12 +80,18 @@
     </div>
 </nav>
 
+@if ($heroHeading || $heroDescription)
 <section class="innovations-hero">
     <div class="container-fluid px-lg-5 page-align-container">
-        <h1>{{ $heroHeading }}</h1>
-        <p>{{ $heroDescription }}</p>
+        @if ($heroHeading)
+            <h1>{{ $heroHeading }}</h1>
+        @endif
+        @if ($heroDescription)
+            <p>{{ $heroDescription }}</p>
+        @endif
     </div>
 </section>
+@endif
 
 <section>
     <div class="container-fluid px-lg-5 page-align-container">
