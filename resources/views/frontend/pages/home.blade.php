@@ -874,6 +874,11 @@
     @media (max-width: 600px) {
         .news-grid { grid-template-columns: 1fr; }
         .news-grid > .news-card-link:first-child { grid-column: auto; }
+        .news-big-card .news-card-img-box img,
+        .news-small-img img {
+            height: auto;
+            object-fit: contain;
+        }
     }
 
 </style>

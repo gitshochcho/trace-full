@@ -42,18 +42,21 @@ class ServiceController extends Controller
             'details'             => ['nullable', 'array'],
             'details.*.id'        => ['nullable', 'integer'],
             'details.*.text'      => ['nullable', 'string'],
+            'details.*.remove_icon' => ['nullable', 'boolean'],
             'details_icons'       => ['nullable', 'array'],
             'details_icons.*'     => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:2048'],
             'solutions'               => ['nullable', 'array'],
             'solutions.*.id'          => ['nullable', 'integer'],
             'solutions.*.heading'     => ['nullable', 'string', 'max:255'],
             'solutions.*.sub_heading' => ['nullable', 'string', 'max:255'],
+            'solutions.*.remove_icon' => ['nullable', 'boolean'],
             'solutions_icons'         => ['nullable', 'array'],
             'solutions_icons.*'       => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:2048'],
             'hero_pillars'              => ['nullable', 'array'],
             'hero_pillars.*.id'         => ['nullable', 'integer'],
             'hero_pillars.*.title'      => ['nullable', 'string', 'max:255'],
             'hero_pillars.*.description'=> ['nullable', 'string'],
+            'hero_pillars.*.remove_icon'=> ['nullable', 'boolean'],
             'hero_pillars_icons'        => ['nullable', 'array'],
             'hero_pillars_icons.*'      => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:2048'],
         ]);
@@ -238,6 +241,8 @@ class ServiceController extends Controller
             if (isset($pillarIcons[$index])) {
                 $pillar->clearMediaCollection('icon');
                 $pillar->addMedia($pillarIcons[$index])->toMediaCollection('icon');
+            } elseif ($this->wantsIconRemoved($item)) {
+                $pillar->clearMediaCollection('icon');
             }
         }
 
@@ -273,6 +278,8 @@ class ServiceController extends Controller
             if (isset($detailIcons[$index])) {
                 $detail->clearMediaCollection('icon');
                 $detail->addMedia($detailIcons[$index])->toMediaCollection('icon');
+            } elseif ($this->wantsIconRemoved($item)) {
+                $detail->clearMediaCollection('icon');
             }
         }
 
@@ -313,6 +320,8 @@ class ServiceController extends Controller
             if (isset($solutionIcons[$index])) {
                 $solution->clearMediaCollection('icon');
                 $solution->addMedia($solutionIcons[$index])->toMediaCollection('icon');
+            } elseif ($this->wantsIconRemoved($item)) {
+                $solution->clearMediaCollection('icon');
             }
         }
 
@@ -323,6 +332,11 @@ class ServiceController extends Controller
                 $solution->clearMediaCollection('icon');
                 $solution->delete();
             });
+    }
+
+    private function wantsIconRemoved(array $item): bool
+    {
+        return filter_var($item['remove_icon'] ?? false, FILTER_VALIDATE_BOOLEAN);
     }
 
     private function normalizeEditorText(?string $value): ?string

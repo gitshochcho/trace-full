@@ -137,8 +137,12 @@
                                             </div>
                                             <div class="col-12 col-md-10">
                                                 <label class="form-label">Icon Image</label>
-                                                <input type="file" name="hero_pillars_icons[{{ $index }}]" class="form-control" accept="image/*" data-max-size="2048">
+                                                <input type="file" name="hero_pillars_icons[{{ $index }}]" class="form-control icon-file-input" accept="image/*" data-max-size="2048">
                                                 <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 64×64px square (max 2MB)</small>
+                                                <div class="mt-2 position-relative d-inline-block icon-preview-wrap d-none">
+                                                    <img src="" alt="icon preview" style="width: 34px; height: 34px; object-fit: contain;">
+                                                    <button type="button" class="btn btn-danger btn-sm clear-icon-btn position-absolute top-0 start-100 translate-middle rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:18px;height:18px;font-size:11px;line-height:1;" title="Remove selected icon">&times;</button>
+                                                </div>
                                             </div>
                                             <div class="col-12 col-md-2 d-grid">
                                                 <button type="button" class="btn btn-outline-danger remove-pillar-row">Remove</button>
@@ -167,8 +171,12 @@
                                                 </div>
                                                 <div class="col-md-10">
                                                     <label class="form-label">Icon Image</label>
-                                                    <input type="file" name="details_icons[{{ $index }}]" class="form-control" accept="image/*" data-max-size="2048" data-max-width="64" data-max-height="64">
+                                                    <input type="file" name="details_icons[{{ $index }}]" class="form-control icon-file-input" accept="image/*" data-max-size="2048" data-max-width="64" data-max-height="64">
                                                     <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 64×64px square (max 2MB)</small>
+                                                    <div class="mt-2 position-relative d-inline-block icon-preview-wrap d-none">
+                                                        <img src="" alt="icon preview" style="width: 34px; height: 34px; object-fit: contain;">
+                                                        <button type="button" class="btn btn-danger btn-sm clear-icon-btn position-absolute top-0 start-100 translate-middle rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:18px;height:18px;font-size:11px;line-height:1;" title="Remove selected icon">&times;</button>
+                                                    </div>
                                                 </div>
                                                 <div class="col-md-2 d-grid">
                                                     <button type="button" class="btn btn-outline-danger remove-detail-row">Remove</button>
@@ -201,8 +209,12 @@
                                                 </div>
                                                 <div class="col-12 col-md-10">
                                                     <label class="form-label">Icon Image</label>
-                                                    <input type="file" name="solutions_icons[{{ $index }}]" class="form-control" accept="image/*" data-max-size="2048" data-max-width="64" data-max-height="64">
+                                                    <input type="file" name="solutions_icons[{{ $index }}]" class="form-control icon-file-input" accept="image/*" data-max-size="2048" data-max-width="64" data-max-height="64">
                                                     <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 64×64px square (max 2MB)</small>
+                                                    <div class="mt-2 position-relative d-inline-block icon-preview-wrap d-none">
+                                                        <img src="" alt="icon preview" style="width: 34px; height: 34px; object-fit: contain;">
+                                                        <button type="button" class="btn btn-danger btn-sm clear-icon-btn position-absolute top-0 start-100 translate-middle rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:18px;height:18px;font-size:11px;line-height:1;" title="Remove selected icon">&times;</button>
+                                                    </div>
                                                 </div>
                                                 <div class="col-12 col-md-2 d-grid">
                                                     <button type="button" class="btn btn-outline-danger remove-solution-row">Remove</button>
@@ -244,8 +256,12 @@
                 </div>
                 <div class="col-12 col-md-10">
                     <label class="form-label">Icon Image</label>
-                    <input type="file" name="__PILLAR_ICON_NAME__" class="form-control" accept="image/*" data-max-size="2048">
+                    <input type="file" name="__PILLAR_ICON_NAME__" class="form-control icon-file-input" accept="image/*" data-max-size="2048">
                     <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 64×64px square (max 2MB)</small>
+                    <div class="mt-2 position-relative d-inline-block icon-preview-wrap d-none">
+                        <img src="" alt="icon preview" style="width: 34px; height: 34px; object-fit: contain;">
+                        <button type="button" class="btn btn-danger btn-sm clear-icon-btn position-absolute top-0 start-100 translate-middle rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:18px;height:18px;font-size:11px;line-height:1;" title="Remove selected icon">&times;</button>
+                    </div>
                 </div>
                 <div class="col-12 col-md-2 d-grid">
                     <button type="button" class="btn btn-outline-danger remove-pillar-row">Remove</button>
@@ -264,8 +280,12 @@
                 </div>
                 <div class="col-md-10">
                     <label class="form-label">Icon Image</label>
-                    <input type="file" name="__DETAIL_ICON_NAME__" class="form-control" accept="image/*" data-max-size="2048" data-max-width="64" data-max-height="64">
+                    <input type="file" name="__DETAIL_ICON_NAME__" class="form-control icon-file-input" accept="image/*" data-max-size="2048" data-max-width="64" data-max-height="64">
                     <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 64×64px square (max 2MB)</small>
+                    <div class="mt-2 position-relative d-inline-block icon-preview-wrap d-none">
+                        <img src="" alt="icon preview" style="width: 34px; height: 34px; object-fit: contain;">
+                        <button type="button" class="btn btn-danger btn-sm clear-icon-btn position-absolute top-0 start-100 translate-middle rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:18px;height:18px;font-size:11px;line-height:1;" title="Remove selected icon">&times;</button>
+                    </div>
                 </div>
                 <div class="col-md-2 d-grid">
                     <button type="button" class="btn btn-outline-danger remove-detail-row">Remove</button>
@@ -288,8 +308,12 @@
                 </div>
                 <div class="col-12 col-md-10">
                     <label class="form-label">Icon Image</label>
-                    <input type="file" name="__SOLUTION_ICON_NAME__" class="form-control" accept="image/*" data-max-size="2048" data-max-width="64" data-max-height="64">
+                    <input type="file" name="__SOLUTION_ICON_NAME__" class="form-control icon-file-input" accept="image/*" data-max-size="2048" data-max-width="64" data-max-height="64">
                     <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 64×64px square (max 2MB)</small>
+                    <div class="mt-2 position-relative d-inline-block icon-preview-wrap d-none">
+                        <img src="" alt="icon preview" style="width: 34px; height: 34px; object-fit: contain;">
+                        <button type="button" class="btn btn-danger btn-sm clear-icon-btn position-absolute top-0 start-100 translate-middle rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:18px;height:18px;font-size:11px;line-height:1;" title="Remove selected icon">&times;</button>
+                    </div>
                 </div>
                 <div class="col-12 col-md-2 d-grid">
                     <button type="button" class="btn btn-outline-danger remove-solution-row">Remove</button>
@@ -418,6 +442,35 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         if (e.target.classList.contains('remove-solution-row')) {
             e.target.closest('.solution-row').remove();
+        }
+        if (e.target.classList.contains('clear-icon-btn')) {
+            const row = e.target.closest('.pillar-row, .detail-row, .solution-row');
+            const fileInput = row ? row.querySelector('.icon-file-input') : null;
+            const wrap = e.target.closest('.icon-preview-wrap');
+            if (fileInput) fileInput.value = '';
+            if (wrap) {
+                wrap.classList.add('d-none');
+                wrap.querySelector('img').src = '';
+            }
+        }
+    });
+
+    document.addEventListener('change', function (e) {
+        if (!e.target.classList.contains('icon-file-input')) return;
+
+        const input = e.target;
+        const row = input.closest('.pillar-row, .detail-row, .solution-row');
+        const wrap = row ? row.querySelector('.icon-preview-wrap') : null;
+        if (!wrap) return;
+
+        const img = wrap.querySelector('img');
+
+        if (input.files && input.files.length > 0) {
+            img.src = URL.createObjectURL(input.files[0]);
+            wrap.classList.remove('d-none');
+        } else {
+            img.src = '';
+            wrap.classList.add('d-none');
         }
     });
 });

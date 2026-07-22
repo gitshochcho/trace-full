@@ -429,8 +429,6 @@
                         <div class="include-icon">
                             @if($itemIcon)
                                 <img src="{{ $itemIcon }}" alt="icon">
-                            @else
-                                <svg viewBox="0 0 14 14"><polyline points="2,7 5.5,10.5 12,3"/></svg>
                             @endif
                         </div>
                         <p class="include-text">{{ $itemText }}</p>
