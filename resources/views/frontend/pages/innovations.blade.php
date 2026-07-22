@@ -51,8 +51,7 @@
     .innov-category { font-size: 12px; font-weight: 600; color: #01888C; margin-bottom: 8px; }
     .innov-title { font-size: 17px; font-weight: 800; color: #01354B; margin-bottom: 8px; line-height: 1.35; }
     .innov-desc {
-        font-size: 13px; color: #64748B; line-height: 1.6; margin-bottom: 14px; flex: 1;
-        display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+        font-size: 13px; color: #64748B; line-height: 1.6; margin-bottom: 14px; text-align: justify; flex: 1;
     }
     .innov-link { font-size: 13px; font-weight: 700; color: #01888C; text-decoration: none; }
     .innov-link:hover { color: #01354B; }
