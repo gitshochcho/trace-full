@@ -1,5 +1,11 @@
 @extends('layouts.app')
 
+@push('custome-css')
+<style>
+    .icon-wrap-hidden { display: none !important; }
+</style>
+@endpush
+
 @section('content')
     @php
         $details = old('details', $service->details->map(function ($detail) {
@@ -176,11 +182,13 @@
                                             </div>
                                             <div class="col-12 col-md-10">
                                                 <label class="form-label">Icon Image</label>
-                                                <input type="file" name="hero_pillars_icons[{{ $index }}]" class="form-control" accept="image/*" data-max-size="2048">
+                                                <input type="hidden" name="hero_pillars[{{ $index }}][remove_icon]" value="0" class="remove-icon-input">
+                                                <input type="file" name="hero_pillars_icons[{{ $index }}]" class="form-control icon-file-input" accept="image/*" data-max-size="2048">
                                                 <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 64×64px square (max 2MB)</small>
-                                                @if(! empty($pillar['icon_url']))
-                                                    <img src="{{ $pillar['icon_url'] }}" alt="icon" class="mt-2" style="width: 34px; height: 34px; object-fit: contain;">
-                                                @endif
+                                                <div class="mt-2 position-relative d-inline-block existing-icon-wrap {{ empty($pillar['icon_url']) ? 'icon-wrap-hidden' : '' }}" data-saved-icon-url="{{ $pillar['icon_url'] ?? '' }}">
+                                                    <img src="{{ $pillar['icon_url'] ?? '' }}" alt="icon" style="width: 34px; height: 34px; object-fit: contain;">
+                                                    <button type="button" class="btn btn-danger btn-sm remove-icon-btn position-absolute top-0 start-100 translate-middle rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:18px;height:18px;font-size:11px;line-height:1;" title="Remove icon">&times;</button>
+                                                </div>
                                             </div>
                                             <div class="col-12 col-md-2 d-grid">
                                                 <button type="button" class="btn btn-outline-danger remove-pillar-row">Remove</button>
@@ -209,14 +217,17 @@
                                                 </div>
                                                 <div class="col-md-10">
                                                     <label class="form-label">Icon Image</label>
-                                                    <input type="file" name="details_icons[{{ $index }}]" class="form-control" accept="image/*" data-max-size="2048" data-max-width="64" data-max-height="64">
+                                                    <input type="hidden" name="details[{{ $index }}][remove_icon]" value="0" class="remove-icon-input">
+                                                    <input type="file" name="details_icons[{{ $index }}]" class="form-control icon-file-input" accept="image/*" data-max-size="2048" data-max-width="64" data-max-height="64">
                                                     <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 64×64px square (max 2MB)</small>
-                                                    @if(! empty($detail['id']))
-                                                        @php $detailModel = $service->details->firstWhere('id', $detail['id']); @endphp
-                                                        @if($detailModel?->iconUrl())
-                                                            <img src="{{ $detailModel->iconUrl() }}" alt="icon" class="mt-2" style="width: 34px; height: 34px; object-fit: contain;">
-                                                        @endif
-                                                    @endif
+                                                    @php
+                                                        $detailModel = ! empty($detail['id']) ? $service->details->firstWhere('id', $detail['id']) : null;
+                                                        $detailIconUrl = $detailModel?->iconUrl();
+                                                    @endphp
+                                                    <div class="mt-2 position-relative d-inline-block existing-icon-wrap {{ empty($detailIconUrl) ? 'icon-wrap-hidden' : '' }}" data-saved-icon-url="{{ $detailIconUrl ?? '' }}">
+                                                        <img src="{{ $detailIconUrl ?? '' }}" alt="icon" style="width: 34px; height: 34px; object-fit: contain;">
+                                                        <button type="button" class="btn btn-danger btn-sm remove-icon-btn position-absolute top-0 start-100 translate-middle rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:18px;height:18px;font-size:11px;line-height:1;" title="Remove icon">&times;</button>
+                                                    </div>
                                                 </div>
                                                 <div class="col-md-2 d-grid">
                                                     <button type="button" class="btn btn-outline-danger remove-detail-row">Remove</button>
@@ -249,11 +260,13 @@
                                                 </div>
                                                 <div class="col-12 col-md-10">
                                                     <label class="form-label">Icon Image</label>
-                                                    <input type="file" name="solutions_icons[{{ $index }}]" class="form-control" accept="image/*" data-max-size="2048" data-max-width="64" data-max-height="64">
+                                                    <input type="hidden" name="solutions[{{ $index }}][remove_icon]" value="0" class="remove-icon-input">
+                                                    <input type="file" name="solutions_icons[{{ $index }}]" class="form-control icon-file-input" accept="image/*" data-max-size="2048" data-max-width="64" data-max-height="64">
                                                     <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 64×64px square (max 2MB)</small>
-                                                    @if(! empty($solution['icon_url']))
-                                                        <img src="{{ $solution['icon_url'] }}" alt="icon" class="mt-2" style="width: 34px; height: 34px; object-fit: contain;">
-                                                    @endif
+                                                    <div class="mt-2 position-relative d-inline-block existing-icon-wrap {{ empty($solution['icon_url']) ? 'icon-wrap-hidden' : '' }}" data-saved-icon-url="{{ $solution['icon_url'] ?? '' }}">
+                                                        <img src="{{ $solution['icon_url'] ?? '' }}" alt="icon" style="width: 34px; height: 34px; object-fit: contain;">
+                                                        <button type="button" class="btn btn-danger btn-sm remove-icon-btn position-absolute top-0 start-100 translate-middle rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:18px;height:18px;font-size:11px;line-height:1;" title="Remove icon">&times;</button>
+                                                    </div>
                                                 </div>
                                                 <div class="col-12 col-md-2 d-grid">
                                                     <button type="button" class="btn btn-outline-danger remove-solution-row">Remove</button>
@@ -289,8 +302,13 @@
                 </div>
                 <div class="col-12 col-md-10">
                     <label class="form-label">Icon Image</label>
-                    <input type="file" name="__PILLAR_ICON_NAME__" class="form-control" accept="image/*" data-max-size="2048">
+                    <input type="hidden" name="__PILLAR_NAME__[remove_icon]" value="0" class="remove-icon-input">
+                    <input type="file" name="__PILLAR_ICON_NAME__" class="form-control icon-file-input" accept="image/*" data-max-size="2048">
                     <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 64×64px square (max 2MB)</small>
+                    <div class="mt-2 position-relative d-inline-block existing-icon-wrap icon-wrap-hidden" data-saved-icon-url="">
+                        <img src="" alt="icon" style="width: 34px; height: 34px; object-fit: contain;">
+                        <button type="button" class="btn btn-danger btn-sm remove-icon-btn position-absolute top-0 start-100 translate-middle rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:18px;height:18px;font-size:11px;line-height:1;" title="Remove icon">&times;</button>
+                    </div>
                 </div>
                 <div class="col-12 col-md-2 d-grid">
                     <button type="button" class="btn btn-outline-danger remove-pillar-row">Remove</button>
@@ -309,8 +327,13 @@
                 </div>
                 <div class="col-md-10">
                     <label class="form-label">Icon Image</label>
-                    <input type="file" name="__DETAIL_ICON_NAME__" class="form-control" accept="image/*" data-max-size="2048" data-max-width="64" data-max-height="64">
+                    <input type="hidden" name="__DETAIL_NAME__[remove_icon]" value="0" class="remove-icon-input">
+                    <input type="file" name="__DETAIL_ICON_NAME__" class="form-control icon-file-input" accept="image/*" data-max-size="2048" data-max-width="64" data-max-height="64">
                     <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 64×64px square (max 2MB)</small>
+                    <div class="mt-2 position-relative d-inline-block existing-icon-wrap icon-wrap-hidden" data-saved-icon-url="">
+                        <img src="" alt="icon" style="width: 34px; height: 34px; object-fit: contain;">
+                        <button type="button" class="btn btn-danger btn-sm remove-icon-btn position-absolute top-0 start-100 translate-middle rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:18px;height:18px;font-size:11px;line-height:1;" title="Remove icon">&times;</button>
+                    </div>
                 </div>
                 <div class="col-md-2 d-grid">
                     <button type="button" class="btn btn-outline-danger remove-detail-row">Remove</button>
@@ -333,8 +356,13 @@
                 </div>
                 <div class="col-12 col-md-10">
                     <label class="form-label">Icon Image</label>
-                    <input type="file" name="__SOLUTION_ICON_NAME__" class="form-control" accept="image/*" data-max-size="2048" data-max-width="64" data-max-height="64">
+                    <input type="hidden" name="__SOLUTION_NAME__[remove_icon]" value="0" class="remove-icon-input">
+                    <input type="file" name="__SOLUTION_ICON_NAME__" class="form-control icon-file-input" accept="image/*" data-max-size="2048" data-max-width="64" data-max-height="64">
                     <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 64×64px square (max 2MB)</small>
+                    <div class="mt-2 position-relative d-inline-block existing-icon-wrap icon-wrap-hidden" data-saved-icon-url="">
+                        <img src="" alt="icon" style="width: 34px; height: 34px; object-fit: contain;">
+                        <button type="button" class="btn btn-danger btn-sm remove-icon-btn position-absolute top-0 start-100 translate-middle rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:18px;height:18px;font-size:11px;line-height:1;" title="Remove icon">&times;</button>
+                    </div>
                 </div>
                 <div class="col-12 col-md-2 d-grid">
                     <button type="button" class="btn btn-outline-danger remove-solution-row">Remove</button>
@@ -478,6 +506,49 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             if (event.target.classList.contains('remove-solution-row')) {
                 event.target.closest('.solution-row').remove();
+            }
+            if (event.target.classList.contains('remove-icon-btn')) {
+                const wrap = event.target.closest('.existing-icon-wrap');
+                const row = event.target.closest('.pillar-row, .detail-row, .solution-row');
+                const fileInput = row ? row.querySelector('.icon-file-input') : null;
+                const removeIconInput = row ? row.querySelector('.remove-icon-input') : null;
+                const savedIconUrl = wrap ? wrap.dataset.savedIconUrl : '';
+
+                if (fileInput) fileInput.value = '';
+
+                if (savedIconUrl) {
+                    if (removeIconInput) removeIconInput.value = '1';
+                    if (wrap) wrap.classList.add('icon-wrap-hidden');
+                } else if (wrap) {
+                    wrap.classList.add('icon-wrap-hidden');
+                    wrap.querySelector('img').src = '';
+                }
+            }
+        });
+
+        document.addEventListener('change', function (event) {
+            if (!event.target.classList.contains('icon-file-input')) return;
+
+            const input = event.target;
+            const row = input.closest('.pillar-row, .detail-row, .solution-row');
+            const wrap = row ? row.querySelector('.existing-icon-wrap') : null;
+            const removeIconInput = row ? row.querySelector('.remove-icon-input') : null;
+            if (!wrap) return;
+
+            const img = wrap.querySelector('img');
+            const savedIconUrl = wrap.dataset.savedIconUrl || '';
+
+            if (input.files && input.files.length > 0) {
+                if (removeIconInput) removeIconInput.value = '0';
+                img.src = URL.createObjectURL(input.files[0]);
+                wrap.classList.remove('icon-wrap-hidden');
+            } else if (savedIconUrl) {
+                if (removeIconInput) removeIconInput.value = '0';
+                img.src = savedIconUrl;
+                wrap.classList.remove('icon-wrap-hidden');
+            } else {
+                img.src = '';
+                wrap.classList.add('icon-wrap-hidden');
             }
         });
 });
