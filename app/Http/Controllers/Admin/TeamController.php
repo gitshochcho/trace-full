@@ -168,12 +168,14 @@ class TeamController extends Controller
             'experties.*.id' => ['nullable', 'integer'],
             'experties.*.heading' => ['nullable', 'string', 'max:255'],
             'experties.*.description' => ['nullable', 'string'],
+            'experties.*.remove_icon' => ['nullable', 'boolean'],
             'experties_icons' => ['nullable', 'array'],
             'experties_icons.*' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:2048'],
             'social_media' => ['nullable', 'array'],
             'social_media.*.id' => ['nullable', 'integer'],
             'social_media.*.title' => ['nullable', 'string', 'max:255'],
             'social_media.*.social_link' => ['nullable', 'string', 'max:2048'],
+            'social_media.*.remove_icon' => ['nullable', 'boolean'],
             'social_media_icons' => ['nullable', 'array'],
             'social_media_icons.*' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:2048'],
         ]);
@@ -214,6 +216,8 @@ class TeamController extends Controller
             if ($icon) {
                 $record->clearMediaCollection('icon');
                 $record->addMedia($icon)->toMediaCollection('icon');
+            } elseif ($this->wantsIconRemoved($item)) {
+                $record->clearMediaCollection('icon');
             }
 
             $keptIds[] = $record->id;
@@ -255,6 +259,8 @@ class TeamController extends Controller
             if ($icon) {
                 $record->clearMediaCollection('social_icon');
                 $record->addMedia($icon)->toMediaCollection('social_icon');
+            } elseif ($this->wantsIconRemoved($item)) {
+                $record->clearMediaCollection('social_icon');
             }
 
             $keptIds[] = $record->id;
@@ -267,6 +273,11 @@ class TeamController extends Controller
                 $socialMedia->clearMediaCollection('social_icon');
                 $socialMedia->delete();
             });
+    }
+
+    private function wantsIconRemoved(array $item): bool
+    {
+        return filter_var($item['remove_icon'] ?? false, FILTER_VALIDATE_BOOLEAN);
     }
 
     private function normalizeEditorText(?string $value): ?string

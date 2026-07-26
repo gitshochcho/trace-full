@@ -115,6 +115,7 @@ class ServiceController extends Controller
             'overview'            => ['nullable', 'string'],
             'remove_image'        => ['nullable', 'boolean'],
             'image'               => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:4096'],
+            'remove_icon'         => ['nullable', 'boolean'],
             'icon'                => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:2048'],
             'details'             => ['nullable', 'array'],
             'details.*.id'        => ['nullable', 'integer'],
@@ -161,6 +162,8 @@ class ServiceController extends Controller
         if ($request->hasFile('icon')) {
             $service->clearMediaCollection('icon');
             $service->addMedia($request->file('icon'))->toMediaCollection('icon');
+        } elseif ($request->boolean('remove_icon')) {
+            $service->clearMediaCollection('icon');
         }
 
         $this->syncDetails($service, $request->input('details', []), $request->file('details_icons', []));

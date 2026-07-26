@@ -66,6 +66,7 @@ class ProjectController extends Controller
             'outcomes' => ['nullable', 'array'],
             'outcomes.*.id' => ['nullable', 'integer'],
             'outcomes.*.icon_image' => ['nullable', 'file', 'image', 'mimes:jpg,jpeg,png,webp,svg,gif', 'max:1024'],
+            'outcomes.*.remove_icon' => ['nullable', 'boolean'],
             'outcomes.*.text' => ['nullable', 'string'],
         ]);
 
@@ -131,6 +132,7 @@ class ProjectController extends Controller
             'outcomes' => ['nullable', 'array'],
             'outcomes.*.id' => ['nullable', 'integer'],
             'outcomes.*.icon_image' => ['nullable', 'file', 'image', 'mimes:jpg,jpeg,png,webp,svg,gif', 'max:1024'],
+            'outcomes.*.remove_icon' => ['nullable', 'boolean'],
             'outcomes.*.text' => ['nullable', 'string'],
         ]);
 
@@ -344,6 +346,11 @@ class ProjectController extends Controller
                     Storage::disk('public')->delete($record->icon);
                 }
                 $record->icon = $iconFile->store('projects/outcomes', 'public');
+            } elseif ($this->wantsIconRemoved($item) && $record->icon) {
+                if (str_starts_with($record->icon, 'projects/')) {
+                    Storage::disk('public')->delete($record->icon);
+                }
+                $record->icon = null;
             }
 
             $record->save();
@@ -360,6 +367,11 @@ class ProjectController extends Controller
                 }
                 $outcome->delete();
             });
+    }
+
+    private function wantsIconRemoved(array $item): bool
+    {
+        return filter_var($item['remove_icon'] ?? false, FILTER_VALIDATE_BOOLEAN);
     }
 
     private function normalizeEditorText(?string $value): ?string

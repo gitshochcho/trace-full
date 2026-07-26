@@ -568,7 +568,7 @@
     position: absolute;
     inset: 0;
     padding: 20px;
-    background: linear-gradient(180deg, rgba(1, 53, 75, 0) 0%, rgba(1, 53, 75, 0.9) 100%);
+  
     display: flex;
     flex-direction: column;
     justify-content: flex-end;

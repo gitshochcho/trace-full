@@ -114,12 +114,12 @@
                                         </select>
                                         @error('project_status')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-6">
                                         <label class="form-label">Sort Order</label>
                                         <input type="number" name="sort_order" value="{{ old('sort_order', $project->sort_order) }}" class="form-control @error('sort_order') is-invalid @enderror">
                                         @error('sort_order')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
-                                    <div class="col-md-2 d-flex align-items-end pb-1">
+                                    <div class="col-12 d-flex align-items-center pt-1">
                                         <div class="form-check form-switch">
                                             <input type="hidden" name="show_on_home" value="0">
                                             <input class="form-check-input" type="checkbox" name="show_on_home" value="1" id="showOnHomeSwitch" {{ old('show_on_home', $project->show_on_home) ? 'checked' : '' }}>
@@ -308,18 +308,19 @@
                                             <div class="row g-3 align-items-start">
                                                 <div class="col-12 col-md-3">
                                                     <input type="hidden" name="outcomes[{{ $index }}][id]" value="{{ $outcome['id'] ?? '' }}">
+                                                    <input type="hidden" name="outcomes[{{ $index }}][remove_icon]" value="0" class="remove-icon-input">
                                                     <label class="form-label">Icon Image</label>
-                                                    @if($iconImgUrl)
-                                                        <div class="existing-outcome-icon mb-2">
-                                                            <img src="{{ $iconImgUrl }}" alt="Current icon"
-                                                                 class="rounded border"
-                                                                 style="width:48px;height:48px;object-fit:contain;">
-                                                            <div class="small text-muted mt-1">Current icon. Upload new to replace.</div>
-                                                        </div>
-                                                    @endif
+                                                    <div class="existing-outcome-icon mb-2 position-relative d-inline-block {{ $iconImgUrl ? '' : 'd-none' }}" data-saved-icon-url="{{ $iconImgUrl ?? '' }}">
+                                                        <img src="{{ $iconImgUrl ?? '' }}" alt="Current icon"
+                                                             class="rounded border"
+                                                             style="width:48px;height:48px;object-fit:contain;">
+                                                        <button type="button" class="btn btn-danger btn-sm remove-icon-btn position-absolute top-0 start-100 translate-middle rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:18px;height:18px;font-size:11px;line-height:1;" title="Remove icon">&times;</button>
+                                                        <div class="small text-muted mt-1">Current icon. Upload new to replace.</div>
+                                                    </div>
                                                     <input type="file" name="outcomes[{{ $index }}][icon_image]" class="form-control outcome-icon-input" accept="image/*">
-                                                    <div class="outcome-icon-preview mt-2 d-none">
+                                                    <div class="outcome-icon-preview mt-2 d-none position-relative d-inline-block">
                                                         <img src="" alt="New icon preview" class="rounded border" style="width:48px;height:48px;object-fit:contain;">
+                                                        <button type="button" class="btn btn-danger btn-sm clear-icon-btn position-absolute top-0 start-100 translate-middle rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:18px;height:18px;font-size:11px;line-height:1;" title="Remove selected icon">&times;</button>
                                                     </div>
                                                 </div>
                                                 <div class="col-12 col-md-7">
@@ -384,10 +385,17 @@
             <div class="row g-3 align-items-start">
                 <div class="col-12 col-md-3">
                     <input type="hidden" name="__OUTCOME_NAME__[id]" value="">
+                    <input type="hidden" name="__OUTCOME_NAME__[remove_icon]" value="0" class="remove-icon-input">
                     <label class="form-label">Icon Image</label>
+                    <div class="existing-outcome-icon mb-2 position-relative d-inline-block d-none" data-saved-icon-url="">
+                        <img src="" alt="Current icon" class="rounded border" style="width:48px;height:48px;object-fit:contain;">
+                        <button type="button" class="btn btn-danger btn-sm remove-icon-btn position-absolute top-0 start-100 translate-middle rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:18px;height:18px;font-size:11px;line-height:1;" title="Remove icon">&times;</button>
+                        <div class="small text-muted mt-1">Current icon. Upload new to replace.</div>
+                    </div>
                     <input type="file" name="__OUTCOME_NAME__[icon_image]" class="form-control outcome-icon-input" accept="image/*">
-                    <div class="outcome-icon-preview mt-2 d-none">
+                    <div class="outcome-icon-preview mt-2 d-none position-relative d-inline-block">
                         <img src="" alt="Icon preview" class="rounded border" style="width:48px;height:48px;object-fit:contain;">
+                        <button type="button" class="btn btn-danger btn-sm clear-icon-btn position-absolute top-0 start-100 translate-middle rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:18px;height:18px;font-size:11px;line-height:1;" title="Remove selected icon">&times;</button>
                     </div>
                 </div>
                 <div class="col-12 col-md-7">
@@ -646,8 +654,10 @@ document.addEventListener('DOMContentLoaded', function () {
             const file = e.target.files[0];
             const col  = e.target.closest('.col-12.col-md-3, .col-md-3');
             const preview = col ? col.querySelector('.outcome-icon-preview') : null;
+            const removeIconInput = col ? col.querySelector('.remove-icon-input') : null;
             if (!preview) return;
             if (file) {
+                if (removeIconInput) removeIconInput.value = '0';
                 preview.querySelector('img').src = URL.createObjectURL(file);
                 preview.classList.remove('d-none');
             } else {
@@ -695,6 +705,25 @@ document.addEventListener('DOMContentLoaded', function () {
             const row = e.target.closest('.outcome-row');
             destroyEditorFromRow(row);
             if (row) row.remove();
+        }
+        if (e.target.classList.contains('remove-icon-btn')) {
+            const wrap = e.target.closest('.existing-outcome-icon');
+            const row = e.target.closest('.outcome-row');
+            const fileInput = row ? row.querySelector('.outcome-icon-input') : null;
+            const removeIconInput = row ? row.querySelector('.remove-icon-input') : null;
+            if (fileInput) fileInput.value = '';
+            if (removeIconInput) removeIconInput.value = '1';
+            if (wrap) wrap.classList.add('d-none');
+        }
+        if (e.target.classList.contains('clear-icon-btn')) {
+            const row = e.target.closest('.outcome-row');
+            const fileInput = row ? row.querySelector('.outcome-icon-input') : null;
+            const preview = e.target.closest('.outcome-icon-preview');
+            if (fileInput) fileInput.value = '';
+            if (preview) {
+                preview.classList.add('d-none');
+                preview.querySelector('img').src = '';
+            }
         }
     });
 });

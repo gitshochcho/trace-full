@@ -63,6 +63,7 @@ class InnovationController extends Controller
             'sort_order'    => 'nullable|integer',
             'active'        => 'nullable|boolean',
             'show_on_home'  => 'nullable|boolean',
+            'remove_image'  => 'nullable|boolean',
             'image'         => 'nullable|image|mimes:jpeg,png,jpg,webp|max:4096',
         ]);
 
@@ -74,6 +75,8 @@ class InnovationController extends Controller
         if ($request->hasFile('image')) {
             $innovation->clearMediaCollection('innovation_image');
             $innovation->addMedia($request->file('image'))->toMediaCollection('innovation_image');
+        } elseif ($request->boolean('remove_image')) {
+            $innovation->clearMediaCollection('innovation_image');
         }
 
         return redirect()->route('admin.innovations.edit', $innovation)->with([
