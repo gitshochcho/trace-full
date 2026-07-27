@@ -78,12 +78,12 @@
                                         </select>
                                         @error('project_status')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-6">
                                         <label class="form-label">Sort Order</label>
                                         <input type="number" name="sort_order" value="{{ old('sort_order', 0) }}" class="form-control @error('sort_order') is-invalid @enderror">
                                         @error('sort_order')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
-                                    <div class="col-md-2 d-flex align-items-end pb-1">
+                                    <div class="col-12 d-flex align-items-center pt-1">
                                         <div class="form-check form-switch">
                                             <input type="hidden" name="show_on_home" value="0">
                                             <input class="form-check-input" type="checkbox" name="show_on_home" value="1" id="showOnHomeSwitch" @checked(old('show_on_home', '0') == '1')>
@@ -229,8 +229,9 @@
                                                     <input type="hidden" name="outcomes[{{ $index }}][id]" value="{{ $outcome['id'] ?? '' }}">
                                                     <label class="form-label">Icon Image</label>
                                                     <input type="file" name="outcomes[{{ $index }}][icon_image]" class="form-control outcome-icon-input" accept="image/*">
-                                                    <div class="outcome-icon-preview mt-2 d-none">
+                                                    <div class="outcome-icon-preview mt-2 d-none position-relative d-inline-block">
                                                         <img src="" alt="Icon preview" class="rounded border" style="width:48px;height:48px;object-fit:contain;">
+                                                        <button type="button" class="btn btn-danger btn-sm clear-icon-btn position-absolute top-0 start-100 translate-middle rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:18px;height:18px;font-size:11px;line-height:1;" title="Remove selected icon">&times;</button>
                                                     </div>
                                                 </div>
                                                 <div class="col-12 col-md-7">
@@ -304,8 +305,9 @@
                     <input type="hidden" name="__OUTCOME_NAME__[id]" value="">
                     <label class="form-label">Icon Image</label>
                     <input type="file" name="__OUTCOME_NAME__[icon_image]" class="form-control outcome-icon-input" accept="image/*">
-                    <div class="outcome-icon-preview mt-2 d-none">
+                    <div class="outcome-icon-preview mt-2 d-none position-relative d-inline-block">
                         <img src="" alt="Icon preview" class="rounded border" style="width:48px;height:48px;object-fit:contain;">
+                        <button type="button" class="btn btn-danger btn-sm clear-icon-btn position-absolute top-0 start-100 translate-middle rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:18px;height:18px;font-size:11px;line-height:1;" title="Remove selected icon">&times;</button>
                     </div>
                 </div>
                 <div class="col-12 col-md-7">
@@ -542,6 +544,16 @@ document.addEventListener('DOMContentLoaded', function () {
             const row = e.target.closest('.outcome-row');
             destroyEditorFromRow(row);
             if (row) row.remove();
+        }
+        if (e.target.classList.contains('clear-icon-btn')) {
+            const row = e.target.closest('.outcome-row');
+            const fileInput = row ? row.querySelector('.outcome-icon-input') : null;
+            const preview = e.target.closest('.outcome-icon-preview');
+            if (fileInput) fileInput.value = '';
+            if (preview) {
+                preview.classList.add('d-none');
+                preview.querySelector('img').src = '';
+            }
         }
     });
 });

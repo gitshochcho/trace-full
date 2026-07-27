@@ -148,11 +148,15 @@
 
                                     <div class="col-md-6">
                                         <label class="form-label">Service Icon</label>
-                                        <input type="file" name="icon" class="form-control @error('icon') is-invalid @enderror" accept="image/*" data-max-size="2048" data-max-width="128" data-max-height="128">
+                                        <input type="hidden" name="remove_icon" value="0" id="serviceRemoveIconInput">
+                                        <input type="file" id="serviceIconInput" name="icon" class="form-control @error('icon') is-invalid @enderror" accept="image/*" data-max-size="2048" data-max-width="128" data-max-height="128">
                                         <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 128×128px square (max 2MB)</small>
                                         @error('icon')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                         @if($service->iconUrl())
-                                            <img src="{{ $service->iconUrl() }}" alt="icon" class="mt-2" style="width: 50px; height: 50px; object-fit: contain;">
+                                            <div id="existingServiceIconWrap" class="mt-2 position-relative d-inline-block">
+                                                <img src="{{ $service->iconUrl() }}" alt="icon" style="width: 50px; height: 50px; object-fit: contain;">
+                                                <button type="button" id="removeServiceIconBtn" class="btn btn-danger btn-sm position-absolute top-0 start-100 translate-middle rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:18px;height:18px;font-size:11px;line-height:1;" title="Remove icon">&times;</button>
+                                            </div>
                                         @endif
                                     </div>
                                 </div>
@@ -421,6 +425,26 @@ document.addEventListener('DOMContentLoaded', function () {
                 serviceRemoveImageInput.value = '1';
                 const wrap = document.getElementById('existingServiceImageWrap');
                 if (wrap) wrap.remove();
+            });
+        }
+
+        const serviceIconInput = document.getElementById('serviceIconInput');
+        const removeServiceIconBtn = document.getElementById('removeServiceIconBtn');
+        const serviceRemoveIconInput = document.getElementById('serviceRemoveIconInput');
+
+        if (removeServiceIconBtn && serviceRemoveIconInput) {
+            removeServiceIconBtn.addEventListener('click', function () {
+                serviceRemoveIconInput.value = '1';
+                const wrap = document.getElementById('existingServiceIconWrap');
+                if (wrap) wrap.remove();
+            });
+        }
+
+        if (serviceIconInput && serviceRemoveIconInput) {
+            serviceIconInput.addEventListener('change', function () {
+                if (serviceIconInput.files && serviceIconInput.files.length > 0) {
+                    serviceRemoveIconInput.value = '0';
+                }
             });
         }
 

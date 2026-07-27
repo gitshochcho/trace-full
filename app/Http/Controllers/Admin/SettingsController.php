@@ -23,13 +23,16 @@ class SettingsController extends Controller
     {
         $validated = $request->validate([
             'logo_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:2048'],
+            'remove_logo_image' => ['nullable', 'boolean'],
             'favicon_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg,ico', 'max:512', 'dimensions:max_width=64,max_height=64'],
+            'remove_favicon_image' => ['nullable', 'boolean'],
             'logo_text' => ['nullable', 'string', 'max:255'],
             'logo_tagline' => ['nullable', 'string', 'max:255'],
             'social_links' => ['nullable', 'array'],
             'social_links.*.title' => ['nullable', 'string', 'max:255'],
             'social_links.*.link' => ['nullable', 'string', 'max:2048'],
             'social_links.*.media_key' => ['nullable', 'string', 'max:64'],
+            'social_links.*.remove_icon' => ['nullable', 'boolean'],
             'social_links_icons' => ['nullable', 'array'],
             'social_links_icons.*' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:2048'],
             'footer_contact_mobile' => ['nullable', 'string', 'max:255'],
@@ -74,6 +77,8 @@ class SettingsController extends Controller
             if ($hasUploadedIcon) {
                 $setting->clearMediaCollection($collectionName);
                 $setting->addMedia($uploadedIcons[$index])->toMediaCollection($collectionName);
+            } elseif ($this->wantsIconRemoved($item)) {
+                $setting->clearMediaCollection($collectionName);
             }
         }
 
@@ -93,11 +98,15 @@ class SettingsController extends Controller
         if ($request->hasFile('logo_image')) {
             $setting->clearMediaCollection('logo_image');
             $setting->addMedia($request->file('logo_image'))->toMediaCollection('logo_image');
+        } elseif ($request->boolean('remove_logo_image')) {
+            $setting->clearMediaCollection('logo_image');
         }
 
         if ($request->hasFile('favicon_image')) {
             $setting->clearMediaCollection('favicon_image');
             $setting->addMedia($request->file('favicon_image'))->toMediaCollection('favicon_image');
+        } elseif ($request->boolean('remove_favicon_image')) {
+            $setting->clearMediaCollection('favicon_image');
         }
 
         $setting->refresh();
@@ -123,5 +132,10 @@ class SettingsController extends Controller
                 'message' => 'Settings updated successfully',
                 'alert-type' => 'success',
             ]);
+    }
+
+    private function wantsIconRemoved(array $item): bool
+    {
+        return filter_var($item['remove_icon'] ?? false, FILTER_VALIDATE_BOOLEAN);
     }
 }

@@ -57,9 +57,11 @@
 
                         <div class="mb-3">
                             <label class="form-label">Innovation Image</label>
+                            <input type="hidden" name="remove_image" value="0" id="removeImageInput">
                             @if($innovation->imageUrl())
-                                <div class="mb-2">
+                                <div class="mb-2 position-relative d-inline-block" id="existingImageWrap">
                                     <img src="{{ $innovation->imageUrl() }}" alt="{{ $innovation->title }}" style="max-height: 140px; border: 1px solid #ddd; padding: 5px;">
+                                    <button type="button" id="removeImageBtn" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:22px;height:22px;font-size:12px;" title="Remove current image">&times;</button>
                                 </div>
                             @endif
                             <input type="file" name="image" id="innovationImage" class="form-control @error('image') is-invalid @enderror" accept="image/*" onchange="previewImage(this)">
@@ -92,6 +94,8 @@ function previewImage(input) {
             document.getElementById('imagePreviewContainer').style.display = 'block';
         }
         reader.readAsDataURL(input.files[0]);
+        var removeImageInput = document.getElementById('removeImageInput');
+        if (removeImageInput) removeImageInput.value = '0';
     }
 }
 
@@ -99,5 +103,18 @@ function resetImage() {
     document.getElementById('innovationImage').value = "";
     document.getElementById('imagePreviewContainer').style.display = 'none';
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+    var removeImageBtn = document.getElementById('removeImageBtn');
+    var removeImageInput = document.getElementById('removeImageInput');
+
+    if (removeImageBtn && removeImageInput) {
+        removeImageBtn.addEventListener('click', function () {
+            removeImageInput.value = '1';
+            var wrap = document.getElementById('existingImageWrap');
+            if (wrap) wrap.remove();
+        });
+    }
+});
 </script>
 @endsection

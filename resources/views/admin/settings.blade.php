@@ -43,12 +43,14 @@
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <label class="form-label">Logo Image</label>
-                                        <input type="file" name="logo_image" class="form-control @error('logo_image') is-invalid @enderror" data-max-size="2048" data-max-width="240" data-max-height="80">
+                                        <input type="hidden" name="remove_logo_image" value="0" id="logoRemoveImageInput">
+                                        <input type="file" id="logoImageInput" name="logo_image" class="form-control @error('logo_image') is-invalid @enderror" data-max-size="2048" data-max-width="240" data-max-height="80">
                                         @error('logo_image')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                         <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 240×80px (transparent PNG preferred, max 2MB) — supports PNG, JPG, WEBP, SVG</small>
                                         @if($setting?->logoImageUrl())
-                                            <div class="mt-2">
+                                            <div id="existingLogoImageWrap" class="mt-2 position-relative d-inline-block">
                                                 <img src="{{ $setting->logoImageUrl() }}" alt="Current logo" style="max-height: 70px;">
+                                                <button type="button" id="removeLogoImageBtn" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:22px;height:22px;font-size:12px;" title="Remove current logo">&times;</button>
                                             </div>
                                         @endif
                                     </div>
@@ -67,12 +69,14 @@
 
                                     <div class="col-md-6">
                                         <label class="form-label">Favicon Image</label>
-                                        <input type="file" name="favicon_image" class="form-control @error('favicon_image') is-invalid @enderror" data-max-size="512" data-max-width="64" data-max-height="64">
+                                        <input type="hidden" name="remove_favicon_image" value="0" id="faviconRemoveImageInput">
+                                        <input type="file" id="faviconImageInput" name="favicon_image" class="form-control @error('favicon_image') is-invalid @enderror" data-max-size="512" data-max-width="64" data-max-height="64">
                                         @error('favicon_image')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                         <small class="text-muted"><i class="fas fa-info-circle"></i> Recommended: 64×64px (square, max 512KB) — supports PNG, JPG, WEBP, SVG, ICO</small>
                                         @if($setting?->faviconImageUrl())
-                                            <div class="mt-2">
+                                            <div id="existingFaviconImageWrap" class="mt-2 position-relative d-inline-block">
                                                 <img src="{{ $setting->faviconImageUrl() }}" alt="Current favicon" style="max-height: 40px; max-width: 40px;">
+                                                <button type="button" id="removeFaviconImageBtn" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:20px;height:20px;font-size:11px;" title="Remove current favicon">&times;</button>
                                             </div>
                                         @endif
                                     </div>
@@ -121,7 +125,8 @@
                                                     </div>
                                                     <div class="col-md-3">
                                                         <label class="form-label">Icon Image</label>
-                                                        <input type="file" name="social_links_icons[{{ $index }}]" class="form-control" accept="image/*" data-max-size="512" data-max-width="32" data-max-height="32">
+                                                        <input type="hidden" name="social_links[{{ $index }}][remove_icon]" value="0" class="remove-icon-input">
+                                                        <input type="file" name="social_links_icons[{{ $index }}]" class="form-control icon-file-input" accept="image/*" data-max-size="512" data-max-width="32" data-max-height="32">
                                                         <small class="text-muted"><i class="fas fa-info-circle"></i> 32×32px square</small>
                                                         @php
                                                             $existingIcon = null;
@@ -129,9 +134,10 @@
                                                                 $existingIcon = $setting?->getFirstMediaUrl('social_icon_' . $socialLink['media_key']);
                                                             }
                                                         @endphp
-                                                        @if($existingIcon)
-                                                            <img src="{{ $existingIcon }}" alt="Icon" style="height: 22px; width: 22px; object-fit: contain; margin-top: 8px;">
-                                                        @endif
+                                                        <div class="mt-2 position-relative d-inline-block icon-preview-wrap {{ $existingIcon ? '' : 'd-none' }}" data-saved-icon-url="{{ $existingIcon ?? '' }}">
+                                                            <img src="{{ $existingIcon ?? '' }}" alt="Icon" style="height: 22px; width: 22px; object-fit: contain;">
+                                                            <button type="button" class="btn btn-danger btn-sm remove-icon-btn position-absolute top-0 start-100 translate-middle rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:16px;height:16px;font-size:10px;line-height:1;" title="Remove icon">&times;</button>
+                                                        </div>
                                                     </div>
                                                     <div class="col-md-1 d-grid">
                                                         <button type="button" class="btn btn-outline-danger remove-social-link">&times;</button>
@@ -166,8 +172,13 @@
             </div>
             <div class="col-md-3">
                 <label class="form-label">Icon Image</label>
-                <input type="file" name="__ICON_NAME__" class="form-control" accept="image/*" data-max-size="512" data-max-width="32" data-max-height="32">
+                <input type="hidden" name="__NAME__[remove_icon]" value="0" class="remove-icon-input">
+                <input type="file" name="__ICON_NAME__" class="form-control icon-file-input" accept="image/*" data-max-size="512" data-max-width="32" data-max-height="32">
                 <small class="text-muted"><i class="fas fa-info-circle"></i> 32×32px square</small>
+                <div class="mt-2 position-relative d-inline-block icon-preview-wrap d-none" data-saved-icon-url="">
+                    <img src="" alt="Icon" style="height: 22px; width: 22px; object-fit: contain;">
+                    <button type="button" class="btn btn-danger btn-sm remove-icon-btn position-absolute top-0 start-100 translate-middle rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:16px;height:16px;font-size:10px;line-height:1;" title="Remove icon">&times;</button>
+                </div>
             </div>
             <div class="col-md-1 d-grid">
                 <button type="button" class="btn btn-outline-danger remove-social-link">&times;</button>
@@ -178,6 +189,31 @@
 @push('custome-js')
 <script>
     (function () {
+        function wireSingleImageRemove(fileInputId, removeBtnId, removeInputId, existingWrapId) {
+            const fileInput = document.getElementById(fileInputId);
+            const removeBtn = document.getElementById(removeBtnId);
+            const removeInput = document.getElementById(removeInputId);
+
+            if (removeBtn && removeInput) {
+                removeBtn.addEventListener('click', function () {
+                    removeInput.value = '1';
+                    const wrap = document.getElementById(existingWrapId);
+                    if (wrap) wrap.remove();
+                });
+            }
+
+            if (fileInput && removeInput) {
+                fileInput.addEventListener('change', function () {
+                    if (fileInput.files && fileInput.files.length > 0) {
+                        removeInput.value = '0';
+                    }
+                });
+            }
+        }
+
+        wireSingleImageRemove('logoImageInput', 'removeLogoImageBtn', 'logoRemoveImageInput', 'existingLogoImageWrap');
+        wireSingleImageRemove('faviconImageInput', 'removeFaviconImageBtn', 'faviconRemoveImageInput', 'existingFaviconImageWrap');
+
         const wrapper = document.getElementById('socialLinksWrapper');
         const addButton = document.getElementById('addSocialLink');
         const template = document.getElementById('socialLinkTemplate');
@@ -201,12 +237,55 @@
         });
 
         wrapper.addEventListener('click', function (event) {
-            if (!event.target.classList.contains('remove-social-link')) {
+            if (event.target.classList.contains('remove-social-link')) {
+                event.target.closest('.social-link-row').remove();
+                reindexRows();
                 return;
             }
 
-            event.target.closest('.social-link-row').remove();
-            reindexRows();
+            if (event.target.classList.contains('remove-icon-btn')) {
+                const row = event.target.closest('.social-link-row');
+                const wrap = event.target.closest('.icon-preview-wrap');
+                const fileInput = row ? row.querySelector('.icon-file-input') : null;
+                const removeIconInput = row ? row.querySelector('.remove-icon-input') : null;
+                const savedIconUrl = wrap ? wrap.dataset.savedIconUrl : '';
+
+                if (fileInput) fileInput.value = '';
+
+                if (savedIconUrl) {
+                    if (removeIconInput) removeIconInput.value = '1';
+                    if (wrap) wrap.classList.add('d-none');
+                } else if (wrap) {
+                    wrap.classList.add('d-none');
+                    wrap.querySelector('img').src = '';
+                }
+            }
+        });
+
+        wrapper.addEventListener('change', function (event) {
+            if (!event.target.classList.contains('icon-file-input')) return;
+
+            const input = event.target;
+            const row = input.closest('.social-link-row');
+            const wrap = row ? row.querySelector('.icon-preview-wrap') : null;
+            const removeIconInput = row ? row.querySelector('.remove-icon-input') : null;
+            if (!wrap) return;
+
+            const img = wrap.querySelector('img');
+            const savedIconUrl = wrap.dataset.savedIconUrl || '';
+
+            if (input.files && input.files.length > 0) {
+                if (removeIconInput) removeIconInput.value = '0';
+                img.src = URL.createObjectURL(input.files[0]);
+                wrap.classList.remove('d-none');
+            } else if (savedIconUrl) {
+                if (removeIconInput) removeIconInput.value = '0';
+                img.src = savedIconUrl;
+                wrap.classList.remove('d-none');
+            } else {
+                img.src = '';
+                wrap.classList.add('d-none');
+            }
         });
 
         reindexRows();

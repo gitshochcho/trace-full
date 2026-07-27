@@ -320,24 +320,6 @@ const removeIconBtn   = document.getElementById('remove-icon-btn');
 const removeIconInput = document.getElementById('remove_icon_input');
 const iconPreview     = document.getElementById('icon-preview');
 
-if (removeIconBtn) {
-    removeIconBtn.addEventListener('click', function () {
-        iconPreview.style.opacity     = '0.3';
-        iconPreview.style.filter      = 'grayscale(100%)';
-        removeIconInput.value         = '1';
-        removeIconBtn.innerHTML       = '<i class="fas fa-undo me-1"></i> Undo';
-        removeIconBtn.classList.replace('btn-outline-danger', 'btn-outline-secondary');
-        removeIconBtn.dataset.removed = 'true';
-    });
-
-    // Undo support
-    removeIconBtn.addEventListener('click', function () {
-        if (removeIconBtn.dataset.removed === 'true') {
-            // already handled above — but swap to undo logic on second click
-        }
-    });
-}
-
 // ── Remove Main Image ──
 const removeImageBtn   = document.getElementById('remove-image-btn');
 const removeImageInput = document.getElementById('remove_image_input');

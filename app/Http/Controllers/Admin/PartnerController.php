@@ -51,15 +51,18 @@ class PartnerController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'link' => 'nullable|url',
+            'remove_image' => 'nullable|boolean',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
-        $partner->update($validated); 
+        $partner->update($validated);
         $partner->save();
 
         if ($request->hasFile('image')) {
             $partner->clearMediaCollection('partner_image');
             $partner->addMedia($request->file('image'))->toMediaCollection('partner_image');
+        } elseif ($request->boolean('remove_image')) {
+            $partner->clearMediaCollection('partner_image');
         }
         return redirect()->route('admin.partners.edit', $partner)->with([
             'message' => 'Partner updated successfully',
