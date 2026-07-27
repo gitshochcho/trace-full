@@ -337,7 +337,7 @@
 /* =========================================
    RIGHT — SIDEBAR
 ========================================= */
-.article-sidebar { display: flex; flex-direction: column; gap: 20px; position: sticky; top: 24px; }
+.article-sidebar { display: flex; flex-direction: column; gap: 20px; position: sticky; top: 120px; }
 
 .sidebar-card {
     background: #fff;

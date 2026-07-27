@@ -77,6 +77,8 @@ class ContentController extends Controller
             'type' => ['nullable', 'string', 'max:255'],
             'icon' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:2048'],
             'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:4096'],
+            'remove_icon' => ['nullable', 'boolean'],
+            'remove_image' => ['nullable', 'boolean'],
         ]);
 
         $oldSlug = $content->slug;
@@ -86,11 +88,15 @@ class ContentController extends Controller
         if ($request->hasFile('icon')) {
             $content->clearMediaCollection('icon');
             $content->addMedia($request->file('icon'))->toMediaCollection('icon');
+        } elseif ($request->boolean('remove_icon')) {
+            $content->clearMediaCollection('icon');
         }
 
         if ($request->hasFile('image')) {
             $content->clearMediaCollection('image');
             $content->addMedia($request->file('image'))->toMediaCollection('image');
+        } elseif ($request->boolean('remove_image')) {
+            $content->clearMediaCollection('image');
         }
 
         Cache::forget("content_block_{$oldSlug}");

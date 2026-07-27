@@ -168,11 +168,13 @@
                                                 </div>
                                                 <div class="col-md-3">
                                                     <label class="form-label">Icon</label>
-                                                    <input type="file" name="experties_icons[{{ $index }}]" class="form-control" accept="image/*" data-max-size="2048" data-max-width="64" data-max-height="64">
+                                                    <input type="hidden" name="experties[{{ $index }}][remove_icon]" value="0" class="remove-icon-input">
+                                                    <input type="file" name="experties_icons[{{ $index }}]" class="form-control icon-file-input" accept="image/*" data-max-size="2048" data-max-width="64" data-max-height="64">
                                                     <small class="text-muted"><i class="fas fa-info-circle"></i> 64×64px square</small>
-                                                    @if(!empty($expertise['icon_url']))
-                                                        <img src="{{ $expertise['icon_url'] }}" alt="icon" style="width: 24px; height: 24px; object-fit: contain; margin-top: 6px;">
-                                                    @endif
+                                                    <div class="mt-2 position-relative d-inline-block icon-preview-wrap {{ !empty($expertise['icon_url']) ? '' : 'd-none' }}" data-saved-icon-url="{{ $expertise['icon_url'] ?? '' }}">
+                                                        <img src="{{ $expertise['icon_url'] ?? '' }}" alt="icon" style="width: 24px; height: 24px; object-fit: contain;">
+                                                        <button type="button" class="btn btn-danger btn-sm remove-icon-btn position-absolute top-0 start-100 translate-middle rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:16px;height:16px;font-size:10px;line-height:1;" title="Remove icon">&times;</button>
+                                                    </div>
                                                 </div>
                                                 <div class="col-md-1 d-grid">
                                                     <button type="button" class="btn btn-outline-danger remove-expertise-row">&times;</button>
@@ -205,11 +207,13 @@
                                                 </div>
                                                 <div class="col-md-3">
                                                     <label class="form-label">Social Icon</label>
-                                                    <input type="file" name="social_media_icons[{{ $index }}]" class="form-control" accept="image/*" data-max-size="512" data-max-width="32" data-max-height="32">
+                                                    <input type="hidden" name="social_media[{{ $index }}][remove_icon]" value="0" class="remove-icon-input">
+                                                    <input type="file" name="social_media_icons[{{ $index }}]" class="form-control icon-file-input" accept="image/*" data-max-size="512" data-max-width="32" data-max-height="32">
                                                     <small class="text-muted"><i class="fas fa-info-circle"></i> 32×32px square</small>
-                                                    @if(!empty($social['icon_url']))
-                                                        <img src="{{ $social['icon_url'] }}" alt="icon" style="width: 24px; height: 24px; object-fit: contain; margin-top: 6px;">
-                                                    @endif
+                                                    <div class="mt-2 position-relative d-inline-block icon-preview-wrap {{ !empty($social['icon_url']) ? '' : 'd-none' }}" data-saved-icon-url="{{ $social['icon_url'] ?? '' }}">
+                                                        <img src="{{ $social['icon_url'] ?? '' }}" alt="icon" style="width: 24px; height: 24px; object-fit: contain;">
+                                                        <button type="button" class="btn btn-danger btn-sm remove-icon-btn position-absolute top-0 start-100 translate-middle rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:16px;height:16px;font-size:10px;line-height:1;" title="Remove icon">&times;</button>
+                                                    </div>
                                                 </div>
                                                 <div class="col-md-1 d-grid">
                                                     <button type="button" class="btn btn-outline-danger remove-social-row">&times;</button>
@@ -244,8 +248,13 @@
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Icon</label>
-                    <input type="file" name="__EXPERTISE_ICON_NAME__" class="form-control" accept="image/*" data-max-size="2048" data-max-width="64" data-max-height="64">
+                    <input type="hidden" name="__EXPERTISE_NAME__[remove_icon]" value="0" class="remove-icon-input">
+                    <input type="file" name="__EXPERTISE_ICON_NAME__" class="form-control icon-file-input" accept="image/*" data-max-size="2048" data-max-width="64" data-max-height="64">
                     <small class="text-muted"><i class="fas fa-info-circle"></i> 64×64px square</small>
+                    <div class="mt-2 position-relative d-inline-block icon-preview-wrap d-none" data-saved-icon-url="">
+                        <img src="" alt="icon" style="width: 24px; height: 24px; object-fit: contain;">
+                        <button type="button" class="btn btn-danger btn-sm remove-icon-btn position-absolute top-0 start-100 translate-middle rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:16px;height:16px;font-size:10px;line-height:1;" title="Remove icon">&times;</button>
+                    </div>
                 </div>
                 <div class="col-md-1 d-grid">
                     <button type="button" class="btn btn-outline-danger remove-expertise-row">&times;</button>
@@ -268,8 +277,13 @@
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Social Icon</label>
-                    <input type="file" name="__SOCIAL_ICON_NAME__" class="form-control" accept="image/*" data-max-size="512" data-max-width="32" data-max-height="32">
+                    <input type="hidden" name="__SOCIAL_NAME__[remove_icon]" value="0" class="remove-icon-input">
+                    <input type="file" name="__SOCIAL_ICON_NAME__" class="form-control icon-file-input" accept="image/*" data-max-size="512" data-max-width="32" data-max-height="32">
                     <small class="text-muted"><i class="fas fa-info-circle"></i> 32×32px square</small>
+                    <div class="mt-2 position-relative d-inline-block icon-preview-wrap d-none" data-saved-icon-url="">
+                        <img src="" alt="icon" style="width: 24px; height: 24px; object-fit: contain;">
+                        <button type="button" class="btn btn-danger btn-sm remove-icon-btn position-absolute top-0 start-100 translate-middle rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:16px;height:16px;font-size:10px;line-height:1;" title="Remove icon">&times;</button>
+                    </div>
                 </div>
                 <div class="col-md-1 d-grid">
                     <button type="button" class="btn btn-outline-danger remove-social-row">&times;</button>
@@ -443,15 +457,66 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         expertiseWrapper.addEventListener('click', function (event) {
-            if (!event.target.classList.contains('remove-expertise-row')) return;
-            event.target.closest('.expertise-row').remove();
-            reindexExpertiseRows();
+            if (event.target.classList.contains('remove-expertise-row')) {
+                event.target.closest('.expertise-row').remove();
+                reindexExpertiseRows();
+                return;
+            }
+            handleIconRemoveClick(event, '.expertise-row');
         });
 
         socialWrapper.addEventListener('click', function (event) {
-            if (!event.target.classList.contains('remove-social-row')) return;
-            event.target.closest('.social-row').remove();
-            reindexSocialRows();
+            if (event.target.classList.contains('remove-social-row')) {
+                event.target.closest('.social-row').remove();
+                reindexSocialRows();
+                return;
+            }
+            handleIconRemoveClick(event, '.social-row');
+        });
+
+        function handleIconRemoveClick(event, rowSelector) {
+            if (!event.target.classList.contains('remove-icon-btn')) return;
+            const row = event.target.closest(rowSelector);
+            const wrap = event.target.closest('.icon-preview-wrap');
+            const fileInput = row ? row.querySelector('.icon-file-input') : null;
+            const removeIconInput = row ? row.querySelector('.remove-icon-input') : null;
+            const savedIconUrl = wrap ? wrap.dataset.savedIconUrl : '';
+
+            if (fileInput) fileInput.value = '';
+
+            if (savedIconUrl) {
+                if (removeIconInput) removeIconInput.value = '1';
+                if (wrap) wrap.classList.add('d-none');
+            } else if (wrap) {
+                wrap.classList.add('d-none');
+                wrap.querySelector('img').src = '';
+            }
+        }
+
+        document.addEventListener('change', function (event) {
+            if (!event.target.classList.contains('icon-file-input')) return;
+
+            const input = event.target;
+            const row = input.closest('.expertise-row, .social-row');
+            const wrap = row ? row.querySelector('.icon-preview-wrap') : null;
+            const removeIconInput = row ? row.querySelector('.remove-icon-input') : null;
+            if (!wrap) return;
+
+            const img = wrap.querySelector('img');
+            const savedIconUrl = wrap.dataset.savedIconUrl || '';
+
+            if (input.files && input.files.length > 0) {
+                if (removeIconInput) removeIconInput.value = '0';
+                img.src = URL.createObjectURL(input.files[0]);
+                wrap.classList.remove('d-none');
+            } else if (savedIconUrl) {
+                if (removeIconInput) removeIconInput.value = '0';
+                img.src = savedIconUrl;
+                wrap.classList.remove('d-none');
+            } else {
+                img.src = '';
+                wrap.classList.add('d-none');
+            }
         });
 
         reindexExpertiseRows();
