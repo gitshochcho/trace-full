@@ -7,10 +7,37 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Project;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Service extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
+
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $this->addMediaConversion('webp')
+            ->format('webp')
+            ->quality(82)
+            ->performOnCollections('icon', 'image')
+            ->nonQueued();
+
+        $this->addMediaConversion('avif')
+            ->format('avif')
+            ->quality(70)
+            ->performOnCollections('icon', 'image');
+
+        $this->addMediaConversion('image_sm')
+            ->format('webp')
+            ->width(400)
+            ->quality(80)
+            ->performOnCollections('image');
+
+        $this->addMediaConversion('image_md')
+            ->format('webp')
+            ->width(800)
+            ->quality(80)
+            ->performOnCollections('image');
+    }
 
     protected $fillable = [
         'slug',
@@ -67,16 +94,34 @@ class Service extends Model implements HasMedia
 
     public function iconUrl(): ?string
     {
-        $url = $this->getFirstMediaUrl('icon');
+        $url = $this->getFirstMediaUrl('icon', 'avif') ?: $this->getFirstMediaUrl('icon', 'webp') ?: $this->getFirstMediaUrl('icon');
 
         return $url !== '' ? $url : null;
     }
 
     public function imageUrl(): ?string
     {
-        $url = $this->getFirstMediaUrl('image');
+        $url = $this->getFirstMediaUrl('image', 'avif') ?: $this->getFirstMediaUrl('image', 'webp') ?: $this->getFirstMediaUrl('image');
 
         return $url !== '' ? $url : null;
+    }
+
+    public function imageSrcset(): ?string
+    {
+        $media = $this->getFirstMedia('image');
+
+        if (! $media) {
+            return null;
+        }
+
+        $variants = [];
+        foreach (['image_sm' => 400, 'image_md' => 800] as $conversion => $width) {
+            if ($media->hasGeneratedConversion($conversion)) {
+                $variants[] = $media->getUrl($conversion) . ' ' . $width . 'w';
+            }
+        }
+
+        return $variants ? implode(', ', $variants) : null;
     }
 
     public function heroContent(): ?Content

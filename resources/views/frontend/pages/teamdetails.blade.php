@@ -352,6 +352,10 @@
     $socialItems = $team->socialMedia;
 @endphp
 
+<x-breadcrumb-schema :items="[
+    ['label' => 'Our Team', 'url' => route('team')],
+    ['label' => $teamName, 'url' => null],
+]" />
 <section class="service-breadcrumb d-flex align-items-center">
     <div class="container custom-container">
         <nav aria-label="breadcrumb">
@@ -457,7 +461,7 @@
                 <div class="about-left-content">
                     <div class="about-title-box mb-4">
                         <span class="orange-line"></span>
-                        <h3 class="fw-bold section-heading">About {{ rtrim($team->first_name ?: $teamName, '.') }}</h3>
+                        <h2 class="fw-bold section-heading">About {{ rtrim($team->first_name ?: $teamName, '.') }}</h2>
                     </div>
 
                     <div class="about-description">
@@ -467,7 +471,7 @@
                     <div class="expertise-section mt-4">
                         <div class="about-title-box mb-4">
                             <span class="orange-line"></span>
-                            <h3 class="fw-bold section-heading">Areas of Expertise</h3>
+                            <h2 class="fw-bold section-heading">Areas of Expertise</h2>
                         </div>
 
                         <div class="row g-3">
@@ -476,7 +480,7 @@
                                     <div class="expertise-card d-flex gap-3">
                                         <div class="icon-box-small">
                                             @if($expertise->iconUrl())
-                                                <img src="{{ $expertise->iconUrl() }}" alt="{{ $expertise->heading ?? '' }}" style="width: 20px; height: 20px; object-fit: contain;">
+                                                <img src="{{ $expertise->iconUrl() }}" alt="{{ $expertise->heading ?? '' }}" style="width: 20px; height: 20px; object-fit: contain;" loading="lazy" decoding="async">
                                             @else
                                                 <i class="fas fa-check"></i>
                                             @endif
@@ -514,7 +518,7 @@
                         <h6 class="fw-bold mb-4">Other Team Members</h6>
                         @foreach($otherTeamMembers as $member)
                             <a href="{{ route('teamdetails', $member) }}" class="team-sidebar-item">
-                                <img src="{{ $member->imageUrl() ?? '' }}" class="member-img" alt="{{ $member->fullName() }}">
+                                <img src="{{ $member->imageUrl() ?? '' }}" class="member-img" alt="{{ $member->fullName() }}" loading="lazy" decoding="async">
                                 <div class="member-info">
                                     <h6>{{ $member->fullName() }}</h6>
                                     <span>{{ $member->designation ?? '' }}</span>

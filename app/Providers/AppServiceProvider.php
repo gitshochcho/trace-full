@@ -1,7 +1,13 @@
 <?php
 
 namespace App\Providers;
+use App\Http\Controllers\SitemapController;
+use App\Models\InsightArticle;
+use App\Models\JobPosting;
+use App\Models\Project;
+use App\Models\Service;
 use App\Models\Setting;
+use App\Models\Team;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
@@ -37,6 +43,11 @@ class AppServiceProvider extends ServiceProvider
         });
         $view->with('setting', $setting);
     });
+
+        foreach ([Service::class, Project::class, Team::class, InsightArticle::class, JobPosting::class] as $model) {
+            $model::saved(fn () => Cache::forget(SitemapController::CACHE_KEY));
+            $model::deleted(fn () => Cache::forget(SitemapController::CACHE_KEY));
+        }
     }
 
     private function loadSiteSettings(): ?Setting

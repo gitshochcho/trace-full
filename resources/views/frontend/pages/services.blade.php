@@ -336,14 +336,14 @@
             <span class="top-label">{{ $servicesHeroTag }}</span>
         </div>
 
-        <h2 class="services-title">
+        <h1 class="services-title">
             {{ Str::before($servicesHeroTitle, $servicesHeroTitleWord) }}
             @if(Str::contains($servicesHeroTitle, $servicesHeroTitleWord))
                 <span class="teal-text">{{ $servicesHeroTitleWord }}</span>{{ Str::after($servicesHeroTitle, $servicesHeroTitleWord) }}
             @else
                 <span class="teal-text"></span>
             @endif
-        </h2>
+        </h1>
 
         <div class="editor-content">
             {!! $servicesHeroDescription !!}
@@ -358,6 +358,7 @@
 <section class="services-cards-section">
     <div class="container-fluid px-lg-5 page-align-container">
 
+        <h2 class="visually-hidden">Our Services</h2>
         <div class="row g-4">
             @foreach($serviceCards as $service)
             <div class="col-12 col-sm-6 col-lg-4">
@@ -367,7 +368,9 @@
                    
                     <img
                         src="{{ $service['img'] }}"
+                        @if($service['img_srcset'] ?? null) srcset="{{ $service['img_srcset'] }}" sizes="(max-width: 768px) 100vw, 33vw" @endif
                         alt="{{ $service['tag'] }}"
+                        width="400" height="210"
                         class="card-img">
                   
 

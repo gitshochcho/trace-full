@@ -218,7 +218,35 @@
 }
 
 .section-title { font-size: 24px; font-weight: 700; color: #01354B; }
-.view-all-link { font-size: 14px; font-weight: 600; color: #008080; }
+
+.view-all-link {
+    position: relative;
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #008080;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.view-all-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -3px;
+    width: 0;
+    height: 2px;
+    background: #008080;
+    transition: width 0.3s ease;
+}
+
+.view-all-link:hover {
+    color: #006666;
+}
+
+.view-all-link:hover::after {
+    width: 100%;
+}
 
 .project-mini-card {
     background: #fff;
@@ -302,6 +330,10 @@
         </div>
     </div>
 </nav>
+<x-breadcrumb-schema :items="[
+    ['label' => 'Projects', 'url' => route('projects')],
+    ['label' => $project->project_title, 'url' => null],
+]" />
 
 <section class="hero-details-section" style="background-image: url('{{ $heroImage }}');">
     <div class="hero-overlay"></div>
@@ -317,7 +349,7 @@
         </div>
 
         <div class="project-title-wrapper">
-            <h2 class="sub-heading mb-0">{{ $project->project_standard ?? '' }}</h2>
+            <p class="sub-heading mb-0">{{ $project->project_standard ?? '' }}</p>
             <h1 class="main-heading">{{ $project->project_title }}</h1>
         </div>
 
@@ -345,12 +377,12 @@
         <div class="row gx-lg-5">
             <div class="col-lg-8">
                 <div class="overview-content mb-5">
-                    <h3 class="section-title-accent">Project Overview</h3>
+                    <h2 class="section-title-accent">Project Overview</h2>
                     <div class="mt-4">{!! $project->overview !!}</div>
                 </div>
 
                 {{-- <div class="mb-5">
-                    <h3 class="section-title-accent">{{ $locationHeading }}</h3>
+                    <h2 class="section-title-accent">{{ $locationHeading }}</h2>
                     @if(!empty($locationDescription))
                         <p class="mt-3">{{ strip_tags($locationDescription) }}</p>
                     @endif
@@ -379,32 +411,38 @@
                     <img src="{{ $galleryMain }}"
                          class="gallery-img-main"
                          style="width:100%;height:372px;object-fit:cover;border-radius:12px;"
-                         alt="{{ $project->project_title }}">
+                         alt="{{ $project->project_title }}"
+                         loading="lazy" decoding="async">
 
                     @elseif($galleryCount === 2)
                     {{-- 2 images: direct flex children so the outer gap:12px splits them evenly --}}
                     <img src="{{ $galleryMain }}"
                          style="flex:1;min-width:0;height:372px;object-fit:cover;border-radius:12px;"
-                         alt="{{ $project->project_title }}">
+                         alt="{{ $project->project_title }}"
+                         loading="lazy" decoding="async">
                     <img src="{{ $gallerySideOne }}"
                          style="flex:1;min-width:0;height:372px;object-fit:cover;border-radius:12px;"
-                         alt="{{ $project->project_title }}">
+                         alt="{{ $project->project_title }}"
+                         loading="lazy" decoding="async">
 
                     @else
                     {{-- 3 images: 1 big left + 2 small stacked right --}}
                     <div class="col-gallery-main">
                         <img src="{{ $galleryMain }}"
                              class="img-fluid gallery-img-main"
-                             alt="{{ $project->project_title }}">
+                             alt="{{ $project->project_title }}"
+                             loading="lazy" decoding="async">
                     </div>
                     <div class="col-gallery-side">
                         <div class="d-flex flex-column gap-custom">
                             <img src="{{ $gallerySideOne }}"
                                  class="img-fluid gallery-img-side"
-                                 alt="{{ $project->project_title }}">
+                                 alt="{{ $project->project_title }}"
+                                 loading="lazy" decoding="async">
                             <img src="{{ $gallerySideTwo }}"
                                  class="img-fluid gallery-img-side"
-                                 alt="{{ $project->project_title }}">
+                                 alt="{{ $project->project_title }}"
+                                 loading="lazy" decoding="async">
                         </div>
                     </div>
                     @endif
@@ -413,7 +451,7 @@
                 @endif
 
                  <div class="mb-4">
-                    <h3 class="section-title-accent">{{ $phaseHeading }}</h3>
+                    <h2 class="section-title-accent">{{ $phaseHeading ?: 'Project Phases' }}</h2>
                    
                     @if(!empty($phaseDescription))
                         <p class="mt-3">{!! $phaseDescription !!}</p>
@@ -441,7 +479,7 @@
                 </div>
 
                <div class="outcomes-content">
-                    <h3 class="section-title-accent">Key Outcomes</h3>
+                    <h2 class="section-title-accent">Key Outcomes</h2>
                     @if(!empty($outcomeDescription))
                         <p class="mt-3">{{ strip_tags(html_entity_decode($outcomeDescription)) }}</p>
                     @endif
@@ -450,9 +488,10 @@
                             <li>
                                 @if(!empty($outcome->icon) && str_starts_with($outcome->icon, 'projects/'))
                                     <img src="{{ Storage::url($outcome->icon) }}"
-                                        alt="outcome icon"
+                                        alt="{{ \Illuminate\Support\Str::limit(strip_tags(html_entity_decode($outcome->text ?? '')), 60, '') ?: 'Project outcome icon' }}"
                                         class="me-2 flex-shrink-0"
-                                        style="width:22px;height:22px;object-fit:contain;margin-top:2px;">
+                                        style="width:22px;height:22px;object-fit:contain;margin-top:2px;"
+                                        loading="lazy" decoding="async">
                                 @elseif(!empty($outcome->icon))
                                     <i class="{{ $outcome->icon }} me-2"></i>
                                 @else
@@ -535,6 +574,7 @@
             @forelse($relatedProjects as $item)
                 @php
                     $itemImage     = $item->heroImageUrl() ?? '';
+                    $itemSrcset    = $item->heroSrcset();
                     $itemSvc       = $item->services->first();
                     $itemSector    = $itemSvc?->section ?? $itemSvc?->service_name ?? $item->project_standard ?? '';
                     $itemYear      = $item->start_date?->format('Y');
@@ -545,11 +585,11 @@
                     <a href="{{ route('projectdetails', $item) }}" class="text-decoration-none">
                         <div class="project-mini-card">
                             <div class="card-img-wrapper">
-                                <img src="{{ $itemImage }}" alt="{{ $item->project_title }}" class="img-fluid">
+                                <img src="{{ $itemImage }}" @if($itemSrcset) srcset="{{ $itemSrcset }}" sizes="(max-width: 768px) 100vw, 33vw" @endif alt="{{ $item->project_title }}" class="img-fluid" width="400" height="180" loading="lazy" decoding="async">
                             </div>
                             <div class="card-content">
                                 <span class="client-name text-uppercase">{{ $item->client ?? '' }}</span>
-                                <h4 class="project-mini-title">{{ $item->project_title }}</h4>
+                                <h3 class="project-mini-title">{{ $item->project_title }}</h3>
                                 <p class="project-mini-meta">{{ $itemSector }} · {{ $itemYearLabel ?: ($item->project_status ?? '') }}</p>
                             </div>
                         </div>
