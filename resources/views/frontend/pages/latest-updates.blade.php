@@ -135,6 +135,7 @@
 <section class="py-5 bg-white">
     <div class="container-fluid px-lg-5 page-align-container">
 
+        <h2 class="visually-hidden">Latest Updates</h2>
         @if($paginatedUpdates->isEmpty())
             <div class="text-center py-5 text-muted">No updates found.</div>
         @else
@@ -148,7 +149,7 @@
                 <div class="news-small-card">
                     <div class="news-card-img-box news-small-img {{ !$item->image ? 'no-image' : '' }}">
                         @if($item->image)
-                            <img src="{{ $item->image }}" alt="{{ $item->heading }}" loading="lazy">
+                            <img src="{{ $item->image }}" @if($item->image_srcset ?? null) srcset="{{ $item->image_srcset }}" sizes="(max-width: 768px) 100vw, 25vw" @endif alt="{{ $item->heading }}" width="300" height="170" loading="lazy" decoding="async">
                             <div class="news-img-overlay-gradient"></div>
                         @else
                             <i class="fas {{ $typeIcon }}"></i>
@@ -156,7 +157,7 @@
                         <span class="news-badge-custom" style="background: #01888C;">{{ strtoupper($item->badge_label) }}</span>
                     </div>
                     <div class="news-card-body-small">
-                        <h4 class="news-card-h-small">{{ $item->heading }}</h4>
+                        <h3 class="news-card-h-small">{{ $item->heading }}</h3>
                     </div>
                     <div class="news-card-footer-small">
                         <span class="news-meta-text">{{ $itemDate }}{{ $itemDate && $item->extra ? ' · ' : '' }}{{ $item->extra }}</span>

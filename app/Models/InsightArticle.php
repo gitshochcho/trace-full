@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Insight;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class InsightArticle extends Model implements HasMedia
 {
@@ -42,7 +43,7 @@ class InsightArticle extends Model implements HasMedia
 
     public function iconUrl(): ?string
     {
-        $url = $this->getFirstMediaUrl('icon');
+        $url = $this->getFirstMediaUrl('icon', 'avif') ?: $this->getFirstMediaUrl('icon', 'webp') ?: $this->getFirstMediaUrl('icon');
 
         return $url !== '' ? $url : null;
     }
@@ -54,6 +55,20 @@ class InsightArticle extends Model implements HasMedia
     $this->addMediaCollection('article_image')->singleFile();
     $this->addMediaCollection('social_icons');
 }
+
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $this->addMediaConversion('webp')
+            ->format('webp')
+            ->quality(82)
+            ->performOnCollections('image', 'article_image', 'social_icons', 'icon')
+            ->nonQueued();
+
+        $this->addMediaConversion('avif')
+            ->format('avif')
+            ->quality(70)
+            ->performOnCollections('image', 'article_image', 'social_icons', 'icon');
+    }
 
     public function attachmentUrl(): ?string
     {

@@ -78,6 +78,7 @@ class HomeController extends Controller
                 'heading'      => $i->heading,
                 'description'  => $i->description,
                 'image'        => $i->imageUrl() ?: $i->articleImageUrl(),
+                'image_srcset' => $i->imageSrcset(),
                 'date'         => $i->published_at,
                 'badge_label'  => $i->insightType?->type ?? 'Insight',
                 'badge_color'  => match(strtolower($i->insightType?->type ?? '')) {
@@ -119,6 +120,7 @@ class HomeController extends Controller
                 'heading'      => $p->project_title,
                 'description'  => strip_tags($p->overview ?? ''),
                 'image'        => $p->heroImageUrl(),
+                'image_srcset' => $p->heroSrcset(),
                 'date'         => $p->start_date,
                 'badge_label'  => $p->services->first()?->section ?: ($p->services->first()?->service_name ?? 'Project'),
                 'badge_color'  => '#01354B',
@@ -139,6 +141,7 @@ class HomeController extends Controller
                 'heading'      => $j->title,
                 'description'  => strip_tags($j->description ?? ''),
                 'image'        => null,
+                'image_srcset' => null,
                 'date'         => $j->posted_date,
                 'badge_label'  => 'Career',
                 'badge_color'  => '#7c3aed',
@@ -160,6 +163,7 @@ class HomeController extends Controller
                 'heading'      => $n->title,
                 'description'  => strip_tags($n->description ?? ''),
                 'image'        => $n->imageUrl(),
+                'image_srcset' => $n->imageSrcset(),
                 'date'         => $n->created_at,
                 'badge_label'  => 'Innovation',
                 'badge_color'  => '#16a34a',
@@ -179,11 +183,16 @@ class HomeController extends Controller
 
         $homeLatestNewsHeading = contentBlock('home-latest-news');
 
+        $seoTitle = 'TRACE Consulting | Regulatory Reform & Development Advisory';
+        $seoDescription = 'TRACE Consulting is a strategic advisory firm specializing in international trade, economic policy, and regulatory reform.';
+        $seoUrl = route('home');
+
         return view('frontend.pages.home', compact(
             'slider', 'sliderItems', 'homeServices', 'homeProjects',
             'homeAboutTrace', 'homeAboutTraceOne', 'homeAboutTraceTwo',
             'homeAboutTraceThree', 'homeYearsExpertise', 'partners',
-            'homeLatestNews', 'homeLatestNewsHeading'
+            'homeLatestNews', 'homeLatestNewsHeading',
+            'seoTitle', 'seoDescription', 'seoUrl'
         ));
     }
 
@@ -207,6 +216,7 @@ class HomeController extends Controller
             return [
                 'id'       => $service->id,
                 'img'      => $imageUrl,
+                'img_srcset' => $service->imageSrcset(),
                 'tag'      => $service->section ?: $service->service_name,
                 'title'    => $service->service_name,
                 'desc'     => $service->description ?? '',
@@ -216,7 +226,11 @@ class HomeController extends Controller
             ];
         })->values();
 
-        return view('frontend.pages.services', compact('servicesHero', 'workWithUs', 'serviceCards'));
+        $seoTitle = 'Our Services | TRACE Consulting';
+        $seoDescription = 'Explore TRACE Consulting\'s advisory services spanning regulatory reform, technical capacity building and digital infrastructure.';
+        $seoUrl = route('services');
+
+        return view('frontend.pages.services', compact('servicesHero', 'workWithUs', 'serviceCards', 'seoTitle', 'seoDescription', 'seoUrl'));
     }
 
     
@@ -237,7 +251,12 @@ class HomeController extends Controller
             ->orderBy('sort_order')
             ->get(['id', 'service_name', 'section']);
 
-        return view('frontend.pages.service-details', compact('service', 'otherServices'));
+        $seoTitle = $service->service_name . ' | TRACE Consulting';
+        $seoDescription = \Illuminate\Support\Str::limit(strip_tags($service->description ?? ''), 155) ?: 'Learn more about ' . $service->service_name . ' from TRACE Consulting.';
+        $seoImage = $service->imageUrl() ?: null;
+        $seoUrl = route('serviceDetails', $service->id);
+
+        return view('frontend.pages.service-details', compact('service', 'otherServices', 'seoTitle', 'seoDescription', 'seoImage', 'seoUrl'));
     }
 
     public function projects(Request $request)
@@ -265,7 +284,11 @@ class HomeController extends Controller
             ->latest('id')
             ->get();
 
-        return view('frontend.pages.projects', compact('projectsHero', 'services', 'projects', 'selectedService'));
+        $seoTitle = 'Our Projects | TRACE Consulting';
+        $seoDescription = 'Browse TRACE Consulting\'s portfolio of regulatory reform, technical assistance and development advisory projects across Bangladesh and beyond.';
+        $seoUrl = route('projects');
+
+        return view('frontend.pages.projects', compact('projectsHero', 'services', 'projects', 'selectedService', 'seoTitle', 'seoDescription', 'seoUrl'));
     }
 
     public function projectdetails(Request $request, ?Project $project = null)
@@ -286,7 +309,12 @@ class HomeController extends Controller
             ->take(3)
             ->get();
 
-        return view('frontend.pages.projectdetails', compact('project', 'relatedProjects'));
+        $seoTitle = $project->project_title . ' | TRACE Consulting';
+        $seoDescription = \Illuminate\Support\Str::limit(strip_tags($project->overview ?? ''), 155) ?: 'Learn more about ' . $project->project_title . ' from TRACE Consulting.';
+        $seoImage = $project->heroImageUrl() ?: null;
+        $seoUrl = route('projectdetails', $project);
+
+        return view('frontend.pages.projectdetails', compact('project', 'relatedProjects', 'seoTitle', 'seoDescription', 'seoImage', 'seoUrl'));
     }
 
     // public function insights(Request $request)
@@ -338,7 +366,11 @@ class HomeController extends Controller
         $insightsPageContent = contentBlock('insights-page')
             ?? contentBlock('insights-page-header');
 
-        return view('frontend.pages.insights', compact('insights', 'insightsPageContent', 'insightTypes'));
+        $seoTitle = 'Insights & Publications | TRACE Consulting';
+        $seoDescription = 'Read the latest publications, articles and insights from TRACE Consulting on regulatory reform, trade facilitation and development.';
+        $seoUrl = route('insights');
+
+        return view('frontend.pages.insights', compact('insights', 'insightsPageContent', 'insightTypes', 'seoTitle', 'seoDescription', 'seoUrl'));
     }
 
     public function innovations()
@@ -353,7 +385,11 @@ class HomeController extends Controller
 
         $innovationsPageContent = contentBlock('innovations-page');
 
-        return view('frontend.pages.innovations', compact('innovations', 'categories', 'innovationsPageContent'));
+        $seoTitle = 'Our Innovations | TRACE Consulting';
+        $seoDescription = 'Discover TRACE Consulting\'s digital innovations and technology-driven solutions built to modernize regulatory and development systems.';
+        $seoUrl = route('innovations');
+
+        return view('frontend.pages.innovations', compact('innovations', 'categories', 'innovationsPageContent', 'seoTitle', 'seoDescription', 'seoUrl'));
     }
 
     public function latestUpdates(Request $request)
@@ -371,6 +407,7 @@ class HomeController extends Controller
                 'heading'      => $i->heading,
                 'description'  => $i->description,
                 'image'        => $i->imageUrl() ?: $i->articleImageUrl(),
+                'image_srcset' => $i->imageSrcset(),
                 'date'         => $i->published_at,
                 'badge_label'  => $i->insightType?->type ?? 'Insight',
                 'badge_color'  => match(strtolower($i->insightType?->type ?? '')) {
@@ -411,6 +448,7 @@ class HomeController extends Controller
                 'heading'      => $p->project_title,
                 'description'  => \Illuminate\Support\Str::limit(strip_tags($p->overview ?? ''), 120),
                 'image'        => $p->heroImageUrl(),
+                'image_srcset' => $p->heroSrcset(),
                 'date'         => $p->start_date,
                 'badge_label'  => $p->services->first()?->section ?: ($p->services->first()?->service_name ?? 'Project'),
                 'badge_color'  => '#01354B',
@@ -430,6 +468,7 @@ class HomeController extends Controller
                 'heading'      => $j->title,
                 'description'  => \Illuminate\Support\Str::limit(strip_tags($j->description ?? ''), 120),
                 'image'        => null,
+                'image_srcset' => null,
                 'date'         => $j->posted_date,
                 'badge_label'  => 'Career',
                 'badge_color'  => '#7c3aed',
@@ -450,6 +489,7 @@ class HomeController extends Controller
                 'heading'      => $n->title,
                 'description'  => \Illuminate\Support\Str::limit(strip_tags($n->description ?? ''), 120),
                 'image'        => $n->imageUrl(),
+                'image_srcset' => $n->imageSrcset(),
                 'date'         => $n->created_at,
                 'badge_label'  => 'Innovation',
                 'badge_color'  => '#16a34a',
@@ -489,7 +529,15 @@ class HomeController extends Controller
             ['path' => $request->url(), 'query' => $request->query()]
         );
 
-        return view('frontend.pages.latest-updates', compact('latestUpdatesContent', 'paginatedUpdates', 'counts', 'activeFilter'));
+        $seoTitle = $page > 1 ? "Latest Updates - Page {$page} | TRACE Consulting" : 'Latest Updates | TRACE Consulting';
+        $seoDescription = 'Stay up to date with the latest news, projects, insights and career opportunities from TRACE Consulting across Bangladesh and beyond.';
+        // Self-referencing canonical per pagination best practice; filter (type=) combined with page is noindexed to avoid thin/duplicate combinations.
+        $seoUrl = $page > 1 ? $paginatedUpdates->url($page) : route('latestUpdates');
+        $seoRobots = $activeFilter !== 'ALL' ? 'noindex,follow' : 'index,follow';
+        $seoPrevUrl = $paginatedUpdates->previousPageUrl();
+        $seoNextUrl = $paginatedUpdates->nextPageUrl();
+
+        return view('frontend.pages.latest-updates', compact('latestUpdatesContent', 'paginatedUpdates', 'counts', 'activeFilter', 'seoTitle', 'seoDescription', 'seoUrl', 'seoRobots', 'seoPrevUrl', 'seoNextUrl'));
     }
 
     public function articleDetails(Request $request, ?InsightArticle $article = null)
@@ -554,19 +602,40 @@ class HomeController extends Controller
 
    $relatedInsights = Insight::where('active', true)->take(3)->get();
 
-        return view('frontend.pages.article-details', compact('article', 'relatedArticles', 'dynamicSections', 'relatedInsights', 'sections'));
+        $articleTitleForSeo = $article->insight?->heading ?: ($article->title ?: 'Insight Article');
+        $seoTitle = $articleTitleForSeo . ' | TRACE Consulting';
+        $seoDescription = \Illuminate\Support\Str::limit(strip_tags($article->description ?? $article->insight?->description ?? ''), 155) ?: 'Read this insight from TRACE Consulting.';
+        $seoImage = $article->exists ? ($article->iconUrl() ?: $article->insight?->articleImageUrl() ?: $article->insight?->imageUrl()) : $article->insight?->imageUrl();
+        $seoUrl = $article->exists ? route('articleDetails', $article) : route('articleDetails', ['insight_id' => $article->insight_id]);
+        $seoType = 'article';
+
+        return view('frontend.pages.article-details', compact('article', 'relatedArticles', 'dynamicSections', 'relatedInsights', 'sections', 'seoTitle', 'seoDescription', 'seoImage', 'seoUrl', 'seoType'));
     }
 
     public function career(Request $request)
     {
         $careerHeader = contentBlock('career-heading');
         $jobs = JobPosting::active()->ordered()->paginate(12);
-        return view('frontend.pages.career', compact('careerHeader', 'jobs'));
+        $page = $jobs->currentPage();
+
+        $seoTitle = $page > 1 ? "Careers - Page {$page} | TRACE Consulting" : 'Careers & Job Openings | TRACE Consulting';
+        $seoDescription = 'Explore current job openings and career opportunities at TRACE Consulting, and join our team of regulatory and development experts.';
+        $seoUrl = $page > 1 ? $jobs->url($page) : route('career');
+        $seoRobots = 'index,follow';
+        $seoPrevUrl = $jobs->previousPageUrl();
+        $seoNextUrl = $jobs->nextPageUrl();
+
+        return view('frontend.pages.career', compact('careerHeader', 'jobs', 'seoTitle', 'seoDescription', 'seoUrl', 'seoRobots', 'seoPrevUrl', 'seoNextUrl'));
     }
     public function careerdetails(Request $request, $id)
     {
         $job = JobPosting::active()->findOrFail($id);
-        return view('frontend.pages.careerdetails', compact('job'));
+
+        $seoTitle = $job->title . ' | Careers | TRACE Consulting';
+        $seoDescription = \Illuminate\Support\Str::limit(strip_tags($job->description ?? ''), 155) ?: 'Apply for ' . $job->title . ' at TRACE Consulting.';
+        $seoUrl = route('careerdetails', $job->id);
+
+        return view('frontend.pages.careerdetails', compact('job', 'seoTitle', 'seoDescription', 'seoUrl'));
     }
 
     public function applyForJob(Request $request, $id)
@@ -621,7 +690,12 @@ class HomeController extends Controller
         $contactPhones    = ContactInfo::where('type', 'phone')->active()->ordered()->get();
         $contactEmails    = ContactInfo::where('type', 'email')->active()->ordered()->get();
         $contactAddresses = ContactInfo::where('type', 'address')->active()->ordered()->get();
-        return view('frontend.pages.contact', compact('heroContent', 'contactHeader', 'contactPhones', 'contactEmails', 'contactAddresses'));
+
+        $seoTitle = 'Contact Us | TRACE Consulting Bangladesh';
+        $seoDescription = 'Get in touch with TRACE Consulting for regulatory reform, technical capacity building and digital infrastructure advisory.';
+        $seoUrl = route('contact');
+
+        return view('frontend.pages.contact', compact('heroContent', 'contactHeader', 'contactPhones', 'contactEmails', 'contactAddresses', 'seoTitle', 'seoDescription', 'seoUrl'));
     }
 
     public function about(Request $request)
@@ -669,6 +743,10 @@ class HomeController extends Controller
             ->take(4)
             ->get();
 
+        $seoTitle = 'About TRACE Consulting | Our Mission & Team';
+        $seoDescription = 'Learn about TRACE Consulting\'s mission, team and approach to regulatory reform, technical capacity building and development advisory.';
+        $seoUrl = route('about');
+
         return view('frontend.pages.about', compact(
             'aboutPageContent',
             'aboutCommitmentContent',
@@ -684,7 +762,10 @@ class HomeController extends Controller
             'ourMission',
             'partnersContent',
             'aboutProjects',
-            'partners'
+            'partners',
+            'seoTitle',
+            'seoDescription',
+            'seoUrl'
         ));
     }
 
@@ -714,7 +795,11 @@ class HomeController extends Controller
             return ! $leadTeam || $member->id !== $leadTeam->id;
         })->values();
 
-        return view('frontend.pages.team', compact('teamPageContent', 'leadershipContent', 'coreTeamContent', 'expertsContent', 'teams', 'leadTeam', 'coreTeams', 'advisors'));
+        $seoTitle = 'Our Team & Leadership | TRACE Consulting';
+        $seoDescription = 'Meet the leadership, core team and advisors driving TRACE Consulting\'s regulatory reform and development advisory work forward.';
+        $seoUrl = route('team');
+
+        return view('frontend.pages.team', compact('teamPageContent', 'leadershipContent', 'coreTeamContent', 'expertsContent', 'teams', 'leadTeam', 'coreTeams', 'advisors', 'seoTitle', 'seoDescription', 'seoUrl'));
     }
 
     public function teamdetails(Request $request, ?Team $team = null)
@@ -737,7 +822,12 @@ class HomeController extends Controller
 
         $allTeamMembersCount = Team::query()->count();
 
-        return view('frontend.pages.teamdetails', compact('team', 'otherTeamMembers', 'allTeamMembersCount'));
+        $seoTitle = $team->fullName() . ' | TRACE Consulting';
+        $seoDescription = \Illuminate\Support\Str::limit(stripPTags($team->description ?? ''), 155) ?: 'Learn more about ' . $team->fullName() . ' at TRACE Consulting.';
+        $seoImage = $team->imageUrl() ?: null;
+        $seoUrl = route('teamdetails', $team);
+
+        return view('frontend.pages.teamdetails', compact('team', 'otherTeamMembers', 'allTeamMembersCount', 'seoTitle', 'seoDescription', 'seoImage', 'seoUrl'));
     }
 
     public function dashboard(Request $request)

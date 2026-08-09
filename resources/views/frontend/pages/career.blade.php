@@ -132,7 +132,7 @@
         border-radius: 12px;
         margin-top: 40px;
     }
-    .cv-box h4 { font-weight: 700; margin-bottom: 15px; }
+    .cv-box h3 { font-weight: 700; margin-bottom: 15px; font-size: 1rem; }
     .cv-box p { font-size: 14px; opacity: 0.8; margin-bottom: 20px; }
     
     .btn-cv {
@@ -338,7 +338,7 @@
                 </div>
 
                 <div class="cv-box">
-                    <h4>Don't see your role?</h4>
+                    <h3>Don't see your role?</h3>
                     <p>Send us your CV and we'll reach out when the right opportunity comes up.</p>
                     <a href="javascript:void(0)" class="btn-cv" id="openCvModal">Send Your CV</a>
                 </div>
@@ -367,7 +367,7 @@
                 </div>
                 @empty
                 <div class="text-center py-5">
-                    <h4>No job openings available at the moment</h4>
+                    <h3>No job openings available at the moment</h3>
                     <p class="text-muted">Please check back later or send us your CV for future opportunities.</p>
                     <a href="javascript:void(0)" class="btn-cv w-auto px-5" onclick="document.getElementById('cvModal').style.display='flex'">Send Your CV</a>
                 </div>

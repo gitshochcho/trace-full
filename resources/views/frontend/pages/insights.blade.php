@@ -50,7 +50,7 @@
                         <span class="small opacity-50">Read Insights</span>
                     </div> -->
                     <div>
-                        <h3 class="fw-bold mb-0">{{ $allInsights->count() }}</h3>
+                        <p class="fw-bold mb-0">{{ $allInsights->count() }}</p>
                         <span class="small opacity-50">Total Insights</span>
                     </div>
                 </div>
@@ -137,6 +137,7 @@
     default        => '#15803d',
 };
     $cardImage = $insight->imageUrl() ?: $insight->articleImageUrl() ?: asset('');
+    $cardSrcset = $insight->imageSrcset();
     $leadArticle = $insight->articles->first();
     $description = \Illuminate\Support\Str::limit($insight->description ?? ($leadArticle?->description ?? ''), 120);
 $typeCategory = strtolower(str_replace(' ', '_', $insight->insightType?->type_category ?? ''));
@@ -188,8 +189,11 @@ if ($typeCategory === 'download') {
              style="height: 220px; overflow: hidden; position: relative; flex-shrink: 0;">
 
             <img src="{{ $cardImage }}"
+                 @if($cardSrcset) srcset="{{ $cardSrcset }}" sizes="(max-width: 768px) 100vw, 33vw" @endif
                  class="w-100 h-100 object-fit-cover"
-                 alt="{{ $title }}">
+                 alt="{{ $title }}"
+                 width="400" height="220"
+                 loading="lazy" decoding="async">
 
             <span class="badge position-absolute top-0 start-0 m-3 px-3 py-1"
                   style="background: {{ $badgeColor }}; font-size: 10px; border-radius: 4px;">

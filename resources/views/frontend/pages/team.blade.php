@@ -139,12 +139,34 @@
     color: #64748B; text-decoration: none; transition: 0.3s;
 }
 .social-links a:hover { background: #C0C0C0; color: #fff; }
+
 .btn-profile {
-    background: #fff; border: 1px solid #E5E9ED;
-    padding: 10px 25px; border-radius: 30px; font-size: 13px;
-    font-weight: 600; color: #01354B; transition: 0.3s;
+    background: #fff;
+    border: 1px solid #E5E9ED;
+    padding: 10px 25px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #01354B;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.35s ease;
 }
-.btn-profile:hover { border-color: #01888C; color: #01888C; }
+
+.btn-profile:hover {
+    background: #F8FCFC;
+    border-color: #01888C;
+    color: #01888C;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(1, 136, 140, 0.15);
+}
+
+.btn-profile:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 10px rgba(1, 136, 140, 0.1);
+}
 
 /* Responsive */
 @media (max-width: 992px) {
@@ -545,7 +567,7 @@
 .badge-technical { background: #E6F7F7; color: #01888C; }
 .badge-research { background: #F1F5F9; color: #475569; }
 
-.expert-right h4 {
+.expert-right h3 {
     font-family: "Sora", sans-serif;
     font-size: 20px;
     font-weight: 700;
@@ -683,7 +705,7 @@
             <div class="row g-0">
                 <div class="col-lg-5 position-relative">
                     <div class="leader-img-box">
-                        <img src="{{ $leaderImage }}" alt="{{ $leaderName }}">
+                        <img src="{{ $leaderImage }}" alt="{{ $leaderName }}" loading="lazy" decoding="async">
                         <span class="leader-badge">{{ $leadershipBadge }}</span>
                     </div>
                 </div>
@@ -724,7 +746,7 @@
                     @endphp
                 <a href="{{ $href }}" target="_blank" rel="noopener" onclick="event.stopPropagation();">
                         @if($social->iconUrl())
-                            <img src="{{ $social->iconUrl() }}" alt="social" style="width: 16px; height: 16px; object-fit: contain;">
+                            <img src="{{ $social->iconUrl() }}" alt="{{ $social->title ?: 'Social link' }}" style="width: 16px; height: 16px; object-fit: contain;" loading="lazy" decoding="async">
                         @else
                             <i class="fa-solid fa-link"></i>
                         @endif
@@ -771,7 +793,7 @@
         <div class="team-card h-100 shadow-sm d-flex flex-column" data-href="{{ route('teamdetails', $member) }}" style="cursor:pointer;">
             
             <div class="team-img-box">
-                <img src="{{ $member->imageUrl() ?: asset('assets/img/saifullah.png') }}" alt="{{ $member->fullName() }}">
+                <img src="{{ $member->imageUrl() ?: asset('assets/img/saifullah.png') }}" @if($member->imageSrcset()) srcset="{{ $member->imageSrcset() }}" sizes="(max-width: 768px) 50vw, 25vw" @endif alt="{{ $member->fullName() }}" width="300" height="280" loading="lazy" decoding="async">
                 
 <div class="team-social-overlay">
     @forelse($member->socialMedia->take(2) as $social)
@@ -783,7 +805,7 @@
         @endphp
        <a href="{{ $href }}" class="social-icon" target="_blank" rel="noopener" onclick="event.stopPropagation();">
             @if($social->iconUrl())
-                <img src="{{ $social->iconUrl() }}" alt="social" style="width: 16px; height: 16px; object-fit: contain;">
+                <img src="{{ $social->iconUrl() }}" alt="{{ $social->title ?: 'Social link' }}" style="width: 16px; height: 16px; object-fit: contain;" loading="lazy" decoding="async">
             @else
                 <i class="fas fa-link"></i>
             @endif
@@ -797,8 +819,8 @@
             
             <div class="team-content flex-grow-1">
                 <div class="team-name-block">
-                   <h4 class="name">{{ $member->fullName() }}</h4>
-                     <h5 class="role">{{ $member->designation ?? '' }}</h5>
+                   <h3 class="name">{{ $member->fullName() }}</h3>
+                     <p class="role">{{ $member->designation ?? '' }}</p>
                        <span class="sub text-muted">{{ $member->headtitle ?? '' }}</span>
                 </div>
                 <div class="orange-divider"></div>
@@ -863,7 +885,7 @@
             <a href="{{ route('teamdetails', $expert) }}" class="stretched-link"></a>
 
             <div class="expert-left">
-                <img src="{{ $expert->imageUrl() ?: asset('assets/img/michael.png') }}" alt="{{ $expert->fullName() }}">
+                <img src="{{ $expert->imageUrl() ?: asset('assets/img/michael.png') }}" @if($expert->imageSrcset()) srcset="{{ $expert->imageSrcset() }}" sizes="(max-width: 768px) 50vw, 200px" @endif alt="{{ $expert->fullName() }}" width="82" height="82" loading="lazy" decoding="async">
                 
                 {{-- সোশ্যাল লিঙ্কগুলোর z-index বাড়িয়ে দেওয়া হয়েছে যাতে stretched-link এর ওপর কাজ করে --}}
                <div class="leader-social position-relative" style="z-index: 2;">
@@ -876,7 +898,7 @@
         @endphp
         <a href="{{ $href }}" target="_blank" rel="noopener">
             @if($social->iconUrl())
-                <img src="{{ $social->iconUrl() }}" alt="social" style="width: 14px; height: 14px; object-fit: contain;">
+                <img src="{{ $social->iconUrl() }}" alt="{{ $social->title ?: 'Social link' }}" style="width: 14px; height: 14px; object-fit: contain;" loading="lazy" decoding="async">
             @else
                 <i class="fa-solid fa-link"></i>
             @endif
@@ -889,7 +911,7 @@
             <div class="expert-right">
                 <!-- <span class="expert-badge {{ $badgeClasses[$index % count($badgeClasses)] }}">{{ $expertLabels[$index % count($expertLabels)] }}</span> -->
                 <span class="expert-badge {{ $badgeClasses[$index % count($badgeClasses)] }}">{{ $expert?->expertise_label ?? ''}}</span>
-                <h4>{{ $expert->fullName() }}</h4>
+                <h3>{{ $expert->fullName() }}</h3>
                 <p class="role">{{ $expert->designation ?? '' }}</p>
                 <p class="desc">{{ $expert->short_description ?: \Illuminate\Support\Str::limit(stripPTags($expert->description), 110) }}</p>
                 <div class="expert-tags">

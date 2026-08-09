@@ -202,16 +202,33 @@
         color: var(--text-muted);
         margin-bottom: 0;
     }
+   
     .info-action-btn {
-        margin-left: auto;
-        background: var(--dark-navy);
-        color: white;
-        font-size: 12px;
-        font-weight: 700;
-        padding: 8px 18px;
-        border-radius: 50px;
-        text-decoration: none;
-    }
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--dark-navy);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 8px 18px;
+    border-radius: 50px;
+    text-decoration: none;
+    transition: all 0.35s ease;
+}
+
+.info-action-btn:hover {
+    background: #01293B; /* একটু darker navy */
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(1, 53, 75, 0.18);
+}
+
+.info-action-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 10px rgba(1, 53, 75, 0.12);
+}
 
     /* Office Card */
     .office-card {

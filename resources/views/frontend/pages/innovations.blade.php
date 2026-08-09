@@ -65,7 +65,7 @@
 
 @section('content')
 @php
-    $heroHeading    = $innovationsPageContent?->heading;
+    $heroHeading    = $innovationsPageContent?->heading ?: 'Our Innovations';
     $heroDescription= strip_tags($innovationsPageContent?->description ?? '');
 @endphp
 
@@ -79,18 +79,14 @@
     </div>
 </nav>
 
-@if ($heroHeading || $heroDescription)
 <section class="innovations-hero">
     <div class="container-fluid px-lg-5 page-align-container">
-        @if ($heroHeading)
-            <h1>{{ $heroHeading }}</h1>
-        @endif
+        <h1>{{ $heroHeading }}</h1>
         @if ($heroDescription)
             <p>{{ $heroDescription }}</p>
         @endif
     </div>
 </section>
-@endif
 
 <section>
     <div class="container-fluid px-lg-5 page-align-container">
@@ -112,7 +108,7 @@
             <a href="{{ $innovation->website_link ?: '#' }}" class="innov-card" data-category="{{ strtoupper($innovation->category ?? '') }}" @if($innovation->website_link) target="_blank" rel="noopener" @endif>
                 <div class="innov-card-img-box">
                     @if($innovation->imageUrl())
-                        <img src="{{ $innovation->imageUrl() }}" alt="{{ $innovation->title }}" loading="lazy">
+                        <img src="{{ $innovation->imageUrl() }}" @if($innovation->imageSrcset()) srcset="{{ $innovation->imageSrcset() }}" sizes="(max-width: 768px) 100vw, 33vw" @endif alt="{{ $innovation->title }}" width="400" height="170" loading="lazy" decoding="async">
                     @endif
                 </div>
                 <div class="innov-card-body">
