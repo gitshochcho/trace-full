@@ -436,6 +436,7 @@
 
 <section class="project-grid-section py-5">
     <div class="container-custom">
+        <h2 class="visually-hidden">Our Projects</h2>
         <div class="row g-4">
             @forelse($projects as $project)
                 @php
@@ -447,20 +448,21 @@
                     $projectCategory  = $firstSvc?->section ?? $firstSvc?->service_name ?? $project->project_standard ?? '';
                     $projectTags      = $project->services->take(3);
                     $projectDesc      = stripPTags($project->overview) ?? '';
+                    $projectSrcset    = $project->heroSrcset();
                 @endphp
                 <div class="col-xl-4 col-lg-4 col-md-6">
                     <div class="project-card h-100 shadow-sm position-relative">
                         <a href="{{ route('projectdetails', $project) }}" class="card-overlay-link"></a>
                         <div class="project-img-box">
-                            <img src="{{ $projectImage }}" alt="{{ $project->project_title }}">
+                            <img src="{{ $projectImage }}" @if($projectSrcset) srcset="{{ $projectSrcset }}" sizes="(max-width: 768px) 100vw, 33vw" @endif alt="{{ $project->project_title }}" width="400" height="220" loading="lazy" decoding="async">
                             <span class="category-tag">{{ $projectCategory }}</span>
                             <span class="year-badge">{{ $projectYearLabel ?: ($project->project_status ?? '') }}</span>
                         </div>
 
                         <div class="project-content">
-                            <h6 class="client-name text-uppercase">{{ abbreviateClientName($project->client) ?? '' }}</h6>
-                            <h4 class="project-standard">{{ $project->project_standard ?: '' }}</h4>
-                            <h4 class="project-title">{{ $project->project_title }}</h4>
+                            <p class="client-name text-uppercase mb-0">{{ abbreviateClientName($project->client) ?? '' }}</p>
+                            <p class="project-standard mb-0">{{ $project->project_standard ?: '' }}</p>
+                            <h3 class="project-title">{{ $project->project_title }}</h3>
                            <p class="project-bio text-muted">
     {{ \Illuminate\Support\Str::limit(strip_tags(html_entity_decode($projectDesc)), 140) }}
 </p>

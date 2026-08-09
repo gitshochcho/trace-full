@@ -1,2 +1,11 @@
 User-agent: *
-Disallow:
+Disallow: /admin
+Disallow: /login
+Disallow: /register
+Disallow: /user/
+Disallow: /forget/password
+Disallow: /optimize-clear
+Disallow: /link-storage
+Allow: /
+
+Sitemap: https://traceconsultingltd.com/sitemap.xml

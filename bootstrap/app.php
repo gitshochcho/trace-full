@@ -3,6 +3,8 @@
 use App\Http\Middleware\AdminGuard;
 use App\Http\Middleware\ApiJsonMiddleware;
 use App\Http\Middleware\EnsureTokenIsValid;
+use App\Http\Middleware\SecurityHeaders;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -28,12 +30,18 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->append(ApiJsonMiddleware::class);
+        $middleware->append(SecurityHeaders::class);
         $middleware->api(append: [
             ApiJsonMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->render(function (NotFoundHttpException $e, Request $request) {
+            Log::channel('not_found')->info($request->fullUrl(), [
+                'referrer' => $request->header('referer'),
+                'ip' => $request->ip(),
+            ]);
+
             if ($request->is('api/*')) {
                 return response()->json([
                     'error' => 'Record not found.',

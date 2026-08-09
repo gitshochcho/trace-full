@@ -53,10 +53,20 @@ class SliderItem extends Model implements HasMedia
             ->quality(82)
             ->performOnCollections('image')
             ->nonQueued();
+
+        $this->addMediaConversion('avif')
+            ->format('avif')
+            ->quality(70)
+            ->performOnCollections('image');
     }
 
     public function imageUrl(): ?string
     {
+        $avifUrl = $this->getFirstMediaUrl('image', 'avif');
+        if ($avifUrl) {
+            return $avifUrl;
+        }
+
         $webpUrl = $this->getFirstMediaUrl('image', 'webp');
         if ($webpUrl) {
             return $webpUrl;

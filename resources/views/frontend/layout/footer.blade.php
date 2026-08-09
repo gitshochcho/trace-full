@@ -12,11 +12,14 @@
                 {{-- Brand --}}
                 <div class="footer-brand mb-3">
                     @if($siteSettings?->logoImageUrl())
-                        <img src="{{ $siteSettings->logoImageUrl() }}" alt="Trace Logo"
-                             style="width: 200px; height: 70px; object-fit: contain; background: #ffffff; padding: 5px; border-radius: 4px;">
+                        <img src="{{ $siteSettings->logoImageUrl() }}" alt="{{ $siteSettings?->logo_text ?: 'TRACE Consulting' }} logo"
+                             style="width: 200px; height: 70px; object-fit: contain; background: #ffffff; padding: 5px; border-radius: 4px;"
+                             loading="lazy" decoding="async">
                     @endif
                     <div class="d-flex flex-column">
-                        <h3 class="mb-0 fw-bold footer-brand-title">{{ $siteSettings?->logo_text ?: '' }}</h3>
+                        @if($siteSettings?->logo_text)
+                            <h3 class="mb-0 fw-bold footer-brand-title">{{ $siteSettings->logo_text }}</h3>
+                        @endif
                         <span class="footer-brand-tagline">{{ $siteSettings?->logo_tagline ?: '' }}</span>
                     </div>
                 </div>
@@ -31,7 +34,7 @@
                     @foreach($socialLinks as $socialLink)
                         <a href="{{ $socialLink['link'] ?? '#' }}" target="_blank" rel="noreferrer" class="text-decoration-none" aria-label="{{ $socialLink['title'] ?? 'social link' }}">
                             @if(! empty($socialLink['icon_url']))
-                                <img src="{{ $socialLink['icon_url'] }}" alt="{{ $socialLink['title'] ?? 'Social icon' }}" class="footer-social" style="width: 14px; height: 14px; object-fit: contain;">
+                                <img src="{{ $socialLink['icon_url'] }}" alt="{{ $socialLink['title'] ?? 'Social icon' }}" class="footer-social" style="width: 14px; height: 14px; object-fit: contain;" loading="lazy" decoding="async">
                             @endif
                         </a>
                     @endforeach
@@ -44,19 +47,22 @@
 
                 <div class="d-flex align-items-start gap-2 mb-3">
                     <img src="/assets/img/telephone.png" alt="Phone"
-                         style="width: 16px; height: 16px; object-fit: contain; filter: brightness(0) invert(1); margin-top: 2px;">
+                         style="width: 16px; height: 16px; object-fit: contain; filter: brightness(0) invert(1); margin-top: 2px;"
+                         loading="lazy" decoding="async">
                     <span style="font-size: 13px; color: #8fa6ad;">{{ $siteSettings?->footer_contact_mobile ?: '' }}</span>
                 </div>
 
                 <div class="d-flex align-items-start gap-2 mb-3">
                     <img src="/assets/img/mail.png" alt="Email"
-                         style="width: 16px; height: 16px; object-fit: contain; filter: brightness(0) invert(1); margin-top: 2px;">
+                         style="width: 16px; height: 16px; object-fit: contain; filter: brightness(0) invert(1); margin-top: 2px;"
+                         loading="lazy" decoding="async">
                     <span style="font-size: 13px; color: #8fa6ad;">{{ $siteSettings?->footer_contact_email ?: '' }}</span>
                 </div>
 
                 <div class="d-flex align-items-start gap-2">
                     <img src="/assets/img/location.png" alt="Location"
-                         style="width: 16px; height: 16px; object-fit: contain; filter: brightness(0) invert(1); margin-top: 2px;">
+                         style="width: 16px; height: 16px; object-fit: contain; filter: brightness(0) invert(1); margin-top: 2px;"
+                         loading="lazy" decoding="async">
                     <span style="font-size: 13px; color: #8fa6ad;">
                         {!! nl2br(e($siteSettings?->footer_contact_location ?: '')) !!}
                     </span>

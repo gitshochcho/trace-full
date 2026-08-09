@@ -1057,7 +1057,7 @@ const heroSliderData = @json($heroSliderMapped);
                         <div class="about-item d-flex gap-3 mb-4 anim-fade-up anim-delay-{{ $i + 3 }}">
                             <span class="about-num">{{ $item['num'] }}</span>
                             <div class="about-content">
-                                <h4 class="item-title">{{ $item['title'] }}</h4>
+                                <h3 class="item-title">{{ $item['title'] }}</h3>
                                 <div class="item-text">{!! $item['text'] !!}</div>
                             </div>
                         </div>
@@ -1073,7 +1073,7 @@ const heroSliderData = @json($heroSliderMapped);
             {{-- RIGHT IMAGE --}}
             <div class="col-12 col-lg-6">
                 <div class="about-img-wrap position-relative anim-fade-right">
-                    <img src="{{ $aImage }}" alt="{{ strip_tags($aHeading) }}" class="img-fluid rounded-4 shadow-sm">
+                    <img src="{{ $aImage }}" alt="{{ strip_tags($aHeading) }}" class="img-fluid rounded-4 shadow-sm" width="600" height="600" loading="lazy" decoding="async">
  
                     <!-- <div class="about-badge shadow-lg">
                         <h3 class="m-0 fw-bold">{{ $badgeNum }}</h3>
@@ -1159,16 +1159,17 @@ const heroSliderData = @json($heroSliderMapped);
 @forelse($homeServices as $service)
 @php
     $imageUrl = $service->imageUrl() ?? '';
+    $imageSrcset = $service->imageSrcset();
     $tag      = $service->section ?? $service->service_name ?? '';
     $title    = $service->service_name ?? '';
     $desc     = strip_tags($service->description ?? '');
 @endphp
-  
+
 <div class="col-12 col-sm-6 col-lg-4">
         <a href="{{ route('serviceDetails', $service->id) }}" class="text-decoration-none text-dark">
     <div class="service-card h-100 shadow-sm">
         <div class="card-img-wrapper">
-            <img src="{{ $imageUrl }}" alt="{{ $tag }}">
+            <img src="{{ $imageUrl }}" @if($imageSrcset) srcset="{{ $imageSrcset }}" sizes="(max-width: 768px) 100vw, 33vw" @endif alt="{{ $tag }}" width="400" height="220" loading="lazy" decoding="async">
         </div>
         <div class="card-body">
             <span class="card-cat d-inline-block mb-2">{{ $tag }}</span>
@@ -1222,6 +1223,7 @@ const heroSliderData = @json($heroSliderMapped);
             @forelse($homeProjects as $project)
             @php
                 $pImg    = $project->heroImageUrl() ?? '';
+                $pSrcset = $project->heroSrcset();
                 $pSvc    = $project->services->first();
                 $pCat    = $pSvc?->section ?: ($pSvc?->service_name ?? '');
                 $pClient = abbreviateClientName($project->client) ?? '';
@@ -1230,7 +1232,7 @@ const heroSliderData = @json($heroSliderMapped);
                 <a href="{{ route('projectdetails', $project) }}" class="text-decoration-none">
                     <div class="project-card">
                         <div class="proj-img-box">
-                            <img src="{{ $pImg }}" alt="{{ $project->project_title }}">
+                            <img src="{{ $pImg }}" @if($pSrcset) srcset="{{ $pSrcset }}" sizes="(max-width: 768px) 100vw, 33vw" @endif alt="{{ $project->project_title }}" width="400" height="200" loading="lazy" decoding="async">
                             @if($pCat)
                             <div class="proj-badge-box">{{ strtoupper($pCat) }}</div>
                             @endif
@@ -1300,7 +1302,7 @@ const heroSliderData = @json($heroSliderMapped);
                     <div class="news-card news-big-card">
                         <div class="news-card-img-box {{ !$item->image ? 'no-image' : '' }}">
                             @if($item->image)
-                                <img src="{{ $item->image }}" alt="{{ $item->heading }}" loading="lazy">
+                                <img src="{{ $item->image }}" @if($item->image_srcset ?? null) srcset="{{ $item->image_srcset }}" sizes="(max-width: 768px) 100vw, 50vw" @endif alt="{{ $item->heading }}" width="500" height="260" loading="lazy" decoding="async">
                                 <div class="news-img-overlay-gradient"></div>
                             @else
                                 <i class="fas {{ $typeIcon }}"></i>
@@ -1308,7 +1310,7 @@ const heroSliderData = @json($heroSliderMapped);
                             <span class="news-badge-custom">{{ strtoupper($item->badge_label) }}</span>
                         </div>
                         <div class="news-card-body">
-                            <h4 class="news-card-h">{{ $item->heading }}</h4>
+                            <h3 class="news-card-h">{{ $item->heading }}</h3>
                             @if($item->description)
                                 <p class="news-card-p">{{ $item->description }}</p>
                             @endif
@@ -1324,7 +1326,7 @@ const heroSliderData = @json($heroSliderMapped);
                     <div class="news-card news-small-card">
                         <div class="news-card-img-box news-small-img {{ !$item->image ? 'no-image' : '' }}">
                             @if($item->image)
-                                <img src="{{ $item->image }}" alt="{{ $item->heading }}" loading="lazy">
+                                <img src="{{ $item->image }}" @if($item->image_srcset ?? null) srcset="{{ $item->image_srcset }}" sizes="(max-width: 768px) 100vw, 25vw" @endif alt="{{ $item->heading }}" width="300" height="120" loading="lazy" decoding="async">
                                 <div class="news-img-overlay-gradient"></div>
                             @else
                                 <i class="fas {{ $typeIcon }}"></i>
@@ -1332,7 +1334,7 @@ const heroSliderData = @json($heroSliderMapped);
                             <span class="news-badge-custom" style="background: #01888C;">{{ strtoupper($item->badge_label) }}</span>
                         </div>
                         <div class="news-card-body-small">
-                            <h4 class="news-card-h-small">{{ $item->heading }}</h4>
+                            <h3 class="news-card-h-small">{{ $item->heading }}</h3>
                         </div>
                         <div class="news-card-footer-small">
                             <span class="news-meta-text">{{ $itemDate }}{{ $itemDate && $item->extra ? ' · ' : '' }}{{ $item->extra }}</span>
@@ -1374,7 +1376,8 @@ const heroSliderData = @json($heroSliderMapped);
                         @if($logoUrl)
                             <img src="{{ $logoUrl }}"
                                  alt="{{ $partner->name }}"
-                                 title="{{ $partner->name }}">
+                                 title="{{ $partner->name }}"
+                                 loading="lazy" decoding="async">
                         @endif
                     @endforeach
 
@@ -1388,7 +1391,8 @@ const heroSliderData = @json($heroSliderMapped);
                         @if($logoUrl)
                             <img src="{{ $logoUrl }}"
                                  alt="{{ $partner->name }}"
-                                 title="{{ $partner->name }}">
+                                 title="{{ $partner->name }}"
+                                 loading="lazy" decoding="async">
                         @endif
                     @endforeach
                 </div>

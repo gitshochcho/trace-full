@@ -2,6 +2,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     @include('frontend.layout.meta')
+    @include('frontend.layout.schema-organization')
     @include('frontend.layout.css')
     @stack('custome-css')
 </head>

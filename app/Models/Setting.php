@@ -6,10 +6,26 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Setting extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
+
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        // Favicon is intentionally excluded — browsers expect its original format (ico/png).
+        $this->addMediaConversion('webp')
+            ->format('webp')
+            ->quality(82)
+            ->performOnCollections('logo_image')
+            ->nonQueued();
+
+        $this->addMediaConversion('avif')
+            ->format('avif')
+            ->quality(70)
+            ->performOnCollections('logo_image');
+    }
 
     protected $fillable = [
         'logo_text',
@@ -27,7 +43,7 @@ class Setting extends Model implements HasMedia
 
     public function logoImageUrl(): ?string
     {
-        $url = $this->getFirstMediaUrl('logo_image');
+        $url = $this->getFirstMediaUrl('logo_image', 'avif') ?: $this->getFirstMediaUrl('logo_image', 'webp') ?: $this->getFirstMediaUrl('logo_image');
 
         return $url !== '' ? $url : null;
     }

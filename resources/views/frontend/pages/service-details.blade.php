@@ -232,10 +232,10 @@
     width: 26px; height: 26px;
     stroke: #fff; fill: none; stroke-width: 1.6;
 }
-.prod-card h4 {
+.prod-card h3 {
     font-family: 'Manrope', sans-serif;
     font-size: 11.5px; font-weight: 800;
-    color: #003054; text-transform: uppercase;
+    color: #003054; text-transform: uppercase
     letter-spacing: 0.46px; line-height: 1.3;
     margin: 0;
 }
@@ -328,6 +328,10 @@
 @endphp
 
 {{-- BREADCRUMB --}}
+<x-breadcrumb-schema :items="[
+    ['label' => 'Services', 'url' => route('services')],
+    ['label' => $heroTitle, 'url' => null],
+]" />
 <nav class="service-breadcrumb">
     <div class="container custom-container">
         <div class="breadcrumb-links">
@@ -401,7 +405,7 @@
 
             {{-- Overview --}}
             <div>
-                <h3 class="section-title">Overview</h3>
+                <h2 class="section-title">Overview</h2>
                 <div class="section-divider"></div>
                 <div class="overview-text">
                     <!-- @foreach(array_filter(explode("\n", $overviewPlainText)) as $para)
@@ -417,7 +421,7 @@
 
             {{-- Our Services Include --}}
             <div>
-                <h3 class="section-title">Our Services Include</h3>
+                <h2 class="section-title">Our Services Include</h2>
                 <div class="section-divider"></div>
                 <div class="include-list">
                     @foreach($servicesList as $item)
@@ -426,11 +430,11 @@
                         $itemIcon = is_object($item) && method_exists($item, 'iconUrl') ? $item->iconUrl() : null;
                     @endphp
                     <div class="include-item">
-                        <div class="include-icon">
-                            @if($itemIcon)
-                                <img src="{{ $itemIcon }}" alt="icon">
-                            @endif
-                        </div>
+                        @if($itemIcon)
+                            <div class="include-icon">
+                                <img src="{{ $itemIcon }}" alt="{{ \Illuminate\Support\Str::limit($itemText, 60, '') ?: 'Service feature icon' }}" loading="lazy" decoding="async">
+                            </div>
+                        @endif
                         <p class="include-text">{{ $itemText }}</p>
                     </div>
                     @endforeach
@@ -462,12 +466,12 @@
             <div class="prod-card">
                 <div class="prod-icon-box">
                     @if($pIcon)
-                        <img src="{{ $pIcon }}" alt="{{ $pHeading }}">
+                        <img src="{{ $pIcon }}" alt="{{ $pHeading }}" loading="lazy" decoding="async">
                     @else
                         {!! $defaultProdIcon !!}
                     @endif
                 </div>
-                <h4>{{ $pHeading }}</h4>
+                <h3>{{ $pHeading }}</h3>
                 @if($pSub)
                 <p>{{ $pSub }}</p>
                 @endif

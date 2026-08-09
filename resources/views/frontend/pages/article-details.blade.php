@@ -704,7 +704,41 @@
         strtoupper($article->insightType?->type ?: 'read'),
         $authorRole,
     ])->filter()->take(7);
+
+    $articleSchema = [
+        '@context' => 'https://schema.org',
+        '@type' => 'Article',
+        'headline' => $articleTitle,
+        'image' => $articleImage ? [$articleImage] : [],
+        'datePublished' => optional($article->published_at)->toIso8601String(),
+        'dateModified' => optional($article->updated_at)->toIso8601String() ?: optional($article->published_at)->toIso8601String(),
+        'author' => $authorName ? [
+            '@type' => 'Person',
+            'name' => $authorName,
+        ] : [
+            '@type' => 'Organization',
+            'name' => 'TRACE Consulting',
+        ],
+        'publisher' => [
+            '@type' => 'Organization',
+            'name' => 'TRACE Consulting',
+            'logo' => [
+                '@type' => 'ImageObject',
+                'url' => asset('assets/img/og-tag-image.jpeg'),
+            ],
+        ],
+        'mainEntityOfPage' => [
+            '@type' => 'WebPage',
+            '@id' => url()->current(),
+        ],
+    ];
 @endphp
+
+<script type="application/ld+json">{!! json_encode($articleSchema, JSON_UNESCAPED_SLASHES) !!}</script>
+<x-breadcrumb-schema :items="[
+    ['label' => 'Insights', 'url' => route('insights')],
+    ['label' => $articleTitle, 'url' => null],
+]" />
 
 {{-- ==============================
      ARTICLE HERO
@@ -805,7 +839,7 @@
 
         {{-- Table of Contents --}}
         <div class="sidebar-card toc-card">
-            <h4 class="sidebar-heading">CONTENTS</h4>
+            <h2 class="sidebar-heading">CONTENTS</h2>
             <ul class="toc-list">
     @foreach($sections as $section)
         <li>
@@ -858,7 +892,7 @@
         {{-- Authors --}}
         @if($authorTeams->isNotEmpty() || !empty($outsideAuthors))
         <div class="sidebar-card author-card">
-            <h4 class="sidebar-heading">{{ $authorTeams->count() + count($outsideAuthors) > 1 ? 'AUTHORS/PARTICIPANTS' : 'AUTHOR' }}</h4>
+            <h2 class="sidebar-heading">{{ $authorTeams->count() + count($outsideAuthors) > 1 ? 'AUTHORS/PARTICIPANTS' : 'AUTHOR' }}</h2>
 
             {{-- Team Authors --}}
             @foreach($authorTeams as $teamAuthor)
@@ -871,7 +905,7 @@
             <div class="author-info {{ !$loop->first ? 'mt-3 pt-3 border-top' : '' }}">
                 <div class="author-avatar-lg" style="{{ $tImgUrl ? 'overflow:hidden; padding:0;' : 'background:#1a9e75;' }}">
                     @if($tImgUrl)
-                        <img src="{{ $tImgUrl }}" alt="{{ $tName }}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
+                        <img src="{{ $tImgUrl }}" alt="{{ $tName }}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" loading="lazy" decoding="async">
                     @else
                         {{ $tInitials }}
                     @endif
@@ -909,7 +943,7 @@
         {{-- Related Insights --}}
         @if($relatedArticles->isNotEmpty())
         <div class="sidebar-card related-card">
-            <h4 class="sidebar-heading">RELATED INSIGHTS</h4>
+            <h2 class="sidebar-heading">RELATED INSIGHTS</h2>
             <div class="related-list">
                 @foreach($relatedArticles as $related)
                     @php

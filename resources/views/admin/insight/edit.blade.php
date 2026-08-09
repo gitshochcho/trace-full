@@ -486,7 +486,7 @@ document.addEventListener('DOMContentLoaded', function () {
         setVisible(editSourceNameWrap,   isOpEdType());
         setVisible(editInsightAttWrap,   isBrochuresType());
         setVisible(editArticleAttWrap,   isArticleOrPub());
-        setVisible(editArticleImageWrap, isArticleOrPub() || isBrochuresType());
+        setVisible(editArticleImageWrap, true);
         setVisible(editImageDescWrap,    isArticleOrPub() || isBrochuresType());
         setVisible(editSocialLinksWrap,  isArticleOrPub());
         setVisible(editPublishLinkWrap,  isArticleOrPub());

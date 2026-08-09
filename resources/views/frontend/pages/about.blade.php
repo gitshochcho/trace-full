@@ -349,7 +349,12 @@
     text-decoration: none;
     font-weight: 700;
     font-size: 14px;
-    transition: 0.3s;
+    transition: all 0.3s ease;
+}
+
+.btn-get-started:hover {
+    color: #F47735;
+    border-color: #F47735;
 }
 
 .framework-item {
@@ -514,24 +519,62 @@
 }
 
 .all-projects-link {
-    text-decoration: none;
-    color: #01354B;
-    font-weight: 700;
-    font-size: 14px;
+    position: relative;
     display: inline-flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
+    text-decoration: none;
+    color: #01354B;
+    font-size: 14px;
+    font-weight: 700;
+    transition: all 0.35s ease;
 }
 
 .arrow-circle {
-    width: 32px;
-    height: 32px;
-    border: 1px solid #D0D8DE;
+    width: 36px;
+    height: 36px;
+    border: 1px solid #D8E0E6;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: 0.3s;
+    color: #01354B;
+    background: #fff;
+    transition: all 0.35s ease;
+}
+
+/* Arrow animation */
+.arrow-circle i,
+.arrow-circle svg {
+    transition: transform 0.35s ease;
+}
+
+/* Hover */
+.all-projects-link:hover {
+    color: #F47735;
+    transform: translateY(-2px);
+}
+
+.all-projects-link:hover .arrow-circle {
+    background: #01354B;
+    border-color: #01354B;
+    color: #fff;
+    transform: translateX(4px);
+    box-shadow: 0 12px 28px rgba(1, 53, 75, 0.18);
+}
+
+.all-projects-link:hover .arrow-circle i,
+.all-projects-link:hover .arrow-circle svg {
+    transform: translateX(3px);
+}
+
+/* Click */
+.all-projects-link:active {
+    transform: translateY(0);
+}
+
+.all-projects-link:active .arrow-circle {
+    transform: scale(0.96);
 }
 
 .projects-grid {
@@ -667,13 +710,34 @@
 }
 
 .all-insights-btn {
+    position: relative;
+    display: inline-block;
     color: #01354B;
     text-decoration: none;
     font-weight: 700;
-    border-bottom: 2px solid #F47735;
-    padding-bottom: 5px;
+    padding-bottom: 6px;
+    transition: color 0.3s ease;
 }
 
+.all-insights-btn::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    background: #F47735;
+    transform: translateX(-50%);
+    transition: width 0.35s ease;
+}
+
+.all-insights-btn:hover {
+    color: #F47735;
+}
+
+.all-insights-btn:hover::after {
+    width: 100%;
+}
 .insights-grid {
     display: grid;
     grid-template-columns: 516px 1fr 1fr;
@@ -1114,7 +1178,7 @@
 @endphp
 
 <section class="about-hero">
-    <img src="{{ $aboutHeader?->imageUrl() ?? asset('') }}" alt="Hero">
+    <img src="{{ $aboutHeader?->imageUrl() ?? asset('') }}" alt="About TRACE Consulting">
     <div class="container-fluid about-hero-content">
         <div class="custom-container"> 
             <div class="row">
@@ -1173,7 +1237,7 @@
                 <div class="about-info mt-4">
                     {{-- Who We Are Section --}}
                     <div class="mb-4">
-                        <h4 class="fw-bold" style="font-size: 18px;">{{ $whoWeAre?->heading ?? '' }}</h4>
+                        <h3 class="fw-bold" style="font-size: 18px;">{{ $whoWeAre?->heading ?? '' }}</h3>
                         <div class="text-secondary" style="text-align: justify; margin-top: 14px;">
                             {{-- Editor theke asha p tag remove korbe ebong data display korbe --}}
                             {!! ($whoWeAre?->description ?? '') !!}
@@ -1184,7 +1248,7 @@
 
                     {{-- Our Mission Section --}}
                     <div class="mb-4">
-                        <h4 class="fw-bold" style="font-size: 18px;">{{ $ourMission?->heading ?? '' }}</h4>
+                        <h3 class="fw-bold" style="font-size: 18px;">{{ $ourMission?->heading ?? '' }}</h3>
                         <div class="text-secondary" style="text-align: justify; margin-top: 14px;">
                             {!! ($ourMission?->description ?? '') !!}
                          
@@ -1198,10 +1262,11 @@
             </div>
 
             <div class="col-lg-6 about-right text-end">
-                <img src="{{ $aboutTrace?->imageUrl() ?? asset('') }}" 
-                     class="img-fluid shadow-lg" 
-                     alt="Team" 
-                     style="width: 500px; height: 600px; object-fit: cover;">
+                <img src="{{ $aboutTrace?->imageUrl() ?? asset('') }}"
+                     class="img-fluid shadow-lg"
+                     alt="TRACE Consulting team at work"
+                     style="width: 500px; height: 600px; object-fit: cover;"
+                     loading="lazy" decoding="async">
             </div>
         </div>
     </div>
@@ -1209,10 +1274,10 @@
 
 <section class="commitment">
     <div class="commitment-bg-wrap">
-        <img src="{{ asset('assets/img/Background (8).png') }}" alt="Background">
+        <img src="{{ asset('assets/img/Background (8).png') }}" alt="" role="presentation" loading="lazy" decoding="async">
     </div>
     <div class="commitment-left-img">
-        <img src="{{ $commitmentImage }}" alt="{{ strip_tags($commitmentHeading) }}">
+        <img src="{{ $commitmentImage }}" alt="{{ strip_tags($commitmentHeading) }}" loading="lazy" decoding="async">
     </div>
 
     <div class="custom-container commitment-content-area">
@@ -1271,13 +1336,13 @@
                             <div class="num">{{ str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT) }}</div>
                             <div class="icon-box">
                                 @if(!empty($item['icon']))
-                                    <img src="{{ $item['icon'] }}" alt="{{ $item['title'] }}" style="width:24px; height:24px; object-fit:contain; margin-top:10px;">
+                                    <img src="{{ $item['icon'] }}" alt="{{ $item['title'] }}" style="width:24px; height:24px; object-fit:contain; margin-top:10px;" loading="lazy" decoding="async">
                                 @else
                                     <i class="{{ $frameworkFallbackIcons[$index] ?? 'fa-regular fa-circle' }}"></i>
                                 @endif
                             </div>
                             <div class="content">
-                                <h4>{!! $item['title'] !!}</h4>
+                                <h3>{!! $item['title'] !!}</h3>
                                 <p>{!! $item['description'] !!}</p>
                             </div>
                         </div>
@@ -1322,7 +1387,7 @@
                     <div class="feature-card shadow-sm h-100">
                         <div class="icon-wrapper mb-4">
                             @if(!empty($feature['icon']))
-                                <img src="{{ $feature['icon'] }}" alt="{{ $feature['title'] }}" style="width:24px; height:24px; object-fit:contain;">
+                                <img src="{{ $feature['icon'] }}" alt="{{ $feature['title'] }}" style="width:24px; height:24px; object-fit:contain;" loading="lazy" decoding="async">
                             @else
                                 <i class="{{ $featureFallbackIcons[$index] ?? 'fa-regular fa-circle' }}"></i>
                             @endif
@@ -1369,7 +1434,7 @@
 
                 <a href="{{ route('projectdetails', $project) }}" class="project-card-link">
                     <div class="project-card">
-                        <img src="{{ $projectImage }}" alt="{{ $project->project_title }}">
+                        <img src="{{ $projectImage }}" alt="{{ $project->project_title }}" loading="lazy" decoding="async">
                         <div class="project-overlay">
                             <span class="project-badge">{{ $projectCategory }}</span>
                             <h3 class="project-h">{{ $project->project_title }}</h3>
@@ -1435,12 +1500,12 @@
                 <a href="{{ $featuredLink }}" class="insight-card-link" @if($featuredExternal) target="_blank" rel="noopener" @endif>
                     <div class="insight-card big-card">
                         <div class="card-img-box">
-                            <img src="{{ $featuredImage }}" alt="{{ $featuredTitle }}" class="w-100">
+                            <img src="{{ $featuredImage }}" alt="{{ $featuredTitle }}" class="w-100" loading="lazy" decoding="async">
                             <div class="img-overlay-gradient"></div>
                             <span class="in-badge-custom">{{ $featuredType }}</span>
                         </div>
                         <div class="card-body">
-                            <h4 class="card-h">{{ $featuredTitle }}</h4>
+                            <h3 class="card-h">{{ $featuredTitle }}</h3>
                             <p class="card-p">{{ $featuredDescription }}</p>
                         </div>
                         <div class="card-footer">
@@ -1484,12 +1549,12 @@
                 <a href="{{ $insightLink }}" class="insight-card-link" @if($insightExternal) target="_blank" rel="noopener" @endif>
                     <div class="insight-card small-card">
                         <div class="card-img-box small-img">
-                            <img src="{{ $insightImage }}" alt="{{ $insightTitle }}" class="w-100">
+                            <img src="{{ $insightImage }}" alt="{{ $insightTitle }}" class="w-100" loading="lazy" decoding="async">
                             <div class="img-overlay-gradient"></div>
                             <span class="in-badge-custom" style="background: #01888C;">{{ $insightType }}</span>
                         </div>
                         <div class="card-body-small">
-                            <h4 class="card-h-small">{{ $insightTitle }}</h4>
+                            <h3 class="card-h-small">{{ $insightTitle }}</h3>
                         </div>
                         <div class="card-footer-small">
                             <span class="meta-text">{{ $insightMetaDate }} · {{ $insightMetaDuration }}</span>
@@ -1501,7 +1566,7 @@
 
             <a href="{{ route('insights') }}" class="all-box-link">
                 <span class="all-text">All</span>
-                <h4 class="insights-link-text">Insights</h4>
+                <div class="insights-link-text">Insights</div>
                 <div class="arrow-icon">&rarr;</div>
             </a>
         </div>
@@ -1569,7 +1634,7 @@
                     @php $logos = ['bafisa.png', 'lir 2.png', 'bijem.png', 'build.png']; @endphp
                     @foreach(array_merge($logos, $logos) as $logo)
                         <div class="partner-slide">
-                            <img src="{{ asset('assets/img/' . $logo) }}" alt="Partner">
+                            <img src="{{ asset('assets/img/' . $logo) }}" alt="{{ ucwords(str_replace(['.png', '_', '-'], ['', ' ', ' '], $logo)) }} partner logo">
                         </div>
                     @endforeach
                 @endif
