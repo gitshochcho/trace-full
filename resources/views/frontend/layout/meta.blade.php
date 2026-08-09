@@ -1,6 +1,6 @@
 @php
     $seoTitle = trim($seoTitle ?? '') ?: 'TRACE Consulting';
-    $seoDescription = trim(strip_tags($seoDescription ?? '')) ?: 'TRACE Consulting delivers regulatory reform, technical capacity building and digital infrastructure solutions across Bangladesh and beyond.';
+    $seoDescription = trim(strip_tags($seoDescription ?? '')) ?: 'TRACE Consulting is a strategic advisory firm specializing in international trade, economic policy, and regulatory reform.';
     $seoDescription = \Illuminate\Support\Str::limit($seoDescription, 160, '');
     $seoImage = $seoImage ?? asset('assets/img/og-tag-image.jpeg');
     $seoUrl = $seoUrl ?? url()->current();
