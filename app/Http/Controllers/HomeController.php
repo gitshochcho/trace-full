@@ -183,7 +183,7 @@ class HomeController extends Controller
 
         $homeLatestNewsHeading = contentBlock('home-latest-news');
 
-        $seoTitle = 'TRACE Consulting | Regulatory Reform & Development Advisory';
+        $seoTitle = 'TRACE Consulting';
         $seoDescription = 'TRACE Consulting is a strategic advisory firm specializing in international trade, economic policy, and regulatory reform.';
         $seoUrl = route('home');
 
