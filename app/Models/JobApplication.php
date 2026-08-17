@@ -12,6 +12,7 @@ class JobApplication extends Model
         'email',
         'phone',
         'cv_path',
+        'cv_original_name',
         'is_reviewed',
     ];
 

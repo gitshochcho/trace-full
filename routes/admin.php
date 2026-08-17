@@ -4,6 +4,8 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\ContactInfoController;
 use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\ContentController;
+use App\Http\Controllers\Admin\PageSettingController;
+use App\Http\Controllers\Admin\EntitySeoController;
 use App\Http\Controllers\Admin\InsightController;
 use App\Http\Controllers\Admin\JobApplicationController;
 use App\Http\Controllers\Admin\JobPostingController;
@@ -59,6 +61,22 @@ Route::prefix('admin')->group(function () {
             Route::get('content/{content}/edit', 'edit')->name('admin.content.edit');
             Route::put('content/{content}', 'update')->name('admin.content.update');
             Route::delete('content/{content}', 'destroy')->name('admin.content.destroy');
+        });
+
+        Route::controller(PageSettingController::class)->group(function () {
+            Route::get('page-settings', 'index')->name('admin.pageSettings.index');
+            Route::get('page-settings/{pageSetting}/edit', 'edit')->name('admin.pageSettings.edit');
+            Route::put('page-settings/{pageSetting}', 'update')->name('admin.pageSettings.update');
+            Route::post('page-settings/{pageSetting}/custom-meta', 'storeCustomMeta')->name('admin.pageSettings.customMeta.store');
+            Route::delete('page-settings/{pageSetting}/custom-meta/{customMeta}', 'destroyCustomMeta')->name('admin.pageSettings.customMeta.destroy');
+        });
+
+        Route::controller(EntitySeoController::class)->group(function () {
+            Route::get('entity-seo', 'index')->name('admin.entitySeo.index');
+            Route::get('entity-seo/{entityType}/{entityId}/edit', 'edit')->name('admin.entitySeo.edit');
+            Route::put('entity-seo/{entityType}/{entityId}', 'update')->name('admin.entitySeo.update');
+            Route::post('entity-seo/{entityType}/{entityId}/custom-meta', 'storeCustomMeta')->name('admin.entitySeo.customMeta.store');
+            Route::delete('entity-seo/{entityType}/{entityId}/custom-meta/{customMeta}', 'destroyCustomMeta')->name('admin.entitySeo.customMeta.destroy');
         });
 
         Route::controller(ServiceController::class)->group(function () {
@@ -159,6 +177,7 @@ Route::prefix('admin')->group(function () {
 
         Route::controller(JobApplicationController::class)->group(function () {
             Route::get('job-applications', 'index')->name('admin.job-applications.index');
+            Route::get('job-applications/download-all-cv', 'downloadAllCv')->name('admin.job-applications.download-all-cv');
             Route::get('job-applications/{application}', 'show')->name('admin.job-applications.show');
             Route::get('job-applications/{application}/download-cv', 'downloadCv')->name('admin.job-applications.download-cv');
             Route::post('job-applications/{application}/mark-reviewed', 'markReviewed')->name('admin.job-applications.mark-reviewed');

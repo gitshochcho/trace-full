@@ -356,6 +356,23 @@
     ['label' => 'Our Team', 'url' => route('team')],
     ['label' => $teamName, 'url' => null],
 ]" />
+
+@php
+    $personSchema = [
+        '@context' => 'https://schema.org',
+        '@type' => 'Person',
+        'name' => $teamName,
+        'jobTitle' => $teamDesignation,
+        'image' => $teamImage ?: null,
+        'url' => url()->current(),
+        'worksFor' => [
+            '@type' => 'Organization',
+            'name' => 'TRACE Consulting',
+        ],
+        'sameAs' => $socialItems->pluck('social_link')->filter()->values()->all(),
+    ];
+@endphp
+<script type="application/ld+json">{!! json_encode(array_filter($personSchema), JSON_UNESCAPED_SLASHES) !!}</script>
 <section class="service-breadcrumb d-flex align-items-center">
     <div class="container custom-container">
         <nav aria-label="breadcrumb">

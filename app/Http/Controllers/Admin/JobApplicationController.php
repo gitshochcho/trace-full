@@ -11,22 +11,42 @@ class JobApplicationController extends Controller
 {
     public function index(Request $request)
     {
+        $query = $this->filteredQuery($request);
+
+        $applications = $query->latest()->paginate(15)->withQueryString();
+
+        // Live search: the filter form fires this same route via fetch() with this header
+        // set, and only wants the table partial re-rendered — not a full page reload.
+        if ($request->ajax()) {
+            return response()->json([
+                'table_html' => view('admin.job-applications._table', compact('applications'))->render(),
+                'total' => $applications->total(),
+            ]);
+        }
+
+        return view('admin.job-applications.index', compact('applications'));
+    }
+
+    /**
+     * Shared search/status filtering used by both the paginated index listing
+     * and the "Download All" ZIP export, so the ZIP always matches what's on screen.
+     */
+    private function filteredQuery(Request $request)
+    {
         $query = JobApplication::with('jobPosting');
 
-        // Search functionality
-        if ($request->has('search') && !empty($request->search)) {
+        if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
                   ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhereHas('jobPosting', function($q) use ($search) {
+                  ->orWhereHas('jobPosting', function ($q) use ($search) {
                       $q->where('title', 'like', "%{$search}%");
                   });
             });
         }
 
-        // Status filter
-        if ($request->has('status') && !empty($request->status)) {
+        if ($request->filled('status')) {
             if ($request->status === 'reviewed') {
                 $query->where('is_reviewed', true);
             } elseif ($request->status === 'pending') {
@@ -34,9 +54,7 @@ class JobApplicationController extends Controller
             }
         }
 
-        $applications = $query->latest()->paginate(15);
-
-        return view('admin.job-applications.index', compact('applications'));
+        return $query;
     }
 
     public function show(JobApplication $application)
@@ -51,7 +69,33 @@ class JobApplicationController extends Controller
             return back()->with('error', 'CV file not found.');
         }
 
-        return Storage::disk('public')->download($application->cv_path);
+        // Older applications submitted before original filenames were tracked fall back
+        // to the stored path's basename (the previous, unnamed behavior).
+        $downloadName = $application->cv_original_name ?: basename($application->cv_path);
+
+        return Storage::disk('public')->download($application->cv_path, $downloadName);
+    }
+
+    /**
+     * Returns the id list for every application matching the current search/status filter
+     * that has a CV on file. The "Download All" button on the index page uses this to fire
+     * one browser download per file (via the existing downloadCv route) instead of building
+     * a ZIP server-side — avoids any dependency on the PHP zip extension being installed.
+     */
+    public function downloadAllCv(Request $request)
+    {
+        $applications = $this->filteredQuery($request)
+            ->whereNotNull('cv_path')
+            ->latest()
+            ->get(['id', 'name']);
+
+        return response()->json([
+            'applications' => $applications->map(fn ($application) => [
+                'id' => $application->id,
+                'name' => $application->name,
+                'download_url' => route('admin.job-applications.download-cv', $application),
+            ]),
+        ]);
     }
 
     public function markReviewed(JobApplication $application)
