@@ -24,100 +24,146 @@
                     <div class="card card-outline card-primary">
                         <div class="card-header">
                             <div class="d-flex justify-content-between align-items-center">
-                                <h3 class="card-title mb-0">All Applications ({{ $applications->total() }})</h3>
-                                <div class="card-tools">
-                                    <form method="GET" class="d-flex">
-                                        <input type="text" name="search" value="{{ request('search') }}" class="form-control form-control-sm me-2" placeholder="Search by name or email">
-                                        <select name="status" class="form-control form-control-sm me-2">
+                                <h3 class="card-title mb-0" id="applicationsCountHeading">All Applications ({{ $applications->total() }})</h3>
+                                <div class="card-tools d-flex align-items-center">
+                                    <form method="GET" id="applicationsFilterForm" class="d-flex me-2" onsubmit="return false;">
+                                        <input type="text" name="search" id="applicationsSearchInput" value="{{ request('search') }}" class="form-control form-control-sm me-2" placeholder="Search by name or email" autocomplete="off">
+                                        <select name="status" id="applicationsStatusSelect" class="form-control form-control-sm me-2">
                                             <option value="">All Status</option>
                                             <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
                                             <option value="reviewed" {{ request('status') == 'reviewed' ? 'selected' : '' }}>Reviewed</option>
                                         </select>
-                                        <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+                                        <span class="spinner-border spinner-border-sm text-primary d-none align-self-center" id="applicationsFilterSpinner" role="status"></span>
                                     </form>
+                                    <button type="button" id="downloadAllCvsBtn"
+                                            data-endpoint="{{ route('admin.job-applications.download-all-cv') }}"
+                                            data-search="{{ request('search') }}"
+                                            data-status="{{ request('status') }}"
+                                            class="btn btn-success btn-sm" title="Download every CV matching the current filter, one file at a time">
+                                        <i class="fas fa-download"></i> Download All CVs
+                                    </button>
                                 </div>
                             </div>
                         </div>
-                        <div class="card-body table-responsive p-0">
-                            <table class="table table-striped align-middle mb-0">
-                                <thead class="table-dark">
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Phone</th>
-                                        <th>Job Position</th>
-                                        <th>Applied Date</th>
-                                        <th>Status</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse($applications as $application)
-                                    <tr>
-                                        <td>{{ $application->name }}</td>
-                                        <td>{{ $application->email }}</td>
-                                        <td>{{ $application->phone }}</td>
-                                        <td>
-                                            <a href="{{ route('admin.job-postings.show', $application->jobPosting) }}" class="text-decoration-none">
-                                                {{ $application->jobPosting->title }}
-                                            </a>
-                                        </td>
-                                        <td>{{ $application->created_at->format('M d, Y H:i') }}</td>
-                                        <td>
-                                            <span class="badge bg-{{ $application->is_reviewed ? 'success' : 'warning' }}">
-                                                {{ $application->is_reviewed ? 'Reviewed' : 'Pending' }}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <div class="btn-group btn-group-sm" role="group">
-                                                <a href="{{ route('admin.job-applications.show', $application) }}" class="btn btn-info" title="View Details" data-bs-toggle="tooltip">
-                                                    <i class="fas fa-eye"></i> View
-                                                </a>
-                                                <a href="{{ route('admin.job-applications.download-cv', $application) }}" class="btn btn-primary" title="Download CV" data-bs-toggle="tooltip">
-                                                    <i class="fas fa-download"></i> CV
-                                                </a>
-                                                <form action="{{ route('admin.job-applications.mark-reviewed', $application) }}" method="POST" style="display: inline;">
-                                                    @csrf
-                                                    @if(!$application->is_reviewed)
-                                                    <button type="submit" class="btn btn-success btn-sm" title="Mark as Reviewed" data-bs-toggle="tooltip">
-                                                        <i class="fas fa-check"></i> Approve
-                                                    </button>
-                                                    @else
-                                                    <button type="submit" class="btn btn-warning btn-sm" title="Mark as Pending" data-bs-toggle="tooltip">
-                                                        <i class="fas fa-undo"></i> Pending
-                                                    </button>
-                                                    @endif
-                                                </form>
-                                                <form action="{{ route('admin.job-applications.destroy', $application) }}" method="POST"
-                                                    style="display: inline;"
-                                                    onsubmit="return confirm('Are you sure you want to delete this application?')">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm" title="Delete" data-bs-toggle="tooltip">
-                                                        <i class="fas fa-trash"></i> Delete
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    @empty
-                                    <tr>
-                                        <td colspan="7" class="text-center py-4">
-                                            <p class="mb-0">No applications found.</p>
-                                        </td>
-                                    </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
+                        <div id="applicationsTableWrapper">
+                            @include('admin.job-applications._table')
                         </div>
-                        @if($applications->hasPages())
-                        <div class="card-footer">
-                            {{ $applications->links() }}
-                        </div>
-                        @endif
                     </div>
                 </div>
             </div>
         </div>
     </div>
 @endsection
+
+@push('custome-js')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('applicationsSearchInput');
+    const statusSelect = document.getElementById('applicationsStatusSelect');
+    const tableWrapper = document.getElementById('applicationsTableWrapper');
+    const countHeading = document.getElementById('applicationsCountHeading');
+    const spinner = document.getElementById('applicationsFilterSpinner');
+    const downloadAllBtn = document.getElementById('downloadAllCvsBtn');
+    const indexUrl = @json(route('admin.job-applications.index'));
+
+    let debounceTimer = null;
+    let activeRequest = null;
+
+    function runFilter() {
+        const params = new URLSearchParams();
+        if (searchInput.value.trim() !== '') params.set('search', searchInput.value.trim());
+        if (statusSelect.value !== '') params.set('status', statusSelect.value);
+
+        // Keep the browser URL/back-button and a page refresh in sync with the current filter.
+        const newUrl = params.toString() ? (indexUrl + '?' + params.toString()) : indexUrl;
+        window.history.replaceState(null, '', newUrl);
+
+        // Keep "Download All CVs" scoped to whatever is currently filtered.
+        downloadAllBtn.dataset.search = searchInput.value.trim();
+        downloadAllBtn.dataset.status = statusSelect.value;
+
+        if (activeRequest) activeRequest.abort();
+        activeRequest = new AbortController();
+
+        spinner.classList.remove('d-none');
+
+        fetch(indexUrl + '?' + params.toString(), {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            signal: activeRequest.signal,
+        })
+            .then(function (res) { return res.json(); })
+            .then(function (data) {
+                tableWrapper.innerHTML = data.table_html;
+                countHeading.textContent = 'All Applications (' + data.total + ')';
+            })
+            .catch(function (err) {
+                if (err.name !== 'AbortError') {
+                    console.error('Filter request failed', err);
+                }
+            })
+            .finally(function () {
+                spinner.classList.add('d-none');
+            });
+    }
+
+    // Live search: re-filter automatically a moment after the admin stops typing —
+    // no "Filter" button to click, and clearing the box brings everything back.
+    searchInput.addEventListener('input', function () {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(runFilter, 400);
+    });
+
+    statusSelect.addEventListener('change', function () {
+        clearTimeout(debounceTimer);
+        runFilter();
+    });
+
+    const btn = downloadAllBtn;
+    if (!btn) return;
+
+    btn.addEventListener('click', function () {
+        const params = new URLSearchParams();
+        if (btn.dataset.search) params.set('search', btn.dataset.search);
+        if (btn.dataset.status) params.set('status', btn.dataset.status);
+
+        const originalHtml = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Preparing…';
+
+        fetch(btn.dataset.endpoint + '?' + params.toString(), {
+            headers: { 'Accept': 'application/json' },
+        })
+            .then(function (res) { return res.json(); })
+            .then(function (data) {
+                const applications = data.applications || [];
+                if (applications.length === 0) {
+                    alert('No applications with a CV match the current filter.');
+                    return;
+                }
+
+                // Trigger one download at a time via a hidden iframe, spaced out slightly
+                // so the browser doesn't treat the burst as a popup/spam and drop some of them.
+                applications.forEach(function (application, index) {
+                    setTimeout(function () {
+                        const iframe = document.createElement('iframe');
+                        iframe.style.display = 'none';
+                        iframe.src = application.download_url;
+                        document.body.appendChild(iframe);
+                        setTimeout(function () { iframe.remove(); }, 10000);
+                    }, index * 600);
+                });
+
+                setTimeout(function () {
+                    btn.disabled = false;
+                    btn.innerHTML = originalHtml;
+                }, applications.length * 600 + 500);
+            })
+            .catch(function () {
+                alert('Could not fetch the CV list. Please try again.');
+                btn.disabled = false;
+                btn.innerHTML = originalHtml;
+            });
+    });
+});
+</script>
+@endpush

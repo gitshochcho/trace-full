@@ -65,7 +65,7 @@
                                         <a href="{{ route('admin.job-applications.download-cv', $application) }}" class="btn btn-primary btn-sm">
                                             <i class="fas fa-download"></i> Download CV
                                         </a>
-                                        <small class="text-muted ms-2">File: {{ basename($application->cv_path) }}</small>
+                                        <small class="text-muted ms-2">File: {{ $application->cv_original_name ?: basename($application->cv_path) }}</small>
                                     </div>
                                 </div>
                                 @endif

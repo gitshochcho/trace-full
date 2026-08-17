@@ -9,7 +9,7 @@
     .career-container { max-width: 1072px; margin: 0 auto; padding: 0 24px; }
 
     /* Left Content */
-    .job-description h2 { font-size: 28px; font-weight: 700; color: #01354B; margin-bottom: 8px; }
+    .job-description h1 { font-size: 28px; font-weight: 700; color: #01354B; margin-bottom: 8px; }
     .job-division { color: #01888C; font-weight: 600; margin-bottom: 24px; display: block; }
     .job-main-text p { font-size: 15px; color: #64748b; line-height: 1.8; margin-bottom: 20px; }
 
@@ -134,6 +134,45 @@
 
 @section('content')
 
+<x-breadcrumb-schema :items="[
+    ['label' => 'Careers', 'url' => route('career')],
+    ['label' => $job->title, 'url' => null],
+]" />
+
+@php
+    $employmentTypeSchema = match($job->employment_type) {
+        'Full-Time' => 'FULL_TIME',
+        'Part-Time' => 'PART_TIME',
+        'Contract'  => 'CONTRACTOR',
+        default     => 'FULL_TIME',
+    };
+
+    $jobPostingSchema = [
+        '@context' => 'https://schema.org',
+        '@type' => 'JobPosting',
+        'title' => $job->title,
+        'description' => nl2br(e($job->description ?? '')),
+        'datePosted' => $job->posted_date?->toDateString(),
+        'validThrough' => $job->end_date?->toDateString(),
+        'employmentType' => $employmentTypeSchema,
+        'hiringOrganization' => [
+            '@type' => 'Organization',
+            'name' => 'TRACE Consulting',
+            'sameAs' => url('/'),
+            'logo' => asset('assets/img/og-tag-image.jpeg'),
+        ],
+        'jobLocation' => [
+            '@type' => 'Place',
+            'address' => [
+                '@type' => 'PostalAddress',
+                'addressLocality' => $job->location,
+                'addressCountry' => 'BD',
+            ],
+        ],
+    ];
+@endphp
+<script type="application/ld+json">{!! json_encode(array_filter($jobPostingSchema), JSON_UNESCAPED_SLASHES) !!}</script>
+
 <section class="career-details-section">
     <div class="career-container">
         <div class="row g-5">
@@ -142,7 +181,7 @@
             <div class="col-lg-7">
                 <div class="job-description">
                     <span class="job-division">{{ $job->department }}</span>
-                    <h2>{{ $job->title }}</h2>
+                    <h1>{{ $job->title }}</h1>
                     
                     <div class="job-main-text mt-4" style="text-align: justify;">
                         {!! nl2br($job->description) !!}

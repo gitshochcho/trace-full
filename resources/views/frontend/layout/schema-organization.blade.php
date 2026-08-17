@@ -12,6 +12,19 @@
         ])),
     ];
 
+    if (!empty($siteSettings?->footer_contact_location)) {
+        $orgSchema['address'] = [
+            '@type' => 'PostalAddress',
+            'streetAddress' => strip_tags($siteSettings->footer_contact_location),
+        ];
+    }
+    if (!empty($siteSettings?->footer_contact_mobile)) {
+        $orgSchema['telephone'] = $siteSettings->footer_contact_mobile;
+    }
+    if (!empty($siteSettings?->footer_contact_email)) {
+        $orgSchema['email'] = $siteSettings->footer_contact_email;
+    }
+
     $websiteSchema = [
         '@context' => 'https://schema.org',
         '@type' => 'WebSite',

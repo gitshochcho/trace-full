@@ -35,6 +35,12 @@ class Setting extends Model implements HasMedia
         'footer_contact_email',
         'footer_contact_location',
         'footer_description',
+        'default_meta_title',
+        'default_meta_description',
+        'default_og_site_name',
+        'default_og_locale',
+        'default_robots',
+        'default_twitter_site',
     ];
 
     protected $casts = [
