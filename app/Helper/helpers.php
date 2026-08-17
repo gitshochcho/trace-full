@@ -200,6 +200,84 @@ if (! function_exists('contentBlock')) {
     }
 }
 
+if (! function_exists('pageSetting')) {
+    function pageSetting(string $routeName): ?\App\Models\PageSetting
+    {
+        $cacheKey = "page_setting_{$routeName}";
+
+        $cached = Cache::get($cacheKey);
+        if ($cached instanceof \App\Models\PageSetting) {
+            return $cached;
+        }
+
+        $pageSetting = \App\Models\PageSetting::query()
+            ->with(['media', 'pageMetas'])
+            ->where('page_slug', $routeName)
+            ->first();
+
+        if ($pageSetting) {
+            Cache::put($cacheKey, $pageSetting, now()->addHour());
+        }
+
+        return $pageSetting;
+    }
+}
+
+if (! function_exists('entitySeo')) {
+    function entitySeo(string $entityType, int $entityId): ?\App\Models\EntitySeo
+    {
+        $cacheKey = "entity_seo_{$entityType}_{$entityId}";
+
+        $cached = Cache::get($cacheKey);
+        if ($cached instanceof \App\Models\EntitySeo) {
+            return $cached;
+        }
+
+        $entitySeo = \App\Models\EntitySeo::query()
+            ->with('media')
+            ->where('entity_type', $entityType)
+            ->where('entity_id', $entityId)
+            ->first();
+
+        if ($entitySeo) {
+            Cache::put($cacheKey, $entitySeo, now()->addHour());
+        }
+
+        return $entitySeo;
+    }
+}
+
+if (! function_exists('customMetasFor')) {
+    /**
+     * Fetch admin-added custom <meta> tags for either a static page (pass $routeName)
+     * or a detail-page entity (pass $entityType + $entityId).
+     *
+     * @return \Illuminate\Support\Collection<int, \App\Models\CustomMeta>
+     */
+    function customMetasFor(?string $routeName = null, ?string $entityType = null, ?int $entityId = null): \Illuminate\Support\Collection
+    {
+        $cacheKey = $routeName
+            ? "custom_metas_page_{$routeName}"
+            : "custom_metas_entity_{$entityType}_{$entityId}";
+
+        $cached = Cache::get($cacheKey);
+        if ($cached instanceof \Illuminate\Support\Collection) {
+            return $cached;
+        }
+
+        $query = \App\Models\CustomMeta::query();
+        $query = $routeName
+            ? $query->where('page_route_name', $routeName)
+            : $query->where('entity_type', $entityType)->where('entity_id', $entityId);
+
+        $metas = $query->orderBy('id')->get();
+
+        Cache::put($cacheKey, $metas, now()->addHour());
+
+        return $metas;
+    }
+}
+
 if (! function_exists('stripPTags')) {
     /**
      * Strip <p> tags from HTML content while preserving other formatting

@@ -332,6 +332,23 @@
     ['label' => 'Services', 'url' => route('services')],
     ['label' => $heroTitle, 'url' => null],
 ]" />
+
+@php
+    $serviceSchema = [
+        '@context' => 'https://schema.org',
+        '@type' => 'Service',
+        'name' => $heroTitle,
+        'description' => strip_tags($heroDescription ?: $overviewPlainText) ?: null,
+        'image' => $heroImage ?: null,
+        'url' => url()->current(),
+        'provider' => [
+            '@type' => 'Organization',
+            'name' => 'TRACE Consulting',
+            'url' => url('/'),
+        ],
+    ];
+@endphp
+<script type="application/ld+json">{!! json_encode(array_filter($serviceSchema), JSON_UNESCAPED_SLASHES) !!}</script>
 <nav class="service-breadcrumb">
     <div class="container custom-container">
         <div class="breadcrumb-links">

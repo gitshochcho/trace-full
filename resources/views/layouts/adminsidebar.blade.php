@@ -55,6 +55,13 @@
                 </li>
 
                 <li class="nav-item">
+                    <a href="{{ route('admin.pageSettings.index') }}" class="nav-link {{ request()->routeIs('admin.pageSettings.*') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-search"></i>
+                        <p>Page Settings</p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
                     <a href="{{ route('admin.services.index') }}" class="nav-link {{ request()->routeIs('admin.services.*') ? 'active' : '' }}">
                         <i class="nav-icon bi bi-collection"></i>
                         <p>Services Manager</p>
