@@ -186,7 +186,10 @@ class HomeController extends Controller
         $seo = $this->buildPageSeo('home', [
             'seoTitle' => 'TRACE Consulting',
             'seoDescription' => 'TRACE Consulting is a strategic advisory firm specializing in international trade, economic policy, and regulatory reform.',
-            'seoImage' => $slider?->imageUrls()[0] ?? null,
+            // No slider-image fallback here on purpose — the branded og-tag-image.jpeg
+            // (set as meta.blade.php's ultimate default) is the intended share image
+            // for the homepage unless an admin uploads a specific one in Page Settings.
+            'seoImage' => null,
             'seoUrl' => route('home'),
         ]);
 
