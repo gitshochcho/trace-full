@@ -75,7 +75,7 @@
                                 <h5 class="text-secondary">Message Content</h5>
                                 <div class="card card-light">
                                     <div class="card-body">
-                                        <p>{{ nl2br(e($message->message)) }}</p>
+                                        <p>{!! nl2br(e($message->message)) !!}</p>
                                     </div>
                                 </div>
                             </div>
