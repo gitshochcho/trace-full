@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\JobApplication;
+use App\Models\JobPosting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use ZipStream\ZipStream;
 
 class JobApplicationController extends Controller
 {
@@ -24,7 +26,11 @@ class JobApplicationController extends Controller
             ]);
         }
 
-        return view('admin.job-applications.index', compact('applications'));
+        // Not active()-scoped on purpose: admins need to filter/export applications tied
+        // to closed or inactive postings too, not just the ones currently live on the site.
+        $jobPostings = JobPosting::ordered()->get(['id', 'title']);
+
+        return view('admin.job-applications.index', compact('applications', 'jobPostings'));
     }
 
     /**
@@ -54,6 +60,10 @@ class JobApplicationController extends Controller
             }
         }
 
+        if ($request->filled('job_posting_id')) {
+            $query->where('job_posting_id', $request->job_posting_id);
+        }
+
         return $query;
     }
 
@@ -77,25 +87,73 @@ class JobApplicationController extends Controller
     }
 
     /**
-     * Returns the id list for every application matching the current search/status filter
-     * that has a CV on file. The "Download All" button on the index page uses this to fire
-     * one browser download per file (via the existing downloadCv route) instead of building
-     * a ZIP server-side — avoids any dependency on the PHP zip extension being installed.
+     * Streams a ZIP of every CV matching the current search/status/job_posting_id filter —
+     * the same filteredQuery() used by the index listing, so the ZIP always matches what's
+     * on screen. Built with ZipStream (already installed as a spatie/laravel-medialibrary
+     * dependency) so it streams straight to the response with no temp files and no
+     * dependency on the PHP zip extension being enabled on the host.
      */
     public function downloadAllCv(Request $request)
     {
         $applications = $this->filteredQuery($request)
             ->whereNotNull('cv_path')
             ->latest()
-            ->get(['id', 'name']);
+            ->get(['id', 'name', 'cv_path', 'cv_original_name']);
 
-        return response()->json([
-            'applications' => $applications->map(fn ($application) => [
-                'id' => $application->id,
-                'name' => $application->name,
-                'download_url' => route('admin.job-applications.download-cv', $application),
-            ]),
-        ]);
+        $applications = $applications->filter(
+            fn ($application) => Storage::disk('public')->exists($application->cv_path)
+        );
+
+        if ($applications->isEmpty()) {
+            return back()->with('error', 'No applications with a CV match the current filter.');
+        }
+
+        $zip = new ZipStream(outputName: 'job-application-cvs-' . now()->format('Y-m-d-His') . '.zip');
+
+        $usedNames = [];
+
+        foreach ($applications as $application) {
+            $originalName = $application->cv_original_name ?: basename($application->cv_path);
+            $entryName = $this->uniqueZipEntryName($application->name, $originalName, $usedNames);
+
+            $zip->addFileFromPath(
+                fileName: $entryName,
+                path: Storage::disk('public')->path($application->cv_path),
+            );
+        }
+
+        $zip->finish();
+
+        exit;
+    }
+
+    /**
+     * Builds a "<Applicant Name> - <original filename>" entry name and disambiguates it if
+     * two applicants (or two applications) would otherwise collide — e.g. two people both
+     * named "CV.pdf" become "Jane Doe - CV.pdf" and "Jane Doe - CV (2).pdf".
+     */
+    private function uniqueZipEntryName(string $applicantName, string $originalName, array &$usedNames): string
+    {
+        $safeApplicant = trim(preg_replace('/[\\\\\/:*?"<>|]/', '-', $applicantName));
+        $base = $safeApplicant !== '' ? "{$safeApplicant} - {$originalName}" : $originalName;
+
+        $entryName = $base;
+        $suffix = 2;
+
+        while (in_array($entryName, $usedNames, true)) {
+            $extension = pathinfo($originalName, PATHINFO_EXTENSION);
+            $filenameWithoutExt = $extension !== ''
+                ? substr($base, 0, -(strlen($extension) + 1))
+                : $base;
+            $entryName = $extension !== ''
+                ? "{$filenameWithoutExt} ({$suffix}).{$extension}"
+                : "{$base} ({$suffix})";
+            $suffix++;
+        }
+
+        $usedNames[] = $entryName;
+
+        return $entryName;
     }
 
     public function markReviewed(JobApplication $application)
