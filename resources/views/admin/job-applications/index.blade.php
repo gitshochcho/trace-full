@@ -28,20 +28,30 @@
                                 <div class="card-tools d-flex align-items-center">
                                     <form method="GET" id="applicationsFilterForm" class="d-flex me-2" onsubmit="return false;">
                                         <input type="text" name="search" id="applicationsSearchInput" value="{{ request('search') }}" class="form-control form-control-sm me-2" placeholder="Search by name or email" autocomplete="off">
-                                        <select name="status" id="applicationsStatusSelect" class="form-control form-control-sm me-2">
+                                        <select name="status" id="applicationsStatusSelect" class="form-select form-select-sm me-2" style="width: auto;">
                                             <option value="">All Status</option>
                                             <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
                                             <option value="reviewed" {{ request('status') == 'reviewed' ? 'selected' : '' }}>Reviewed</option>
                                         </select>
+                                        <select name="job_posting_id" id="applicationsJobPostingSelect" class="form-select form-select-sm me-2 fw-semibold"
+                                                style="width: auto; max-width: 220px; background-color: #eaf2ff; border: 1px solid #4a90e2; color: #1a56b0;">
+                                            <option value="">All Job Positions</option>
+                                            @foreach($jobPostings as $jobPosting)
+                                                <option value="{{ $jobPosting->id }}" {{ (string) request('job_posting_id') === (string) $jobPosting->id ? 'selected' : '' }}>{{ $jobPosting->title }}</option>
+                                            @endforeach
+                                        </select>
                                         <span class="spinner-border spinner-border-sm text-primary d-none align-self-center" id="applicationsFilterSpinner" role="status"></span>
                                     </form>
-                                    <button type="button" id="downloadAllCvsBtn"
-                                            data-endpoint="{{ route('admin.job-applications.download-all-cv') }}"
-                                            data-search="{{ request('search') }}"
-                                            data-status="{{ request('status') }}"
-                                            class="btn btn-success btn-sm" title="Download every CV matching the current filter, one file at a time">
-                                        <i class="fas fa-download"></i> Download All CVs
-                                    </button>
+                                    <a href="#" id="downloadAllCvsBtn"
+                                       data-endpoint="{{ route('admin.job-applications.download-all-cv') }}"
+                                       data-search="{{ request('search') }}"
+                                       data-status="{{ request('status') }}"
+                                       data-job-posting-id="{{ request('job_posting_id') }}"
+                                       class="btn btn-sm text-white fw-semibold"
+                                       style="background: linear-gradient(135deg, #ff6a00, #ee0979); border: none; box-shadow: 0 2px 6px rgba(238, 9, 121, 0.35);"
+                                       title="Download a ZIP of every CV matching the current filter">
+                                        <i class="fas fa-file-archive"></i> Download All CVs (ZIP)
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -60,6 +70,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     const searchInput = document.getElementById('applicationsSearchInput');
     const statusSelect = document.getElementById('applicationsStatusSelect');
+    const jobPostingSelect = document.getElementById('applicationsJobPostingSelect');
     const tableWrapper = document.getElementById('applicationsTableWrapper');
     const countHeading = document.getElementById('applicationsCountHeading');
     const spinner = document.getElementById('applicationsFilterSpinner');
@@ -73,6 +84,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const params = new URLSearchParams();
         if (searchInput.value.trim() !== '') params.set('search', searchInput.value.trim());
         if (statusSelect.value !== '') params.set('status', statusSelect.value);
+        if (jobPostingSelect.value !== '') params.set('job_posting_id', jobPostingSelect.value);
 
         // Keep the browser URL/back-button and a page refresh in sync with the current filter.
         const newUrl = params.toString() ? (indexUrl + '?' + params.toString()) : indexUrl;
@@ -81,6 +93,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Keep "Download All CVs" scoped to whatever is currently filtered.
         downloadAllBtn.dataset.search = searchInput.value.trim();
         downloadAllBtn.dataset.status = statusSelect.value;
+        downloadAllBtn.dataset.jobPostingId = jobPostingSelect.value;
 
         if (activeRequest) activeRequest.abort();
         activeRequest = new AbortController();
@@ -118,51 +131,26 @@ document.addEventListener('DOMContentLoaded', function () {
         runFilter();
     });
 
+    jobPostingSelect.addEventListener('change', function () {
+        clearTimeout(debounceTimer);
+        runFilter();
+    });
+
     const btn = downloadAllBtn;
     if (!btn) return;
 
-    btn.addEventListener('click', function () {
+    // A ZIP is just a normal file download — navigate straight to the endpoint with the
+    // current filter as query params, no fetch()/blob buffering needed.
+    btn.addEventListener('click', function (event) {
+        event.preventDefault();
+
         const params = new URLSearchParams();
         if (btn.dataset.search) params.set('search', btn.dataset.search);
         if (btn.dataset.status) params.set('status', btn.dataset.status);
+        if (btn.dataset.jobPostingId) params.set('job_posting_id', btn.dataset.jobPostingId);
 
-        const originalHtml = btn.innerHTML;
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Preparing…';
-
-        fetch(btn.dataset.endpoint + '?' + params.toString(), {
-            headers: { 'Accept': 'application/json' },
-        })
-            .then(function (res) { return res.json(); })
-            .then(function (data) {
-                const applications = data.applications || [];
-                if (applications.length === 0) {
-                    alert('No applications with a CV match the current filter.');
-                    return;
-                }
-
-                // Trigger one download at a time via a hidden iframe, spaced out slightly
-                // so the browser doesn't treat the burst as a popup/spam and drop some of them.
-                applications.forEach(function (application, index) {
-                    setTimeout(function () {
-                        const iframe = document.createElement('iframe');
-                        iframe.style.display = 'none';
-                        iframe.src = application.download_url;
-                        document.body.appendChild(iframe);
-                        setTimeout(function () { iframe.remove(); }, 10000);
-                    }, index * 600);
-                });
-
-                setTimeout(function () {
-                    btn.disabled = false;
-                    btn.innerHTML = originalHtml;
-                }, applications.length * 600 + 500);
-            })
-            .catch(function () {
-                alert('Could not fetch the CV list. Please try again.');
-                btn.disabled = false;
-                btn.innerHTML = originalHtml;
-            });
+        const query = params.toString();
+        window.location.href = btn.dataset.endpoint + (query ? '?' + query : '');
     });
 });
 </script>
