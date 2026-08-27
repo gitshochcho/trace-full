@@ -76,7 +76,7 @@
     .contact-form-card {
         background: #ffffff;
         border-radius: 16px;
-        padding: 40px;
+        padding: 26px;
         box-shadow: 0 20px 50px rgba(0,0,0,0.1);
         margin-top: -170px;
         position: relative;
@@ -87,8 +87,8 @@
     .contact-form-header {
         background: var(--dark-navy);
         border-radius: 16px 16px 0 0;
-        padding: 26px 30px 8px;
-        margin: -40px -40px 10px;
+        padding: 18px 26px 8px;
+        margin: -26px -26px 8px;
         color: #ffffff;
     }
     .form-label-top {
@@ -96,43 +96,47 @@
         font-weight: 700;
         color: #4DC0C4;
         letter-spacing: 1px;
-        margin-bottom: 10px;
+        margin-bottom: 6px;
     }
     .form-title {
-        font-size: 20px;
+        font-size: 18px;
         font-weight: 800;
         color: #ffffff;
-        margin-bottom: 5px;
+        margin-bottom: 3px;
     }
     .form-subtitle {
-        font-size: 13px;
+        font-size: 12px;
         color: rgba(255,255,255,0.8);
-        margin-bottom: 20px;
+        margin-bottom: 12px;
     }
     .contact-form label {
-        font-size: 13px;
+        font-size: 12px;
         font-weight: 700;
         color: var(--dark-navy);
-        margin-bottom: 8px;
+        margin-bottom: 5px;
         display: block;
     }
     .contact-form label .req { color: var(--trace-orange); }
     .contact-form .form-control, .contact-form .form-select {
         background-color: #f8fafc;
         border: 1px solid #e2e8f0;
-        padding: 12px 15px;
-        font-size: 14px;
+        padding: 8px 12px;
+        font-size: 13px;
         border-radius: 8px;
     }
+    .contact-form textarea.form-control {
+        min-height: 70px;
+    }
+    .contact-form .mb-3 { margin-bottom: 0.75rem !important; }
     .btn-send {
         background-color: var(--trace-orange);
         color: white;
         width: 100%;
-        padding: 14px;
+        padding: 11px;
         border-radius: 8px;
         font-weight: 700;
         border: none;
-        margin-top: 20px;
+        margin-top: 8px;
         transition: 0.3s;
     }
     .btn-send:hover { background-color: #d14d1b; }
@@ -140,7 +144,7 @@
         font-size: 11px;
         color: #94a3b8;
         text-align: center;
-        margin-top: 15px;
+        margin-top: 10px;
     }
     .form-privacy a {
         color: var(--dark-navy);
@@ -471,7 +475,7 @@
 
                         <div class="mb-3">
                             <label>Message <span class="req">*</span></label>
-                            <textarea name="message" class="form-control" rows="4" placeholder="Tell us about your project or challenge..." required></textarea>
+                            <textarea name="message" class="form-control" rows="3" placeholder="Tell us about your project or challenge..." required></textarea>
                         </div>
 
                         <button type="submit" class="btn-send">
