@@ -105,6 +105,13 @@
                                         @error('footer_description')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
 
+                                    <div class="col-md-6">
+                                        <label class="form-label">Google Analytics ID</label>
+                                        <input type="text" name="google_analytics_id" value="{{ old('google_analytics_id', $setting->google_analytics_id ?? '') }}" class="form-control @error('google_analytics_id') is-invalid @enderror" placeholder="G-XXXXXXXXXX">
+                                        @error('google_analytics_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                        <small class="text-muted"><i class="fas fa-info-circle"></i> Leave blank to disable tracking</small>
+                                    </div>
+
                                     <div class="col-12">
                                         <div class="d-flex justify-content-between align-items-center mb-2">
                                             <label class="form-label mb-0">Social Links</label>
