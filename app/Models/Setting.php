@@ -41,6 +41,7 @@ class Setting extends Model implements HasMedia
         'default_og_locale',
         'default_robots',
         'default_twitter_site',
+        'google_analytics_id',
     ];
 
     protected $casts = [
