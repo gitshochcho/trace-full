@@ -39,6 +39,7 @@ class SettingsController extends Controller
             'footer_contact_email' => ['nullable', 'email', 'max:255'],
             'footer_contact_location' => ['nullable', 'string'],
             'footer_description' => ['nullable', 'string'],
+            'google_analytics_id' => ['nullable', 'string', 'max:255'],
         ]);
 
         $setting = Setting::with('media')->first() ?? new Setting();
@@ -91,6 +92,7 @@ class SettingsController extends Controller
                 'footer_contact_email' => $validated['footer_contact_email'] ?? null,
                 'footer_contact_location' => $validated['footer_contact_location'] ?? null,
                 'footer_description' => $validated['footer_description'] ?? null,
+                'google_analytics_id' => $validated['google_analytics_id'] ?? null,
             ]);
             $setting->save();
         });
