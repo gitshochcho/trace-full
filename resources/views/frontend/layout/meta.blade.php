@@ -1,31 +1,42 @@
 @php
     use Illuminate\Support\Str;
+    use Illuminate\Support\Facades\Route;
 
-    // Fallback chain: page/entity override (passed in via $seo*) → global Setting defaults → hardcoded last resort.
-    $seoTitle = trim($seoTitle ?? '') ?: ($siteSettings?->default_meta_title ?: 'TRACE Consulting');
-    $seoDescription = trim(strip_tags($seoDescription ?? '')) ?: ($siteSettings?->default_meta_description ?: 'TRACE Consulting is a strategic advisory firm specializing in international trade, economic policy, and regulatory reform.');
+    // Pages that don't build their own SEO array via HomeController::buildPageSeo() (e.g. a
+    // brand new page that only just got a Page Settings row) still get it applied here,
+    // automatically, keyed off the current route name — no controller change required.
+    if (! isset($pageSetting) && Route::currentRouteName()) {
+        $pageSetting = pageSetting(Route::currentRouteName());
+    }
+    if (! isset($customMetas) && Route::currentRouteName()) {
+        $customMetas = customMetasFor(Route::currentRouteName());
+    }
+
+    // Fallback chain: page/entity override (passed in via $seo*) → Page Settings → global Setting defaults → hardcoded last resort.
+    $seoTitle = trim($seoTitle ?? '') ?: ($pageSetting?->meta_title ?: null) ?: ($siteSettings?->default_meta_title ?: 'TRACE Consulting');
+    $seoDescription = trim(strip_tags($seoDescription ?? '')) ?: ($pageSetting?->meta_description ?: null) ?: ($siteSettings?->default_meta_description ?: 'TRACE Consulting is a strategic advisory firm specializing in international trade, economic policy, and regulatory reform.');
     $seoDescription = Str::limit($seoDescription, 160, '');
-    $seoImage = $seoImage ?? asset('assets/img/og-tag-image.jpeg');
+    $seoImage = $seoImage ?? ($pageSetting?->ogImageUrl() ?: asset('assets/img/og-tag-image.jpeg'));
     $seoUrl = $seoUrl ?? url()->current();
-    $seoCanonical = $seoCanonical ?? $seoUrl;
-    $seoType = $seoType ?? 'website';
+    $seoCanonical = $seoCanonical ?? ($pageSetting?->canonical_url ?: $seoUrl);
+    $seoType = $seoType ?? ($pageSetting?->og_type ?: 'website');
     $seoSiteName = $siteSettings?->default_og_site_name ?: 'TRACE Consulting';
-    $seoLocale = $seoLocale ?? ($siteSettings?->default_og_locale ?: 'en_US');
-    $seoRobots = $seoRobots ?? ($siteSettings?->default_robots ?: 'index,follow');
-    $seoAuthor = $seoAuthor ?? null;
-    $seoImageAlt = $seoImageAlt ?? $seoTitle;
+    $seoLocale = $seoLocale ?? ($pageSetting?->og_locale ?: ($siteSettings?->default_og_locale ?: 'en_US'));
+    $seoRobots = $seoRobots ?? ($pageSetting?->robots ?: ($siteSettings?->default_robots ?: 'index,follow'));
+    $seoAuthor = $seoAuthor ?? ($pageSetting?->author ?: null);
+    $seoImageAlt = $seoImageAlt ?? ($pageSetting?->og_image_alt ?: $seoTitle);
 
     // Open Graph title/description default to the main SEO title/description when not explicitly overridden.
-    $ogTitle = trim($ogTitle ?? '') ?: $seoTitle;
-    $ogDescription = trim($ogDescription ?? '') ?: $seoDescription;
+    $ogTitle = trim($ogTitle ?? '') ?: ($pageSetting?->og_title ?: $seoTitle);
+    $ogDescription = trim($ogDescription ?? '') ?: ($pageSetting?->og_description ?: $seoDescription);
 
     // Twitter Card defaults to the OG values when not explicitly overridden.
-    $twitterCard = $twitterCard ?? 'summary_large_image';
-    $twitterTitle = trim($twitterTitle ?? '') ?: $ogTitle;
-    $twitterDescription = trim($twitterDescription ?? '') ?: $ogDescription;
-    $twitterImage = $twitterImage ?? $seoImage;
-    $twitterSite = $twitterSite ?? ($siteSettings?->default_twitter_site ?: null);
-    $twitterCreator = $twitterCreator ?? null;
+    $twitterCard = $twitterCard ?? ($pageSetting?->twitter_card ?: 'summary_large_image');
+    $twitterTitle = trim($twitterTitle ?? '') ?: ($pageSetting?->twitter_title ?: $ogTitle);
+    $twitterDescription = trim($twitterDescription ?? '') ?: ($pageSetting?->twitter_description ?: $ogDescription);
+    $twitterImage = $twitterImage ?? ($pageSetting?->twitterImageUrl() ?: $seoImage);
+    $twitterSite = $twitterSite ?? ($pageSetting?->twitter_site ?: ($siteSettings?->default_twitter_site ?: null));
+    $twitterCreator = $twitterCreator ?? ($pageSetting?->twitter_creator ?: null);
 
     // Custom admin-added <meta> tags (dynamic key/value system), if the calling view passed any.
     // Reserved keys are already rendered by this template above — skip any custom meta that
