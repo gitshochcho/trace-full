@@ -8,7 +8,6 @@ use App\Models\PageSetting;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\Rule;
 
 class PageSettingController extends Controller
@@ -18,38 +17,6 @@ class PageSettingController extends Controller
         $pageSettings = PageSetting::with(['media', 'pageMetas'])->orderBy('page_name')->get();
 
         return view('admin.page-settings.index', compact('pageSettings'));
-    }
-
-    public function create()
-    {
-        return view('admin.page-settings.create');
-    }
-
-    public function store(Request $request): RedirectResponse
-    {
-        $validated = $request->validate([
-            'page_slug' => [
-                'required', 'string', 'max:100', 'regex:/^[a-zA-Z][a-zA-Z0-9_.]*$/',
-                Rule::unique('page_settings', 'page_slug'),
-                function ($attribute, $value, $fail) {
-                    if (! Route::has($value)) {
-                        $fail("No route named \"{$value}\" exists yet. Add the page's route first, then register its SEO settings here.");
-                    }
-                },
-            ],
-            'page_name' => ['required', 'string', 'max:255'],
-        ], [
-            'page_slug.regex' => 'Page Route Name must start with a letter and contain only letters, numbers, dots and underscores (this is the Laravel route name, e.g. "about" or "latestUpdates").',
-        ]);
-
-        $pageSetting = PageSetting::create($validated);
-
-        return redirect()
-            ->route('admin.pageSettings.edit', $pageSetting)
-            ->with([
-                'message' => 'Page added — now set its SEO details below',
-                'alert-type' => 'success',
-            ]);
     }
 
     public function edit(PageSetting $pageSetting)

@@ -29,11 +29,8 @@
                     @endif
 
                     <div class="card card-outline card-primary">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <h3 class="card-title mb-0">SEO / Meta Settings per Page</h3>
-                            <a href="{{ route('admin.pageSettings.create') }}" class="btn btn-sm btn-primary">
-                                <i class="bi bi-plus-lg"></i> Add Page
-                            </a>
+                        <div class="card-header">
+                            <h3 class="card-title">SEO / Meta Settings per Page</h3>
                         </div>
                         <div class="card-body">
                             <p class="text-muted">
@@ -52,7 +49,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @forelse ($pageSettings as $pageSetting)
+                                        @foreach ($pageSettings as $pageSetting)
                                             <tr>
                                                 <td>{{ $pageSetting->page_name }}</td>
                                                 <td>{{ $pageSetting->meta_title ?: '—' }}</td>
@@ -70,13 +67,7 @@
                                                     </a>
                                                 </td>
                                             </tr>
-                                        @empty
-                                            <tr>
-                                                <td colspan="5" class="text-center text-muted py-4">
-                                                    No pages registered yet. Click "Add Page" above to register one.
-                                                </td>
-                                            </tr>
-                                        @endforelse
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>

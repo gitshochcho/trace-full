@@ -65,8 +65,6 @@ Route::prefix('admin')->group(function () {
 
         Route::controller(PageSettingController::class)->group(function () {
             Route::get('page-settings', 'index')->name('admin.pageSettings.index');
-            Route::get('page-settings/create', 'create')->name('admin.pageSettings.create');
-            Route::post('page-settings', 'store')->name('admin.pageSettings.store');
             Route::get('page-settings/{pageSetting}/edit', 'edit')->name('admin.pageSettings.edit');
             Route::put('page-settings/{pageSetting}', 'update')->name('admin.pageSettings.update');
             Route::post('page-settings/{pageSetting}/custom-meta', 'storeCustomMeta')->name('admin.pageSettings.customMeta.store');
