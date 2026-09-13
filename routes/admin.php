@@ -24,10 +24,11 @@ use Illuminate\Support\Facades\Route;
 
 
 
-Route::prefix('admin')->group(function () {
+// Admin login flow lives under a non-obvious path instead of /admin/login.
+Route::prefix('auth/dashboard-login')->group(function () {
 
      Route::controller(AdminController::class)->group(function () {
-                Route::get('login', 'adminLogin')->name('adminLogin');
+                Route::get('/', 'adminLogin')->name('adminLogin');
                 Route::get('load/forgetpass', 'loadForgetMyPass')->name('loadForgetMyPass');
                 Route::post('find/user', 'findUser')->name('findUser');
                 Route::post('validate/login', 'adminValidateLogin')->name('adminValidateLogin');
@@ -40,6 +41,10 @@ Route::prefix('admin')->group(function () {
         //     Route::get('cheak/status/{survey:uuid}', 'cheakStatus');
          });
          Route::match(['get', 'post'], 'load/otp', [AdminController::class, 'otpLoad'])->name('otpLoad');
+
+});
+
+Route::prefix('admin')->group(function () {
 
     Route::middleware(['auth:admin'])->group(function () {
 

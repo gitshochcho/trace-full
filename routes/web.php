@@ -33,8 +33,11 @@ Route::post('/job/apply/{id}', [App\Http\Controllers\HomeController::class, 'app
 Route::get('/contact', [App\Http\Controllers\HomeController::class, 'contact'])->name('contact');
 Route::post('/contact', [ContactMessageController::class, 'store'])->name('contact.store');
 Route::post('/career/cv-submit', [\App\Http\Controllers\CvSubmissionController::class, 'store'])->name('cv.submit');
-// Route::get('login', [App\Http\Controllers\HomeController::class, 'login'])->name('login');
-Route::get('login', [App\Http\Controllers\Admin\AdminController::class, 'adminLogin'])->name('login');
+// Customer login page is switched off for now; keep the 'login' route name alive
+// (other pages/redirects reference it) but just bounce visitors to the homepage.
+Route::get('login', function () {
+    return redirect()->route('home');
+})->name('login');
 Route::post('validate/login', [App\Http\Controllers\HomeController::class, 'validateLogin'])->name('loginCheck');
 Route::get('/register', [App\Http\Controllers\HomeController::class, 'registration'])->name('registration');
 Route::post('store/register', [App\Http\Controllers\HomeController::class, 'storRegistration'])->name('storRegistration');
