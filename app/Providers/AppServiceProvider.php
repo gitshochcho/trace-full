@@ -8,6 +8,7 @@ use App\Models\Project;
 use App\Models\Service;
 use App\Models\Setting;
 use App\Models\Team;
+use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
@@ -31,6 +32,15 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
          Paginator::useBootstrapFive();
+
+        // Unauthenticated visitors to the admin area (auth:admin) must land on the
+        // admin login page; everyone else falls back to the regular customer login.
+        Authenticate::redirectUsing(function ($request) {
+            return $request->is('admin', 'admin/*')
+                ? route('adminLogin')
+                : route('login');
+        });
+
         View::share('siteSettings', $this->loadSiteSettings());
         // Make `setting` available in all views (used by admin sidebar)
         View::share('setting', $this->loadSiteSettings());
