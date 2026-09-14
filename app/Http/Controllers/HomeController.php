@@ -251,6 +251,9 @@ class HomeController extends Controller
                 'solutions'   => fn($q) => $q->orderBy('sort_order'),
                 'heroPillars' => fn($q) => $q->orderBy('sort_order'),
                 'media',
+                'projects.media',
+                'insights' => fn($q) => $q->where('active', true)->orderBy('sort_order'),
+                'teamMembers.media',
             ])
             ->findOrFail($id);
 
@@ -259,6 +262,10 @@ class HomeController extends Controller
             ->orderBy('sort_order')
             ->get(['id', 'service_name', 'section']);
 
+        $relatedProjects = $service->projects;
+        $relatedInsights = $service->insights;
+        $subjectMatterExperts = $service->teamMembers;
+
         $seo = $this->applyEntitySeo('service', $service->id, [
             'seoTitle' => $service->service_name . ' | TRACE Consulting',
             'seoDescription' => \Illuminate\Support\Str::limit(strip_tags($service->description ?? ''), 155) ?: 'Learn more about ' . $service->service_name . ' from TRACE Consulting.',
@@ -266,7 +273,7 @@ class HomeController extends Controller
             'seoUrl' => route('serviceDetails', $service->id),
         ]);
 
-        return view('frontend.pages.service-details', array_merge(compact('service', 'otherServices'), $seo));
+        return view('frontend.pages.service-details', array_merge(compact('service', 'otherServices', 'relatedProjects', 'relatedInsights', 'subjectMatterExperts'), $seo));
     }
 
     public function projects(Request $request)
@@ -312,7 +319,15 @@ class HomeController extends Controller
             ->latest('id')
             ->firstOrFail();
 
-        $project->load(['services', 'locations', 'phaseDetails', 'outcomes', 'media']);
+        $project->load([
+            'services', 'locations', 'phaseDetails', 'outcomes', 'media',
+            'teams.media',
+            'insights' => fn($q) => $q->where('active', true)->orderBy('sort_order'),
+        ]);
+
+        $relatedInsights = $project->insights;
+        $subjectMatterExperts = $project->teams;
+        $serviceAreas = $project->services;
 
         $relatedProjects = Project::query()
             ->with(['services', 'media'])
@@ -329,7 +344,7 @@ class HomeController extends Controller
             'seoUrl' => route('projectdetails', $project),
         ]);
 
-        return view('frontend.pages.projectdetails', array_merge(compact('project', 'relatedProjects'), $seo));
+        return view('frontend.pages.projectdetails', array_merge(compact('project', 'relatedProjects', 'relatedInsights', 'subjectMatterExperts', 'serviceAreas'), $seo));
     }
 
     // public function insights(Request $request)
@@ -613,7 +628,12 @@ class HomeController extends Controller
 
     $relatedArticles = $currentTypeCategory === 'meeting'
         ? collect()
-        : Insight::with(['media', 'insightType', 'articles' => fn($q) => $q->orderBy('sort_order')->limit(1)])
+        // Note: no ->limit() on the 'articles' eager load — Laravel turns a per-relation
+        // limit into a ROW_NUMBER()-over-PARTITION query, which this MariaDB version
+        // errors on ("Mixing of GROUP columns..."). The view only needs the first article
+        // anyway (via ->articles->first()), so loading them all (a handful per insight)
+        // ordered correctly and picking the first in PHP sidesteps the bad SQL entirely.
+        : Insight::with(['media', 'insightType', 'articles' => fn($q) => $q->orderBy('sort_order')])
             ->where('active', true)
             ->whereHas('insightType', fn($q) => $q->whereIn('type_category', ['Read', 'read']))
             ->when($article->insight_id, fn($q) => $q->where('id', '!=', $article->insight_id))
@@ -631,6 +651,12 @@ class HomeController extends Controller
     }
 
    $relatedInsights = Insight::where('active', true)->take(3)->get();
+
+        // Cross-linked "Related" sections sourced from the parent Insight's admin-curated relations.
+        $article->insight?->loadMissing(['projects.media', 'services']);
+        $articleRelatedProjects = $article->insight?->projects ?? collect();
+        $articleSubjectMatterExperts = $article->insight?->experts() ?? collect();
+        $articleServiceAreas = $article->insight?->services ?? collect();
 
         $articleTitleForSeo = $article->insight?->heading ?: ($article->title ?: 'Insight Article');
         $articleAuthorName = $article->author?->fullName();
@@ -655,7 +681,7 @@ class HomeController extends Controller
             : array_merge($seoDefaults, ['customMetas' => collect()]);
 
         return view('frontend.pages.article-details', array_merge(
-            compact('article', 'relatedArticles', 'dynamicSections', 'relatedInsights', 'sections'),
+            compact('article', 'relatedArticles', 'dynamicSections', 'relatedInsights', 'sections', 'articleRelatedProjects', 'articleSubjectMatterExperts', 'articleServiceAreas'),
             $seo
         ));
     }
@@ -876,7 +902,11 @@ class HomeController extends Controller
             ->latest('id')
             ->firstOrFail();
 
-        $team->load(['experties.media', 'socialMedia.media', 'projects', 'media']);
+        $team->load(['experties.media', 'socialMedia.media', 'projects.media', 'services', 'media']);
+
+        $relatedProjects = $team->projects;
+        $relatedInsights = $team->relatedInsights();
+        $serviceAreas = $team->services;
 
         $otherTeamMembers = Team::query()
             ->with(['media'])
@@ -895,7 +925,7 @@ class HomeController extends Controller
             'seoUrl' => route('teamdetails', $team),
         ]);
 
-        return view('frontend.pages.teamdetails', array_merge(compact('team', 'otherTeamMembers', 'allTeamMembersCount'), $seo));
+        return view('frontend.pages.teamdetails', array_merge(compact('team', 'otherTeamMembers', 'allTeamMembersCount', 'relatedProjects', 'relatedInsights', 'serviceAreas'), $seo));
     }
 
     /**

@@ -91,6 +91,11 @@ class Project extends Model implements HasMedia
         return $this->belongsToMany(Team::class, 'team_project_table');
     }
 
+    public function insights()
+    {
+        return $this->belongsToMany(Insight::class, 'insight_project');
+    }
+
     public function heroImageUrl(): ?string
     {
         $url = $this->getFirstMediaUrl('hero', 'avif') ?: $this->getFirstMediaUrl('hero', 'webp') ?: $this->getFirstMediaUrl('hero');

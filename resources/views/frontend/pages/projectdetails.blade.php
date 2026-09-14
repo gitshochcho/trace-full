@@ -561,6 +561,15 @@
 </aside>
 </section>
 
+@include('frontend.partials.related-section', ['title' => 'Related Insights', 'items' => $relatedInsights, 'type' => 'insight', 'containerClass' => 'custom-container-content'])
+@include('frontend.partials.related-section', ['title' => 'Subject Matter Experts', 'items' => $subjectMatterExperts, 'type' => 'team', 'containerClass' => 'custom-container-content'])
+@include('frontend.partials.related-section', ['title' => 'Service Areas', 'items' => $serviceAreas, 'type' => 'service', 'containerClass' => 'custom-container-content'])
+
+{{--
+    "More Projects" section hidden per request (2026-09-13) — kept here, commented out,
+    in case it's wanted back later. $relatedProjects (latest-3, unrelated to the admin-linked
+    "Related" sections above) still comes from HomeController@projectdetails.
+
 <section class="more-projects-section py-4">
     <div class="custom-container-content">
         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -605,6 +614,7 @@
         </div>
     </div>
 </section>
+--}}
 
 @if($showWorkWithUs)
 @include('frontend.layout.cta')

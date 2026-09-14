@@ -83,7 +83,26 @@ class Insight extends Model implements HasMedia
     public function insightType()
     {
         return $this->belongsTo(InsightType::class, 'type', 'id');
-    }   
+    }
+
+    public function projects()
+    {
+        return $this->belongsToMany(Project::class, 'insight_project');
+    }
+
+    public function services()
+    {
+        return $this->belongsToMany(Service::class, 'insight_service');
+    }
+
+    /**
+     * Team members tagged as this insight's subject matter experts.
+     * author_team_ids is a JSON array column, not a pivot, so this is a plain query.
+     */
+    public function experts()
+    {
+        return Team::whereIn('id', $this->author_team_ids ?? [])->get();
+    }
 
     public function imageUrl(): ?string
     {
