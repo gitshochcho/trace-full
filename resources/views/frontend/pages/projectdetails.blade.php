@@ -451,7 +451,7 @@
                 @endif
 
                  <div class="mb-4">
-                    <h2 class="section-title-accent">{{ $phaseHeading ?: 'Project Phases' }}</h2>
+                    <h2 class="section-title-accent">{{ $phaseHeading ?: 'Project Details' }}</h2>
                    
                     @if(!empty($phaseDescription))
                         <p class="mt-3">{!! $phaseDescription !!}</p>
