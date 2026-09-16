@@ -92,6 +92,16 @@ class Service extends Model implements HasMedia
         return $this->belongsToMany(Project::class, 'project_services');
     }
 
+    public function insights()
+    {
+        return $this->belongsToMany(Insight::class, 'insight_service');
+    }
+
+    public function teamMembers()
+    {
+        return $this->belongsToMany(Team::class, 'service_team');
+    }
+
     public function iconUrl(): ?string
     {
         $url = $this->getFirstMediaUrl('icon', 'avif') ?: $this->getFirstMediaUrl('icon', 'webp') ?: $this->getFirstMediaUrl('icon');

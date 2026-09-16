@@ -70,6 +70,24 @@ class Team extends Model implements HasMedia
         return $this->hasMany(InsightArticle::class, 'author_team_id')->orderBy('sort_order');
     }
 
+    public function services()
+    {
+        return $this->belongsToMany(Service::class, 'service_team');
+    }
+
+    /**
+     * Insights this team member is tagged as a subject matter expert on.
+     * author_team_ids is a JSON array column, not a pivot, so this is a plain query.
+     */
+    public function relatedInsights()
+    {
+        return Insight::whereJsonContains('author_team_ids', $this->id)
+            ->where('active', true)
+            ->orderBy('sort_order')
+            ->latest('id')
+            ->get();
+    }
+
     public function imageUrl(): ?string
     {
         $url = $this->getFirstMediaUrl('image', 'avif') ?: $this->getFirstMediaUrl('image', 'webp') ?: $this->getFirstMediaUrl('image');

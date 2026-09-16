@@ -564,4 +564,8 @@
         </div>
     </div>
 </section>
+
+@include('frontend.partials.related-section', ['title' => 'Related Projects', 'items' => $relatedProjects, 'type' => 'project', 'containerClass' => 'container custom-container-1080'])
+@include('frontend.partials.related-section', ['title' => 'Related Insights', 'items' => $relatedInsights, 'type' => 'insight', 'containerClass' => 'container custom-container-1080'])
+@include('frontend.partials.related-section', ['title' => 'Service Areas', 'items' => $serviceAreas, 'type' => 'service', 'containerClass' => 'container custom-container-1080'])
 @endsection

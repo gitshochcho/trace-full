@@ -13,6 +13,8 @@ if (empty($articleRows)) $articleRows = [['id' => null, 'title' => '', 'descript
 
 $savedAuthorTeamIds  = old('author_team_ids', $insight->author_team_ids ?? []);
 $savedOutsideAuthors = old('outside_authors', $insight->outside_authors ?? []);
+$savedRelatedProjectIds = old('related_projects', $insight->projects->pluck('id')->all());
+$savedRelatedServiceIds = old('related_services', $insight->services->pluck('id')->all());
 $currentInsightImageUrl = $insight->articleImageUrl() ?: $insight->imageUrl();
 $currentInsightImageRemoveField = $insight->articleImageUrl() ? 'remove_article_image' : 'remove_image';
 @endphp
@@ -122,6 +124,54 @@ $currentInsightImageRemoveField = $insight->articleImageUrl() ? 'remove_article_
                                         </div>
                                         @endforeach
                                     </div>
+                                </div>
+                            </div>
+
+                            {{-- Related Projects (drives the "Related Projects" section on the Service/Team pages and this insight's own detail page) --}}
+                            <div class="col-12" id="relatedProjectsFieldWrap">
+                                <label class="form-label">Related Projects</label>
+                                <p class="text-muted small mb-2">Click to select, click again to remove</p>
+                                <div class="author-chip-grid d-flex flex-wrap gap-2">
+                                    @foreach($projects as $relProject)
+                                        @php $isSelected = in_array($relProject->id, $savedRelatedProjectIds); @endphp
+                                        <div class="author-chip d-flex align-items-center gap-2 rounded-pill px-3 py-2 border {{ $isSelected ? 'chip-selected' : '' }}"
+                                             style="cursor:pointer; user-select:none; transition: all 0.15s;">
+                                            <div class="author-avatar rounded-circle d-flex align-items-center justify-content-center"
+                                                 style="width:28px;height:28px;font-size:11px;font-weight:500;background:#dee2e6;color:#495057;flex-shrink:0;">
+                                                {{ strtoupper(substr($relProject->project_title, 0, 2)) }}
+                                            </div>
+                                            <span style="font-size:14px;">{{ $relProject->project_title }}</span>
+                                            <div class="chip-check" style="display:none;width:16px;height:16px;border-radius:50%;background:#185FA5;align-items:center;justify-content:center;flex-shrink:0;">
+                                                <svg width="10" height="10" viewBox="0 0 10 10"><polyline points="1.5,5 4,8 8.5,2" stroke="#E6F1FB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            </div>
+                                            <input type="checkbox" name="related_projects[]" value="{{ $relProject->id }}"
+                                                   {{ $isSelected ? 'checked' : '' }} style="display:none;">
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+
+                            {{-- Service Areas (drives the "Service Areas" section on the Project/Team pages and this insight's own detail page) --}}
+                            <div class="col-12" id="relatedServicesFieldWrap">
+                                <label class="form-label">Service Areas</label>
+                                <p class="text-muted small mb-2">Click to select, click again to remove</p>
+                                <div class="author-chip-grid d-flex flex-wrap gap-2">
+                                    @foreach($services as $relService)
+                                        @php $isSelected = in_array($relService->id, $savedRelatedServiceIds); @endphp
+                                        <div class="author-chip d-flex align-items-center gap-2 rounded-pill px-3 py-2 border {{ $isSelected ? 'chip-selected' : '' }}"
+                                             style="cursor:pointer; user-select:none; transition: all 0.15s;">
+                                            <div class="author-avatar rounded-circle d-flex align-items-center justify-content-center"
+                                                 style="width:28px;height:28px;font-size:11px;font-weight:500;background:#dee2e6;color:#495057;flex-shrink:0;">
+                                                {{ strtoupper(substr($relService->service_name, 0, 2)) }}
+                                            </div>
+                                            <span style="font-size:14px;">{{ $relService->service_name }}</span>
+                                            <div class="chip-check" style="display:none;width:16px;height:16px;border-radius:50%;background:#185FA5;align-items:center;justify-content:center;flex-shrink:0;">
+                                                <svg width="10" height="10" viewBox="0 0 10 10"><polyline points="1.5,5 4,8 8.5,2" stroke="#E6F1FB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            </div>
+                                            <input type="checkbox" name="related_services[]" value="{{ $relService->id }}"
+                                                   {{ $isSelected ? 'checked' : '' }} style="display:none;">
+                                        </div>
+                                    @endforeach
                                 </div>
                             </div>
 
