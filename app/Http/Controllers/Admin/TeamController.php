@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Insight;
 use App\Models\Project;
+use App\Models\Service;
 use App\Models\Team;
 use App\Models\TeamExpertise;
 use App\Models\TeamSocialMedia;
@@ -31,8 +33,10 @@ class TeamController extends Controller
         $projects = Project::query()
             ->orderBy('project_title')
             ->get(['id', 'project_title']);
+        $insights = Insight::orderBy('sort_order')->latest('id')->get(['id', 'heading']);
+        $services = Service::orderBy('service_name')->get(['id', 'service_name']);
 
-        return view('admin.team.create', compact('projects'));
+        return view('admin.team.create', compact('projects', 'insights', 'services'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -55,6 +59,8 @@ class TeamController extends Controller
         }
 
         $this->syncProjects($team, $validated['projects'] ?? []);
+        $this->syncServices($team, $validated['services'] ?? []);
+        $this->syncRelatedInsights($team, $validated['related_insights'] ?? []);
         $this->syncExperties($team, $validated['experties'] ?? [], $request->file('experties_icons', []));
         $this->syncSocialMedia($team, $validated['social_media'] ?? [], $request->file('social_media_icons', []));
 
@@ -68,7 +74,7 @@ class TeamController extends Controller
 
     public function edit(Team $team)
     {
-        $team->load(['experties.media', 'socialMedia.media', 'projects', 'media']);
+        $team->load(['experties.media', 'socialMedia.media', 'projects', 'services', 'media']);
 
         $teams = Team::with(['projects'])
             ->orderBy('sort_order')
@@ -78,8 +84,11 @@ class TeamController extends Controller
         $projects = Project::query()
             ->orderBy('project_title')
             ->get(['id', 'project_title']);
+        $insights = Insight::orderBy('sort_order')->latest('id')->get(['id', 'heading']);
+        $services = Service::orderBy('service_name')->get(['id', 'service_name']);
+        $selectedRelatedInsights = Insight::whereJsonContains('author_team_ids', $team->id)->pluck('id')->all();
 
-        return view('admin.team.edit', compact('team', 'teams', 'projects'));
+        return view('admin.team.edit', compact('team', 'teams', 'projects', 'insights', 'services', 'selectedRelatedInsights'));
     }
 
     public function update(Request $request, Team $team): RedirectResponse
@@ -111,6 +120,8 @@ class TeamController extends Controller
         }
 
         $this->syncProjects($team, $validated['projects'] ?? []);
+        $this->syncServices($team, $validated['services'] ?? []);
+        $this->syncRelatedInsights($team, $validated['related_insights'] ?? []);
         $this->syncExperties($team, $validated['experties'] ?? [], $request->file('experties_icons', []));
         $this->syncSocialMedia($team, $validated['social_media'] ?? [], $request->file('social_media_icons', []));
 
@@ -127,6 +138,7 @@ class TeamController extends Controller
         $team->load(['experties.media', 'socialMedia.media', 'media']);
 
         $team->projects()->detach();
+        $team->services()->detach();
         $team->experties->each(function (TeamExpertise $expertise) {
             $expertise->clearMediaCollection('icon');
             $expertise->delete();
@@ -164,6 +176,10 @@ class TeamController extends Controller
             'remove_image' => ['nullable', 'boolean'],
             'projects' => ['nullable', 'array'],
             'projects.*' => ['nullable', 'integer', 'exists:projects,id'],
+            'services' => ['nullable', 'array'],
+            'services.*' => ['nullable', 'integer', 'exists:services,id'],
+            'related_insights' => ['nullable', 'array'],
+            'related_insights.*' => ['nullable', 'integer', 'exists:insights,id'],
             'experties' => ['nullable', 'array'],
             'experties.*.id' => ['nullable', 'integer'],
             'experties.*.heading' => ['nullable', 'string', 'max:255'],
@@ -184,6 +200,39 @@ class TeamController extends Controller
     private function syncProjects(Team $team, array $projectIds): void
     {
         $team->projects()->sync(array_filter(array_map('intval', $projectIds)));
+    }
+
+    private function syncServices(Team $team, array $serviceIds): void
+    {
+        $team->services()->sync(array_filter(array_map('intval', $serviceIds)));
+    }
+
+    /**
+     * "Related Insights" isn't a pivot — an Insight's experts live in its own
+     * author_team_ids JSON column — so syncing it from the Team side means
+     * adding/removing this team's id from every affected Insight's array.
+     */
+    private function syncRelatedInsights(Team $team, array $insightIds): void
+    {
+        $insightIds = array_filter(array_map('intval', $insightIds));
+
+        Insight::query()->chunkById(50, function ($insights) use ($team, $insightIds) {
+            foreach ($insights as $insight) {
+                $authorIds = $insight->author_team_ids ?? [];
+                $has = in_array($team->id, $authorIds);
+                $shouldHave = in_array($insight->id, $insightIds);
+
+                if ($shouldHave === $has) {
+                    continue;
+                }
+
+                $insight->author_team_ids = $shouldHave
+                    ? array_values(array_unique([...$authorIds, $team->id]))
+                    : array_values(array_diff($authorIds, [$team->id]));
+
+                $insight->save();
+            }
+        });
     }
 
     private function syncExperties(Team $team, array $rows, array $icons): void

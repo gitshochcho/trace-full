@@ -18,6 +18,12 @@
     padding: 0 24px;
 }
 
+.related-section-article {
+    max-width: 1072px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
 .back-link {
     display: inline-flex;
     align-items: center;
@@ -967,6 +973,10 @@
     </aside>
 
 </div>{{-- end article-layout --}}
+
+@include('frontend.partials.related-section', ['title' => 'Related Projects', 'items' => $articleRelatedProjects, 'type' => 'project', 'containerClass' => 'related-section-article'])
+@include('frontend.partials.related-section', ['title' => 'Subject Matter Experts', 'items' => $articleSubjectMatterExperts, 'type' => 'team', 'containerClass' => 'related-section-article'])
+@include('frontend.partials.related-section', ['title' => 'Service Areas', 'items' => $articleServiceAreas, 'type' => 'service', 'containerClass' => 'related-section-article'])
 
 <!-- {{-- ==============================
      CTA

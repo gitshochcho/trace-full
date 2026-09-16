@@ -3,6 +3,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Insight;
 use App\Models\InsightArticle;
+use App\Models\Project;
+use App\Models\Service;
 use App\Models\Team;
 use App\Models\InsightType;
 use Illuminate\Http\RedirectResponse;
@@ -31,8 +33,10 @@ class InsightController extends Controller
     {
         $insightTypes = InsightType::orderBy('type')->where('status', true)->get(['id', 'type', 'type_category', 'status']);
         $teams = Team::query()->orderBy('first_name')->orderBy('last_name')->get(['id', 'first_name', 'last_name']);
+        $projects = Project::query()->orderBy('project_title')->get(['id', 'project_title']);
+        $services = Service::query()->orderBy('service_name')->get(['id', 'service_name']);
         $nextSortOrder = (Insight::max('sort_order') ?? -1) + 1;
-        return view('admin.insight.create', compact('insightTypes', 'teams', 'nextSortOrder'));
+        return view('admin.insight.create', compact('insightTypes', 'teams', 'projects', 'services', 'nextSortOrder'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -57,17 +61,21 @@ class InsightController extends Controller
 
         $this->handleInsightMedia($insight, $request);
         $this->syncArticles($insight, $validated['articles'] ?? [], [], [], $authorTeamIds[0] ?? null);
+        $this->syncProjects($insight, $validated['related_projects'] ?? []);
+        $this->syncServices($insight, $validated['related_services'] ?? []);
 
         return redirect()->route('admin.insights.index')->with(['message' => 'Insight created successfully', 'alert-type' => 'success']);
     }
 
     public function edit(Insight $insight)
     {
-        $insight->load(['articles.author', 'media']);
+        $insight->load(['articles.author', 'media', 'projects', 'services']);
         $insights = Insight::with(['articles', 'insightType'])->orderBy('sort_order')->latest('id')->get();
         $insightTypes = InsightType::orderBy('type')->where('status', true)->get(['id', 'type', 'type_category', 'status']);
         $teams = Team::query()->orderBy('first_name')->orderBy('last_name')->get(['id', 'first_name', 'last_name']);
-        return view('admin.insight.edit', compact('insight', 'insights', 'teams', 'insightTypes'));
+        $projects = Project::query()->orderBy('project_title')->get(['id', 'project_title']);
+        $services = Service::query()->orderBy('service_name')->get(['id', 'service_name']);
+        return view('admin.insight.edit', compact('insight', 'insights', 'teams', 'insightTypes', 'projects', 'services'));
     }
 
     public function update(Request $request, Insight $insight): RedirectResponse
@@ -95,6 +103,8 @@ class InsightController extends Controller
 
         $this->handleInsightMedia($insight, $request, true);
         $this->syncArticles($insight, $validated['articles'] ?? [], [], [], $authorTeamIds[0] ?? null);
+        $this->syncProjects($insight, $validated['related_projects'] ?? []);
+        $this->syncServices($insight, $validated['related_services'] ?? []);
 
         return redirect()->route('admin.insights.index')->with(['message' => 'Insight updated successfully', 'alert-type' => 'success']);
     }
@@ -102,6 +112,8 @@ class InsightController extends Controller
     public function destroy(Insight $insight): RedirectResponse
     {
         $insight->load(['articles.media', 'media']);
+        $insight->projects()->detach();
+        $insight->services()->detach();
         $insight->articles->each(fn($a) => $a->clearMediaCollection('icon') || $a->clearMediaCollection('attachment') || $a->delete());
         $insight->clearMediaCollection('image')->clearMediaCollection('attachment')->clearMediaCollection('article_image')->clearMediaCollection('social_icons')->delete();
         return redirect()->route('admin.insights.index')->with(['message' => 'Insight deleted successfully', 'alert-type' => 'success']);
@@ -114,6 +126,10 @@ class InsightController extends Controller
             'type' => ['required', 'integer', 'exists:insight_types,id'],
             'author_team_ids' => ['nullable', 'array'],
             'author_team_ids.*' => ['nullable', 'integer', 'exists:teams,id'],
+            'related_projects' => ['nullable', 'array'],
+            'related_projects.*' => ['nullable', 'integer', 'exists:projects,id'],
+            'related_services' => ['nullable', 'array'],
+            'related_services.*' => ['nullable', 'integer', 'exists:services,id'],
             'outside_authors' => ['nullable', 'array'],
             'outside_authors.*.name' => ['nullable', 'string', 'max:255'],
             'outside_authors.*.description' => ['nullable', 'string'],
@@ -224,6 +240,16 @@ class InsightController extends Controller
             $article->delete();
         });
 }
+
+    private function syncProjects(Insight $insight, array $projectIds): void
+    {
+        $insight->projects()->sync(array_filter(array_map('intval', $projectIds)));
+    }
+
+    private function syncServices(Insight $insight, array $serviceIds): void
+    {
+        $insight->services()->sync(array_filter(array_map('intval', $serviceIds)));
+    }
 
     private function isReadType(int $typeId): bool
     {

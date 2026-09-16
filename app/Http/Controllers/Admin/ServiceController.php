@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Insight;
+use App\Models\Project;
 use App\Models\Service;
 use App\Models\ServiceDetail;
 use App\Models\ServiceHeroPillar;
 use App\Models\ServiceProductSolution;
+use App\Models\Team;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
@@ -21,7 +24,11 @@ class ServiceController extends Controller
 
     public function create()
     {
-        return view('admin.service.create');
+        $teams = Team::query()->orderBy('first_name')->orderBy('last_name')->get(['id', 'first_name', 'last_name']);
+        $projects = Project::query()->orderBy('project_title')->get(['id', 'project_title']);
+        $insights = Insight::orderBy('sort_order')->latest('id')->get(['id', 'heading']);
+
+        return view('admin.service.create', compact('teams', 'projects', 'insights'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -59,6 +66,12 @@ class ServiceController extends Controller
             'hero_pillars.*.remove_icon'=> ['nullable', 'boolean'],
             'hero_pillars_icons'        => ['nullable', 'array'],
             'hero_pillars_icons.*'      => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:2048'],
+            'team_members'               => ['nullable', 'array'],
+            'team_members.*'             => ['nullable', 'integer', 'exists:teams,id'],
+            'related_projects'           => ['nullable', 'array'],
+            'related_projects.*'         => ['nullable', 'integer', 'exists:projects,id'],
+            'related_insights'           => ['nullable', 'array'],
+            'related_insights.*'         => ['nullable', 'integer', 'exists:insights,id'],
         ]);
 
         $service = Service::create([
@@ -84,6 +97,9 @@ class ServiceController extends Controller
         $this->syncDetails($service, $request->input('details', []), $request->file('details_icons', []));
         $this->syncSolutions($service, $request->input('solutions', []), $request->file('solutions_icons', []));
         $this->syncHeroPillars($service, $request->input('hero_pillars', []), $request->file('hero_pillars_icons', []));
+        $this->syncTeamMembers($service, $validated['team_members'] ?? []);
+        $this->syncProjects($service, $validated['related_projects'] ?? []);
+        $this->syncInsights($service, $validated['related_insights'] ?? []);
 
         return redirect()
             ->route('admin.services.index')
@@ -95,10 +111,13 @@ class ServiceController extends Controller
 
     public function edit(Service $service)
     {
-        $service->load(['media', 'details.media', 'solutions.media', 'heroPillars.media']);
+        $service->load(['media', 'details.media', 'solutions.media', 'heroPillars.media', 'teamMembers', 'projects', 'insights']);
         $services = Service::with(['media'])->latest()->get();
+        $teams = Team::query()->orderBy('first_name')->orderBy('last_name')->get(['id', 'first_name', 'last_name']);
+        $projects = Project::query()->orderBy('project_title')->get(['id', 'project_title']);
+        $insights = Insight::orderBy('sort_order')->latest('id')->get(['id', 'heading']);
 
-        return view('admin.service.edit', compact('service', 'services'));
+        return view('admin.service.edit', compact('service', 'services', 'teams', 'projects', 'insights'));
     }
 
     public function update(Request $request, Service $service): RedirectResponse
@@ -135,6 +154,12 @@ class ServiceController extends Controller
             'hero_pillars.*.description'=> ['nullable', 'string'],
             'hero_pillars_icons'        => ['nullable', 'array'],
             'hero_pillars_icons.*'      => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:2048'],
+            'team_members'               => ['nullable', 'array'],
+            'team_members.*'             => ['nullable', 'integer', 'exists:teams,id'],
+            'related_projects'           => ['nullable', 'array'],
+            'related_projects.*'         => ['nullable', 'integer', 'exists:projects,id'],
+            'related_insights'           => ['nullable', 'array'],
+            'related_insights.*'         => ['nullable', 'integer', 'exists:insights,id'],
         ]);
 
         $service->fill([
@@ -169,6 +194,9 @@ class ServiceController extends Controller
         $this->syncDetails($service, $request->input('details', []), $request->file('details_icons', []));
         $this->syncSolutions($service, $request->input('solutions', []), $request->file('solutions_icons', []));
         $this->syncHeroPillars($service, $request->input('hero_pillars', []), $request->file('hero_pillars_icons', []));
+        $this->syncTeamMembers($service, $validated['team_members'] ?? []);
+        $this->syncProjects($service, $validated['related_projects'] ?? []);
+        $this->syncInsights($service, $validated['related_insights'] ?? []);
 
         return redirect()
             ->route('admin.services.index')
@@ -188,6 +216,10 @@ class ServiceController extends Controller
     public function destroy(Service $service): RedirectResponse
     {
         $service->load(['details', 'solutions', 'heroPillars']);
+
+        $service->teamMembers()->detach();
+        $service->insights()->detach();
+        $service->projects()->detach();
 
         foreach ($service->details as $detail) {
             $detail->clearMediaCollection('icon');
@@ -214,6 +246,21 @@ class ServiceController extends Controller
                 'message' => 'Service deleted successfully',
                 'alert-type' => 'success',
             ]);
+    }
+
+    private function syncTeamMembers(Service $service, array $teamIds): void
+    {
+        $service->teamMembers()->sync(array_filter(array_map('intval', $teamIds)));
+    }
+
+    private function syncProjects(Service $service, array $projectIds): void
+    {
+        $service->projects()->sync(array_filter(array_map('intval', $projectIds)));
+    }
+
+    private function syncInsights(Service $service, array $insightIds): void
+    {
+        $service->insights()->sync(array_filter(array_map('intval', $insightIds)));
     }
 
     private function syncHeroPillars(Service $service, array $pillars, array $pillarIcons = []): void

@@ -500,6 +500,10 @@
 </section>
 @endif
 
+@include('frontend.partials.related-section', ['title' => 'Related Projects', 'items' => $relatedProjects, 'type' => 'project', 'containerClass' => 'container custom-container'])
+@include('frontend.partials.related-section', ['title' => 'Related Insights', 'items' => $relatedInsights, 'type' => 'insight', 'containerClass' => 'container custom-container'])
+@include('frontend.partials.related-section', ['title' => 'Subject Matter Experts', 'items' => $subjectMatterExperts, 'type' => 'team', 'containerClass' => 'container custom-container'])
+
 @include('frontend.layout.cta')
 
 @endsection

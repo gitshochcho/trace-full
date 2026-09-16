@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Insight;
 use App\Models\Project;
 use App\Models\ProjectLocation;
 use App\Models\ProjectOutcome;
 use App\Models\ProjectPhaseDetail;
 use App\Models\Service;
+use App\Models\Team;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -36,8 +38,10 @@ class ProjectController extends Controller
         $services = Service::withCount('projects')
             ->orderBy('service_name')
             ->get();
+        $insights = Insight::orderBy('sort_order')->latest('id')->get(['id', 'heading']);
+        $teams = Team::orderBy('first_name')->orderBy('last_name')->get(['id', 'first_name', 'last_name']);
 
-        return view('admin.project.create', compact('services'));
+        return view('admin.project.create', compact('services', 'insights', 'teams'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -53,6 +57,10 @@ class ProjectController extends Controller
             'sort_order' => ['nullable', 'integer', 'min:0'],
             'services' => ['nullable', 'array'],
             'services.*' => ['nullable', 'integer', 'exists:services,id'],
+            'related_insights' => ['nullable', 'array'],
+            'related_insights.*' => ['nullable', 'integer', 'exists:insights,id'],
+            'experts' => ['nullable', 'array'],
+            'experts.*' => ['nullable', 'integer', 'exists:teams,id'],
             'hero_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:4096'],
             'images' => ['nullable', 'array', 'max:3'],
             'images.*' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:4096'],
@@ -83,6 +91,8 @@ class ProjectController extends Controller
         ]);
 
         $this->syncServices($project, $validated['services'] ?? []);
+        $this->syncInsights($project, $validated['related_insights'] ?? []);
+        $this->syncExperts($project, $validated['experts'] ?? []);
         $this->syncHeroImage($project, $request->file('hero_image'));
         $this->syncImages($project, $request->file('images', []));
         $this->syncLocations($project, $validated['locations'] ?? []);
@@ -99,11 +109,13 @@ class ProjectController extends Controller
 
     public function edit(Project $project)
     {
-        $project->load(['services', 'locations', 'phaseDetails', 'outcomes', 'media']);
+        $project->load(['services', 'locations', 'phaseDetails', 'outcomes', 'media', 'insights', 'teams']);
         $projects = Project::with(['services', 'media'])->orderBy('sort_order')->latest('id')->get();
         $services = Service::withCount('projects')->orderBy('service_name')->get();
+        $insights = Insight::orderBy('sort_order')->latest('id')->get(['id', 'heading']);
+        $teams = Team::orderBy('first_name')->orderBy('last_name')->get(['id', 'first_name', 'last_name']);
 
-        return view('admin.project.edit', compact('project', 'projects', 'services'));
+        return view('admin.project.edit', compact('project', 'projects', 'services', 'insights', 'teams'));
     }
 
     public function update(Request $request, Project $project): RedirectResponse
@@ -119,6 +131,10 @@ class ProjectController extends Controller
             'sort_order' => ['nullable', 'integer', 'min:0'],
             'services' => ['nullable', 'array'],
             'services.*' => ['nullable', 'integer', 'exists:services,id'],
+            'related_insights' => ['nullable', 'array'],
+            'related_insights.*' => ['nullable', 'integer', 'exists:insights,id'],
+            'experts' => ['nullable', 'array'],
+            'experts.*' => ['nullable', 'integer', 'exists:teams,id'],
             'hero_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:4096'],
             'images' => ['nullable', 'array', 'max:3'],
             'images.*' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:4096'],
@@ -150,6 +166,8 @@ class ProjectController extends Controller
         $project->save();
 
         $this->syncServices($project, $validated['services'] ?? []);
+        $this->syncInsights($project, $validated['related_insights'] ?? []);
+        $this->syncExperts($project, $validated['experts'] ?? []);
         $this->syncHeroImage($project, $request->file('hero_image'));
         $this->syncImages($project, $request->file('images', []));
         $this->syncLocations($project, $validated['locations'] ?? []);
@@ -169,6 +187,8 @@ class ProjectController extends Controller
         $project->load(['locations', 'phaseDetails', 'outcomes', 'media']);
 
         $project->services()->detach();
+        $project->insights()->detach();
+        $project->teams()->detach();
 
         $project->locations()->delete();
 
@@ -215,6 +235,16 @@ class ProjectController extends Controller
     private function syncServices(Project $project, array $serviceIds): void
     {
         $project->services()->sync(array_filter(array_map('intval', $serviceIds)));
+    }
+
+    private function syncInsights(Project $project, array $insightIds): void
+    {
+        $project->insights()->sync(array_filter(array_map('intval', $insightIds)));
+    }
+
+    private function syncExperts(Project $project, array $teamIds): void
+    {
+        $project->teams()->sync(array_filter(array_map('intval', $teamIds)));
     }
 
     private function syncHeroImage(Project $project, $file): void

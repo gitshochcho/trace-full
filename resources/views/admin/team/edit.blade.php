@@ -141,6 +141,45 @@
                                         </div>
                                         <small class="text-muted mt-1 d-block">Click to select / deselect projects</small>
                                     </div>
+
+                                    <div class="col-12">
+                                        <label class="form-label">Related Insights</label>
+                                        <div id="relatedInsightsTagContainer" class="d-flex flex-wrap gap-2 p-2 border rounded" style="min-height:48px;">
+                                            @foreach($insights as $insightItem)
+                                                <span class="related-insight-tag badge rounded-pill px-3 py-2 {{ in_array($insightItem->id, $selectedRelatedInsights) ? 'bg-primary' : 'bg-secondary' }}"
+                                                      data-id="{{ $insightItem->id }}"
+                                                      style="cursor:pointer;font-size:13px;user-select:none;">
+                                                    {{ $insightItem->heading }}
+                                                </span>
+                                            @endforeach
+                                        </div>
+                                        <div id="relatedInsightsHiddenInputs">
+                                            @foreach($selectedRelatedInsights as $iid)
+                                                <input type="hidden" name="related_insights[]" value="{{ $iid }}">
+                                            @endforeach
+                                        </div>
+                                        <small class="text-muted mt-1 d-block">Click to select / deselect insights</small>
+                                    </div>
+
+                                    @php $selectedServices = old('services', $team->services->pluck('id')->all()); @endphp
+                                    <div class="col-12">
+                                        <label class="form-label">Service Areas</label>
+                                        <div id="serviceAreasTagContainer" class="d-flex flex-wrap gap-2 p-2 border rounded" style="min-height:48px;">
+                                            @foreach($services as $serviceItem)
+                                                <span class="service-area-tag badge rounded-pill px-3 py-2 {{ in_array($serviceItem->id, $selectedServices) ? 'bg-primary' : 'bg-secondary' }}"
+                                                      data-id="{{ $serviceItem->id }}"
+                                                      style="cursor:pointer;font-size:13px;user-select:none;">
+                                                    {{ $serviceItem->service_name }}
+                                                </span>
+                                            @endforeach
+                                        </div>
+                                        <div id="serviceAreasHiddenInputs">
+                                            @foreach($selectedServices as $sid)
+                                                <input type="hidden" name="services[]" value="{{ $sid }}">
+                                            @endforeach
+                                        </div>
+                                        <small class="text-muted mt-1 d-block">Click to select / deselect service areas</small>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -350,6 +389,36 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 });
             }
+
+            function wireTagPicker(containerId, hiddenInputsId, tagClass, inputName) {
+                const container = document.getElementById(containerId);
+                const hidden = document.getElementById(hiddenInputsId);
+                if (!container || !hidden) return;
+
+                container.addEventListener('click', function (event) {
+                    const tag = event.target.closest('.' + tagClass);
+                    if (!tag) return;
+
+                    const id = tag.dataset.id;
+                    const isActive = tag.classList.contains('bg-primary');
+
+                    if (isActive) {
+                        tag.classList.replace('bg-primary', 'bg-secondary');
+                        const input = hidden.querySelector('input[value="' + id + '"]');
+                        if (input) input.remove();
+                    } else {
+                        tag.classList.replace('bg-secondary', 'bg-primary');
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = inputName;
+                        input.value = id;
+                        hidden.appendChild(input);
+                    }
+                });
+            }
+
+            wireTagPicker('relatedInsightsTagContainer', 'relatedInsightsHiddenInputs', 'related-insight-tag', 'related_insights[]');
+            wireTagPicker('serviceAreasTagContainer', 'serviceAreasHiddenInputs', 'service-area-tag', 'services[]');
         }
 
         const expertiseWrapper = document.getElementById('expertiesWrapper');
