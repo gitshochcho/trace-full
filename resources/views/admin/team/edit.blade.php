@@ -368,6 +368,21 @@ document.addEventListener('DOMContentLoaded', function () {
             const projectsHiddenInputs = document.getElementById('projectsHiddenInputs');
 
             if (projectsTagContainer && projectsHiddenInputs) {
+                // Shows a small "1, 2, 3..." badge on each selected tag, in submission
+                // order, so the admin can see the order they're setting without guessing.
+                function renumberProjects() {
+                    projectsTagContainer.querySelectorAll('.tag-order-badge').forEach(function (b) { b.remove(); });
+                    Array.from(projectsHiddenInputs.querySelectorAll('input')).forEach(function (input, index) {
+                        const tag = projectsTagContainer.querySelector('.project-tag[data-id="' + input.value + '"]');
+                        if (!tag) return;
+                        const badge = document.createElement('span');
+                        badge.className = 'tag-order-badge';
+                        badge.textContent = index + 1;
+                        badge.style.cssText = 'display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,.9);color:#212529;font-size:10px;font-weight:700;margin-right:5px;';
+                        tag.prepend(badge);
+                    });
+                }
+
                 projectsTagContainer.addEventListener('click', function (event) {
                     const tag = event.target.closest('.project-tag');
                     if (!tag) return;
@@ -387,13 +402,32 @@ document.addEventListener('DOMContentLoaded', function () {
                         input.value = id;
                         projectsHiddenInputs.appendChild(input);
                     }
+
+                    renumberProjects();
                 });
+
+                renumberProjects();
             }
 
             function wireTagPicker(containerId, hiddenInputsId, tagClass, inputName) {
                 const container = document.getElementById(containerId);
                 const hidden = document.getElementById(hiddenInputsId);
                 if (!container || !hidden) return;
+
+                // Shows a small "1, 2, 3..." badge on each selected tag, in submission
+                // order, so the admin can see the order they're setting without guessing.
+                function renumber() {
+                    container.querySelectorAll('.tag-order-badge').forEach(function (b) { b.remove(); });
+                    Array.from(hidden.querySelectorAll('input')).forEach(function (input, index) {
+                        const tag = container.querySelector('.' + tagClass + '[data-id="' + input.value + '"]');
+                        if (!tag) return;
+                        const badge = document.createElement('span');
+                        badge.className = 'tag-order-badge';
+                        badge.textContent = index + 1;
+                        badge.style.cssText = 'display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,.9);color:#212529;font-size:10px;font-weight:700;margin-right:5px;';
+                        tag.prepend(badge);
+                    });
+                }
 
                 container.addEventListener('click', function (event) {
                     const tag = event.target.closest('.' + tagClass);
@@ -414,7 +448,11 @@ document.addEventListener('DOMContentLoaded', function () {
                         input.value = id;
                         hidden.appendChild(input);
                     }
+
+                    renumber();
                 });
+
+                renumber();
             }
 
             wireTagPicker('relatedInsightsTagContainer', 'relatedInsightsHiddenInputs', 'related-insight-tag', 'related_insights[]');

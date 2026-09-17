@@ -252,7 +252,11 @@ class HomeController extends Controller
                 'heroPillars' => fn($q) => $q->orderBy('sort_order'),
                 'media',
                 'projects.media',
-                'insights' => fn($q) => $q->where('active', true)->orderBy('sort_order'),
+                // No extra ->orderBy('sort_order') here — both `insights` and its pivot
+                // table have a sort_order column, and the relation already orders by the
+                // pivot's (admin selection order); an unqualified orderBy would be an
+                // ambiguous-column SQL error.
+                'insights' => fn($q) => $q->where('active', true),
                 'teamMembers.media',
             ])
             ->findOrFail($id);
@@ -322,7 +326,8 @@ class HomeController extends Controller
         $project->load([
             'services', 'locations', 'phaseDetails', 'outcomes', 'media',
             'teams.media',
-            'insights' => fn($q) => $q->where('active', true)->orderBy('sort_order'),
+            // No extra ->orderBy('sort_order') — see note in serviceDetails() above.
+            'insights' => fn($q) => $q->where('active', true),
         ]);
 
         $relatedInsights = $project->insights;

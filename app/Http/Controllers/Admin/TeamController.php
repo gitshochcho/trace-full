@@ -199,12 +199,27 @@ class TeamController extends Controller
 
     private function syncProjects(Team $team, array $projectIds): void
     {
-        $team->projects()->sync(array_filter(array_map('intval', $projectIds)));
+        $team->projects()->sync($this->orderedSyncPayload($projectIds));
     }
 
     private function syncServices(Team $team, array $serviceIds): void
     {
-        $team->services()->sync(array_filter(array_map('intval', $serviceIds)));
+        $team->services()->sync($this->orderedSyncPayload($serviceIds));
+    }
+
+    /**
+     * Builds a sync() payload keyed by id => ['sort_order' => position], so the "Related"
+     * pickers preserve the order the admin selected items in (first picked, first shown).
+     */
+    private function orderedSyncPayload(array $ids): array
+    {
+        $payload = [];
+
+        foreach (array_values(array_unique(array_filter(array_map('intval', $ids)))) as $index => $id) {
+            $payload[$id] = ['sort_order' => $index];
+        }
+
+        return $payload;
     }
 
     /**

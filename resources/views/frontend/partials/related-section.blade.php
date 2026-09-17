@@ -18,7 +18,8 @@
 --}}
 @php
     $items = $items ?? collect();
-    $visibleCount = 3;
+    // Matches --grid-cols per type below, so the first row is always full before "Show more".
+    $visibleCount = $type === 'team' ? 4 : 3;
     $typeIcon = [
         'project' => 'fa-briefcase',
         'insight' => 'fa-lightbulb',
@@ -36,10 +37,10 @@
                 /* Per-type identity: a distinct accent colour (icon, underline, card edge)
                    so stacked sections on the same page read as separate zones — background
                    stays plain white throughout. */
-                .related-section--project { --accent: #0F6FB0; --accent-tint: rgba(15,111,176,.12); }
-                .related-section--insight { --accent: #F47735; --accent-tint: rgba(244,119,53,.12); }
-                .related-section--team    { --accent: #01888C; --accent-tint: rgba(1,136,140,.12); }
-                .related-section--service { --accent: #6D5BD0; --accent-tint: rgba(109,91,208,.12); }
+                .related-section--project { --accent: #0F6FB0; --accent-tint: rgba(15,111,176,.12); --media-ratio: 16 / 9; --media-position: center; }
+                .related-section--insight { --accent: #F47735; --accent-tint: rgba(244,119,53,.12); --media-ratio: 16 / 9; --media-position: center; }
+                .related-section--team    { --accent: #01888C; --accent-tint: rgba(1,136,140,.12); --media-ratio: 4 / 5; --media-position: center 20%; --grid-cols: 4; }
+                .related-section--service { --accent: #6D5BD0; --accent-tint: rgba(109,91,208,.12); --media-ratio: 16 / 9; --media-position: center; }
 
                 .related-section .related-section-heading { display: flex; align-items: center; gap: .75rem; margin-bottom: 1.5rem; }
                 .related-section .related-section-icon { flex-shrink: 0; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--accent-tint); color: var(--accent); font-size: 1rem; }
@@ -47,7 +48,7 @@
                 .related-section h2.related-section-title::after { content: ''; position: absolute; left: 0; bottom: 0; height: 3px; width: 48px; border-radius: 2px; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform .7s cubic-bezier(.16,1,.3,1) .2s; }
                 .related-section .related-section-heading.is-visible h2.related-section-title::after { transform: scaleX(1); }
 
-                .related-section .related-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; }
+                .related-section .related-grid { display: grid; grid-template-columns: repeat(var(--grid-cols, 3), minmax(0, 1fr)); gap: 1.5rem; }
                 @media (max-width: 780px) { .related-section .related-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
                 @media (max-width: 560px) { .related-section .related-grid { grid-template-columns: minmax(0, 1fr); } }
 
@@ -57,8 +58,8 @@
                 .related-section .related-grid.is-expanded .related-card.related-card-extra { display: flex; }
 
                 .related-section .related-card { display: flex; flex-direction: column; border: 1px solid #e5e7eb; border-top: 3px solid var(--accent); border-radius: 14px; overflow: hidden; background: #fff; text-decoration: none; color: inherit; height: 100%; transition: transform .3s cubic-bezier(.22,1,.36,1), box-shadow .3s ease, border-color .3s ease; will-change: transform; }
-                .related-section .related-card-media { width: 100%; aspect-ratio: 4 / 3; background-color: #f1f5f9; background-position: center; background-size: cover; background-repeat: no-repeat; transition: transform .5s ease; }
-                .related-section .related-card-avatar { width: 100%; aspect-ratio: 4 / 3; background: var(--accent-tint); display: flex; align-items: center; justify-content: center; font-size: 1.9rem; font-weight: 600; color: var(--accent); transition: transform .5s ease; }
+                .related-section .related-card-media { width: 100%; aspect-ratio: var(--media-ratio, 4 / 3); background-color: #f1f5f9; background-position: var(--media-position, center); background-size: cover; background-repeat: no-repeat; transition: transform .5s ease; }
+                .related-section .related-card-avatar { width: 100%; aspect-ratio: var(--media-ratio, 4 / 3); background: var(--accent-tint); display: flex; align-items: center; justify-content: center; font-size: 1.9rem; font-weight: 600; color: var(--accent); transition: transform .5s ease; }
 
                 /* Hover: the image (fills its box edge-to-edge, no side gaps) zooms in gently. */
                 .related-section .related-card:hover .related-card-media,
