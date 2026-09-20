@@ -58,12 +58,19 @@
                 .related-section .related-grid.is-expanded .related-card.related-card-extra { display: flex; }
 
                 .related-section .related-card { display: flex; flex-direction: column; border: 1px solid #e5e7eb; border-top: 3px solid var(--accent); border-radius: 14px; overflow: hidden; background: #fff; text-decoration: none; color: inherit; height: 100%; transition: transform .3s cubic-bezier(.22,1,.36,1), box-shadow .3s ease, border-color .3s ease; will-change: transform; }
-                .related-section .related-card-media { width: 100%; aspect-ratio: var(--media-ratio, 4 / 3); background-color: #f1f5f9; background-position: var(--media-position, center); background-size: cover; background-repeat: no-repeat; transition: transform .5s ease; }
-                .related-section .related-card-avatar { width: 100%; aspect-ratio: var(--media-ratio, 4 / 3); background: var(--accent-tint); display: flex; align-items: center; justify-content: center; font-size: 1.9rem; font-weight: 600; color: var(--accent); transition: transform .5s ease; }
+                .related-section .related-card-media { position: relative; width: 100%; aspect-ratio: var(--media-ratio, 4 / 3); background-color: #f1f5f9; background-position: var(--media-position, center); background-size: cover; background-repeat: no-repeat; transition: transform .5s ease; }
+                .related-section .related-card-avatar { position: relative; width: 100%; aspect-ratio: var(--media-ratio, 4 / 3); background: var(--accent-tint); display: flex; align-items: center; justify-content: center; font-size: 1.9rem; font-weight: 600; color: var(--accent); transition: transform .5s ease; }
 
                 /* Hover: the image (fills its box edge-to-edge, no side gaps) zooms in gently. */
                 .related-section .related-card:hover .related-card-media,
                 .related-section .related-card:hover .related-card-avatar { transform: scale(1.03); }
+
+                /* Play-button overlay marking a related insight as a video, matching the
+                   external-link behaviour (opens the video in a new tab, same as the "Latest
+                   Updates" cards on the home page). */
+                .related-section .related-card-play { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 46px; height: 46px; border-radius: 50%; background: rgba(15, 23, 42, .55); color: #fff; display: flex; align-items: center; justify-content: center; font-size: .95rem; backdrop-filter: blur(2px); transition: background .25s ease, transform .25s ease; }
+                .related-section .related-card-play i { margin-left: 2px; }
+                .related-section .related-card:hover .related-card-play { background: var(--accent); transform: translate(-50%, -50%) scale(1.08); }
                 .related-section .related-card-body { padding: 1.1rem 1.25rem 1.35rem; flex-grow: 1; }
                 .related-section .related-card-title { font-size: 1.1rem; font-weight: 600; margin: 0 0 .35rem; color: #0f172a; line-height: 1.4; }
                 .related-section .related-card-subtitle { font-size: .88rem; color: #64748b; margin: 0; }
@@ -178,6 +185,8 @@
                         $cardSubtitle = '';
                         $imageUrl = null;
                         $initials = '';
+                        $isVideo = false;
+                        $isExternalLink = false;
 
                         switch ($type) {
                             case 'project':
@@ -189,10 +198,22 @@
                                 break;
 
                             case 'insight':
+                                // Video-type insights don't open the article page — they don't
+                                // have a written article, so this card should link straight to
+                                // the video (YouTube/Vimeo/uploaded file), same as the "Latest
+                                // Updates" cards on the home page do for the same content type.
+                                $typeCategory = strtolower(str_replace(' ', '_', $item->insightType?->type_category ?? ''));
+                                $isVideo = in_array($typeCategory, ['watch', 'video', 'video_watch']);
+
                                 $firstArticle = $item->articles->first();
-                                $link = $firstArticle
-                                    ? route('articleDetails', $firstArticle)
-                                    : route('articleDetails', ['insight_id' => $item->id]);
+                                if ($isVideo) {
+                                    $link = $item->videoUrl() ?: route('articleDetails', ['insight_id' => $item->id]);
+                                    $isExternalLink = (bool) $item->videoUrl();
+                                } else {
+                                    $link = $firstArticle
+                                        ? route('articleDetails', $firstArticle)
+                                        : route('articleDetails', ['insight_id' => $item->id]);
+                                }
                                 $cardTitle = $item->heading;
                                 $cardSubtitle = $item->sub_heading ?: ($item->insightType->type ?? '');
                                 $imageUrl = $item->imageUrl() ?: $item->articleImageUrl();
@@ -220,11 +241,21 @@
                     @endphp
                     <a href="{{ $link }}"
                        class="related-card related-reveal{{ $isExtra ? ' related-card-extra' : '' }}"
-                       data-reveal-delay="{{ ($isExtra ? $loop->index - $visibleCount : $loop->index) * 90 }}">
+                       data-reveal-delay="{{ ($isExtra ? $loop->index - $visibleCount : $loop->index) * 90 }}"
+                       @if($isExternalLink) target="_blank" rel="noopener" @endif>
                         @if($imageUrl)
-                            <div class="related-card-media" style="background-image:url('{{ $imageUrl }}');"></div>
+                            <div class="related-card-media" style="background-image:url('{{ $imageUrl }}');">
+                                @if($isVideo)
+                                    <span class="related-card-play"><i class="fas fa-play"></i></span>
+                                @endif
+                            </div>
                         @else
-                            <div class="related-card-avatar">{{ $initials }}</div>
+                            <div class="related-card-avatar">
+                                {{ $initials }}
+                                @if($isVideo)
+                                    <span class="related-card-play"><i class="fas fa-play"></i></span>
+                                @endif
+                            </div>
                         @endif
                         <div class="related-card-body">
                             <p class="related-card-title">{{ $cardTitle }}</p>
