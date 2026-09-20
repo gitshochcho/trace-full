@@ -63,10 +63,11 @@ $articleRows = old('articles', [[
                                 {{-- Author Field Wrap --}}
 <div class="col-12" id="authorFieldWrap">
     <label class="form-label">Author Name</label>
-    <p class="text-muted small mb-2">Click to select, click again to remove</p>
+    <p class="text-muted small mb-2">Click to select, click again to remove — the order you click in is the order they're shown in on the site.</p>
+    @php $savedAuthorTeamIds = old('author_team_ids', []); @endphp
     <div class="author-chip-grid d-flex flex-wrap gap-2" id="authorChipGrid">
         @foreach($teams as $team)
-            @php $isSelected = in_array($team->id, old('author_team_ids', [])); @endphp
+            @php $isSelected = in_array($team->id, $savedAuthorTeamIds); @endphp
             <div class="author-chip d-flex align-items-center gap-2 rounded-pill px-3 py-2 border {{ $isSelected ? 'chip-selected' : '' }}"
                  data-id="{{ $team->id }}"
                  style="cursor:pointer; user-select:none; transition: all 0.15s;">
@@ -78,9 +79,12 @@ $articleRows = old('articles', [[
                 <div class="chip-check" style="width:16px;height:16px;border-radius:50%;background:#185FA5;align-items:center;justify-content:center;flex-shrink:0;">
                     <svg width="10" height="10" viewBox="0 0 10 10"><polyline points="1.5,5 4,8 8.5,2" stroke="#E6F1FB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </div>
-                <input type="checkbox" name="author_team_ids[]" value="{{ $team->id }}"
-                       {{ $isSelected ? 'checked' : '' }} style="display:none;">
             </div>
+        @endforeach
+    </div>
+    <div id="authorHiddenInputs">
+        @foreach($savedAuthorTeamIds as $tid)
+            <input type="hidden" name="author_team_ids[]" value="{{ $tid }}">
         @endforeach
     </div>
 </div>
@@ -124,11 +128,13 @@ $articleRows = old('articles', [[
                                 {{-- Related Projects (drives the "Related Projects" section on the Service/Team pages and this insight's own detail page) --}}
                                 <div class="col-12" id="relatedProjectsFieldWrap">
                                     <label class="form-label">Related Projects</label>
-                                    <p class="text-muted small mb-2">Click to select, click again to remove</p>
-                                    <div class="author-chip-grid d-flex flex-wrap gap-2">
+                                    <p class="text-muted small mb-2">Click to select, click again to remove — the order you click in is the order they're shown in on the site.</p>
+                                    @php $savedRelatedProjectIds = old('related_projects', []); @endphp
+                                    <div class="author-chip-grid d-flex flex-wrap gap-2" id="relatedProjectsChipGrid">
                                         @foreach($projects as $relProject)
-                                            @php $isSelected = in_array($relProject->id, old('related_projects', [])); @endphp
+                                            @php $isSelected = in_array($relProject->id, $savedRelatedProjectIds); @endphp
                                             <div class="author-chip d-flex align-items-center gap-2 rounded-pill px-3 py-2 border {{ $isSelected ? 'chip-selected' : '' }}"
+                                                 data-id="{{ $relProject->id }}"
                                                  style="cursor:pointer; user-select:none; transition: all 0.15s;">
                                                 <div class="author-avatar rounded-circle d-flex align-items-center justify-content-center"
                                                      style="width:28px;height:28px;font-size:11px;font-weight:500;background:#dee2e6;color:#495057;flex-shrink:0;">
@@ -138,9 +144,12 @@ $articleRows = old('articles', [[
                                                 <div class="chip-check" style="display:none;width:16px;height:16px;border-radius:50%;background:#185FA5;align-items:center;justify-content:center;flex-shrink:0;">
                                                     <svg width="10" height="10" viewBox="0 0 10 10"><polyline points="1.5,5 4,8 8.5,2" stroke="#E6F1FB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                 </div>
-                                                <input type="checkbox" name="related_projects[]" value="{{ $relProject->id }}"
-                                                       {{ $isSelected ? 'checked' : '' }} style="display:none;">
                                             </div>
+                                        @endforeach
+                                    </div>
+                                    <div id="relatedProjectsHiddenInputs">
+                                        @foreach($savedRelatedProjectIds as $pid)
+                                            <input type="hidden" name="related_projects[]" value="{{ $pid }}">
                                         @endforeach
                                     </div>
                                 </div>
@@ -148,11 +157,13 @@ $articleRows = old('articles', [[
                                 {{-- Service Areas (drives the "Service Areas" section on the Project/Team pages and this insight's own detail page) --}}
                                 <div class="col-12" id="relatedServicesFieldWrap">
                                     <label class="form-label">Service Areas</label>
-                                    <p class="text-muted small mb-2">Click to select, click again to remove</p>
-                                    <div class="author-chip-grid d-flex flex-wrap gap-2">
+                                    <p class="text-muted small mb-2">Click to select, click again to remove — the order you click in is the order they're shown in on the site.</p>
+                                    @php $savedRelatedServiceIds = old('related_services', []); @endphp
+                                    <div class="author-chip-grid d-flex flex-wrap gap-2" id="relatedServicesChipGrid">
                                         @foreach($services as $relService)
-                                            @php $isSelected = in_array($relService->id, old('related_services', [])); @endphp
+                                            @php $isSelected = in_array($relService->id, $savedRelatedServiceIds); @endphp
                                             <div class="author-chip d-flex align-items-center gap-2 rounded-pill px-3 py-2 border {{ $isSelected ? 'chip-selected' : '' }}"
+                                                 data-id="{{ $relService->id }}"
                                                  style="cursor:pointer; user-select:none; transition: all 0.15s;">
                                                 <div class="author-avatar rounded-circle d-flex align-items-center justify-content-center"
                                                      style="width:28px;height:28px;font-size:11px;font-weight:500;background:#dee2e6;color:#495057;flex-shrink:0;">
@@ -162,9 +173,12 @@ $articleRows = old('articles', [[
                                                 <div class="chip-check" style="display:none;width:16px;height:16px;border-radius:50%;background:#185FA5;align-items:center;justify-content:center;flex-shrink:0;">
                                                     <svg width="10" height="10" viewBox="0 0 10 10"><polyline points="1.5,5 4,8 8.5,2" stroke="#E6F1FB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                 </div>
-                                                <input type="checkbox" name="related_services[]" value="{{ $relService->id }}"
-                                                       {{ $isSelected ? 'checked' : '' }} style="display:none;">
                                             </div>
+                                        @endforeach
+                                    </div>
+                                    <div id="relatedServicesHiddenInputs">
+                                        @foreach($savedRelatedServiceIds as $sid)
+                                            <input type="hidden" name="related_services[]" value="{{ $sid }}">
                                         @endforeach
                                     </div>
                                 </div>
@@ -430,7 +444,7 @@ $articleRows = old('articles', [[
 .author-chip.chip-selected { background: #E6F1FB; border-color: #185FA5; color: #0C447C; }
 .author-chip.chip-selected .author-avatar { background: #185FA5; color: #E6F1FB; }
 .author-chip .chip-check { display: none; }
-.author-chip.chip-selected .chip-check { display: flex; }
+.author-chip.chip-selected .chip-check { display: flex !important; }
 </style>
 
 @endpush
@@ -663,16 +677,57 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // ===== Author Chips =====
-document.querySelectorAll('.author-chip').forEach(chip => {
-    chip.addEventListener('click', (e) => {
-        
-        if (e.target.tagName === 'INPUT') return;
-        const cb = chip.querySelector('input[type=checkbox]');
-        chip.classList.toggle('chip-selected');
-        cb.checked = chip.classList.contains('chip-selected');
-    });
-});
+    // ===== Author / Related Projects / Service Areas chips =====
+    // Each click appends (or removes) a hidden input in that group's own container, in
+    // click order — so the submitted order (and therefore the display order on the site)
+    // is exactly the order the admin clicked chips in, not the list's alphabetical order.
+    function wireChipPicker(gridId, hiddenInputsId, inputName) {
+        const grid = document.getElementById(gridId);
+        const hidden = document.getElementById(hiddenInputsId);
+        if (!grid || !hidden) return;
+
+        // Shows the "1, 2, 3..." submission order inside each selected chip's checkmark
+        // circle, so the admin can see the order they're setting without guessing.
+        function renumber() {
+            Array.from(hidden.querySelectorAll('input')).forEach((input, index) => {
+                const chip = grid.querySelector('.author-chip[data-id="' + input.value + '"]');
+                const check = chip && chip.querySelector('.chip-check');
+                if (check) {
+                    check.textContent = index + 1;
+                    check.style.color = '#fff';
+                    check.style.fontSize = '10px';
+                    check.style.fontWeight = '700';
+                }
+            });
+        }
+
+        grid.addEventListener('click', (e) => {
+            const chip = e.target.closest('.author-chip');
+            if (!chip) return;
+
+            const id = chip.dataset.id;
+            const isSelected = chip.classList.toggle('chip-selected');
+
+            if (isSelected) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = inputName;
+                input.value = id;
+                hidden.appendChild(input);
+            } else {
+                const input = hidden.querySelector('input[value="' + id + '"]');
+                if (input) input.remove();
+            }
+
+            renumber();
+        });
+
+        renumber();
+    }
+
+    wireChipPicker('authorChipGrid', 'authorHiddenInputs', 'author_team_ids[]');
+    wireChipPicker('relatedProjectsChipGrid', 'relatedProjectsHiddenInputs', 'related_projects[]');
+    wireChipPicker('relatedServicesChipGrid', 'relatedServicesHiddenInputs', 'related_services[]');
 
     // ===== Sync CKEditor on submit =====
     document.getElementById('insightForm').addEventListener('submit', function () {

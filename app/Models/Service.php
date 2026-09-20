@@ -89,17 +89,17 @@ class Service extends Model implements HasMedia
 
     public function projects()
     {
-        return $this->belongsToMany(Project::class, 'project_services');
+        return $this->belongsToMany(Project::class, 'project_services')->withPivot('sort_order')->orderByPivot('sort_order');
     }
 
     public function insights()
     {
-        return $this->belongsToMany(Insight::class, 'insight_service');
+        return $this->belongsToMany(Insight::class, 'insight_service')->withPivot('sort_order')->orderByPivot('sort_order');
     }
 
     public function teamMembers()
     {
-        return $this->belongsToMany(Team::class, 'service_team');
+        return $this->belongsToMany(Team::class, 'service_team')->withPivot('sort_order')->orderByPivot('sort_order');
     }
 
     public function iconUrl(): ?string

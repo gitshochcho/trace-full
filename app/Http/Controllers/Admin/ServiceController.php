@@ -250,17 +250,32 @@ class ServiceController extends Controller
 
     private function syncTeamMembers(Service $service, array $teamIds): void
     {
-        $service->teamMembers()->sync(array_filter(array_map('intval', $teamIds)));
+        $service->teamMembers()->sync($this->orderedSyncPayload($teamIds));
     }
 
     private function syncProjects(Service $service, array $projectIds): void
     {
-        $service->projects()->sync(array_filter(array_map('intval', $projectIds)));
+        $service->projects()->sync($this->orderedSyncPayload($projectIds));
     }
 
     private function syncInsights(Service $service, array $insightIds): void
     {
-        $service->insights()->sync(array_filter(array_map('intval', $insightIds)));
+        $service->insights()->sync($this->orderedSyncPayload($insightIds));
+    }
+
+    /**
+     * Builds a sync() payload keyed by id => ['sort_order' => position], so the "Related"
+     * pickers preserve the order the admin selected items in (first picked, first shown).
+     */
+    private function orderedSyncPayload(array $ids): array
+    {
+        $payload = [];
+
+        foreach (array_values(array_unique(array_filter(array_map('intval', $ids)))) as $index => $id) {
+            $payload[$id] = ['sort_order' => $index];
+        }
+
+        return $payload;
     }
 
     private function syncHeroPillars(Service $service, array $pillars, array $pillarIcons = []): void

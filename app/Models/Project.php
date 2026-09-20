@@ -68,7 +68,7 @@ class Project extends Model implements HasMedia
 
     public function services()
     {
-        return $this->belongsToMany(Service::class, 'project_services');
+        return $this->belongsToMany(Service::class, 'project_services')->withPivot('sort_order')->orderByPivot('sort_order');
     }
 
     public function locations()
@@ -88,12 +88,12 @@ class Project extends Model implements HasMedia
 
     public function teams()
     {
-        return $this->belongsToMany(Team::class, 'team_project_table');
+        return $this->belongsToMany(Team::class, 'team_project_table')->withPivot('sort_order')->orderByPivot('sort_order');
     }
 
     public function insights()
     {
-        return $this->belongsToMany(Insight::class, 'insight_project');
+        return $this->belongsToMany(Insight::class, 'insight_project')->withPivot('sort_order')->orderByPivot('sort_order');
     }
 
     public function heroImageUrl(): ?string

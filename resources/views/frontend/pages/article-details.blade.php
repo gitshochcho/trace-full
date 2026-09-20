@@ -843,7 +843,8 @@
     {{-- ===== RIGHT: SIDEBAR ===== --}}
     <aside class="article-sidebar">
 
-        {{-- Table of Contents --}}
+        {{-- Table of Contents — hidden entirely when the admin hasn't added any real sections --}}
+        @if($sections->isNotEmpty())
         <div class="sidebar-card toc-card">
             <h2 class="sidebar-heading">CONTENTS</h2>
             <ul class="toc-list">
@@ -856,6 +857,7 @@
     @endforeach
 </ul>
         </div>
+        @endif
 
         {{-- Download --}}
         @if($downloadUrl && $downloadUrl !== '#')

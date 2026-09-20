@@ -62,7 +62,7 @@ class Team extends Model implements HasMedia
 
     public function projects()
     {
-        return $this->belongsToMany(Project::class, 'team_project_table');
+        return $this->belongsToMany(Project::class, 'team_project_table')->withPivot('sort_order')->orderByPivot('sort_order');
     }
 
     public function insightArticles()
@@ -72,12 +72,13 @@ class Team extends Model implements HasMedia
 
     public function services()
     {
-        return $this->belongsToMany(Service::class, 'service_team');
+        return $this->belongsToMany(Service::class, 'service_team')->withPivot('sort_order')->orderByPivot('sort_order');
     }
 
     /**
      * Insights this team member is tagged as a subject matter expert on.
-     * author_team_ids is a JSON array column, not a pivot, so this is a plain query.
+     * author_team_ids is a JSON array column, not a pivot, so there's no per-relation
+     * sort_order to order by here — falls back to each insight's own sort_order/recency.
      */
     public function relatedInsights()
     {
