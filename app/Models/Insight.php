@@ -87,21 +87,25 @@ class Insight extends Model implements HasMedia
 
     public function projects()
     {
-        return $this->belongsToMany(Project::class, 'insight_project');
+        return $this->belongsToMany(Project::class, 'insight_project')->withPivot('sort_order')->orderByPivot('sort_order');
     }
 
     public function services()
     {
-        return $this->belongsToMany(Service::class, 'insight_service');
+        return $this->belongsToMany(Service::class, 'insight_service')->withPivot('sort_order')->orderByPivot('sort_order');
     }
 
     /**
-     * Team members tagged as this insight's subject matter experts.
-     * author_team_ids is a JSON array column, not a pivot, so this is a plain query.
+     * Team members tagged as this insight's subject matter experts, in the order they
+     * were added (author_team_ids is a JSON array column, not a pivot — whereIn() alone
+     * would silently drop that order, so re-sort the result to match the array).
      */
     public function experts()
     {
-        return Team::whereIn('id', $this->author_team_ids ?? [])->get();
+        $ids = $this->author_team_ids ?? [];
+        $teams = Team::whereIn('id', $ids)->get()->keyBy('id');
+
+        return collect($ids)->map(fn ($id) => $teams->get($id))->filter()->values();
     }
 
     public function imageUrl(): ?string

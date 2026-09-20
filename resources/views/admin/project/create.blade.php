@@ -439,6 +439,21 @@ document.addEventListener('DOMContentLoaded', function () {
         const hidden = document.getElementById(hiddenInputsId);
         if (!container || !hidden) return;
 
+        // Shows a small "1, 2, 3..." badge on each selected tag, in submission order,
+        // so the admin can see the order they're setting without guessing.
+        function renumber() {
+            container.querySelectorAll('.tag-order-badge').forEach(function (b) { b.remove(); });
+            Array.from(hidden.querySelectorAll('input')).forEach(function (inp, index) {
+                const tag = container.querySelector('.' + tagClass + '[data-id="' + inp.value + '"]');
+                if (!tag) return;
+                const badge = document.createElement('span');
+                badge.className = 'tag-order-badge';
+                badge.textContent = index + 1;
+                badge.style.cssText = 'display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,.9);color:#212529;font-size:10px;font-weight:700;margin-right:5px;';
+                tag.prepend(badge);
+            });
+        }
+
         container.addEventListener('click', function (e) {
             const tag = e.target.closest('.' + tagClass);
             if (!tag) return;
@@ -456,7 +471,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 inp.value = id;
                 hidden.appendChild(inp);
             }
+            renumber();
         });
+
+        renumber();
     }
 
     wireTagPicker('servicesTagContainer', 'servicesHiddenInputs', 'service-tag', 'services[]');
