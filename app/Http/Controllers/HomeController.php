@@ -595,7 +595,13 @@ class HomeController extends Controller
         // Support opening directly from an Insight (no article) via ?insight_id=X
         if (!$article && $request->filled('insight_id')) {
             $insight = Insight::with(['insightType', 'media'])->findOrFail($request->integer('insight_id'));
-            $article = new InsightArticle([
+            $article = new InsightArticle();
+            // forceFill(), not the constructor/fill(): 'title' and 'insight_id' aren't in
+            // InsightArticle's $fillable, so mass-assignment would silently drop them here,
+            // leaving $article->insight_id null — which then makes the sections query below
+            // match every OTHER orphaned InsightArticle row in the whole table (any row with
+            // insight_id IS NULL), not just this insight's own sections.
+            $article->forceFill([
                 'title'       => $insight->heading,
                 'description' => $insight->description ?? '',
                 'insight_id'  => $insight->id,
@@ -620,10 +626,19 @@ class HomeController extends Controller
 
         
 
-         $sections = InsightArticle::where('insight_id', $article->insight_id)
-        ->orderBy('sort_order')
-        ->orderBy('id')
-        ->get(['id', 'title', 'description']);
+         // Only real, admin-filled sections should render — a blank/whitespace-only title
+         // or description means the row is an empty draft/test entry, not real content.
+         // Guard against a null insight_id: where('insight_id', null) compiles to an
+         // "IS NULL" match, which would otherwise pull in every orphaned InsightArticle
+         // row in the table instead of none.
+         $sections = $article->insight_id
+            ? InsightArticle::where('insight_id', $article->insight_id)
+                ->orderBy('sort_order')
+                ->orderBy('id')
+                ->get(['id', 'title', 'description'])
+                ->filter(fn ($section) => trim((string) $section->title) !== '' && trim(strip_tags((string) $section->description)) !== '')
+                ->values()
+            : collect();
 
     $currentTypeCategory = strtolower((string) (
         $article->insightType?->type_category

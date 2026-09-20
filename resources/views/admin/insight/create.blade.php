@@ -444,7 +444,7 @@ $articleRows = old('articles', [[
 .author-chip.chip-selected { background: #E6F1FB; border-color: #185FA5; color: #0C447C; }
 .author-chip.chip-selected .author-avatar { background: #185FA5; color: #E6F1FB; }
 .author-chip .chip-check { display: none; }
-.author-chip.chip-selected .chip-check { display: flex; }
+.author-chip.chip-selected .chip-check { display: flex !important; }
 </style>
 
 @endpush
