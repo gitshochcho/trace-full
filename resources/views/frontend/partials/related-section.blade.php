@@ -58,15 +58,39 @@
                 .related-section .related-grid.is-expanded .related-card.related-card-extra { display: flex; }
 
                 .related-section .related-card { display: flex; flex-direction: column; border: 1px solid #e5e7eb; border-top: 3px solid var(--accent); border-radius: 14px; overflow: hidden; background: #fff; text-decoration: none; color: inherit; height: 100%; transition: transform .3s cubic-bezier(.22,1,.36,1), box-shadow .3s ease, border-color .3s ease; will-change: transform; }
-                .related-section .related-card-media { width: 100%; aspect-ratio: var(--media-ratio, 4 / 3); background-color: #f1f5f9; background-position: var(--media-position, center); background-size: cover; background-repeat: no-repeat; transition: transform .5s ease; }
-                .related-section .related-card-avatar { width: 100%; aspect-ratio: var(--media-ratio, 4 / 3); background: var(--accent-tint); display: flex; align-items: center; justify-content: center; font-size: 1.9rem; font-weight: 600; color: var(--accent); transition: transform .5s ease; }
+                .related-section .related-card-media { position: relative; width: 100%; aspect-ratio: var(--media-ratio, 4 / 3); background-color: #f1f5f9; background-position: var(--media-position, center); background-size: cover; background-repeat: no-repeat; transition: transform .5s ease; }
+                .related-section .related-card-avatar { position: relative; width: 100%; aspect-ratio: var(--media-ratio, 4 / 3); background: var(--accent-tint); display: flex; align-items: center; justify-content: center; font-size: 1.9rem; font-weight: 600; color: var(--accent); transition: transform .5s ease; }
 
                 /* Hover: the image (fills its box edge-to-edge, no side gaps) zooms in gently. */
                 .related-section .related-card:hover .related-card-media,
                 .related-section .related-card:hover .related-card-avatar { transform: scale(1.03); }
+
+                /* Play-button overlay marking a related insight as a video, matching the
+                   external-link behaviour (opens the video in a new tab, same as the "Latest
+                   Updates" cards on the home page). */
+                .related-section .related-card-play { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 46px; height: 46px; border-radius: 50%; background: rgba(15, 23, 42, .55); color: #fff; display: flex; align-items: center; justify-content: center; font-size: .95rem; backdrop-filter: blur(2px); transition: background .25s ease, transform .25s ease; }
+                .related-section .related-card-play i { margin-left: 2px; }
+                .related-section .related-card:hover .related-card-play { background: var(--accent); transform: translate(-50%, -50%) scale(1.08); }
                 .related-section .related-card-body { padding: 1.1rem 1.25rem 1.35rem; flex-grow: 1; }
                 .related-section .related-card-title { font-size: 1.1rem; font-weight: 600; margin: 0 0 .35rem; color: #0f172a; line-height: 1.4; }
                 .related-section .related-card-subtitle { font-size: .88rem; color: #64748b; margin: 0; }
+                .related-section .related-card-action { display: flex; align-items: center; gap: .4rem; font-size: .82rem; font-weight: 700; color: var(--accent); margin: .6rem 0 0; padding-top: .6rem; border-top: 1px solid #f1f5f9; }
+
+                /* Related Insights cards specifically reuse the exact look of the main
+                   Insights listing page's own card (frontend/pages/insights.blade.php),
+                   not the generic related-card style above — badge ribbon, category label,
+                   description and a meta/action footer row. */
+                .related-section .related-card.related-insight-card { border: none; border-radius: 20px; box-shadow: 0 2px 8px rgba(15, 23, 42, .06); }
+                .related-section .related-card.related-insight-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(15, 23, 42, .12); border-color: transparent; }
+                .related-section .related-insight-media { position: relative; width: 100%; height: 220px; background-color: #f1f5f9; background-position: center; background-size: cover; background-repeat: no-repeat; }
+                .related-section .related-insight-badge { position: absolute; top: 16px; left: 16px; padding: 5px 14px; border-radius: 4px; color: #fff; font-size: 10px; font-weight: 700; letter-spacing: .3px; }
+                .related-section .related-insight-body { padding: 24px; flex-grow: 1; }
+                .related-section .related-insight-category { display: block; font-size: 11px; font-weight: 700; letter-spacing: .5px; color: #00898e; margin-bottom: 8px; }
+                .related-section .related-insight-title { font-size: 16px; font-weight: 700; line-height: 1.4; color: #0f172a; margin: 0 0 8px; }
+                .related-section .related-insight-desc { font-size: 13px; color: #64748b; text-align: justify; margin: 0; }
+                .related-section .related-insight-footer { display: flex; justify-content: space-between; align-items: center; gap: .5rem; padding: 14px 24px; border-top: 1px solid #f1f5f9; }
+                .related-section .related-insight-meta { display: flex; align-items: center; gap: .35rem; font-size: 12px; color: #64748b; }
+                .related-section .related-insight-action { display: flex; align-items: center; gap: .3rem; font-size: 12px; font-weight: 700; }
 
                 /* Show more / show less toggle */
                 .related-section .related-expand-wrap { display: flex; justify-content: center; margin-top: 1.75rem; }
@@ -178,6 +202,11 @@
                         $cardSubtitle = '';
                         $imageUrl = null;
                         $initials = '';
+                        $isVideo = false;
+                        $isExternalLink = false;
+                        $isDownload = false;
+                        $actionLabel = null;
+                        $actionIcon = null;
 
                         switch ($type) {
                             case 'project':
@@ -189,14 +218,59 @@
                                 break;
 
                             case 'insight':
+                                // Video-type insights don't open the article page — they don't
+                                // have a written article, so this card should link straight to
+                                // the video (YouTube/Vimeo/uploaded file), same as the "Latest
+                                // Updates" cards on the home page do for the same content type.
+                                // Download-type insights (Brochures etc.) likewise skip the
+                                // article page and download the attached PDF directly.
+                                $typeCategory = strtolower(str_replace(' ', '_', $item->insightType?->type_category ?? ''));
+                                $isVideo = in_array($typeCategory, ['watch', 'video', 'video_watch']);
+                                $isDownload = $typeCategory === 'download' && $item->attachmentUrl();
+
                                 $firstArticle = $item->articles->first();
-                                $link = $firstArticle
-                                    ? route('articleDetails', $firstArticle)
-                                    : route('articleDetails', ['insight_id' => $item->id]);
+                                if ($isVideo) {
+                                    $link = $item->videoUrl() ?: route('articleDetails', ['insight_id' => $item->id]);
+                                    $isExternalLink = (bool) $item->videoUrl();
+                                } elseif ($isDownload) {
+                                    $link = $item->attachmentUrl();
+                                } else {
+                                    $link = $firstArticle
+                                        ? route('articleDetails', $firstArticle)
+                                        : route('articleDetails', ['insight_id' => $item->id]);
+                                }
                                 $cardTitle = $item->heading;
                                 $cardSubtitle = $item->sub_heading ?: ($item->insightType->type ?? '');
                                 $imageUrl = $item->imageUrl() ?: $item->articleImageUrl();
                                 $initials = strtoupper(substr($cardTitle, 0, 2));
+
+                                // "Download" / "Watch" / "Read" / "Read on ..." — so it's
+                                // obvious at a glance what clicking the card actually does.
+                                $actionLabel = $item->actionLabel();
+                                $actionIcon = match(true) {
+                                    $isDownload => 'fa-download',
+                                    $isVideo => 'fa-play-circle',
+                                    $typeCategory === 'read_on' => 'fa-external-link-alt',
+                                    default => 'fa-book-open',
+                                };
+
+                                // Mirrors the card design on the main Insights listing page
+                                // (frontend/pages/insights.blade.php) exactly, so a "Related
+                                // Insights" card looks identical to its source page's own card
+                                // — including that page's existing type/colour mapping.
+                                $badgeTag = strtoupper($item->insightType->type ?? 'INSIGHT');
+                                $badgeColor = match(strtolower($item->insightType->type ?? '')) {
+                                    'video' => '#000000',
+                                    'op-ed/press' => '#116fa1',
+                                    'publication' => '#0f766e',
+                                    'brochures' => '#ea580c',
+                                    'article' => '#1032ae',
+                                    default => '#15803d',
+                                };
+                                $category = strtoupper($item->sub_heading ?: 'INSIGHT');
+                                $cardDescription = \Illuminate\Support\Str::limit(strip_tags($item->description ?: ($firstArticle?->description ?? '')), 120);
+                                $metaDate = optional($item->published_at)->format('M Y') ?: 'TBA';
+                                $metaDuration = $firstArticle?->read_minutes ? $firstArticle->read_minutes . ' min' : 'Quick read';
                                 break;
 
                             case 'team':
@@ -217,22 +291,65 @@
                         }
 
                         $isExtra = $loop->index >= $visibleCount;
+                        $cardClasses = 'related-card related-reveal'
+                            . ($type === 'insight' ? ' related-insight-card' : '')
+                            . ($isExtra ? ' related-card-extra' : '');
                     @endphp
-                    <a href="{{ $link }}"
-                       class="related-card related-reveal{{ $isExtra ? ' related-card-extra' : '' }}"
-                       data-reveal-delay="{{ ($isExtra ? $loop->index - $visibleCount : $loop->index) * 90 }}">
-                        @if($imageUrl)
-                            <div class="related-card-media" style="background-image:url('{{ $imageUrl }}');"></div>
-                        @else
-                            <div class="related-card-avatar">{{ $initials }}</div>
-                        @endif
-                        <div class="related-card-body">
-                            <p class="related-card-title">{{ $cardTitle }}</p>
-                            @if($cardSubtitle)
-                                <p class="related-card-subtitle">{{ $cardSubtitle }}</p>
+                    @if($type === 'insight')
+                        <a href="{{ $link }}"
+                           class="{{ $cardClasses }}"
+                           data-reveal-delay="{{ ($isExtra ? $loop->index - $visibleCount : $loop->index) * 90 }}"
+                           @if($isExternalLink) target="_blank" rel="noopener" @endif
+                           @if($isDownload) download @endif>
+                            <div class="related-insight-media" style="background-image:url('{{ $imageUrl }}');">
+                                <span class="related-insight-badge" style="background:{{ $badgeColor }};">{{ $badgeTag }}</span>
+                            </div>
+                            <div class="related-insight-body">
+                                <span class="related-insight-category">{{ $category }}</span>
+                                <p class="related-insight-title">{{ $cardTitle }}</p>
+                                @if($cardDescription)
+                                    <p class="related-insight-desc">{{ $cardDescription }}</p>
+                                @endif
+                            </div>
+                            <div class="related-insight-footer">
+                                <span class="related-insight-meta"><i class="far fa-calendar-alt"></i> {{ $metaDate }} · {{ $metaDuration }}</span>
+                                <span class="related-insight-action" style="color: {{ $isDownload ? '#e85d26' : '#00898e' }};">
+                                    <i class="fas {{ $actionIcon }}"></i> {{ $actionLabel }}@if(!$isDownload) &rarr;@endif
+                                </span>
+                            </div>
+                        </a>
+                    @else
+                        <a href="{{ $link }}"
+                           class="{{ $cardClasses }}"
+                           data-reveal-delay="{{ ($isExtra ? $loop->index - $visibleCount : $loop->index) * 90 }}"
+                           @if($isExternalLink) target="_blank" rel="noopener" @endif
+                           @if($isDownload) download @endif>
+                            @if($imageUrl)
+                                <div class="related-card-media" style="background-image:url('{{ $imageUrl }}');">
+                                    @if($isVideo)
+                                        <span class="related-card-play"><i class="fas fa-play"></i></span>
+                                    @elseif($isDownload)
+                                        <span class="related-card-play"><i class="fas fa-download"></i></span>
+                                    @endif
+                                </div>
+                            @else
+                                <div class="related-card-avatar">
+                                    {{ $initials }}
+                                    @if($isVideo)
+                                        <span class="related-card-play"><i class="fas fa-play"></i></span>
+                                    @elseif($isDownload)
+                                        <span class="related-card-play"><i class="fas fa-download"></i></span>
+                                    @endif
+                                </div>
                             @endif
-                        </div>
-                    </a>
+                            <div class="related-card-body">
+                                <p class="related-card-title">{{ $cardTitle }}</p>
+                                @if($cardSubtitle)
+                                    <p class="related-card-subtitle">{{ $cardSubtitle }}</p>
+                                @endif
+                            </div>
+                        </a>
+                    @endif
                 @endforeach
             </div>
 
